@@ -1,0 +1,114 @@
+﻿@model SistemaVentasBatia.DTOs.ResumenCotizacionLimpiezaDTO
+@{
+    ViewData["Title"] = "Resumen Cotización";
+}
+<meta charset="UTF-8">
+<div class="pt-3 mb-2">
+    <h2>Cotización</h2>
+    <h6 class="text-black-50">Resumen</h6>
+</div>
+
+<div class="row mb-3">
+    <div>
+        <form asp-action="DuplicarCotizacion" method="post">
+            @Html.HiddenFor(x => x.IdCotizacion)
+            <div class="float-end">
+                <button type="submit" class="btn btn-outline-secondary"><icon class="fa-solid fa-copy"></icon> Duplicar Cotización</button>
+                @if (Model.IdCotizacionOriginal != 0)
+                {
+                    <a asp-action="LimpiezaResumen" class="btn btn-outline-dark" asp-route-id="@Model.IdCotizacionOriginal"><icon class="fa-solid fa-file-invoice-dollar"></icon> Ver Cotizacion Original</a>
+
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+<partial name="_TabCotizacion" />
+
+<br />
+
+<div class="row" style="border-radius: 10px; overflow-x: hidden;">
+    <table class="table table-borderless table-responsive">
+        <thead>
+            <tr class="bg-primary bg-opacity-75 text-white">
+                <th class="ps-2 text-center">Lista de Conceptos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="border-bottom">
+                    <div class="row">
+                        <div class="col-3 offset-3 text-start"><h5>Mano de obra</h5></div>
+                        <div class="col-3  text-end"><h5> @Model.Salario.ToString("C2")</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom">
+                    <div class="row">
+                        <div class="col-3 offset-3 text-start"><h5>Provisiones</h5></div>
+                        <div class="col-3  text-end"><h5> @Model.Provisiones.ToString("C2")</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom border-success">
+                    <div class="row">
+                        <div class="col-3 offset-3 text-start"><h5>Carga Social</h5></div>
+                        <div class="col-3  text-end"><h5> @Model.CargaSocial.ToString("C2")</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom">
+                    <div class="row">
+                        <div class="col-3 offset-6  text-end text-success"><h5> @Model.SubTotal.ToString("C2")</h5></div>
+                        <div class="col-3 text-start text-success"><h5>Total CD</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom border-success">
+                    <div class="row">
+                        <div class="col-3 offset-3 text-start"><h5>Costo Indirecto (%)</h5></div>
+                        <div class="col-3  text-end"><h5> @Model.Indirecto.ToString("C2")</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom">
+                    <div class="row">
+                        <div class="col-3 offset-6  text-end text-success"><h5> @((Model.SubTotal + Model.Indirecto).ToString("C2"))</h5></div>
+                        <div class="col-3 text-start text-success"><h5>Total CI</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom border-success">
+                    <div class="row">
+                        <div class="col-3 offset-3 text-start"><h5>Utilidad (%)</h5></div>
+                        <div class="col-3  text-end"><h5> @Model.Utilidad.ToString("C2")</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom">
+                    <div class="row">
+                        <div class="col-3 offset-6  text-end text-success"><h5> @((Model.SubTotal + Model.Indirecto + Model.Utilidad).ToString("C2"))</h5></div>
+                        <div class="col-3 text-start text-success"><h5>Total Utilidad</h5></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-bottom">
+                    <div class="row">
+                        <div class="col-3 offset-3 text-start"><h5>Total</h5></div>
+                        <div class="col-3  text-end"><h5> @Model.Total.ToString("C2")</h5></div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

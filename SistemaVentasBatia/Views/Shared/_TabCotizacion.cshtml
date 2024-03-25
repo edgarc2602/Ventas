@@ -1,0 +1,28 @@
+﻿@{
+    var action = TempData["Action"].ToString();
+}
+
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="@(action == "LimpiezaResumen" ? "nav-link active" : "nav-link" )" aria-current="@(action == "LimpiezaResumen" ? "page" : "" )" asp-action="LimpiezaResumen" asp-route-id="@TempData["IdCotizacion"].ToString()">Resumen</a>
+    </li>
+    <li class="nav-item">
+        <a class="@(action == "LimpiezaInfoProspecto" ? "nav-link active" : "nav-link" )" aria-current="@(action == "LimpiezaProspecto" ? "page" : "" )" asp-action="LimpiezaInfoProspecto" asp-route-id="@TempData["IdCotizacion"].ToString()">Prospecto</a>
+    </li>
+    <li class="nav-item">
+        <a class="@(action == "LimpiezaDirectorio" ? "nav-link active" : "nav-link" )"aria-current="@(action == "LimpiezaDirectorio" ? "page" : "" )" asp-action="LimpiezaDirectorio" asp-route-id="@TempData["IdCotizacion"].ToString()">Directorio</a>
+    </li>
+    <li class="nav-item">
+        <a class="@(action == "LimpiezaPlantilla" ? "nav-link active" : "nav-link" )" aria-current="@(action == "LimpiezaPlantilla" ? "page" : "" )" asp-action="LimpiezaPlantilla" asp-route-id="@TempData["IdCotizacion"].ToString()">Plantilla</a>
+    </li>
+    <li class="nav-item">
+        <a class="@(action == "LimpiezaMaterial" ? "nav-link active" : "nav-link" )" aria-current="@(action == "LimpiezaMaterial" ? "page" : "" )" asp-action="LimpiezaMaterial" asp-route-id="@TempData["IdCotizacion"].ToString()">Material</a>
+    </li>
+    @*<li class="nav-item">
+        <a class="nav-link" asp-action="LimpiezaMateriales" asp-route-id="@TempData["IdCotizacion"].ToString()">Materiales</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-action="General" asp-route-id="@TempData["IdCotizacion"].ToString()">General</a>
+    </li>*@
+</ul>

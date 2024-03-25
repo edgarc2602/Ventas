@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SistemaVentasBatia</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/jquery-datetimepicker/jquery.datetimepicker.min.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome/dist/css/all.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @@media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="~/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+    @*<header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                    <div class="container">
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SistemaVentasBatia</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+        </header>*@
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top flex-md-nowrap p-0 shadow">
+            <div class="container-fluid">
+                <div class="d-none d-md-block">
+                    <a href="#">
+                        <img src="~/content/images/batia_logo.png" style="width:45%; height:90%;" />
+                    </a>
+                </div>
+                <div class="navbar w-100" style="height:60px;" id="navbarSupportedContent">
+                    <div>
+                        <button class="navbar-toggler d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+
+                    <div class="float-right">
+                        Bienvenido, Jorge Alberto Martínez Moreno
+                        <button class="btn btn-outline-warning mx-1">Salir</button>
+                    </div>
+                    @*<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>*@
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-auto d-md-block bg-light sidebar collapse">
+                <ul class="nav d-flex flex-column justify-content-center h-100 pt-2">
+                    <li class="nav-item mb-3 text-sm-start text-md-center">
+                        <a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Index">
+                            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Home">
+                                <span> <i class="fa-solid fa-house fa-2x"></i></span>
+                                <div class="float-end d-block d-sm-none"><h6>HOME</h6></div>
+                                <hr class="d-block d-sm-none" />
+
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-3 text-sm-start text-md-center">
+                        <a class="nav-link" aria-current="page" asp-controller="Prospectos" asp-action="Index">
+                            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Prospectos">
+                                <span> <i class="fa-solid fa-business-time fa-2x"></i></span>
+                                <div class="float-end d-block d-sm-none"><h6>PROSPECTOS</h6></div>
+                                <hr class="d-block d-sm-none" />
+
+                            </div>
+                        </a>
+                    </li>
+                    @*<li class="nav-item mb-3 text-sm-start text-md-center">
+                            <a class="nav-link" aria-current="page" href="#">
+                                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Clientes">
+                                    <span> <i class="fa-solid fa-users fa-2x"></i></span>
+                                    <div class="float-end d-block d-sm-none"><h6>CLIENTES</h6></div>
+                                    <hr class="d-block d-sm-none" />
+
+                                </div>
+                            </a>
+                        </li>*@
+                    <li class="nav-item mb-3 text-sm-start text-md-center">
+                        <a class="nav-link" aria-current="page" asp-controller="Cotizaciones" asp-action="Index">
+                            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Cotizaciones">
+                                <span> <i class="fa-solid fa-file-invoice-dollar fa-2x"></i></span>
+                                <div class="float-end d-block d-sm-none"><h6>COTIZACIONES</h6></div>
+                                <hr class="d-block d-sm-none" />
+
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-3 text-sm-start text-md-center">
+                        <a class="nav-link" aria-current="page" href="#">
+                            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Cuenta">
+                                <span> <i class="fa-solid fa-user-tie fa-2x"></i></span>
+                                <div class="float-end d-block d-sm-none"><h6>MI CUENTA</h6></div>
+                                <hr class="d-block d-sm-none" />
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <main class="col-md-9 col-lg-10 px-md-4 mx-auto">
+                @RenderBody()
+                <partial name="_Alertas" />
+            </main>
+        </div>
+    </div>
+
+    @*<div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>*@
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Grupo Batia - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-datetimepicker/jquery.datetimepicker.full.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/fontawesome/dist/js/all.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/dashboard.js"></script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        })
+        toastList.forEach(toast => toast.show())
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

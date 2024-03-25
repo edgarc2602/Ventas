@@ -1,0 +1,32 @@
+<!--<div class="position-fixed right-0 p-3" style="z-index: 11; right: 0; top: 70px;">
+    <div id="glotoast" class="toast" role="alert" data-delay="1500" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="mr-auto">{{ isError ? 'Revisa' : 'Ok' }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
+            </button>
+        </div>
+        <div class="toast-body text-white" [ngClass]="isError ? 'bg-danger' : 'bg-success'">
+            {{ message }}
+        </div>
+    </div>
+</div>-->
+
+<style>
+    .glotoasttoast {
+        max-width: 300px; /* Ancho máximo del Toast */
+        max-height: 150px; /* Altura máxima del Toast */
+        background-color: rgba(0, 0, 0, 0.5); /* Cambiar el último valor (0.8) para ajustar la opacidad */
+    }
+</style>
+
+<div class="position-fixed  right-0 p-3" style="z-index: 11; right: 0; top: 70px;">
+    <div id="glotoast" class="toast glotoasttoast" role="alert" data-delay="2000" data-autohide="false" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="mr-auto">{{ isError ? 'Error' : 'Guardado' }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body text-white" [ngClass]="isError ? 'bg-danger' : 'bg-success'">
+            {{ message }}
+        </div>
+    </div>
+</div>

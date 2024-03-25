@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+<meta charset="UTF-8">
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Inicio</h1>
+    @*<div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-primary">Nuevo Cliente</button>
+            <button type="button" class="btn btn-sm btn-outline-primary ms-1">Nuevo Prospecto</button>
+            <button type="button" class="btn btn-sm btn-outline-success ms-1">Nueva Cotización</button>
+        </div>
+    </div>*@
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h4 class="text-primary">General</h4>
+    </div>
+    <div class="col-md-4 offset-md-4">
+        <h4 class="text-primary">Ingresos</h4>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card border-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header text-primary">
+                <div class="d-flex">
+                    <div class="me-auto">Clientes</div>
+                    <div><i class="fa-solid fa-users"></i></div>
+                </div>
+            </div>
+            <div class="card-body ">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex">
+                            <div class="me-auto">Este Mes</div>
+                            <div class="text-success">5</div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex">
+                            <div class="me-auto">Activos</div>
+                            <div>15</div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex">
+                            <div class="me-auto">Inactivos</div>
+                            <div class="text-danger">3</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-success mb-3" style="max-width: 18rem;">
+            <div class="card-header text-success">
+                <div class="d-flex">
+                    <div class="me-auto">Prospectos</div>
+                    <div><i class="fa-solid fa-business-time"></i></div>
+                </div>
+            </div>
+            <div class="card-body ">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex">
+                            <div class="me-auto">Este Mes</div>
+                            <div class="text-success">28</div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex">
+                            <div class="me-auto">En Proceso</div>
+                            <div>13</div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex">
+                            <div class="me-auto">Inactivos</div>
+                            <div class="text-danger">6</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <canvas class="w-100" id="myChart"></canvas>
+    </div>
+</div>
+<br />
+
+@*<canvas class="my-4 w-50" id="myChart" width="900" height="190"></canvas>*@
+
+
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+    <script>
+        // Graphs
+        var canvas = document.getElementById('myChart');
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: ['Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Enero'],
+                datasets: [{
+                    label: 'Clientes',
+                    yAxisID: 'clientes',
+                    data: [100, 96, 84, 76, 69],
+                    borderColor: "rgb(13,110,253)",
+                    backgroundColor: "rgba(13, 110, 253, 0.5)",
+                }, {
+                    label: 'Prospectos',
+                    yAxisID: 'prospectos',
+                    data: [35, 80, 90, 75, 76],
+                    borderColor: "rgb(25,135,84)",
+                    backgroundColor: "rgba(25,135,84,0.5)",
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        id: 'clientes',
+                        type: 'linear',
+                        position: 'left',
+                    }, {
+                        id: 'prospectos',
+                        type: 'linear',
+                        position: 'right',
+
+                    }]
+                }
+            }
+        });
+    </script>
+}

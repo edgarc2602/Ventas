@@ -1,0 +1,398 @@
+﻿@model SistemaVentasBatia.DTOs.ListaPuestosDireccionCotizacionDTO
+
+@{
+    ViewData["Title"] = "Plantilla";
+}
+<meta charset="UTF-8">
+<div class="pt-3 mb-2">
+    <h2>Cotización</h2>
+    <h6 class="text-black-50">Plantilla</h6>
+</div>
+
+<br />
+
+<partial name="_TabCotizacion" />
+
+<br />
+@Html.HiddenFor(x => x.IdDireccionCotizacion)
+@Html.HiddenFor(x => x.IdPuestoDireccionCotizacion)
+
+<div class="d-flex flex-row-reverse">
+    <h5><span class="badge bg-primary">No. Empleados: 10</span></h5>
+    <h5 class="me-1"><span class="badge bg-primary">Importe total: $ 5000.00</span></h5>
+    <h5 class="me-1"><span class="badge bg-primary">Importe mensual: $ 5000.00</span></h5>
+</div>
+
+@foreach (var direccion in Model.DireccionesCotizacion)
+{
+    <div id="accordion">
+
+        <div class="card ">
+            <div class="card-header bg-primary bg-opacity-50">
+                <div class="row ">
+                    <div class="col-md-3">
+                        <a id="@("aListaOperarios" + direccion.IdDireccionCotizacion)" class="btn text-white " data-bs-toggle="collapse" href="@("#dvPuestosDireccion" + direccion.IdDireccionCotizacion)">
+                            <h5 style="margin-bottom:0;">
+                                @direccion.NombreSucursal
+                            </h5>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="float-end text-primary mt-2" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
+                            <a data-direccioncotizacion="@direccion.IdDireccionCotizacion" data-cotizacion="@Model.IdCotizacion" class="agrega-puesto"><icon class="fa-solid fa-user-plus fa-2x"></icon> </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <span class="badge bg-primary ms-2 "> @(direccion.Ciudad + ", " + direccion.Estado + " ")</span>
+                    </div>
+                </div>
+            </div>
+            <div id="@("dvPuestosDireccion" + direccion.IdDireccionCotizacion)" class="collapse" data-bs-parent="#accordion">
+
+                <div class="card-body">
+
+                    <div style="border-radius: 10px; overflow-x: hidden;">
+                        <table class="table table-borderless table-responsive" id="tbOperarios">
+                            <tbody>
+                                @foreach (var puesto in Model.PuestosDireccionesCotizacion.Where(x => x.IdDireccionCotizacion == direccion.IdDireccionCotizacion))
+                                {
+                                    <tr id="@("tr"+ puesto.IdPuestoDireccionCotizacion)">
+                                        <td>
+                                            <div class="row pb-2">
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Puesto:</span>
+                                                    <div class="ms-1">@puesto.Puesto</div>
+                                                </div>
+                                                <div class="col-6 col-sm-4">
+                                                    <span class="badge text-dark">Horario:</span>
+                                                    <div class="ms-1">@puesto.DiaInicio.ToString() a @puesto.DiaFin de @puesto.HrInicio a @puesto.HrFin </div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Jornada:</span>
+                                                    <div class="ms-1">@puesto.Jornada hrs</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Turno:</span>
+                                                    <div class="ms-1">@puesto.Turno</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Salario:</span>
+                                                    <div class="ms-1">$ @puesto.Sueldo</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Aguinaldo:</span>
+                                                    <div class="ms-1">$ @puesto.Aguinaldo</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Vacaciones:</span>
+                                                    <div class="ms-1">$ @puesto.Vacaciones</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Prima Vacacional:</span>
+                                                    <div class="ms-1">$ @puesto.PrimaVacacional</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">ISN:</span>
+                                                    <div class="ms-1">$ @puesto.ISN</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">IMSS:</span>
+                                                    <div class="ms-1">$ @puesto.IMSS</div>
+                                                </div>
+                                                <div class="col-6 col-sm-2">
+                                                    <span class="badge text-dark">Total:</span>
+                                                    <div class="ms-1">$ @puesto.Total</div>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                        <td class="align-middle w-auto">
+                                            <div class="float-end">
+                                                <a class="btn btn-sm text-primary mb-1 btnEditarOperario" data-bs-toggle="tooltip" title="Editar" data-puesto="@puesto.IdPuestoDireccionCotizacion">
+                                                    <icon class="fa-solid fa-pencil fa-2x"></icon>
+                                                </a>
+                                                <a class="btn btn-sm text-secondary mb-1 btnMaterialOperario" data-bs-toggle="tooltip" title="Material" data-puesto="@puesto.IdPuestoDireccionCotizacion" data-direccioncotizacion="@puesto.IdDireccionCotizacion">
+                                                    <icon class="fa-solid fa-pump-soap fa-2x"></icon>
+                                                </a>
+                                                <a class="btn btn-sm text-info mb-1 btnUniformeOperario" data-bs-toggle="tooltip" title="Uniforme" data-puesto="@puesto.IdPuestoDireccionCotizacion">
+                                                    <icon class="fa-solid fa-shirt fa-2x"></icon>
+                                                </a>
+                                                <a class="btn btn-sm text-danger mb-1 btnEliminarPuesto" data-bs-toggle="tooltip" title="Descartar" data-puesto="@puesto.IdPuestoDireccionCotizacion">
+                                                    <icon class="fa-solid fa-times fa-2x"></icon>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<partial name="_ModalAgregarOperario" model="new SistemaVentasBatia.DTOs.PuestoDireccionCotizacionDTO { }" />
+
+<partial name="_ModalEliminarRegistro" />
+
+<div id="dvEditarOperario"></div>
+
+<div id="dvMaterialOperario"></div>
+
+<div id="dvEditarMaterialOperario"></div>
+
+<div id="dvAgregarMaterialCotizacion"></div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+
+            var idDireccionCotizacion = parseInt($("#IdDireccionCotizacion").val());
+            var idPuestoDireccionCotizacion = parseInt($("#IdPuestoDireccionCotizacion").val());
+
+            if (idDireccionCotizacion > 0) {
+                $("#dvPuestosDireccion" + idDireccionCotizacion).collapse("show");
+            }
+
+            if (idPuestoDireccionCotizacion > 0) {
+                seleccionarOperario(idPuestoDireccionCotizacion);
+            }
+
+            $("#HrInicio").datetimepicker({
+                datepicker: false,
+                allowTimes: [
+                    '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
+                    '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'
+                ],
+                format: 'H:i'
+            });
+
+            $("#HrFin").datetimepicker({
+                datepicker: false,
+                allowTimes: [
+                    '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00',
+                    '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'
+                ],
+                format: 'H:i'
+            });
+
+            $(".agrega-puesto").on('click', function () {
+
+                alert(this.dataset.direccioncotizacion);
+
+                $("[name='IdDireccionCotizacion']").val(this.dataset.direccioncotizacion);
+
+                $("[name='IdCotizacion']").val(this.dataset.cotizacion);
+
+                var modal = new bootstrap.Modal(document.getElementById('modalAgregarOperario'), {});
+
+                modal.show();
+
+            });
+
+            $(".btnEliminarPuesto").click(function () {
+                seleccionarOperario(this.dataset.puesto);
+
+                $("#modalEliminarRegistro").find('.modal-title').text("Eliminar operario");
+
+                $("#modalEliminarRegistro").find('.modal-body').text("¿Está seguro de que deseas eliminar el operario de la plantilla?");
+
+                $("#formEliminarRegistro").attr("action", "/Cotizaciones/EliminarOperador");
+
+                console.log(this.dataset.puesto);
+
+                $("#registroAEliminar").val(this.dataset.puesto);
+
+                var modal = new bootstrap.Modal(document.getElementById('modalEliminarRegistro'), {});
+
+                modal.show();
+            });
+
+            $(".btnEditarOperario").click(function () {
+                seleccionarOperario(this.dataset.puesto);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("EditarOperario")',
+                    data: { id: this.dataset.puesto },
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvEditarOperario").html(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalEditarOperario'), {});
+
+                        modal.show();
+                    }
+                });
+            });
+
+            $(".btnMaterialOperario").click(function () {
+                seleccionarOperario(this.dataset.puesto);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("LimpiezaMaterialOperario")',
+                    data: { idPuestoDireccionCotizacion: this.dataset.puesto },
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvMaterialOperario").html(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalLimpiezaMaterialOperario'), {});
+
+                        modal.show();
+                    }
+                });
+            });
+        });
+
+        function seleccionarOperario(element) {
+            $("#tbOperarios tr").removeClass("bg-success bg-opacity-25");
+
+            $("#tr" + element).addClass("bg-success bg-opacity-25");
+        }
+
+        $(document).on('click', '#btnActualizarOperario', function () {
+
+            var form = $('#formEditarOperario');
+
+            $.validator.unobtrusive.parse(form);
+
+            var validate = form.validate().form();
+
+            if (validate) {
+                form.submit();
+            }
+        });
+
+        $(document).on('click', '.btnEditarMaterialOperario', function () {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("EditarLimpiezaMaterialCotizacion")',
+                data: { id: this.dataset.material },
+                contentType: 'json',
+                success: function (result) {
+                    $("#dvEditarMaterialOperario").html(result);
+
+                    $("#modalLimpiezaMaterialOperario").modal('hide');
+
+                    $("#btnRegresaListadoEditarMaterial").removeClass("d-none");
+
+                    var modalEditar = new bootstrap.Modal(document.getElementById('modalLimpiezaEditarMaterialCotizacion'), {});
+
+                    modalEditar.show();
+                }
+            });
+        });
+
+         $(document).on('click', '#btnRegresaListadoEditarMaterial', function () {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("LimpiezaMaterialOperario")',
+                data: { idPuestoDireccionCotizacion: this.dataset.operario },
+                contentType: 'json',
+                success: function (result) {
+                    $("#dvMaterialOperario").html(result);
+
+                    $("#modalLimpiezaEditarMaterialCotizacion").modal('hide');
+
+                    var modal = new bootstrap.Modal(document.getElementById('modalLimpiezaMaterialOperario'), {});
+
+                    modal.show();
+                }
+            });
+         });
+
+        $(document).on('click', '#btnAgregarMaterial', function () {
+            var idOperario = this.dataset.operario;
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("AgregarLimpiezaMaterialOperario")',
+                data: { id: idOperario },
+                contentType: 'json',
+                success: function (result) {
+                    $("#dvAgregarMaterialCotizacion").append(result);
+
+                    $("#modalLimpiezaMaterialOperario").modal('hide');
+
+                    $("#btnRegresaListadoAgregarMaterial").removeClass("d-none");
+
+                    var modal = new bootstrap.Modal(document.getElementById('modalLimpiezaAgregarMaterialCotizacion'), {});
+
+                    modal.show();
+                }
+            });
+        });
+
+        $(document).on('click', '#btnRegresaListadoAgregarMaterial', function () {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("LimpiezaMaterialOperario")',
+                data: { idPuestoDireccionCotizacion: this.dataset.operario },
+                contentType: 'json',
+                success: function (result) {
+                    $("#dvMaterialOperario").html(result);
+
+                    $("#modalLimpiezaAgregarMaterialCotizacion").modal('hide');
+
+                    var modal = new bootstrap.Modal(document.getElementById('modalLimpiezaMaterialOperario'), {});
+
+                    modal.show();
+                }
+            });
+         });
+
+        $(document).on('click', '#btnGuardarMaterial', function () {
+            var form = $('#formLimpiezaAgregarMaterialCotizacion');
+
+            $.validator.unobtrusive.parse(form);
+
+            var validate = form.validate().form();
+
+            if (validate) {
+                form.submit();
+            }
+        });
+
+        $(document).on('click', '#btnActualizarMaterial', function () {
+            var form = $('#formLimpiezaEditarMaterialCotizacion');
+
+            $.validator.unobtrusive.parse(form);
+
+            var validate = form.validate().form();
+
+            if (validate) {
+                form.submit();
+            }
+        });
+
+        $(document).on('click', '.btnEliminarMaterialOperario', function () {
+            $("#modalEliminarRegistro").find('.modal-title').text("Eliminar material");
+
+            $("#modalEliminarRegistro").find('.modal-body').text("¿Estás seguro de que deseas eliminar este material del operario?");
+
+            $("#formEliminarRegistro").attr("action", "/Cotizaciones/EliminarMaterialOperario");
+
+            $("#registroAEliminar").val(this.dataset.material);
+
+            $("#modalLimpiezaMaterialOperario").modal('hide');
+
+            var modal = new bootstrap.Modal(document.getElementById('modalEliminarRegistro'), {});
+
+            modal.show();
+        });
+    </script>
+}
+

@@ -1,0 +1,111 @@
+﻿@using SistemaVentasBatia.Enums
+
+@model SistemaVentasBatia.DTOs.DireccionDTO
+
+<div class="modal fade" id="modalAgregarDireccion">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar Dirección Nueva</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form asp-action="AgregarDireccion" method="post">
+                    @Html.HiddenFor(x => x.IdProspecto)
+                    @Html.HiddenFor(x => x.IdCotizacion)
+                    <div class="row mb-3">
+                        <div>
+                            <div class="btn-group float-end">
+                                <button type="submit" class="btn btn-outline-success"><icon class="fa-solid fa-save"></icon> Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="NombreSucursal">
+                                <label asp-for="NombreSucursal">Sucursal</label>
+                            </div>
+                            <span asp-validation-for="NombreSucursal" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdTIpoInmueble" asp-for="IdTipoInmueble" asp-items="(List<SelectListItem>)ViewBag.TiposInmueble">
+                                </select>
+                                <label asp-for="IdTipoInmueble">Tipo de Inmueble</label>
+                            </div>
+                            <span asp-validation-for="IdTipoInmueble" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdEstado" asp-for="IdEstado" asp-items="(List<SelectListItem>)ViewBag.Estados">
+                                </select>
+                                <label asp-for="IdEstado">Estado:</label>
+                            </div>
+                            <span asp-validation-for="IdEstado" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Municipio">
+                                <label asp-for="Municipio">Delegación o Municipio</label>
+                            </div>
+                            <span asp-validation-for="Municipio" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Ciudad">
+                                <label asp-for="Ciudad">Ciudad</label>
+                            </div>
+                            <span asp-validation-for="Ciudad" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Colonia">
+                                <label asp-for="Colonia">Colonia</label>
+                            </div>
+                            <span asp-validation-for="Colonia" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Domicilio">
+                                <label asp-for="Domicilio">Calle y Número</label>
+                            </div>
+                            <span asp-validation-for="Domicilio" class="text-danger"></span>
+                        </div>
+                        @*<div class="col-sm-12 col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Referencia">
+                                <label asp-for="Referencia">Entre Calles</label>
+                            </div>
+                            <span asp-validation-for="Referencia" class="text-danger"></span>
+                        </div>*@
+                        <div class="col-sm-12 col-md-2">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="CodigoPostal">
+                                <label asp-for="CodigoPostal">CP</label>
+                            </div>
+                            <span asp-validation-for="CodigoPostal" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

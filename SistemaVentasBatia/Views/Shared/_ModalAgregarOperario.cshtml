@@ -1,0 +1,117 @@
+﻿@using SistemaVentasBatia.Enums
+
+@model SistemaVentasBatia.DTOs.PuestoDireccionCotizacionDTO
+
+<div class="modal fade" id="modalAgregarOperario">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar Operario</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form asp-action="AgregarOperario" method="post">
+                    @Html.HiddenFor(x => x.IdDireccionCotizacion)
+                    @Html.HiddenFor(x => x.IdCotizacion)
+                    <div class="row mb-3">
+                        <div>
+                            <div class="btn-group float-end">
+                                <button type="submit" class="btn btn-outline-success"><icon class="fa-solid fa-save"></icon> Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdPuesto" asp-for="IdPuesto" asp-items="@((List<SelectListItem>)TempData["Puestos"])">
+                                </select>
+                                <label asp-for="IdPuesto">Puesto</label>
+                            </div>
+                            <span asp-validation-for="IdPuesto" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdEstado" asp-for="IdTurno" asp-items="@((List<SelectListItem>)TempData["Turnos"])">
+                                </select>
+                                <label asp-for="IdTurno">Turno</label>
+                            </div>
+                            <span asp-validation-for="IdTurno" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdEstado" asp-for="DiaInicio" asp-items="Html.GetEnumSelectList<DiaSemana>()">
+                                </select>
+                                <label asp-for="DiaInicio">Dia Inicio</label>
+                            </div>
+                            <span asp-validation-for="DiaInicio" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdEstado" asp-for="DiaFin" asp-items="Html.GetEnumSelectList<DiaSemana>()">
+                                </select>
+                                <label asp-for="DiaFin">Dia Fin</label>
+                            </div>
+                            <span asp-validation-for="DiaFin" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="HrInicio">
+                                <label asp-for="HrInicio">De</label>
+                            </div>
+                            <span asp-validation-for="HrInicio" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="HrFin">
+                                <label asp-for="HrFin">A</label>
+                            </div>
+                            <span asp-validation-for="HrFin" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Jornada">
+                                <label asp-for="Jornada">Jornada</label>
+                            </div>
+                            <span asp-validation-for="Jornada" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Sueldo">
+                                <label asp-for="Sueldo">Sueldo</label>
+                            </div>
+                            <span asp-validation-for="Sueldo" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-sm-12 col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Cantidad">
+                                <label asp-for="Cantidad">Cantidad</label>
+                            </div>
+                            <span asp-validation-for="Cantidad" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+
+                </form>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+

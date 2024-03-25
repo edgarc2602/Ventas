@@ -1,0 +1,64 @@
+<nav aria-label="Page navigation example" class="d-none d-lg-block">
+    <ul class="pagination align-content-center justify-content-center text-center">
+        <li class="page-item" [ngClass]="{'disabled': bloqueActual === 1}">
+            <button type="button" class="btn page-link border-0" (click)="toPrevBlock()">
+                <i class="fa-solid fa-angles-left"></i>
+            </button>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled': pagina == 1}">
+            <button type="button" class="btn page-link border-0" (click)="toPrev()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        </li>
+        <li *ngFor="let i of makePages(); let j = index" [ngClass]="{'active': pagina === (bloqueActual - 1) * 5 + j + 1}" class="page-item">
+            <button type="button" class="btn btn-sm page-link" (click)="move((bloqueActual - 1) * 5 + j + 1)">
+                {{ (bloqueActual - 1) * 5 + j + 1 }}
+            </button>
+        </li>
+        <li [ngClass]="{'disabled': pagina == numPaginas}" class="page-item">
+            <button type="button" class="btn btn-sm page-link" (click)="toNext()" aria-label="Next">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled': (bloqueActual * 5) >= numPaginas}">
+            <button type="button" class="btn page-link border-0" (click)="toNextBlock()">
+                <i class="fa-solid fa-angles-right"></i>
+            </button>
+        </li>
+        <li class="page-item">
+            <button type="button" class="btn page-link border-0">{{ rows }} Registros</button>
+        </li>
+    </ul>
+</nav>
+<nav aria-label="Page navigation example" class="d-block d-lg-none">
+    <ul class="pagination align-content-center justify-content-center text-center">
+        <li class="page-item" [ngClass]="{'disabled': bloqueActual === 1}">
+            <a class="page-link" aria-label="Previous" (click)="toPrevBlock()">
+                <i class="fa-solid fa-angles-left"></i>
+            </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled': pagina == 1}">
+            <a class="page-link" aria-label="Previous" (click)="toPrev()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+        </li>
+        <li *ngFor="let i of makePages(); let j = index" [ngClass]="{'active': pagina === (bloqueActual - 1) * 5 + j + 1}" class="page-item">
+            <a class="page-link" (click)="move((bloqueActual - 1) * 5 + j + 1)">
+                {{ (bloqueActual - 1) * 5 + j + 1 }}
+            </a>
+        </li>
+        <li [ngClass]="{'disabled': pagina == numPaginas}" class="page-item">
+            <a class="page-link" aria-label="Next" (click)="toNext()">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled': (bloqueActual * 5) >= numPaginas}">
+            <a class="page-link" aria-label="Next" (click)="toNextBlock()">
+                <i class="fa-solid fa-angles-right"></i>
+            </a>
+        </li>
+        <li class="page-item">
+            <div class="page-link">{{ rows }} Registros</div>
+        </li>
+    </ul>
+</nav>

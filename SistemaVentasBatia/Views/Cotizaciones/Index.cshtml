@@ -1,0 +1,129 @@
+﻿@using SistemaVentasBatia.Enums; 
+
+@model SistemaVentasBatia.DTOs.ListaCotizacionDTO
+
+@{
+    ViewData["Title"] = "Cotizaciones";
+}
+<meta charset="UTF-8">
+
+<div class="pt-3 mb-2">
+    <h1 class="h2">Cotizaciones</h1>
+</div>
+<div class="row mb-3">
+    <div>
+        <div class="btn-group float-end">
+            <a asp-action="Crear" class="btn btn-outline-primary"><icon class="fa-solid fa-plus"></icon> Nueva Cotización</a>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Buscar" method="post">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" asp-for="IdProspecto" aria-label="IdProspecto" asp-items="@((List<SelectListItem>)ViewBag.Prospectos)">
+                    <option selected>Selecciona una opción...</option>
+                </select>
+                <label for="ddlProspecto">Prospecto</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" asp-for="IdServicio" aria-label="IdServicio" asp-items="Html.GetEnumSelectList<Servicio>()">
+                    <option selected>Selecciona una opción...</option>
+                </select>
+                <label for="ddlServicio">Servicio</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" asp-for="IdEstatusCotizacion" aria-label="IdEstatusCotizacion" asp-items="Html.GetEnumSelectList<EstatusCotizacion>()">
+                    <option selected>Selecciona una opción...</option>
+                </select>
+                <label for="ddlServicio">Estatus</label>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-primary"><icon class="fa-solid fa-search"></icon> Buscar</button>
+        </div>
+    </div>
+</form>
+
+
+<div class="row" style="border-radius: 10px; overflow-x: hidden;">
+    <table class="table table-borderless table-striped table-responsive">
+        <thead>
+            <tr class="bg-primary bg-opacity-75 text-white">
+                <th class="ps-2">Lista de cotizaciones</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cotizacion in Model.Cotizaciones)
+            {
+                @*
+                var action = cotizacion.IdServicio == Servicio.Limpieza ? "LimpiezaResumen" : (cotizacion.IdServicio == Servicio.Mantenimiento ? "MantenimientoResumen" : (cotizacion.IdServicio == Servicio.Sanitización ? "SanitizacionResumen" : ""));
+                *@
+                <tr>
+                    <td>
+                        <div class="row pb-2">
+                            <div class="col-1 ">
+                                <span class="badge text-dark">ID:</span>
+                                <div class="ms-2">@cotizacion.IdCotizacion</div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <span class="badge text-dark">Prospecto:</span>
+                                <div class="ms-2">@cotizacion.NombreComercial</div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <span class="badge text-dark">Servicio:</span>
+                                <div class="ms-2">@cotizacion.Servicio</div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <span class="badge text-dark">Total:</span>
+                                <div class="ms-2">@cotizacion.Total.ToString("c2"))</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge text-dark">Fecha Alta:</span>
+                                <div class="ms-2">@cotizacion.FechaAlta</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="align-middle w-auto">
+                            <a class="btn btn-sm text-primary mb-1" asp-action="action" asp-route-id="@cotizacion.IdCotizacion" data-bs-toggle="tooltip" title="Detalle">
+                                <icon class="fa-solid fa-search-dollar fa-2x"></icon>
+                            </a>
+                            <a class="btn btn-sm text-danger mb-1 btnEliminarCotizacion" data-bs-toggle="tooltip" title="Descartar" data-cotizacion="@cotizacion.IdCotizacion">
+                                <icon class="fa-solid fa-times fa-2x"></icon>
+                            </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_Paginador" model="@(new SistemaVentasBatia.DTOs.PaginadorViewModel{ Controlador="Cotizaciones", Action="Index" , Pagina = Model.Pagina, Rows = Model.Rows, NumPaginas = Model.NumPaginas })"/>
+</div>
+
+<partial name="_ModalEliminarRegistro" />
+
+
+@section Scripts{
+    <script>
+        $(".btnEliminarCotizacion").click(function () {
+
+            $("#modalEliminarRegistro").find('.modal-title').text("Descartar cotización");
+
+            $("#modalEliminarRegistro").find('.modal-body').text("¿Está seguro de que desea descartar la cotización?");
+
+            $("#formEliminarRegistro").attr("action", "Cotizaciones/EliminarCotizacion/");
+
+            $("#registroAEliminar").val(this.dataset.cotizacion);
+
+            var modal = new bootstrap.Modal(document.getElementById('modalEliminarRegistro'), {});
+
+            modal.show();
+        });
+    </script>
+}

@@ -1,0 +1,148 @@
+<nav id="sidebarMenu" class="col-md-auto d-md-none  sidebar collapse-horizontal collapse text-center">
+    <ul class="nav d-flex flex-column justify-content-center h-100 pt-2">
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo']" [routerLinkActive]='["active"]' [routerLinkActiveOptions]="{ exact: true }" aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-house fa-2x mb-2"></i></span>
+                    <div class="d-block d-md-none"><h6>HOME</h6></div>
+                    <hr class="d-block d-md-none" />
+                </div>
+            </a>
+        </li>
+
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/prospecto']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-business-time fa-2x mb-2"></i></span>
+                    <div class=" d-block d-md-none"><h6>PROSPECTOS</h6></div>
+                    <hr class="d-block d-md-none" />
+                </div>
+            </a>
+        </li>
+        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" aria-current="page" href="#">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Clientes">
+                    <span> <i class="fa-solid fa-users fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>CLIENTES</h6></div>
+                    <hr class="d-block d-sm-none" />
+
+                </div>
+            </a>
+        </li>-->
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/cotiza/0']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-file-invoice-dollar fa-2x mb-2"></i></span>
+                    <div class=" d-block d-md-none"><h6>COTIZACIONES</h6></div>
+                    <hr class="d-block d-md-none" />
+                </div>
+            </a>
+        </li>
+        <li  class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-gears fa-2x mb-2"></i></span>
+                    <div class=" d-block d-md-none"><h6>CONFIGURACION</h6></div>
+                    <hr class="d-block d-md-none" />
+                </div>
+            </a>
+        </li>
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a *ngIf="isDarkTheme" class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" (click)="toggleTheme()">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-sun fa-2x mb-2" style="color: lightgray;"></i></span>
+                    <div class=" d-block d-md-none"><h6>TEMA</h6></div>
+                    <hr class="d-block d-md-none" />
+                </div>
+            </a>
+        </li>
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a *ngIf="!isDarkTheme" class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" (click)="toggleTheme()">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-moon fa-2x mb-2" style="color: #333333;"></i></span>
+                    <div class=" d-block d-md-none"><h6>TEMA</h6></div>
+                    <hr class="d-block d-md-none" />
+                </div>
+            </a>
+        </li>
+        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" aria-current="page" href="#">
+
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Cuenta">
+                    <span> <i class="fa-solid fa-user-tie fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>MI CUENTA</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>-->
+    </ul>
+</nav>
+<!--MENU ESTATICO FS-->
+<nav id="sidebarMenustatic" class="col-md-auto d-none d-md-block sidebar collapse">
+    <ul class="nav d-flex flex-column justify-content-center h-100 pt-2">
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" [routerLink]="['/exclusivo']" [routerLinkActive]='["active"]' [routerLinkActiveOptions]="{ exact: true }" aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Home">
+                    <span> <i class="fa-solid fa-house fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>HOME</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" [routerLink]="['/exclusivo/prospecto']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Prospectos">
+                    <span> <i class="fa-solid fa-business-time fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>PROSPECTOS</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>
+        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" aria-current="page" href="#">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Clientes">
+                    <span> <i class="fa-solid fa-users fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>CLIENTES</h6></div>
+                    <hr class="d-block d-sm-none" />
+
+                </div>
+            </a>
+        </li>-->
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" [routerLink]="['/exclusivo/cotiza/0']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Cotizaciones">
+                    <span> <i class="fa-solid fa-file-invoice-dollar fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>COTIZACIONES</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>
+        <li  class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Ajustes">
+                    <span> <i class="fa-solid fa-gears fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>CONFIGURACIÓN</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>
+        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" aria-current="page" href="#">
+
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Cuenta">
+                    <span> <i class="fa-solid fa-user-tie fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>MI CUENTA</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>-->
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <div *ngIf="isDarkTheme" data-bs-toggle="tooltip" data-bs-placement="right" title="Tema claro">
+                <button class="btn" (click)="toggleTheme()"><i class="fa-solid fa-sun fa-2x " style="color: #fff;"></i></button>
+            </div>
+            <div *ngIf="!isDarkTheme" data-bs-toggle="tooltip" data-bs-placement="right" title="Tema oscuro">
+                <button class="btn" (click)="toggleTheme()"><i class="fa-solid fa-moon fa-2x" style="color: #333333;"></i></button>
+            </div>
+        </li>
+    </ul>
+</nav>

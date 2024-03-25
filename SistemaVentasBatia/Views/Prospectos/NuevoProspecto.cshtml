@@ -1,0 +1,70 @@
+﻿@model SistemaVentasBatia.DTOs.ProspectoDTO
+
+@{
+    ViewData["Title"] = "Crear Prospecto";
+}
+
+
+<div class="pt-3 mb-2">
+    <h2>Nuevo Prospecto</h2>
+</div>
+
+<div id="dvCoincidenciasProspectos"></div>
+
+<partial name="_FormNuevoProspecto" model="Model" />
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function() {
+            $("#rowServicio").addClass("d-none");
+
+            $(".validacion-prospecto").change(function () {
+                var campo = this.dataset.campo;
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("ObtenerNumeroCoincidenciasProspecto")',
+                    data: campo == "nombreComercial" ? { nombreComercial: $(this).val() } : { rfc: $(this).val() },
+                    contentType: 'json',
+                    success: function (result) {
+
+                        var selector = campo == "nombreComercial" ? "#sValidacionNombreComercial" : "#sValidacionRfc";
+
+                        var mensaje = campo == "nombreComercial" ? ("Se encontraron " + result + " coincidencias...") :
+                            ("Este RFC ya se encuentra registrado...");
+
+                        if (result > 0) {
+                            $(selector).text(mensaje);
+                        }
+                        else {
+                            $(selector).text("");
+                        }
+                    }
+                });
+            });
+
+            $(".mensaje-validacion-prospecto").click(function () {
+                var mensaje = this.dataset.mensaje;
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("ObtenerCoincidenciasProspecto")',
+                    data: mensaje == "nombreComercial" ? { nombreComercial: $("#NombreComercial").val() } : { rfc: $("#Rfc").val() },
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvCoincidenciasProspectos").html(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalCoincidenciasProspecto'), {});
+
+                        modal.show();                                              
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
+

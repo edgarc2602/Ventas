@@ -1,0 +1,108 @@
+﻿@using SistemaVentasBatia.Enums
+
+@model SistemaVentasBatia.DTOs.ProspectoDTO
+
+<form asp-action="NuevoProspecto" method="post" id="formNuevoProspecto">
+    <div class="row mb-3">
+        <div>
+            <div class="btn-group float-end">
+                <button type="submit" class="btn btn-outline-success" id="btnGuardarProspecto"><icon class="fa-solid fa-save"></icon> Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-4">
+            <div class="form-floating">
+                <input type="text" class="form-control validacion-prospecto" asp-for="NombreComercial" data-campo="nombreComercial">
+                <label asp-for="NombreComercial">Nombre Comercial</label>
+            </div>
+            <span asp-validation-for="NombreComercial" class="text-danger"></span>
+            <span id="sValidacionNombreComercial" class="text-danger mensaje-validacion-prospecto" data-mensaje="nombreComercial" style="cursor:pointer;"></span>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="RazonSocial">
+                <label asp-for="RazonSocial">Razón Social</label>
+            </div>
+            <span asp-validation-for="RazonSocial" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <div class="form-floating">
+                <input type="text" class="form-control validacion-prospecto" asp-for="Rfc" data-campo="rfc">
+                <label asp-for="Rfc">RFC</label>
+            </div>
+            <span asp-validation-for="Rfc" class="text-danger"></span>
+            <span id="sValidacionRfc" class="text-danger mensaje-validacion-prospecto" data-mensaje="rfc" style="cursor:pointer;"></span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-8 col-sm-12">
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="DomicilioFiscal">
+                <label asp-for="DomicilioFiscal">Domicilio Fiscal</label>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="NombreContacto">
+                <label asp-for="NombreContacto">Contacto</label>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4 col-sm-12">
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="EmailContacto">
+                <label asp-for="EmailContacto">Email Contacto</label>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="NumeroContacto">
+                <label asp-for="NumeroContacto">Tel. Contacto</label>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-12">
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="ExtContacto">
+                <label asp-for="ExtContacto">Extensión</label>
+            </div>
+        </div>
+    </div>
+   
+    <br />
+
+    <h5>Documentación</h5>
+    <br />
+
+    <div class="row">
+        @foreach (Documento documento in (Documento[])Enum.GetValues(typeof(Documento)))
+        {
+            <div class="col-sm-6 col-md-3">
+                <div class="form-check">
+                    @*<input class="form-check-input" type="checkbox" asp-for="ListaDocumentos[(int)documento]">*@
+                    <label class="form-check-label">
+                        @documento.ToString()
+                    </label>
+                </div>
+            </div>
+        }
+    </div>
+        
+    <h5>Servicios</h5>
+    <br />
+
+    <div class="row" id="rowServicio">
+        @foreach (Servicio servicio in (Servicio[])Enum.GetValues(typeof(Servicio)))
+        {
+            <div class="col-sm-6 col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="@("ListaServicios[" + (int)servicio + "]")"  value="true">
+                    <label class="form-check-label">
+                        @servicio.ToString()
+                    </label>
+                </div>
+            </div>
+        }
+    </div>
+</form>

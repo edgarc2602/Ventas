@@ -1,0 +1,114 @@
+﻿@model SistemaVentasBatia.DTOs.ListaDireccionDTO
+
+@{
+    ViewData["Title"] = "Directorio";
+}
+<meta charset="UTF-8">
+
+<div class="pt-3 mb-2">
+    <h2>Cotización</h2>
+    <h6 class="text-black-50">Directorio</h6>
+</div>
+
+<br />
+
+<partial name="_TabCotizacion" />
+
+<br />
+
+<form asp-action="AgregarDireccion" method="post">
+    @Html.HiddenFor(x => x.IdCotizacion)
+    <div class="row">
+        <div class="col-sm-12 col-md-8 text-black-50">
+            Seleccionar una dirección existente
+        </div>
+        <div class="col-sm-12 col-md-4 text-black-50">
+            Agregar una nueva dirección
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            <div class="form-floating">
+                <select class="form-select" aria-label="IdTIpoInmueble" asp-for="IdDireccion" asp-items="(List<SelectListItem>)ViewBag.Direcciones">
+                </select>
+                <label asp-for="IdDireccion">Sucursal</label>
+            </div>
+            <span asp-validation-for="IdDireccion" class="text-danger"></span>
+        </div>
+        <div class="col-sm-12 col-md-2">
+            <button type="submit" class="btn btn-outline-success"><icon class="fa-solid fa-plus"></icon> Agregar</button>
+        </div>
+        <div class="col-sm-12 col-md-2 offset-md-2">
+            <div class="btn-group">
+                <a class="btn btn-outline-primary" id="btnAgregarDireccion"><icon class="fa-solid fa-plus"></icon> Nueva Dirección</a>
+            </div>
+        </div>
+    </div>
+</form>
+<br />
+<div class="row">
+    @foreach (var direccion in Model.Direcciones)
+    {
+        <div class="col-sm-12 col-md-6 mb-2">
+            <div class="card">
+                @*
+                <div class="card-header bg-light"><h6>@(direccion.NombreSucursal + " (" + direccion.TipoInmueble + ")")</h6></div>
+                *@
+                <div class="card-body">
+                    <div class="d-flex bd-highlight mb-3">
+                        <div class="bd-highlight">
+                            @direccion.DomicilioCompleto
+                        </div>
+                        <div class="ms-auto bd-highlight">
+                            <a class="btn btn-sm text-danger mb-1 btnEliminarDireccionCotizacion" data-bs-toggle="tooltip" title="Eliminar" data-direccioncotizacion="@direccion.IdDireccionCotizacion">
+                                <icon class="fa-solid fa-times fa-2x"></icon>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div id="dvAgregarDireccion"></div>
+
+<partial name="_ModalEliminarRegistro" />
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#btnAgregarDireccion").click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("AgregarDireccion", new { id = Model.IdCotizacion })',
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvAgregarDireccion").append(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalAgregarDireccion'), {});
+
+                        modal.show();
+                    }
+                });
+            });
+
+            $(".btnEliminarDireccionCotizacion").click(function () {
+
+                $("#modalEliminarRegistro").find('.modal-title').text("Quitar dirección");
+
+                $("#modalEliminarRegistro").find('.modal-body').text("¿Está seguro de que desea quitar esta dirección de la cotización?");
+
+                $("#formEliminarRegistro").attr("action", "/Cotizaciones/EliminarDireccionCotizacion/");
+
+                $("#registroAEliminar").val(this.dataset.direccioncotizacion);
+
+                var modal = new bootstrap.Modal(document.getElementById('modalEliminarRegistro'), {});
+
+                modal.show();
+            });
+        });
+    </script>
+}

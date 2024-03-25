@@ -1,0 +1,21 @@
+<ex-menu></ex-menu>
+<div class="container-fluid">
+    <div class="row">
+        <lat-menu></lat-menu>
+        <div class="col-md-9 col-lg-10 px-md-4 mx-auto">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>
+<footer class="border-top footer text-muted box-shadow">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-md-4">
+                &copy; 2022 - Grupo Batia - <a asp-action="Privacy">Privacy</a>
+            </div>
+            <div class="col-6 col-md-8 text-end">
+                <button type="button" class="btn btn-outline-primary text-end" (click)="goBack()">Volver</button>
+            </div>
+        </div>
+    </div>
+</footer>

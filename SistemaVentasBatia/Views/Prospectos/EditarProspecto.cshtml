@@ -1,0 +1,28 @@
+﻿@model SistemaVentasBatia.DTOs.ProspectoDTO
+
+@{
+    ViewData["Title"] = "Editar Prospecto";
+}
+
+
+<div class="pt-3 mb-2">
+    <h2>Prospecto</h2>
+    <h6 class="text-black-50">Editar</h6>
+</div>
+
+<br />
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" asp-action="Editar" asp-route-id="@Model.IdProspecto">General</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-action="Directorio" asp-route-id="@Model.IdProspecto">Directorio</a>
+    </li>    
+</ul>
+
+<br />
+
+<partial name="_FormEditarProspecto" model="Model" />
+
+

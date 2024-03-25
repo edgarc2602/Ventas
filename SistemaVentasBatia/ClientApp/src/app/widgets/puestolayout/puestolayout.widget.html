@@ -1,0 +1,239 @@
+﻿<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="modal fade" id="modalPuestoLayout" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Información para layout</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3 col-12">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table table-borderless table-responsive table-striped">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-9">Puesto</td>
+                                                <td class="col-md-3">Id Puesto</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let p of pues">
+                                                <td>
+                                                    <div class="col-md-9">
+                                                        <div>{{p.descripcion}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-3">
+                                                        <div>{{p.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-8">Jornada</td>
+                                                <td class="col-md-4">Id Jornada</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let j of ljor">
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <div>{{j.descripcion}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-4">
+                                                        <div>{{j.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td>Turno</td>
+                                                <td>Id Turno</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let t of turs">
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <div>{{t.descripcion}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-4">
+                                                        <div>{{t.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-6">Zona</td>
+                                                <td class="col-md-6">Id Zona</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let t of tabs">
+                                                <td>
+                                                    <div class="col-md-6">
+                                                        <div>{{t.descripcion}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-6">
+                                                        <div>{{t.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-8">Clase</td>
+                                                <td class="col-md-4">Id Clase</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let c of lclas">
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <div>{{c.descripcion}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-4">
+                                                        <div>{{c.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-8">Hora</td>
+                                                <td class="col-md-4">Id Hora</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let h of hors">
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <div>{{h}} hora(s)</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-4">
+                                                        <div>{{h}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-8">Dia</td>
+                                                <td class="col-md-4">Id Dia</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let d of dias">
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <div>{{d.nom}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-4">
+                                                        <div>{{d.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-8">Tipo Inmueble</td>
+                                                <td class="col-md-4">Id Tipo</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let t of tips">
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <div>{{t.descripcion}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-4">
+                                                        <div>{{t.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="validaMess"></toast-widget>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>

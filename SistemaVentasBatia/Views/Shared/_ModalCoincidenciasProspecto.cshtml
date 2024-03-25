@@ -1,0 +1,65 @@
+﻿@model List<SistemaVentasBatia.DTOs.ProspectoDTO>
+
+
+<div class="modal fade" id="modalCoincidenciasProspecto">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Coincidencias de Prospecto</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row" style="border-radius: 10px; overflow-x: hidden;">
+                    <table class="table table-borderless table-striped table-responsive" id="tabProspectosNc">
+                        <thead>
+                            <tr class="bg-primary bg-opacity-75 text-white">
+                                <th class="ps-2">Lista de prospectos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var prospecto in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="row pb-2">
+                                            <div class="col-md-1 col-sm-6">
+                                                <span class="badge text-dark">ID:</span>
+                                                <div class="ms-2">@prospecto.IdProspecto</div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-6">
+                                                <span class="badge text-dark">Nombre Comercial:</span>
+                                                <div class="ms-2">@prospecto.NombreComercial</div>
+                                            </div>
+                                            <div class="col-md-3 col-sm-6">
+                                                <span class="badge  text-dark">RFC:</span>
+                                                <div class="ms-2">@prospecto.Rfc</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6">
+                                                <span class="badge  text-dark">Fecha Alta:</span>
+                                                <div class="ms-2">@prospecto.FechaAlta.ToString("dd/MM/yyyy")</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+
+                    
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

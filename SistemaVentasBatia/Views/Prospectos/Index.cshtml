@@ -1,0 +1,134 @@
+﻿@using SistemaVentasBatia.Enums
+@model SistemaVentasBatia.DTOs.ListaProspectoDTO
+
+@{
+    ViewData["Title"] = "Prospectos";
+}
+
+<meta charset="UTF-8">
+
+
+<div class="pt-3 mb-2">
+    <h1 class="h2">Prospectos</h1>
+</div>
+<div class="row mb-3">
+    <div>
+        <div class="btn-group float-end">
+            <a asp-action="NuevoProspecto" class="btn btn-outline-primary"><icon class="fa-solid fa-plus"></icon> Nuevo Prospecto</a>
+        </div>
+    </div>
+</div>
+<form asp-action="Buscar">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" asp-for="Keywords" placeholder="Escriba un nombre">
+                <label asp-for="Keywords">Nombre Comercial</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" asp-for="IdEstatusProspecto" aria-label="IdEstatusProspecto" asp-items="Html.GetEnumSelectList<EstatusProspecto>()">
+                </select>
+                <label for="ddlStatus">Estatus:</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-primary"><icon class="fa-solid fa-search"></icon> Buscar</button>
+        </div>
+    </div>
+</form>
+
+
+<div class="row" style="border-radius: 10px; overflow-x: hidden;">
+    <table class="table table-borderless table-striped table-responsive">
+        <thead>
+            <tr class="bg-primary bg-opacity-75 text-white">
+                <th class="ps-2">Lista de prospectos</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prospecto in Model.Prospectos)
+            {
+                <tr>
+                    <td>
+                        <div class="row pb-2">
+                            <div class="col-6 col-sm-3">
+                                <span class="badge text-dark">Nombre Comercial:</span>
+                                <div class="ms-2">@prospecto.NombreComercial</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge  text-dark">Razón Social:</span>
+                                <div class="ms-2">@prospecto.RazonSocial</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge  text-dark">RFC:</span>
+                                <div class="ms-2">@prospecto.Rfc</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge  text-dark">Representante Legal:</span>
+                                <div class="ms-2">@prospecto.RepresentanteLegal</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge  text-dark">Domicilio Fiscal:</span>
+                                <div class="ms-2">@prospecto.DomicilioFiscal</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge  text-dark">Teléfono:</span>
+                                <div class="ms-2">@prospecto.Telefono</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge  text-dark">Fecha Alta:</span>
+                                <div class="ms-2">@prospecto.FechaAlta.ToString("dd/MM/yyyy")</div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="badge  text-dark">Usuario Alta:</span>
+                                <div class="ms-2">Jorge Alberto Martínez Moreno</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class=" align-middle w-auto">
+
+                        <a class="btn btn-sm text-primary mb-1" asp-action="EditarProspecto" asp-controller="Prospectos" asp-route-id="@prospecto.IdProspecto" data-bs-toggle="tooltip" title="Editar">
+                            <icon class="fa-solid fa-pencil fa-2x"></icon>
+                        </a>
+                        <form method="post" asp-controller="Cotizaciones" asp-action="Buscar">
+                            <input type="hidden" name="IdProspecto" value="@prospecto.IdProspecto" />
+                            <button type="submit" class="btn btn-sm text-success mb-1" data-bs-toggle="tooltip" title="Cotizaciones">
+                                <icon class="fa-solid fa-file-invoice-dollar fa-2x"></icon>
+                            </button>
+                        </form>
+                        <a class="btn btn-sm text-danger mb-1 btnEliminarProspecto" data-bs-toggle="tooltip" title="Inactivar" data-prospecto="@prospecto.IdProspecto">
+                            <icon class="fa-solid fa-times fa-2x"></icon>
+                        </a>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+    <partial name="_Paginador" model="@(new SistemaVentasBatia.DTOs.PaginadorViewModel{ Controlador="Prospectos", Action="Index" , Pagina = Model.Pagina, Rows = Model.Rows, NumPaginas = Model.NumPaginas })" />
+</div>
+
+
+<partial name="_ModalEliminarRegistro" />
+
+@section Scripts{
+    <script>
+        $(".btnEliminarProspecto").click(function () {
+
+            $("#modalEliminarRegistro").find('.modal-title').text("Eliminar prospecto");
+
+            $("#modalEliminarRegistro").find('.modal-body').text("¿Está seguro de que desea inactivar el prospecto?");
+
+            $("#formEliminarRegistro").attr("action", "Prospectos/EliminarProspecto/");
+
+            $("#registroAEliminar").val(this.dataset.prospecto);
+
+            var modal = new bootstrap.Modal(document.getElementById('modalEliminarRegistro'), {});
+
+            modal.show();
+        });
+    </script>
+}

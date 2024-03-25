@@ -1,0 +1,53 @@
+﻿@using SistemaVentasBatia.Enums
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    @if (TempData["DescripcionAlerta"] != null && TempData["IdTipoAlerta"] != null)
+    {
+        switch ((TipoAlerta)TempData["IdTipoAlerta"])
+        {
+            case TipoAlerta.Exito:
+                <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["DescripcionAlerta"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                break;
+            case TipoAlerta.Error:
+                <div id="liveToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["DescripcionAlerta"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                break;
+            case TipoAlerta.Aviso:
+                <div id="liveToast" class="toast align-items-center text-white bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["DescripcionAlerta"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                break;
+            case TipoAlerta.Info:
+                <div id="liveToast" class="toast align-items-center text-white bg-secondary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["DescripcionAlerta"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                break;
+        }
+    }
+
+
+</div>
+

@@ -1,0 +1,23 @@
+<header class="sticky-container">
+    <nav class="navbar navbar-expand-lg sticky-top flex-md-nowrap p-xl-0 shadow-sm">
+        <div class="container-fluid">
+            <div class="d-none d-md-block">
+                <a>
+                    <img src="images/batia_logo.png" style="width:45%; height:90%;" />
+                </a>
+            </div>
+            <div class="navbar w-100" style="height:60px; background-color:transparent; backdrop-filter: none">
+                <div>
+                    <button class=" d-md-none collapsed btn" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation" (click)="button()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+                <div class="float-right">
+                    Bienvenido(a), {{ user.nombre }}
+                    <button type="button" (click)="logout()" class="btn btn-outline-warning mx-1">Salir</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>   
+  

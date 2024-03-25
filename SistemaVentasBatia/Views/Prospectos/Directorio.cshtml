@@ -1,0 +1,119 @@
+﻿@model SistemaVentasBatia.DTOs.ListaDireccionDTO
+
+@{
+    ViewData["Title"] = "Directorio Prospecto";
+}
+
+
+<div class="pt-3 mb-2">
+    <h2>Prospecto</h2>
+    <h6 class="text-black-50">Directorio</h6>
+
+</div>
+
+<br />
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page" asp-action="Editar" asp-route-id="@Model.IdProspecto">General</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" asp-action="Directorio" asp-route-id="@Model.IdProspecto">Directorio</a>
+    </li>
+</ul>
+
+<br />
+
+<div class="row mb-3">
+    <div>
+        <div class="btn-group float-end">
+            <a class="btn btn-outline-primary" id="btnAgregarDireccion"><icon class="fa-solid fa-plus"></icon> Nueva Dirección</a>
+        </div>
+    </div>
+</div>
+
+<br />
+
+@Html.HiddenFor(x => x.IdProspecto)
+
+<div class="row">
+    @foreach (var direccion in Model.Direcciones)
+    {
+        <div class="col-sm-12 col-md-6 mb-2">
+            <div class="card">
+                @*
+                <div class="card-header bg-light"><h6>@(direccion.NombreSucursal + " (" + direccion.TipoInmueble + ")")</h6></div>
+                *@
+                <div class="card-body">
+                    <div class="d-flex bd-highlight mb-3">
+                        <div class="bd-highlight">
+                            @direccion.DomicilioCompleto
+                        </div>
+                        <div class="ms-auto bd-highlight">
+                            <a class="btn btn-sm text-primary mb-1 btnEditarDireccion" data-bs-toggle="tooltip" title="Editar" data-direccion="@direccion.IdDireccion">
+                                <icon class="fa-solid fa-pencil fa-2x"></icon>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+<div id="dvAgregarDireccion"></div>
+<div id="dvEditarDireccion"></div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $("#btnAgregarDireccion").click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("AgregarDireccion")',
+                    data: { id: $("#IdProspecto").val() },
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvAgregarDireccion").append(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalAgregarDireccion'), {});
+
+                        modal.show();
+                    }
+                });
+            });
+
+            $(".btnEditarDireccion").click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("EditarDireccion")',
+                    data: { id: this.dataset.direccion, idProspecto: $("#IdProspecto").val()},
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvEditarDireccion").append(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalEditarDireccion'), {});
+
+                        modal.show();
+                    }
+                });
+            });           
+        });
+
+        $(document).on('click', '#btnActualizarDireccion', function () {
+            var form = $('#formEditarDireccion');
+
+            $.validator.unobtrusive.parse(form);
+
+            var validate = form.validate().form();
+
+            if (validate) {
+                form.submit();
+            }
+
+        });
+    </script>
+}

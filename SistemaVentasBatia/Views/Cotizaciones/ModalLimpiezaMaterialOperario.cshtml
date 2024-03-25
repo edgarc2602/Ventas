@@ -1,0 +1,84 @@
+﻿@model SistemaVentasBatia.DTOs.ListaMaterialesCotizacionLimpiezaDTO
+<meta charset="UTF-8">
+<div class="modal fade" id="modalLimpiezaMaterialOperario">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Material</h4>
+                @*
+                <h6 class="modal-title text-black-50 ms-2 mt-1"> @Model.NombreSucursal - @Model.DescripcionPuesto</h6>
+                *@
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div>
+                        <div class="float-end">
+                            <a id="btnAgregarMaterial" class="btn btn-outline-primary" data-operario="@Model.IdPuestoDireccionCotizacion"><icon class="fa-solid fa-plus"></icon> Agregar Material</a>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-radius: 10px; overflow-x: hidden;">
+                    <table class="table table-borderless table-striped table-responsive">
+                        <tbody>
+                            @foreach (var material in Model.MaterialesCotizacion)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="row pb-2">
+                                            <div class="col-6 col-sm-2">
+                                                <span class="badge text-dark">Clave:</span>
+                                                <div class="ms-2">@material.ClaveProducto</div>
+                                            </div>
+                                            <div class="col-6 col-sm-4">
+                                                <span class="badge text-dark">Descripción:</span>
+                                                @*<div class="ms-2">@material.DescripcionMaterial</div>*@
+                                            </div>
+                                            <div class="col-6 col-sm-1">
+                                                <span class="badge text-dark">Precio:</span>
+                                                <div class="ms-2">@material.PrecioUnitario.ToString("c2")</div>
+                                            </div>
+                                            <div class="col-6 col-sm-1">
+                                                <span class="badge text-dark">Cantidad:</span>
+                                                <div class="ms-2">@material.Cantidad</div>
+                                            </div>
+                                            <div class="col-6 col-sm-2">
+                                                <span class="badge text-dark">Frecuencia:</span>
+                                                <div class="ms-2">@material.IdFrecuencia.ToString()</div>
+                                            </div>
+                                            <div class="col-6 col-sm-2">
+                                                <span class="badge text-dark">Total:</span>
+                                                <div class="ms-2">@material.Total.ToString("c2")</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle w-auto">
+                                        <div class="float-end">
+                                            <a class="btn btn-sm text-primary mb-1 btnEditarMaterialOperario" data-bs-toggle="tooltip" title="Editar" data-material="@material.IdMaterialCotizacion">
+                                                <icon class="fa-solid fa-pencil fa-2x"></icon>
+                                            </a>
+                                            <a class="btn btn-sm text-danger mb-1 btnEliminarMaterialOperario" data-bs-toggle="tooltip" title="Descartar" data-material="@material.IdMaterialCotizacion">
+                                                <icon class="fa-solid fa-times fa-2x"></icon>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+

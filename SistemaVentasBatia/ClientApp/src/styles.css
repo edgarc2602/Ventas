@@ -1,0 +1,978 @@
+﻿@import "~@fortawesome/fontawesome-free/css/all.css";
+
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 0px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+/* Dashboard CSS
+-------------------------------------------------- */
+
+.feather {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+}
+
+/* Sidebar
+-------------------------------------------------- */
+.sidebar {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 101;
+    padding: 100px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+    }
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+    .sidebar .nav-link .feather {
+        margin-right: 4px;
+        color: #727272;
+    }
+
+    .sidebar .nav-link.active {
+        color: #2470dc;
+    }
+
+        .sidebar .nav-link:hover .feather,
+        .sidebar .nav-link.active .feather {
+            color: inherit;
+        }
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+/* Navbar
+-------------------------------------------------- */
+.navbar {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: rgba(248, 249, 250, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+.form-control-dark {
+    color: #fff;
+    background-color: rgba(255, 255, 255, .1);
+    border-color: rgba(255, 255, 255, .1);
+}
+
+    .form-control-dark:focus {
+        border-color: transparent;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+    }
+
+/* Logo
+-------------------------------------------------- */
+/*
+.logo {
+    height: 50px;
+    font-size: 20px;
+    line-height: 50px;
+    text-align: center;
+    width: 230px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    padding: 0 15px;
+    font-weight: 300;
+    overflow: hidden;
+    color: #fff;
+}
+*/
+.logo .logo-lg {
+    color: black;
+    display: block
+}
+
+.btn-bottom-right {
+    position: absolute;
+    bottom: 80px;
+    right: 30px;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+
+thead.sticky-top {
+    z-index: 99;
+}
+
+/*td, th {
+    vertical-align: middle;
+}*/
+
+align-middle {
+    vertical-align: middle;
+}
+
+@keyframes blurAnimation {
+    0% {
+        backdrop-filter: blur(0);
+    }
+
+    100% {
+        backdrop-filter: blur(5px);
+    }
+}
+
+.form-control {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: box-shadow 0.3s ease;
+}
+
+    .form-control:focus {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        border-color: #999;
+    }
+
+.form-select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: box-shadow 0.3s ease;
+}
+
+    .form-select:focus {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        border-color: #999;
+    }
+
+tbody tr:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.3s ease;
+    background-color: #E2FFFE;
+}
+
+.nav-link {
+    border: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+    .nav-link:active {
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        transform: translateY(3px);
+    }
+
+.btn:active,
+.btn:focus {
+    box-shadow: none !important;
+}
+
+.btn.page-link {
+    user-select: none;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+    .btn:hover {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(3px);
+        box-shadow: none;
+    }
+
+.custom-input:disabled {
+    border: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.sticky-container {
+    position: sticky;
+    top: 0;
+    background-color: transparent;
+    z-index: 102;
+}
+
+.translucent {
+    backdrop-filter: blur(10px);
+    background-color: rgba(248, 249, 250, 0.7);
+}
+
+#sidebarMenustatic {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: rgba(248, 249, 250, 0.8);
+    backdrop-filter: blur(2px);
+    color: black
+}
+
+#sidebarMenu {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: rgba(248, 249, 250, 0.8);
+    backdrop-filter: blur(2px);
+    color: black
+}
+
+.modal-header {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.modal-body {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: #fff;
+}
+
+.modal-footer {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+table thead {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: #4a92fe;
+    color: #fff;
+}
+
+/*.card {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    color: black;
+}
+
+.card-body {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    color: black;
+}
+
+.card-title {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    color: black;
+}*/
+
+body {
+    margin-bottom: 60px;
+    font-size: .875rem;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    background-color: var(--background-light);
+    color: var(--text-color-light);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+}
+
+/*body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('../logo_fondo.png');
+        background-repeat: no-repeat;
+        opacity: 0.1;
+        z-index: -1;
+        pointer-events: none;
+        background-position: bottom right;
+    }*/
+
+
+
+
+
+.select {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+
+.form-select {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+
+input[type="number"] {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+input[type="date"] {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.badge {
+    color: black;
+}
+
+.highcharts-container {
+    background-color: #fff;
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+}
+
+.highcharts-background {
+    fill: #fff;
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease, fill 0.3s ease;
+}
+
+.highcharts-plot-background {
+    fill: #fff;
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease, fill 0.3s ease;
+}
+
+.highcharts-data-labels text {
+    fill: black; /* Cambia el color del texto aquí */
+    color: black;
+}
+
+
+.custom-textarea {
+    background-color: #FFFF;
+    color: black;
+    height: 3em;
+}
+
+
+/* Login Css
+-------------------------------------------------- */
+.login-card {
+    background-color: rgba(255, 255, 255, 0.00);
+}
+
+.input {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid black;
+}
+
+.my-input-class {
+    color: black;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.bodycss {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 0px;
+    border-bottom: 0px;
+    background-image: url('../src/FondoSinga3.png');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 95vh;
+}
+
+.card {
+    border: none;
+}
+
+.card-headercss, .card-bodycss, .card-footercss {
+    color: black;
+    background: none;
+    background-color: none;
+    border: none;
+}
+
+.col-mid {
+    flex: 0 0 9.166%;
+    max-width: 6.166%;
+}
+
+::placeholder,
+::-webkit-input-placeholder {
+    color: rgba(0, 0, 0, 0.2);
+}
+
+input:focus::placeholder,
+input:focus::-webkit-input-placeholder {
+    color: rgba(0, 0, 0, 0.2);
+}
+
+.selected {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.3s ease;
+    background-color: #E2FFFE;
+}
+
+.fade-in-container {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.fade-in-container {
+    opacity: 0;
+    transition: opacity 0.5s ease; /* Transición de opacidad durante 0.5 segundos */
+}
+
+    .fade-in-container.ng-enter {
+        animation: fadeIn 0.5s ease; /* Animación de desvanecimiento al aparecer */
+    }
+
+    .fade-in-container.ng-leave {
+        opacity: 1; /* Asegura que el elemento esté completamente visible mientras se va */
+    }
+
+    .fade-in-container.ng-leave-active {
+        opacity: 0; /* Durante la transición, la opacidad disminuirá gradualmente a 0 */
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-dialog {
+    transition: all 0.9s ease; /* Transición suave para todas las propiedades con duración de 0.3 segundos */
+}
+.toggle-btn {
+    width: 60px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: #ccc;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .toggle-btn.active {
+        background-color: #4a92fe;
+        color: white;
+    }
+.nav-tabs .nav-link.active {
+    color: black;
+    box-shadow: 0px -8px 10px rgba(0, 0, 0, 0.05);
+}
+.plantilla {
+    background-color: rgba(0, 123, 255, 0.75);
+}
+
+/*.modal.show::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    backdrop-filter: blur(5px);
+    animation: blurAnimation 0.8s;
+    z-index: -1;
+}
+
+@keyframes blurAnimation {
+    0% {
+        backdrop-filter: blur(0);
+    }
+
+    100% {
+        backdrop-filter: blur(5px);*/ /* Establece el valor final de desenfoque */
+    /*}
+}*/
+
+
+/* Tema obscuro
+-------------------------------------------------- */
+.dark-theme {
+    --background-light: #282424;
+    --text-color-light: #ffffff;
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, fill 0.3s ease, backdrop-filter 0.3s ease,
+}
+    .dark-theme .plantilla {
+        background-color: rgba(21, 21, 21, 0.8);
+        border-color: black;
+    }
+    /* Contenedor */
+    .dark-theme .nav-tabs {
+        color: #FFF;
+        border: none;
+    }
+
+        /* Todos los taps*/
+        .dark-theme .nav-tabs .nav-link {
+            color: #FFF;
+            border: none;
+        }
+
+            /* Tab activo*/
+            .dark-theme .nav-tabs .nav-link.active {
+                background-color: #282424;
+                color: #FFF;
+                border: none;
+                box-shadow: 0px -8px 10px rgb(255, 255, 255, 0.05);
+            }
+
+    .dark-theme .custom-textarea {
+        background-color: rgba(56, 52, 52, 0.5);
+        color: #FFF;
+        border-color: #383434;
+    }
+
+    .dark-theme .form-select {
+        background-color: rgba(56, 52, 52, 0.5);
+        color: #fff;
+        backdrop-filter: blur(5px);
+    }
+
+    .dark-theme .badge {
+        color: #fff;
+    }
+    .dark-theme .accordion-item {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+    .dark-theme .accordion-collapse {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+    .dark-theme .accordion-header {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+
+
+
+
+
+
+
+    .dark-theme .accordion-button:active {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+    .dark-theme .accordion-button::selection {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+
+    .dark-theme .accordion-body {
+        background-color: #282424;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+
+    .dark-theme .accordion-button {
+        background-color: #383434;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+
+    
+
+    .dark-theme input {
+        background-color: rgba(56, 52, 52, 0.5);
+        color: #fff;
+        border-color: #383434;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+        .dark-theme input:focus {
+            color: #fff;
+            background-color: #383434;
+        }
+        .dark-theme input:disabled {
+            color: #fff;
+            background-color: #383434;
+        }
+
+    .dark-theme select {
+        background-color: #383434;
+        color: #fff;
+        border-color: #383434;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+        .dark-theme select:focus {
+            background-color: #383434;
+            transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        }
+
+    .dark-theme table tbody tr td {
+        border: none;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme table.table-striped tbody tr:nth-of-type(odd) td {
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme table.table-striped tbody tr:nth-of-type(even) td {
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .sidebar {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        backdrop-filter: blur(2px);
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .dark-theme #sidebarMenu {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        backdrop-filter: blur(2px);
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme #sidebarMenustatic {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        backdrop-filter: blur(2px);
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme #gla {
+        background-color: #383434;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .page-item .btn {
+        background-color: #282424;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme table thead {
+        background-color: #151515;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme tbody tr:hover {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.3s ease;
+        background-color: #383434;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme tbody tr:focus {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.3s ease;
+        background-color: #383434;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .box-shadow {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .highcharts-container {
+        background-color: #282424;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .highcharts-background {
+        fill: #282424;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease, fill 0.3s ease;
+    }
+
+    .dark-theme .highcharts-plot-background {
+        fill: #282424;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease, fill 0.3s ease;
+    }
+
+    .dark-theme .highcharts-data-labels text {
+        fill: white; /* Cambia el color del texto aquí */
+        color: white
+    }
+
+
+    .dark-theme #accordion {
+        background-color: #383434;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .card-header {
+        background-color: #383434;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .nav-link.active {
+        color: #2470dc;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .navbar {
+        background-color: rgba(21, 21, 21, 0.8);
+        color: #fff;
+        border-color: #383434;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+        .dark-theme .navbar i {
+            color: #fff;
+            transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        }
+
+    .dark-theme .modal-header {
+        background-color: #383434;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+
+    .dark-theme .modal-body {
+        background-color: #282424;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+
+    .dark-theme .modal-footer {
+        background-color: #383434;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+
+    .dark-theme .card {
+        background-color: #383434;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .card-body {
+        background-color: #383434;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .card-title {
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme ::-webkit-scrollbar {
+        width: 16px;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme ::-webkit-scrollbar-track {
+        background: #383434;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme ::-webkit-scrollbar-thumb {
+        background: #888;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+    .dark-theme .btn {
+        padding: 10px 20px;
+        border: none;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+        .dark-theme .btn:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .dark-theme .btn:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+
+    .dark-theme .page-link {
+        background-color: #282424;
+        border-color: #282424;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    }
+
+        .dark-theme .page-link:hover {
+            color: #f0f0f0;
+            transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        }
+
+    .dark-theme .login-card {
+        background-color: rgba(255, 255, 255, 0.00);
+    }
+
+    .dark-theme .card-headercss, .card-bodycss, .card-footercss {
+        color: black;
+        background: none;
+        background-color: none;
+        border: none;
+    }
+
+    .dark-theme .my-input-class {
+        color: black;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .dark-theme .logo .logo-lg {
+        color: #fff;
+        display: block
+    }
+
+    .dark-theme .sidebar .nav-link {
+        font-weight: 500;
+        color: #fff;
+    }
+
+        .dark-theme .sidebar .nav-link .feather {
+            margin-right: 4px;
+            color: #fff;
+        }
+
+        .dark-theme .sidebar .nav-link.active {
+            color: #2470dc;
+        }
+
+        .dark-theme .sidebar .nav-link:hover .feather,
+        .sidebar .nav-link.active .feather {
+            color: inherit;
+        }
+
+
+    .dark-theme .selected {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.3s ease;
+        background-color: #282424;
+    }
+
+.loading-bar {
+    position: relative;
+    display: inline-block;
+}
+
+.progress {
+    bottom: -4px;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background-color: #0d6efd;
+    transform-origin: left center;
+    animation: fillProgress 0.5s linear forwards;
+}
+
+.progressmodal {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background-color: #0d6efd;
+    transform-origin: left center;
+    animation: fillProgress 1.2s linear forwards;
+}
+
+
+
+@keyframes fillProgress {
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}

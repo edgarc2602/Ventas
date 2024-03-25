@@ -1,0 +1,19 @@
+﻿@model SistemaVentasBatia.DTOs.ProspectoDTO
+
+@{
+    ViewData["Title"] = "Info Prospecto";
+}
+
+<meta charset="UTF-8">
+<div class="pt-3 mb-2 ">  
+    <h2 >Cotización</h2>
+    <h6 class="text-black-50">Prospecto</h6>
+</div>
+
+<br />
+
+<partial name="_TabCotizacion"/>
+
+<br />
+
+<partial name="_FormEditarProspecto" model="Model" />

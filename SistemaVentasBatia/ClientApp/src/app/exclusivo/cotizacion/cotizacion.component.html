@@ -1,0 +1,142 @@
+<div [@fadeInOut]>
+    <br />
+    <div class="row pt-1 mb-3">
+        <div>
+            <h1 class="h2">Cotizaciones</h1>
+        </div>
+    </div>
+    <div>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <div class="form-floating">
+                    <select class="form-select" asp-for="IdProspecto" [(ngModel)]="lcots.idProspecto" (change)="busca()" id="ddlProspecto">
+                        <option value="0">Selecciona una opción...</option>
+                        <option *ngFor="let p of lpros" [ngValue]="p.idProspecto">{{ p.nombreComercial }}</option>
+                    </select>
+                    <label for="ddlProspecto">Prospecto</label>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="form-floating">
+                    <select class="form-select" [(ngModel)]="lcots.idServicio" (change)="busca()" id="ddlServicio">
+                        <option value="0">Selecciona una opción...</option>
+                        <option *ngFor="let s of lsers" [ngValue]="s.id">{{ s.nom }}</option>
+                    </select>
+                    <label for="ddlServicio">Servicio</label>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="form-floating">
+                    <select class="form-select" [(ngModel)]="lcots.idEstatusCotizacion" (change)="busca()" id="ddlEstatus">
+                        <option value="0">Selecciona una opción...</option>
+                        <option *ngFor="let e of lests" [ngValue]="e.id">{{ e.nom }}</option>
+                    </select>
+                    <label for="ddlEstatus">Estatus</label>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3 text-end">
+                <a [routerLink]="['/exclusivo/nuevocot']" class="btn btn-outline-primary"><i class="fa-solid fa-plus"></i> Nueva Cotización</a>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="isLoading || (lcots.cotizaciones && lcots.cotizaciones.length === 0)" class="row-12 text-center">
+        <hr />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <h6 *ngIf="isLoading">Cargando...</h6>
+        <h6 *ngIf="!isLoading && lcots.cotizaciones && lcots.cotizaciones.length === 0">No se encontraron registros</h6>
+    </div>
+    <div *ngIf="isLoading" class="text-center ">
+        <i class="fas fa-spinner fa-spin fa-3x"></i>
+    </div>
+    <div *ngIf="lcots.cotizaciones && lcots.cotizaciones.length > 0" class="row fade-in-container" style="border-radius: 10px; overflow-x: hidden;">
+        <table class="table table-borderless table-striped table-responsive">
+            <thead class="sticky-top">
+                <tr class="d-md-none">
+                    <th class="ps-2 text-start">Lista de cotizaciones</th>
+                    <th></th>
+                </tr>
+                <tr class="d-none d-md-table-row">
+                    <th>
+                        <div class="row d-flex align-items-center">
+                            <div class="col-md-1 col-sm-6 col-1">
+                                <span class="ms-2">Id</span>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-5">
+                                <span class="ms-2">Prospecto</span>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-3">
+                                <span class="ms-2">Servicio</span>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-2">
+                                <span class="ms-2">Total</span>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-6">
+                                <span class="ms-2">Fecha Alta</span>
+                            </div>
+                            <div *ngIf="autorizacion === 1" class="col-md-2 col-sm-6 col-6">
+                                <span class="ms-2">Usuario Alta</span>
+                            </div>
+                        </div>
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cot of lcots.cotizaciones">
+                    <td>
+                        <div class="row d-flex align-items-center">
+                            <div class="col-md-1 col-sm-6 col-2">
+                                <span class="badge d-md-none">Id:</span>
+                                <div class="ms-2">{{ cot.idCotizacion }}</div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-5">
+                                <span class="badge d-md-none">Prospecto:</span>
+                                <div class="ms-2">{{ cot.nombreComercial }}</div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-5">
+                                <span class="badge d-md-none">Servicio:</span>
+                                <div class="ms-2 ">{{ cot.servicio }}</div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-3 ">
+                                <span class="badge d-md-none">Total:</span>
+                                <div class="ms-2">${{cot.total | number: '1.2'}}</div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-4 ">
+                                <span class="badge d-md-none">Fecha Alta:</span>
+                                <div class="ms-2">{{ cot.fechaAlta | date: 'dd-MM-yyyy' }}</div>
+                            </div>
+                            <div *ngIf="autorizacion === 1" class="col-md-2 col-sm-6 col-5">
+                                <span class="badge d-md-none">Usuario Alta:</span>
+                                <div class="ms-2 small"> {{  cot.idAlta }}  </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-outline-primary" [routerLink]="['/exclusivo/resumen/' + cot.idCotizacion]" data-bs-toggle="tooltip" title="Detalle">
+                            <i class="fa-solid fa-search-dollar fa-2x"></i>
+                        </button>
+                        <a *ngIf="cot.total == 0" class="btn btn-sm btn-outline-success" (click)="editar(cot.idCotizacion, cot.nombreComercial,cot.servicio)" data-bs-toggle="tooltip" title="Editar">
+                            <i class="fa-solid fa-pencil fa-2x"></i>
+                        </a>
+                        <a *ngIf="cot.total !== 0" class="btn btn-sm text-white" data-bs-toggle="tooltip" title="Editar" disabled>
+                            <i class="fa-solid fa-pencil fa-2x" style="color: #ccc;"></i>
+                        </a>
+                        <button id="statusButton" (click)="chgEstatus(cot.idCotizacion, cot.idEstatusCotizacion)" class="toggle-btn {{ cot.idEstatusCotizacion === 1 ? 'active' : '' }}">
+                            {{ cot.idEstatusCotizacion === 1 ? 'Activa' : 'Inactiva' }}
+                        </button>
+                        <button *ngIf="cot.idEstatusCotizacion == 3" type="button" (click)="elige(cot.idCotizacion)" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar">
+                            <i class="fa-solid fa-times fa-2x"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <pagina-widget [pagina]="lcots.pagina" [numPaginas]="lcots.numPaginas" [rows]="lcots.rows" (chgEvent)="muevePagina($event)"></pagina-widget>
+    </div>
+</div>
+<elimina-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></elimina-widget>
+<editcot-widget (ansEvent)="elimina($event)"></editcot-widget>

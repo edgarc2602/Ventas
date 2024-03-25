@@ -1,0 +1,204 @@
+﻿<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="modal fade" id="modalAgregarOperario" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Agregar puesto</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-12 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdPuesto" [(ngModel)]="model.idPuesto" (change)="chgSalariodos()" id="ddlPuesto">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let p of pues" [ngValue]="p.id">{{ p.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlPuesto">Puesto</label>
+                                </div>
+                                <span *ngIf="ferr('IdPuesto')" class="text-danger">{{ terr('IdPuesto') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 col-6  mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdTurno" [(ngModel)]="model.idTurno" (change)="chgSalariodos()" id="ddlTurnoPuesto">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let t of turs" [ngValue]="t.id">{{ t.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlTurnoPuesto">Turno</label>
+                                </div>
+                                <span *ngIf="ferr('IdTurno')" class="text-danger">{{ terr('IdTurno') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.cantidad" id="txtCantidadPuesto">
+                                    <label for="txtCantidadPuesto">Cantidad</label>
+                                </div>
+                                <span *ngIf="ferr('Cantidad')" class="text-danger">{{ terr('Cantidad') }}</span>
+                            </div>
+
+
+
+
+                            <!--</div>
+                            <div class="row">-->
+                            <div class="col-sm-12 col-md-3 col-6 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="DiaInicio" [(ngModel)]="model.diaInicio" id="ddlDiaInicioPuesto">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let d of dias" [ngValue]="d.id">{{ d.nom }}</option>
+                                    </select>
+                                    <label for="ddlDiaInicioPuesto">Dia Inicio</label>
+                                </div>
+                                <span *ngIf="ferr('DiaInicio')" class="text-danger">{{ terr('DiaInicio') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-6 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="DiaFin" [(ngModel)]="model.diaFin" id="ddlDiaFinPuesto">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let d of dias" [ngValue]="d.id">{{ d.nom }}</option>
+                                    </select>
+                                    <label for="ddlDiaFinPuesto">Dia Fin</label>
+                                </div>
+                                <span *ngIf="ferr('DiaFin')" class="text-danger">{{ terr('DiaFin') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-4 mb-3">
+                                <div class="form-floating">
+                                    <select type="text" class="form-select" [(ngModel)]="model.hrInicio" id="ddlHrInicioPuesto">
+                                        <option value="''">Seleccione...</option>
+                                        <option *ngFor="let h of hors" [ngValue]="h">{{ h }}</option>
+                                    </select>
+                                    <label for="ddlHrInicioPuesto">De</label>
+                                </div>
+                                <span *ngIf="ferr('HrInicio')" class="text-danger">{{ terr('HrInicio') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-4 mb-3">
+                                <div class="form-floating">
+                                    <select type="text" class="form-select" [(ngModel)]="model.hrFin" id="ddlHrFinPuesto">
+                                        <option value="''">Seleccione...</option>
+                                        <option *ngFor="let h of hors" [ngValue]="h">{{ h }}</option>
+                                    </select>
+                                    <label for="ddlHrFinPuesto">A</label>
+                                </div>
+                                <span *ngIf="ferr('HrFin')" class="text-danger">{{ terr('HrFin') }}</span>
+                            </div>
+                            <!--</div>
+                            <div class="row">-->
+                            <!--<div class="col-sm-12 col-md-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.jornada">
+                                    <label for="Jornada">Jornada</label>
+                                </div>
+                                <span *ngIf="ferr('Jornada')" class="text-danger">{{ terr('Jornada') }}</span>
+                            </div>-->
+                            <!--<div class="col-sm-12 col-md-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="DiaFin" [(ngModel)]="model.diaFin">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let d of dias" [ngValue]="d.id">{{ d.nom }}</option>
+                                    </select>
+                                    <label for="DiaFin">Dia Fin</label>
+                                </div>
+                                <span *ngIf="ferr('DiaFin')" class="text-danger">{{ terr('DiaFin') }}</span>
+                            </div>-->
+                            <div class="col-sm-12 col-md-2 col-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.jornada" (change)="chgSalariodos()" id="ddlJornadaPuesto">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let j of ljor" [ngValue]="j.id">{{ j.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlJornadaPuesto">Jornada</label>
+                                </div>
+                                <span *ngIf="ferr('Jornada')" class="text-danger">{{ terr('Jornada') }}</span>
+                            </div>
+                            <br />
+                            <h5>Sueldo</h5>
+                            <br />
+                            <div class="col-sm-12 col-md-2 col-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdTabulador" [(ngModel)]="model.idTabulador" (change)="chgSalariodos()" id="ddlZonaPuesto">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let t of tabs" [ngValue]="t.id">{{ t.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlZonaPuesto">Zona</label>
+                                </div>
+                                <span *ngIf="ferr('idZona')" class="text-danger">{{ terr('idZona') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-4 mb-3">
+                                <div class="form-floating">
+                                    <select type="text" class="form-select" [(ngModel)]="model.idClase" (change)="chgSalariodos()" id="ddlClasePuesto">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let c of lclas" [ngValue]="c.id">{{ c.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlClasePuesto">Clase</label>
+                                </div>
+                                <span *ngIf="ferr('idClase')" class="text-danger">{{ terr('idClase') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-4">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.sueldo" disabled  id="txtSueldoPuesto">
+                                    <label for="txtSueldoPuesto">Sueldo</label>
+                                </div>
+                            </div>
+                            <br />
+                            <h5>Prestaciones</h5>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-12 col-md-3 col-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" [(ngModel)]="model.bonos" id="xtxBonosPuesto">
+                                        <label for="xtxBonosPuesto">Bonos</label>
+                                    </div>
+                                    <span *ngIf="ferr('bonos')" class="text-danger">{{ terr('bonos') }}</span>
+                                </div>
+                                <div class="col-sm-4 col-md-3 col-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" [(ngModel)]="model.vales" id="ddlValesPuesto">
+                                        <label for="ddlValesPuesto">Vales</label>
+                                    </div>
+                                    <span *ngIf="ferr('vales')" class="text-danger">{{ terr('vales') }}</span>
+                                </div>
+                                <div class="col-sm-4 col-md-3 col-6 align-content-center align-items-center text-center">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            Dias festivos
+                                            <input class="form-check-input" type="checkbox" [value]="model.diaFestivo" [(ngModel)]="model.diaFestivo" id="btnFestivoPuesto" />
+                                        </label><br />
+                                        <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="EL calculo es basado en 7 dias">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-md-3 col-6 align-content-center align-items-center text-center">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            Dias Domingos
+                                            <input class="form-check-input" type="checkbox" [value]="model.diaDomingo" [(ngModel)]="model.diaDomingo" id="btndiaFestivo" />
+                                        </label><br />
+                                        <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="EL calculo es (Salario diario * .25) * 4.33">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" (click)="guarda()" class="btn btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="validaMess"></toast-widget>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>

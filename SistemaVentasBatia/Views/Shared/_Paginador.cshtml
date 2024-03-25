@@ -1,0 +1,30 @@
+﻿@model SistemaVentasBatia.DTOs.PaginadorViewModel
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if (Model.Pagina > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="@Model.Action" asp-controller="@Model.Controlador" asp-all-route-data="@(new Dictionary<string, string> { { "pagina", (Model.Pagina - 1).ToString() } })" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+
+        @for (int p = 1; p <= Model.NumPaginas; p++)
+        {
+            <li class="page-item"><a class="page-link" asp-action="@Model.Action" asp-controller="@Model.Controlador" asp-all-route-data="@(new Dictionary<string, string> { { "pagina", p.ToString() } })">@p</a></li>
+
+        }
+
+        @if (Model.Pagina < Model.NumPaginas)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="@Model.Action" asp-controller="@Model.Controlador" asp-all-route-data="@(new Dictionary<string, string> { { "pagina", (Model.Pagina + 1).ToString() } })" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+
+    </ul>
+</nav>

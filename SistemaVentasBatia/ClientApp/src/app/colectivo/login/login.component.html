@@ -1,0 +1,38 @@
+<div [@fadeInOut]>
+    <body class="bodycss">
+        <br />
+        <div class="row">
+            <div class="col-mid">
+            </div>
+            <div class="col-12 col-md-5">
+                <div class="card login-card  card" (keydown)="review($event)">
+                    <h3 class="card-header text-center card-headercss">Sistema Integral de Gestion Administrativa (CRM)</h3>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <div class="form-floating">
+                                <input type="text" class="form-control my-input-class" [(ngModel)]="model.usuario" id="txusuario" placeholder="Usuario">
+                                <label for="txusuario">Usuario</label>
+                            </div>
+                            <span *ngIf="ferr('Usuario')" class="text-danger">{{ terr('Usuario') }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <div class="form-floating">
+                                <input type="password" class="form-control my-input-class" [(ngModel)]="model.contrasena" id="txpassword" placeholder="Contraseña">
+                                <label for="txpassword">Contraseña</label>
+                            </div>
+                            <span *ngIf="ferr('Contrasena')" class="text-danger">{{ terr('Contrasena') }}</span>
+                        </div>
+                    </div>
+                    <div class=" text-start card-footercss">
+                        <button type="button" (click)="onLogin()" class="btn btn-primary box-shadow" isDefault="true">
+                            Ingresar 
+                            <i *ngIf="isLoading" class="fas fa-spinner fa-spin fa-1x"></i>
+                            <i *ngIf="isLoading == false" class="fa-solid fa-right-to-bracket"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</div>
+<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>

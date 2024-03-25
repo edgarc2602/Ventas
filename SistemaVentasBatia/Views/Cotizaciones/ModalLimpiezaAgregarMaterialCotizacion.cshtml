@@ -1,0 +1,80 @@
+﻿@using SistemaVentasBatia.Enums
+
+@model SistemaVentasBatia.DTOs.MaterialCotizacionDTO
+<meta charset="UTF-8">
+<div class="modal fade" id="modalLimpiezaAgregarMaterialCotizacion">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar Material</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="d-flex justify-content-end mb-3">
+                    <div>
+                        <button type="button" class="btn btn-outline-warning me-1 d-none" id="btnRegresaListadoAgregarMaterial" data-operario="@Model.IdPuestoDireccionCotizacion"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
+                        <button type="button" id="btnGuardarMaterial" class="btn btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+                    </div>
+                </div>
+                
+                <form asp-action="LimpiezaAgregarMaterialOperario" method="post" id="formLimpiezaAgregarMaterialCotizacion">
+                    @Html.HiddenFor(x => x.IdCotizacion)
+                    @Html.HiddenFor(x => x.IdDireccionCotizacion)
+                    @Html.HiddenFor(x => x.IdPuestoDireccionCotizacion)
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" asp-for="ClaveProducto" aria-label="ClaveProducto" asp-items="@((List<SelectListItem>)TempData["Productos"])">
+                                    <option selected>Selecciona una opción...</option>
+                                </select>
+                                <label for="ClaveProducto">Producto</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-none" id="dvSucursal">
+                            <div class="form-floating">
+                                <select class="form-select"asp-for="IdDireccionCotizacion" aria-label="IdDireccionCotizacion" asp-items="@((List<SelectListItem>)TempData["Sucursales"])">
+                                    <option selected>Selecciona una opción...</option>
+                                </select>
+                                <label for="ddlServicio">Sucursal</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-none" id="dvPuesto">
+                            <div class="form-floating">
+                                <select class="form-select" asp-for="IdPuestoDireccionCotizacion" aria-label="IdEstatusCotizacion" asp-items="@((List<SelectListItem>)TempData["Puestos"])">
+                                    <option selected>Selecciona una opción...</option>
+                                </select>
+                                <label for="ddlServicio">Puesto</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-sm-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" asp-for="Cantidad">
+                                <label asp-for="Cantidad">Cantidad</label>
+                            </div>
+                            <span asp-validation-for="Cantidad" class="text-danger"></span>
+                        </div>
+                        <div class="col-12 col-md-4 col-sm-4">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdFrecuencia" asp-for="IdFrecuencia" asp-items="Html.GetEnumSelectList<Frecuencia>()">
+                                </select>
+                                <label asp-for="IdFrecuencia">Frecuencia:</label>
+                            </div>
+                            <span asp-validation-for="IdFrecuencia" class="text-danger"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,224 @@
+﻿@model SistemaVentasBatia.DTOs.ListaMaterialesCotizacionLimpiezaDTO
+@{
+    ViewData["Title"] = "Materiales Cotización";
+}
+<meta charset="UTF-8">
+<div class="pt-3 mb-2">
+    <h2>Cotización</h2>
+    <h6 class="text-black-50">Material</h6>
+</div>
+
+<partial name="_TabCotizacion" />
+
+<br />
+
+<div class="row mb-3">
+    <div>
+        <div class="btn-group float-end">
+            <a id="btnAgregarMaterial" class="btn btn-outline-primary"><icon class="fa-solid fa-plus"></icon> Agregar Material</a>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Buscar" method="post">
+    <div class="row mb-3">
+        <div class="col-md-3">
+             <div class="form-floating">
+                <input type="text" class="form-control" asp-for="Keywords" placeholder="Escriba un nombre">
+                <label asp-for="Keywords">Producto</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" asp-for="IdDireccionCotizacion" aria-label="IdDireccionCotizacion" asp-items="@((List<SelectListItem>)ViewBag.Sucursales)">
+                    <option selected>Selecciona una opción...</option>
+                </select>
+                <label for="ddlServicio">Sucursal</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" asp-for="IdPuestoDireccionCotizacion" aria-label="IdEstatusCotizacion" asp-items="@((List<SelectListItem>)ViewBag.Puestos)">
+                    <option selected>Selecciona una opción...</option>
+                </select>
+                <label for="ddlServicio">Puesto</label>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-primary"><icon class="fa-solid fa-search"></icon> Buscar</button>
+        </div>
+    </div>
+</form>
+
+<div class="row" style="border-radius: 10px; overflow-x: hidden;">
+    <table class="table table-borderless table-striped table-responsive">
+        <thead>
+            <tr class="bg-primary bg-opacity-75 text-white">
+                <th class="ps-2">Lista de materiales</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var material in Model.MaterialesCotizacion)
+            {
+                <tr>
+                    <td>
+                        <div class="row pb-2">                           
+                            <div class="col-md-2 col-sm-4">
+                                <span class="badge text-dark">Clave:</span>
+                                <div class="ms-2">@material.ClaveProducto</div>
+                            </div>
+                            <div class="col-md-3 col-sm-8">
+                                <span class="badge text-dark">Producto:</span>
+                                @*<div class="ms-2">@material.DescripcionMaterial</div>*@
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <span class="badge text-dark">Sucursal:</span>
+                                @*<div class="ms-2">@material.NombreSucursal</div>*@
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <span class="badge text-dark">Puesto:</span>
+                                @*<div class="ms-2">@material.DescripcionPuesto</div>*@
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <span class="badge text-dark">Precio:</span>
+                                <div class="ms-2">@material.PrecioUnitario.ToString("c2")</div>
+                            </div>
+                            <div class="col-md-1 col-sm-4">
+                                <span class="badge text-dark">Cantidad:</span>
+                                <div class="ms-2">@material.Cantidad.ToString()</div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <span class="badge text-dark">Frecuencia:</span>
+                                <div class="ms-2">@material.IdFrecuencia.ToString()</div>
+                            </div>
+                            <div class="col-md-2 col-sm-4">
+                                <span class="badge text-dark">Fecha Alta:</span>
+                                <div class="ms-2">@material.FechaAlta.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="align-middle w-auto">
+                            <a class="btn btn-sm text-primary mb-1 btnEditarMaterialCotizacion" data-cotizacion="@material.IdCotizacion" data-material="@material.IdMaterialCotizacion" data-bs-toggle="tooltip" title="Editar">
+                                <icon class="fa-solid fa-pencil fa-2x"></icon>
+                            </a>
+                            <a class="btn btn-sm text-danger mb-1 btnEliminarCotizacion" data-bs-toggle="tooltip" title="Eliminar" data-material="@material.IdMaterialCotizacion" data-cotizacion="@material.IdCotizacion">
+                                <icon class="fa-solid fa-times fa-2x"></icon>
+                            </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_Paginador" model="@(new SistemaVentasBatia.DTOs.PaginadorViewModel{ Controlador="Cotizaciones", Action="LimpiezaMaterial" , Pagina = Model.Pagina, Rows = Model.Rows, NumPaginas = Model.NumPaginas })"/>
+</div>
+
+@*<partial name="ModalLimpieza" model="Model" />*@
+
+
+<div id="dvEditarMaterialCotizacion"></div>
+<div id="dvAgregarMaterialCotizacion"></div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+
+             $("#btnAgregarMaterial").click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("AgregarMaterialACotizacion")',
+                    data: { id: $("#IdCotizacion").val() },
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvAgregarMaterialCotizacion").append(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalLimpiezaAgregarMaterialCotizacion'), {});
+
+                        modal.show();
+                    }
+                });
+            });
+
+            $(".btnEliminarMaterial").click(function () {
+
+                $("#modalEliminarRegistro").find('.modal-title').text("Eliminar operario");
+
+                $("#modalEliminarRegistro").find('.modal-body').text("¿Está seguro de que deseas eliminar el operario de la plantilla?");
+
+                $("#formEliminarRegistro").attr("action", "/Cotizaciones/EliminarOperador");
+
+                console.log(this.dataset.puesto);
+
+                $("#registroAEliminar").val(this.dataset.puesto);
+
+                var modal = new bootstrap.Modal(document.getElementById('modalEliminarRegistro'), {});
+
+                modal.show();
+            });
+
+            $(".btnEditarOperario").click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("EditarOperario")',
+                    data: { id: this.dataset.puesto, idCotizacion: @Model.IdCotizacion},
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvEditarOperario").html(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalEditarOperario'), {});
+
+                        modal.show();
+                    }
+                });
+            });
+
+            $(".btnMaterialOperario").click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("LimpiezaMaterialOperario")',
+                    data: { id: this.dataset.puesto },
+                    contentType: 'json',
+                    success: function (result) {
+                        $("#dvMaterialOperario").html(result);
+
+                        var modal = new bootstrap.Modal(document.getElementById('modalLimpiezaMaterialOperario'), {});
+
+                        modal.show();
+                    }
+                });
+            });
+        });
+
+         $(document).on('click', '.btnEditarMaterialCotizacion', function () {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("EditarLimpiezaMaterialCotizacion")',
+                data: { id: this.dataset.material },
+                contentType: 'json',
+                success: function (result) {
+                    $("#dvEditarMaterialCotizacion").html(result);
+
+                    var modalEditar = new bootstrap.Modal(document.getElementById('modalLimpiezaEditarMaterialCotizacion'), {});
+
+                    modalEditar.show();
+                }
+            });
+        });
+
+        $(document).on('click', '#btnActualizarMaterialCotizacion', function () {
+            var form = $('#formEditarOperario');
+
+            $.validator.unobtrusive.parse(form);
+
+            var validate = form.validate().form();
+
+            if (validate) {
+                form.submit();
+            }
+        });
+    </script>
+}
+

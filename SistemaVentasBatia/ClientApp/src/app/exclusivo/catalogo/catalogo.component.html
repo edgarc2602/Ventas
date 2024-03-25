@@ -1,0 +1,662 @@
+<div [@fadeInOut]>
+    <br />
+    <div *ngIf="autorizacion === 1" class="row pt-1 mb-3">
+        <div>
+            <h1 class="h2">Configuración</h1>
+        </div>
+    </div>
+    <div class="accordion box-shadow" id="accordionExample">
+        <!--Pestaña 0-->
+        <div class="accordion-item">
+            <h1 class="accordion-header" id="headingCotizacion">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCotizacion" aria-expanded="false" aria-controls="collapseCotizacion">
+                    Cotización
+                </button>
+            </h1>
+            <div id="collapseCotizacion" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
+                <div class="accordion-body">
+                    <ul class="nav nav-tabs" id="tabconfig" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" id="porcentajespred-tab" data-bs-toggle="tab" data-bs-target="#porcentajespred"
+                                    role="tab" aria-controls="porcentajespred" aria-selected="true">
+                                Porcentajes
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" id="IMSS-tab" data-bs-toggle="tab" data-bs-target="#IMSS"
+                                    role="tab" aria-controls="IMSS" aria-selected="false">
+                                IMSS
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2" id="tabcontent">
+                        <div class="tab-pane fade show active text-center " style="border-radius: 10px; overflow-x: hidden; " id="porcentajespred" role="tabpanel" aria-labelledby="tabulador-tab">
+                            <div class="row pb-2">
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Costo Indirecto (%):</span>
+                                    <input type="number" #costoIndirectotxt class="form-control aliggn-content-center text-center transparent-background" id="costoIndirecto" name="costoIndirecto" value="{{ cotpor.costoIndirecto }}" [(ngModel)]="costoIndirecto" placeholder="{{ cotpor.costoIndirecto }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Utilidad (%):</span>
+                                    <input type="number" #utilidadtxt class="form-control aliggn-content-center text-center transparent-background" id="utilidad" name="utilidad" value="{{ cotpor.utilidad }}" [(ngModel)]="utilidad" placeholder="{{ cotpor.utilidad }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Comision Venta (%):</span>
+                                    <input type="number" #comisionSobreVentatxt class="form-control aliggn-content-center text-center transparent-background" id="comisionSobreVental" name="comisionSobreVental" value="{{ cotpor.comisionSobreVenta }}" [(ngModel)]="comisionSobreVenta" placeholder="{{ cotpor.comisionSobreVenta }}" autocomplete="off" required>
+                                </div>
+                                <div class=" col-sm-3 col-6 pb-3">
+                                    <span class="badge ">Comisión Externa (%):</span>
+                                    <input type="number" #comisionExternatxt class="form-control aliggn-content-center text-center transparent-background" id="comisionExterna" name="comisionExterna" value="{{ cotpor.comisionExterna }}" [(ngModel)]="comisionExterna" placeholder="{{ cotpor.comisionExterna }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Fecha Aplica:</span>
+                                    <input type="date" #fechaAplicatxt class="form-control aliggn-content-center text-center transparent-background" id="fechaAplica" name="fechaAplica" value="{{ cotpor.fechaAplica | date: 'dd-MM-yyyy'}}" [(ngModel)]="fechaAplica" placeholder="dd-MM-yyyy" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Fecha Alta:</span>
+                                    <div class="ms-2">{{ cotpor.fechaAlta | date: 'dd-MM-yyyy' }}</div>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Usuario Alta:</span>
+                                    <div class="ms-2">{{ cotpor.personal }}</div>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3 text-center">
+                                    <span class="badge"></span>
+                                    <button type="button" (click)="actualizarPorcentajesPredeterminadosCotizacion()" class="btn btn-lg btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content pt-2" id="tabcontent">
+                        <div class="tab-pane fade text-center " style="border-radius: 10px; overflow-x: hidden; " id="IMSS" role="tabpanel" aria-labelledby="IMSS-tab">
+                            <div class="row pb-2">
+
+                                <div>
+                                    <h1 class="h6 text-start">No fronterizo</h1>
+                                </div>
+                                <hr />
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">2 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN2" value="{{ immsJornada.normal2 | number: '1.2' }}" [(ngModel)]="immsJornada.normal2" placeholder="{{ immsJornada.normal2 | number: '1.2' }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">4 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN4" value="{{ immsJornada.normal4 | number: '1.2' }}" [(ngModel)]="immsJornada.normal4" placeholder="{{ immsJornada.normal4 }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">8 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN8" value="{{ immsJornada.normal8 }}" [(ngModel)]="immsJornada.normal8" placeholder="{{ immsJornada.normal8 }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">12 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN12" value="{{ immsJornada.normal12 }}" [(ngModel)]="immsJornada.normal12" placeholder="{{ immsJornada.normal12 }}" autocomplete="off" required>
+                                </div>
+
+                                <div>
+                                    <h1 class="h6 text-start">Fronterizo</h1>
+                                </div>
+                                <hr />
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">2 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF2" value="{{ immsJornada.frontera2 }}" [(ngModel)]="immsJornada.frontera2" placeholder="{{ immsJornada.frontera2 }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">4 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF4" value="{{ immsJornada.frontera4 }}" [(ngModel)]="immsJornada.frontera4" placeholder="{{ immsJornada.frontera4 }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">8 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF8" value="{{ immsJornada.frontera8 }}" [(ngModel)]="immsJornada.frontera8" placeholder="{{ immsJornada.frontera8 }}" autocomplete="off" required>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">12 hrs:</span>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF12" value="{{ immsJornada.frontera12 }}" [(ngModel)]="immsJornada.frontera12" placeholder="{{ immsJornada.frontera12 }}" autocomplete="off" required>
+                                </div>
+                                <hr />
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Fecha Alta:</span>
+                                    <div class="ms-2">{{ cotpor.fechaAlta | date: 'dd-MM-yyyy' }}</div>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3">
+                                    <span class="badge">Usuario Alta:</span>
+                                    <div class="ms-2">{{ immsJornada.usuario }}</div>
+                                </div>
+                                <div class="col-sm-3 col-6 pb-3 text-center">
+                                    <span class="badge"></span>
+                                    <button type="button" (click)="actualizarImmsJornada()" class="btn btn-lg btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+                                </div>
+                                <!--<div class="col-sm-3 col-3 pb-3">
+        <span class="badge">IMSS Base (MXN):</span>
+        <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imss" name="imss" value="{{ imss }}" [(ngModel)]="imss" placeholder="{{ imss }}" autocomplete="off" required>
+    </div>
+    <div class="col-sm-3 col-3 text-center">
+        <span class="badge"></span>
+        <button type="button" (click)="updImss()" class="btn btn-lg btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+    </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Pestaña 1-->
+        <div class="accordion-item">
+            <h1 class="accordion-header" id="headingCatalogo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCatalogo" aria-expanded="false" aria-controls="collapseCatalogo">
+                    Catálogos
+                </button>
+            </h1>
+            <div id="collapseCatalogo" class="accordion-collapse collapse" aria-labelledby="headingCatalogo">
+                <div class="accordion-body">
+
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select  box-shadow" name="tipoServicio" (change)="chgServicio()" [(ngModel)]="tipoServicio" disabled id="txtTipoServisioCatalogo">
+                                    <option value="0">Seleccione una opción</option>
+                                    <option *ngFor="let s of tser" [ngValue]="s.id">{{ s.descripcion }}</option>
+                                </select>
+                                <label for="txtTipoServisioCatalogo">Tipo de servicio</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <ul class="nav nav-tabs" id="tabconfig" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" id="catservicio-tab" data-bs-toggle="tab" data-bs-target="#catservicio"
+                                    role="tab" aria-controls="servicio" aria-selected="true">
+                                Servicio
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2" id="tabcontent">
+                        <div class="tab-pane fade show active text-center" style="border-radius: 10px; overflow-x: hidden;" id="servicio" role="tabpanel" aria-labelledby="material-tab">
+                            <table class="table table-borderless table-striped table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th>Clave</th>
+                                        <th>Descripción</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let s of sers">
+                                        <td>{{ s.id }}</td>
+                                        <td>{{ s.descripcion }}</td>
+                                        <td>
+                                            <button type="button" (click)="deleteServ(s.id)" class="btn btn-sm btn-outline-danger">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <button type="button" (click)="openSer()" class="btn btn-lg btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar servicio</button>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pestaña 2 -->
+        <div class="accordion-item">
+            <h1 class="accordion-header" id="headingMaterial">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMaterial" aria-expanded="false" aria-controls="collapseMaterial">
+                    Puestos
+                </button>
+            </h1>
+            <div id="collapseMaterial" class="accordion-collapse collapse" aria-labelledby="headingMaterial">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-12 col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" name="Puesto" (change)="chgPuesto()" [(ngModel)]="selPuesto" id="ddlPuestoPuestos">
+                                    <option value="0">Seleccione...</option>
+                                    <option *ngFor="let p of pues" [ngValue]="p.id">{{ p.descripcion }}</option>
+                                </select>
+                                <label for="ddlPuestoPuestos">Puesto</label>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="nav nav-tabs" id="tabconfig" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" (click)="chgTab('material')" id="material-tab" data-bs-toggle="tab" data-bs-target="#material"
+                                    role="tab" aria-controls="material" aria-selected="true">
+                                Materiales
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" (click)="chgTab('uniforme')" id="uniforme-tab" data-bs-toggle="tab" data-bs-target="#uniforme"
+                                    role="tab" aria-controls="uniforme" aria-selected="false">
+                                Uniforme
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" (click)="chgTab('equipo')" id="equipo-tab" data-bs-toggle="tab" data-bs-target="#equipo"
+                                    role="tab" aria-controls="equipo" aria-selected="false">
+                                Equipo de seguridad
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" (click)="chgTab('herramienta')" id="herramienta-tab" data-bs-toggle="tab" data-bs-target="#herramienta"
+                                    role="tab" aria-controls="herramienta" aria-selected="false">
+                                Herramienta
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" id="tabulador-tab" data-bs-toggle="tab" data-bs-target="#tabulador"
+                                    role="tab" aria-controls="tabulador" aria-selected="false">
+                                Tabulador
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2" id="tabcontent">
+                        <div class="tab-pane fade show active" style="border-radius: 10px; overflow-x: hidden;" id="material" role="tabpanel" aria-labelledby="material-tab">
+                            <div *ngIf="mates && mates.length > 0" class="fade-in-container" style="max-height: 350px; border-radius: 10px; overflow-y: auto; overflow-x: hidden;">
+                                <table class="table table-borderless table-striped table-responsive">
+                                    <thead class="sticky-top">
+                                        <tr>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Clave</div></th>
+                                            <th><div class="col-md-6 col-sm-6 col-6">Descripción</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Cantidad</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Frecuencia</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2"></div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let mt of mates">
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.claveProducto }}</td>
+                                            <td class="col-md-4 col-sm-6 col-6">{{ mt.descripcion }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.cantidad }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.idFrecuencia }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2 text-center">
+                                                <button type="button" (click)="updateProd(mt.idMaterialPuesto, 1)" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-edit"></i></button>
+                                                <button type="button" (click)="deleteMat(mt.idMaterialPuesto)" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <button type="button" (click)="openMat(0)" [disabled]="selPuesto == 0" class="btn btn-lg btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar producto</button>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="tab-pane fade" style="border-radius: 10px; overflow-x: hidden;" id="uniforme" role="tabpanel" aria-labelledby="uniforme-tab">
+                            <div *ngIf="mates && mates.length > 0" class="fade-in-container" style="max-height: 350px; border-radius: 10px; overflow-y: auto; overflow-x: hidden;">
+                                <table class="table table-borderless table-striped table-responsive">
+                                    <thead class="sticky-top">
+                                        <tr>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Clave</div></th>
+                                            <th><div class="col-md-6 col-sm-6 col-6">Descripción</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Cantidad</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Frecuencia</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2"></div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let mt of mates">
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.claveProducto }}</td>
+                                            <td class="col-md-4 col-sm-6 col-6">{{ mt.descripcion }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.cantidad }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.idFrecuencia }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2 text-center">
+                                                <button type="button" (click)="updateProd(mt.idMaterialPuesto,2)" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-edit"></i></button>
+                                                <button type="button" (click)="deleteMat(mt.idMaterialPuesto)" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <button type="button" (click)="openUni(0)" [disabled]="selPuesto == 0" class="btn btn-lg btn-outline-primary  box-shadow" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar uniforme</button>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="tab-pane fade" style="border-radius: 10px; overflow-x: hidden;" id="equipo" role="tabpanel" aria-labelledby="equipo-tab">
+                            <div *ngIf="mates && mates.length > 0" class="fade-in-container" style="max-height: 350px; border-radius: 10px; overflow-y: auto; overflow-x: hidden;">
+                                <table class="table table-borderless table-striped table-responsive">
+                                    <thead class="sticky-top">
+                                        <tr>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Clave</div></th>
+                                            <th><div class="col-md-6 col-sm-6 col-6">Descripción</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Cantidad</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Frecuencia</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2"></div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let mt of mates">
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.claveProducto }}</td>
+                                            <td class="col-md-4 col-sm-6 col-6">{{ mt.descripcion }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.cantidad }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.idFrecuencia }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2 text-center">
+                                                <button type="button" (click)="updateProd(mt.idMaterialPuesto, 3)" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-edit"></i></button>
+                                                <button type="button" (click)="deleteMat(mt.idMaterialPuesto)" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <button type="button" (click)="openEqui(0)" [disabled]="selPuesto == 0" class="btn btn-lg btn-outline-primary  box-shadow" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar equipo</button>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="tab-pane fade" style="border-radius: 10px; overflow-x: hidden;" id="herramienta" role="tabpanel" aria-labelledby="herramienta-tab">
+                            <div *ngIf="mates && mates.length > 0" class="fade-in-container" style="max-height: 350px; border-radius: 10px; overflow-y: auto; overflow-x: hidden;">
+
+                                <table class="table table-borderless table-striped table-responsive">
+                                    <thead class="sticky-top">
+                                        <tr>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Clave</div></th>
+                                            <th><div class="col-md-6 col-sm-6 col-6">Descripción</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Cantidad</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2">Frecuencia</div></th>
+                                            <th><div class="col-md-2 col-sm-6 col-2"></div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let mt of mates">
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.claveProducto }}</td>
+                                            <td class="col-md-4 col-sm-6 col-6">{{ mt.descripcion }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.cantidad }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2">{{ mt.idFrecuencia }}</td>
+                                            <td class="col-md-2 col-sm-6 col-2 text-center">
+                                                <button type="button" (click)="updateProd(mt.idMaterialPuesto, 4)" class="btn btn-sm btn-outline-info"><i class="fa-solid fa-edit"></i></button>
+                                                <button type="button" (click)="deleteMat(mt.idMaterialPuesto)" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <button type="button" (click)="openHer(0)" [disabled]="selPuesto == 0" class="btn btn-lg btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar herramienta</button>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+
+                        <div class="tab-pane fade" style="border-radius: 10px; overflow-x: hidden; " id="tabulador" role="tabpanel" aria-labelledby="tabulador-tab">
+                            <table class="table table-borderless table-responsive">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="row text-center">
+                                                <div class="col-4 col-md-2 col-sm-2 mt-2">
+                                                    <div>Zona 1</div>
+                                                    <div><input #zona1txt type="number" class="form-control aliggn-content-center mt-2" id="zona1" name="zona1" value="{{ sal.zona1 }}" [(ngModel)]="sal.zona1" placeholder="{{ sal.zona1 }}" autocomplete="off" required></div>
+                                                </div>
+                                                <div class="col-4 col-md-2 col-sm-2 mt-2">
+                                                    <div>Zona 2</div>
+                                                    <div><input #zona2txt type="number" class="form-control aliggn-content-center mt-2" id="zona2" name="zona2" value="{{ sal.zona2 }}" [(ngModel)]="sal.zona2" placeholder="{{ sal.zona2 }}" autocomplete="off" required></div>
+                                                </div>
+                                                <div class="col-4 col-md-2 col-sm-2 mt-2">
+                                                    <div>Zona 3</div>
+                                                    <div><input #zona3txt type="number" class="form-control aliggn-content-center mt-2" id="zona3" name="zona3" value="{{ sal.zona3 }}" [(ngModel)]="sal.zona3" placeholder="{{ sal.zona3 }}" autocomplete="off" required></div>
+                                                </div>
+                                                <div class="col-4 col-md-2 col-sm-2 mt-2">
+                                                    <div>Zona 4</div>
+                                                    <div><input #zona4txt type="number" class="form-control aliggn-content-center mt-2" id="zona4" name="zona4" value="{{ sal.zona4 }}" [(ngModel)]="sal.zona4" placeholder="{{ sal.zona4 }}" autocomplete="off" required></div>
+                                                </div>
+                                                <div class="col-4 col-md-2 col-sm-2 mt-2">
+                                                    <div>Zona 5</div>
+                                                    <div><input #zona5txt type="number" class="form-control aliggn-content-center mt-2" id="zona5" name="zona5" [(ngModel)]="sal.zona5" value="{{ sal.zona5 }}" placeholder="{{ sal.zona5 }}" autocomplete="off" required></div>
+                                                </div>
+                                                <div class="col-4 col-md-2 col-sm-2 mt-2">
+                                                    <div>Clase</div>
+                                                    <div class=" mb-3">
+                                                        <select type="text" class="form-select mt-2" [(ngModel)]="idClase" (change)="getTabulador()" id="ddlClasePuesto">
+                                                            <option *ngFor="let c of lclas" [ngValue]="c.id">{{ c.descripcion }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-412 col-md-12 col-sm-12 mt-2 align-content-end text-end">
+                                                    <div>
+                                                        <button (click)="actualizarSalarios(sal.idPuesto)" class="btn btn-lg btn-outline-success  box-shadow"><i class="fa-solid fa-save"></i> Guardar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Pestaña 3-->
+        <div *ngIf="autorizacion === 1" class="accordion-item">
+            <h1 class="accordion-header" id="headingUsuario">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsuario" aria-expanded="false" aria-controls="collapseUsuario">
+                    Usuarios
+                </button>
+            </h1>
+            <div id="collapseUsuario" class="accordion-collapse collapse" aria-labelledby="headingUsuario">
+                <div class="accordion-body">
+                    <div *ngIf="lusu && lusu.length > 0" class="fade-in-container" style="max-height: 350px; border-radius: 10px; overflow-y: auto; overflow-x: hidden;">
+                        <table class="table table-striped table-responsive">
+                            <thead class="sticky-top">
+                                <tr class="d-md-none">
+                                    <th class="ps-2 text-start">Lista de usuarios</th>
+                                    <th></th>
+                                </tr>
+                                <tr class="d-none d-md-table-row">
+                                    <th>
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 col-1">
+                                                <span class="ms-2">Estatus</span>
+                                            </div>
+                                            <div class="col-md-4 col-sm-6 col-5">
+                                                <span class="ms-2">Nombre</span>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-3">
+                                                <span class="ms-2">Puesto</span>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-2">
+                                                <span class="ms-2">Usuario</span>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-6">
+                                                <span class="ms-2">Contraseña</span>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let u of lusu">
+                                    <td>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-2 col-sm-6 col-4">
+                                                <!--<span class="badge">Estatus:</span>-->
+                                                <button id="statusButton" (click)="chgEstatus(u.estatusVentas, u.idPersonal)" class="toggle-btn {{ u.estatusVentas === 1 ? 'active' : '' }}">
+                                                    {{ u.estatusVentas === 1 ? 'Activo' : 'Inactivo' }}
+                                                </button>
+                                            </div>
+                                            <div class="col-md-4 col-sm-6 col-8">
+                                                <span class="badge d-md-none">Nombre:</span>
+                                                <div class="ms-2">{{ u.nombres + " " + u.apellidoPaterno + " " + u.apellidoMaterno}}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-4">
+                                                <span class="badge d-md-none">Puesto:</span>
+                                                <div class="ms-2">{{ u.puesto }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-4">
+                                                <span class="badge d-md-none">Usuario:</span>
+                                                <div class="ms-2">{{ u.usuario }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-4">
+                                                <span class="badge d-md-none">Contraseña:</span>
+                                                <div class="ms-2">{{ u.password }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="w-auto">
+                                        <button type="button" (click)="openUsu(u.idPersonal)" class="btn btn-lg btn-outline-info btn-con-espacio-izquierdo">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+                                        <button type="button" (click)="confirmarEliminarUsuario(u.idPersonal)" class="btn btn-lg btn-outline-danger btn-con-espacio-izquierdo">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col d-flex justify-content-end">
+                            <button type="button" (click)="openUsu(0)" class="btn btn-lg btn-outline-primary  box-shadow" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar Usuario</button>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <!--Pestaña 4-->
+        <div class="accordion-item">
+            <h1 class="accordion-header" id="headingProducto">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProducto" aria-expanded="false" aria-controls="collapseProducto">
+                    Productos
+                </button>
+            </h1>
+            <div id="collapseProducto" class="accordion-collapse collapse" aria-labelledby="headingProducto">
+                <div class="accordion-body">
+                    <div class="row col-12 align-items-center ">
+                        <div class="col-md-4 col-sm-10 col-12">
+                            <h6 class="modal-title">Consultar precio de productos por estado</h6>
+                        </div>
+
+                        <div class="col-md-2 col-6 ">
+                            <div class="form-floating shadow-sm">
+                                <select class="form-select" [(ngModel)]="idEstado" (change)="getPrecioProductoByEstado(1)" [disabled]="isLoading" id="estados">
+                                    <option value="0">Seleccione...</option>
+                                    <option *ngFor="let e of estados" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                </select>
+                                <label for="estados">Estado</label>
+                            </div>
+                        </div>
+                        <div *ngIf="model.familias.length != 0" class="col-md-2 col-6 ">
+                            <div class="form-floating shadow-sm">
+                                <select class="form-select" [(ngModel)]="idFamilia" (change)="getPrecioProductoByEstado(2)" [disabled]="isLoading" id="familias">
+                                    <option value="0">Seleccione...</option>
+                                    <option *ngFor="let f of model.familias" [ngValue]="f.idFamilia">{{ f.descripcion }}</option>
+                                </select>
+                                <label for="familias">Familia</label>
+                            </div>
+                        </div>
+                        <div *ngIf="model.proveedor != ''" class="col-md-4 col-6 ">
+                            <div class="form-floating">
+                                <input type="text" class="form-control custom-input" [(ngModel)]="model.proveedor" id="proveedor" disabled>
+                                <label for="proveedor">Proveedor</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div *ngIf="isLoading || (model.productos && model.productos.length === 0)" class="row-12 text-center">
+                        <h6 *ngIf="isLoading">Cargando...</h6>
+                        <h6 *ngIf="!isLoading && model.productos && model.productos.length === 0">No se encontraron registros</h6>
+                    </div>
+                    <div *ngIf="isLoading" class="text-center ">
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    </div>
+                    <div *ngIf="model.productos && model.productos.length > 0" class="fade-in-container" style="max-height: 350px; border-radius: 10px; overflow-y: auto; overflow-x: hidden;">
+                        <table class="table table-striped table-responsive" style="border-radius: 10px; overflow-x: hidden;">
+                            <thead class="sticky-top">
+                                <tr class="d-md-none">
+                                    <th class="ps-2 text-start">Productos</th>
+                                </tr>
+                                <tr class="d-none d-md-table-row">
+                                    <th>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-1 col-sm-6 col-1">
+                                                <span class="ms-2">Ord.</span>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-5">
+                                                <span class="ms-2">Clave</span>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-3">
+                                                <span class="ms-2">Descripción</span>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-2">
+                                                <span class="ms-2">Precio proveedor</span>
+                                            </div>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let p of model.productos">
+                                    <td>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-1 col-sm-6 col-6">
+                                                <span class="badge d-md-none">Ord:</span>
+                                                <div class=" ms-2">{{ p.rowNum }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-6">
+                                                <span class="badge d-md-none">Clave:</span>
+                                                <div class=" ms-2">{{ p.clave }}</div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-6">
+                                                <span class="badge d-md-none">Descripcion:</span>
+                                                <div class="ms-2">{{ p.descripcion }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 col-6">
+                                                <span class="badge d-md-none">Precio proveedor:</span>
+                                                <div class="ms-2">${{ p.precioProveedor | number: '1.2'}}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf="model.productos && model.productos.length > 0">
+                        <br />
+                        <pagina-widget [pagina]="model.pagina" [numPaginas]="model.numPaginas" [rows]="model.rows" (chgEvent)="muevePagina($event)"></pagina-widget>
+                    </div>
+                    <div *ngIf="model.productos && model.productos.length > 0">
+                        <div class="col-12 float-end col-md-3">
+                            <button type="button" id="btnProdDes" (click)="descargarListaProductosPorEstado()" class="btn btn-outline-info "><i class="fa-solid fa-download"></i> Descargar istado</button>
+                            <span style="margin-right: 10px;"></span>
+                        </div>
+                        <br />
+                    </div>
+                    <!--<div class="row">
+                        <div class="col d-flex justify-content-end">
+                            <button type="button" (click)="openUsu(0)" class="btn btn-lg btn-outline-primary  box-shadow" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar Usuario</button>
+                        </div>
+                    </div>-->
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<producto-widget [idP]="selPuesto" [grupo]="grupo" (saveEvent)="closeMat($event)"></producto-widget>
+<agregarservicio-widget (serEvent)="reloadServicios()"></agregarservicio-widget>
+<usuarioadd-widget (actualizarUsuarios)="obtenerUsuarios()"></usuarioadd-widget>
+<elimina-widget [titulo]="" [mensaje]="" (ansEvent)="eliminarUsuario($event)"></elimina-widget>

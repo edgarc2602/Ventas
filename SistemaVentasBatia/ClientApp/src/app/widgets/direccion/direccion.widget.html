@@ -1,0 +1,105 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="modal fade" id="modalAgregarDireccion" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 *ngIf="model.idDireccion == 0" class="modal-title">Agregar Dirección Nueva</h4>
+                    <h4 *ngIf="model.idDireccion > 0" class="modal-title">Editar Dirección</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.nombreSucursal" id="NombreSucursal">
+                                    <label for="NombreSucursal">Sucursal</label>
+                                </div>
+                                <span *ngIf="ferr('NombreSucursal')" class="text-danger">{{ terr('NombreSucursal') }}</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdTIpoInmueble" [(ngModel)]="model.idTipoInmueble" id="ddlTipoInmuebleDireccion">
+                                        <option *ngFor="let t of tips" [ngValue]="t.id">{{ t.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlTipoInmuebleDireccion">Tipo de Inmueble</label>
+                                </div>
+                                <span *ngIf="ferr('IdTipoInmueble')" class="text-danger">{{ terr('IdTipoInmueble') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.codigoPostal" (input)="getDireccionAPI()" id="txtCPDireccion">
+                                    <label for="txtCPDireccion">CP</label>
+                                </div>
+                                <span *ngIf="ferr('CodigoPostal')" class="text-danger">{{ terr('CodigoPostal') }}</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdEstado" [(ngModel)]="model.idEstado" (change)="loadMun()" id="ddlEstadoDireccion">
+                                        <!--(change)="chgEdo()"-->
+                                        <option *ngFor="let e of edos" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlEstadoDireccion">Estado:</label>
+                                </div>
+                                <span *ngIf="ferr('IdEstado')" class="text-danger">{{ terr('IdEstado') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdMunicipio" [(ngModel)]="model.idMunicipio" id="ddlMunicipioDireccion">
+                                        <option *ngFor="let m of muns" [ngValue]="m.id">{{ m.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlMunicipioDireccion">Municipio</label>
+                                </div>
+                                <span *ngIf="ferr('IdMunicipio')" class="text-danger">{{ terr('IdMunicipio') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <!--<div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.colonia">
+                                    <label for="Colonia">Colonia</label>
+                                </div>
+                                <span *ngIf="ferr('Colonia')" class="text-danger">{{ terr('Colonia') }}</span>-->
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="Colonia" [(ngModel)]="model.colonia" id="ddlColoniaDireccion">
+                                        <option value="">Seleccione...</option>
+                                        <option *ngFor="let col of direccionAPI.codigoPostal.colonias" [ngValue]="col">{{ col }}</option>
+                                    </select>
+                                    <label for="ddlColoniaDireccion">Colonia</label>
+                                </div>
+                                <span *ngIf="ferr('Colonia')" class="text-danger">{{ terr('Colonia') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.ciudad" id="txtCiudadDireccion">
+                                    <label for="txtCiudadDireccion">Ciudad</label>
+                                </div>
+                                <span *ngIf="ferr('Ciudad')" class="text-danger">{{ terr('Ciudad') }}</span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.domicilio" id="txtCalleNumeroDireccion">
+                                    <label for="txtCalleNumeroDireccion">Calle y Número</label>
+                                </div>
+                                <span *ngIf="ferr('Domicilio')" class="text-danger">{{ terr('Domicilio') }}</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" (click)="guarda()" class="btn btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="validaMess"></toast-widget>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>

@@ -1,0 +1,104 @@
+<div>
+    <div class="row">
+        <div class="col-sm-12 col-md-4 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control validacion-prospecto" [(ngModel)]="model.nombreComercial" data-campo="nombreComercial" id="txtNombreComercial">
+                <label for="txtNombreComercial">Nombre Comercial</label>
+            </div>
+            <span *ngIf="ferr('NombreComercial')" class="text-danger">{{ terr('NombreComercial') }}</span>
+        </div>
+        <div class="col-sm-12 col-md-4 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" [(ngModel)]="model.razonSocial" id="txtRazonSocial">
+                <label for="txtRazonSocial">Razón Social</label>
+            </div>
+            <span *ngIf="ferr('RazonSocial')" class="text-danger">{{ terr('RazonSocial') }}</span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control validacion-prospecto" [(ngModel)]="model.rfc" data-campo="rfc" id="txtRFC">
+                <label for="txtRFC">RFC</label>
+            </div>
+            <span *ngIf="ferr('Rfc')" class="text-danger">{{ terr('Rfc') }}</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-sm-12 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" [(ngModel)]="model.domicilioFiscal" id="txtDomicicioFiscal">
+                <label for="txtDomicicioFiscal">Domicilio Fiscal</label>
+            </div>
+            <span *ngIf="ferr('DomicilioFiscal')" class="text-danger">{{ terr('DomicilioFiscal') }}</span>
+        </div>
+        <div class="col-md-4 col-sm-12 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" [(ngModel)]="model.nombreContacto" id="txtContacto">
+                <label for="txtContacto">Contacto</label>
+            </div>
+            <span *ngIf="ferr('NombreContacto')" class="text-danger">{{ terr('NombreContacto') }}</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-12 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" [(ngModel)]="model.emailContacto" id="txtEmailContacto">
+                <label for="txtEmailContacto">Email Contacto</label>
+            </div>
+            <span *ngIf="ferr('EmailContacto')" class="text-danger">{{ terr('EmailContacto') }}</span>
+        </div>
+        <div class="col-md-4 col-sm-12 col-6 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" [(ngModel)]="model.numeroContacto" id="txtNumeroContacto">
+                <label for="txtNumeroContacto">Tel. Contacto</label>
+            </div>
+            <span *ngIf="ferr('NumeroContacto')" class="text-danger">{{ terr('NumeroContacto') }}</span>
+        </div>
+        <div class="col-md-2 col-sm-12 col-6 mb-3">
+            <div class="form-floating">
+                <input type="text" class="form-control" [(ngModel)]="model.extContacto" id="txtExtension">
+                <label for="txtExtension">Extensión</label>
+            </div>
+            <span *ngIf="ferr('ExtContacto')" class="text-danger">{{ terr('ExtContacto') }}</span>
+        </div>
+    </div>
+
+    <h5>Documentación</h5>
+    <br />
+    <div class="row">
+        <div class="col-sm-6 col-md-3 col-4" *ngFor="let d of docs">
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="d.nom" [value]="d.id" [(ngModel)]="d.act" /> {{ d.nom }}
+                </label><br />
+            </div>
+        </div>
+    </div>
+    <br />
+    <h5>Poliza de cumplimiento</h5>
+    <br />
+    <div class="row">
+        <div class="col-sm-6 col-md-3 col-4">
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="true" [(ngModel)]="model.polizaCumplimiento" required /> Si
+                </label><br />
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-4">
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="false" [(ngModel)]="model.polizaCumplimiento" required /> No
+                </label><br />
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div>
+            <div class="btn-group float-end">
+                <button type="button" (click)="guarda()" class="btn btn-outline-success" id="btnGuardarProspecto"><i class="fa-solid fa-save"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="validaMess"></toast-widget>
