@@ -171,8 +171,8 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         }
         this.init();
     }
-    editar(idCotizacion: number, prospecto: string, servicio: string) {
-        this.ediw.openSel(idCotizacion, prospecto, servicio);
+    editar(idCotizacion: number, servicio: string) {
+        this.ediw.openSel(idCotizacion,servicio);
     }
     goBack() {
         window.history.back();

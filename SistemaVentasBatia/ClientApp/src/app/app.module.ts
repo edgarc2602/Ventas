@@ -35,21 +35,17 @@ import { ActualizaCotizacionWidget } from './widgets/actualizacotizacion/actuali
 import { EditarCotizacion } from './widgets/editacotizacion/editacotizacion.widget';
 import { ServicioAddWidget } from './widgets/servicioadd/servicioadd.widget';
 import { AgregarServicioWidget } from './widgets/agregarservicio/agregarservicio.widget';
-
 import { StoreUser } from './stores/StoreUser';
-
 import { DescargarComponent } from './exclusivo/cotizacion/descargar/descargar.component';
-
 import { CommonModule } from '@angular/common';
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { fadeInOut } from './fade-in-out';
 import { UsuarioAddWidget } from './widgets/usuarioadd/usuarioadd.widget';
 import { PuestoLayoutWidget } from './widgets/puestolayout/puestolayout.widget';
+import { MarcaVenta } from './widgets/marcaventa/marcaventa.widget';
 @NgModule({
     declarations: [
         AppComponent,
-        // NavMenuComponent,
         CounterComponent,
         FetchDataComponent,
         ColectivoComponent,
@@ -83,7 +79,8 @@ import { PuestoLayoutWidget } from './widgets/puestolayout/puestolayout.widget';
         ServicioAddWidget,
         AgregarServicioWidget,
         UsuarioAddWidget,
-        PuestoLayoutWidget
+        PuestoLayoutWidget,
+        MarcaVenta
         
     ],
     imports: [

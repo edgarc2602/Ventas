@@ -29,6 +29,7 @@ import internal = require('assert');
 import { saveAs } from 'file-saver';
 import { PuestoLayoutWidget } from 'src/app/widgets/puestolayout/puestolayout.widget';
 import Swal from 'sweetalert2';
+import { MarcaVenta } from 'src/app/widgets/marcaventa/marcaventa.widget';
 
 
 
@@ -49,6 +50,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild(EliminaDirectorioWidget, { static: false }) elidir: EliminaDirectorioWidget;
     @ViewChild(ServicioAddWidget, { static: false }) serAdd: ServicioAddWidget;
     @ViewChild(PuestoLayoutWidget, { static: false }) puelay: PuestoLayoutWidget;
+    @ViewChild(MarcaVenta, { static: false }) marven: MarcaVenta;
     @ViewChild('resumen', { static: false }) resumen: ElementRef;
     @ViewChild('pdfCanvas', { static: true }) pdfCanvas: ElementRef;
     @ViewChild('indirectotxt', { static: false }) indirectotxt: ElementRef;
@@ -103,6 +105,8 @@ export class ResumenComponent implements OnInit, OnDestroy {
     isLoadinglay: boolean = false;
     isGen: number = 0;
     isSuc: number = 0;
+    nombreSucursal: string = '';
+    puesto: string = '';
 
     constructor(
         @Inject('BASE_URL') private url: string,
@@ -278,14 +282,14 @@ export class ResumenComponent implements OnInit, OnDestroy {
         }, err => console.log(err));
     }
 
-    addPlan(id: number, tb: number) {
+    addPlan(id: number, tb: number, nombreSucursal: string) {
         this.selDireccion = id;
-        this.pueAdd.open(this.model.idCotizacion, id, tb, 0);
+        this.pueAdd.open(this.model.idCotizacion, id, tb, 0, nombreSucursal);
     }
 
-    updPlan(id: number, tb: number) {
+    updPlan(id: number, tb: number, nombreSucursal: string, puesto: string) {
         //this.selPuesto = id;
-        this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id);
+        this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id,nombreSucursal,puesto);
     }
 
     removePlan(id: number) {
@@ -326,19 +330,24 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.dirAdd.open(this.model.idProspecto, idDireccionCotizacion);
     }
 
-    getMatPues(id: number, dir: number, tp: string) {
+    getMatPues(id: number, dir: number, tp: string, nombreSucursal?: string, puesto?: string) {
+        if (nombreSucursal != undefined) {
+            this.nombreSucursal = nombreSucursal;
+        }
+        if (puesto != undefined) {
+            this.puesto = puesto;
+        }
         this.edit = 0;
-
         this.selPuesto = id;
         this.selDireccion = dir;
         this.selTipo = tp;
-        this.proPue.open(this.model.idCotizacion, dir, id, tp, this.edit);
+        this.proPue.open(this.model.idCotizacion, dir, id, tp, this.edit, nombreSucursal, puesto);
     }
 
     newMate(event) {
         this.cloMate();
         this.sDir = false;
-        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, event, this.model.idServicio, this.selTipo, false, this.edit);
+        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, event, this.model.idServicio, this.selTipo, false, this.edit, this.nombreSucursal, this.puesto);
     }
 
     saveMate(event) {
@@ -488,7 +497,11 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     return($event) {
         if ($event == true) {
+
             this.getMatPues(this.selPuesto, this.selDireccion, this.selTipo);
+        }
+        else {
+            this.getMat(this.selTipo);
         }
     }
     validaActualizacionCotizacion() {
@@ -567,5 +580,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+
+    marcarVenta() {
+        this.marven.open(this.model.idCotizacion);
+    }
+    returnMarcaCotizacion() {
+        
     }
 }   

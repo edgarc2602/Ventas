@@ -7,6 +7,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
+
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -93,7 +96,7 @@ namespace SistemaVentasBatia.Controllers
                     WebClient wc = new WebClient
                     {
                         Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
-                    };  
+                    };
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
                     return new FileContentResult(myDataBuffer, "application/docx") // Cambia el tipo MIME a application/docx
@@ -136,5 +139,38 @@ namespace SistemaVentasBatia.Controllers
                 return StatusCode(500, "Error al obtener el archivo PDF");
             }
         }
+
+        //[HttpPost("[action]/{tipo}")]
+        //public IActionResult DescargarContrato(int idCotizacion)
+        //{
+        //    try
+        //    {
+        //        string rutaArchivo = "C:\\Users\\LAP_Sistemas5\\Downloads";
+        //        if (!File.Exists(rutaArchivo))
+        //        {
+        //            throw new FileNotFoundException($"El archivo '{rutaArchivo}' no existe.");
+        //        }
+
+
+        //        var url = ("http://192.168.2.4/Reporte?%2freportecotizacion&rs:Format=PDF&idCotizacion=" + idCotizacion.ToString());
+        //        WebClient wc = new WebClient
+        //        {
+        //            Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
+        //        };
+        //        byte[] myDataBuffer = wc.DownloadData(url.ToString());
+
+        //        return new FileContentResult(myDataBuffer, "application/pdf")
+        //        {
+        //            FileDownloadName = "PropuestaTecnica.pdf"
+        //        };
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error al obtener el archivo PDF: {ex.Message}");
+        //        return StatusCode(500, "Error al obtener el archivo PDF");
+        //    }
+
+        //}
     }
 }

@@ -15,9 +15,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.0" />
+    <PackageReference Include="CrystalReports.Engine" Version="13.0.4003" />
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="EPPlus" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.26" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
@@ -42,10 +44,20 @@
 	  <None Remove="ClientApp\src\app\models\usuario.ts" />
 	  <None Remove="ClientApp\src\app\models\usuarioregistro.ts" />
 	  <None Remove="ClientApp\src\app\stores\StoreUser.ts" />
+	  <None Remove="ClientApp\src\app\widgets\marcaventa\marcaventa.widget.ts" />
 	  <None Remove="ClientApp\src\app\widgets\puestolayout\puestolayout.widget.ts" />
 	  <None Remove="ClientApp\src\app\widgets\puesto\puesto.widget.ts" />
 	  <None Remove="ClientApp\src\assets\batia_logo.png" />
 	  <None Remove="ClientApp\src\FondoSinga3.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}">
+	    <WrapperTool>tlbimp</WrapperTool>
+	    <VersionMinor>4</VersionMinor>
+	    <VersionMajor>2</VersionMajor>
+	    <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
+	  </COMReference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -71,6 +83,9 @@
 	  </TypeScriptCompile>
 	  <TypeScriptCompile Include="ClientApp\src\app\models\usuario.ts" />
 	  <TypeScriptCompile Include="ClientApp\src\app\stores\StoreUser.ts" />
+	  <TypeScriptCompile Include="ClientApp\src\app\widgets\marcaventa\marcaventa.widget.ts">
+	    <SubType>Code</SubType>
+	  </TypeScriptCompile>
 	  <TypeScriptCompile Include="ClientApp\src\app\widgets\puestolayout\puestolayout.widget.ts">
 	    <SubType>Code</SubType>
 	  </TypeScriptCompile>

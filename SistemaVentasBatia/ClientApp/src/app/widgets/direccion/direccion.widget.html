@@ -26,6 +26,7 @@
                             <div class="col-md-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdTIpoInmueble" [(ngModel)]="model.idTipoInmueble" id="ddlTipoInmuebleDireccion">
+                                        <option value="0">Seleccione...</option>
                                         <option *ngFor="let t of tips" [ngValue]="t.id">{{ t.descripcion }}</option>
                                     </select>
                                     <label for="ddlTipoInmuebleDireccion">Tipo de Inmueble</label>
@@ -42,7 +43,7 @@
                             <div class="col-md-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdEstado" [(ngModel)]="model.idEstado" (change)="loadMun()" id="ddlEstadoDireccion">
-                                        <!--(change)="chgEdo()"-->
+                                        <option value="0">Seleccione...</option>
                                         <option *ngFor="let e of edos" [ngValue]="e.id">{{ e.descripcion }}</option>
                                     </select>
                                     <label for="ddlEstadoDireccion">Estado:</label>
@@ -52,6 +53,7 @@
                             <div class="col-sm-12 col-md-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdMunicipio" [(ngModel)]="model.idMunicipio" id="ddlMunicipioDireccion">
+                                        <option value="0">Seleccione...</option>
                                         <option *ngFor="let m of muns" [ngValue]="m.id">{{ m.descripcion }}</option>
                                     </select>
                                     <label for="ddlMunicipioDireccion">Municipio</label>
@@ -66,7 +68,7 @@
                                 <span *ngIf="ferr('Colonia')" class="text-danger">{{ terr('Colonia') }}</span>-->
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="Colonia" [(ngModel)]="model.colonia" id="ddlColoniaDireccion">
-                                        <option value="">Seleccione...</option>
+                                        <option value="0">Seleccione...</option>
                                         <option *ngFor="let col of direccionAPI.codigoPostal.colonias" [ngValue]="col">{{ col }}</option>
                                     </select>
                                     <label for="ddlColoniaDireccion">Colonia</label>

@@ -3,20 +3,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="modal fade" id="editcot" data-bs-backdrop="static">
+    <div class="modal fade" id="editcot">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Editar cotización</h4>
+                    <h4 class="modal-title">Editar tipo de servicio</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div>
-                        <br />
-                        <div class="row mb-3">
-                            <div class="col-sm-6 col-md-6">
+                        <div class="row">
+                            <div class="col-md-12 col-12">
+                                <h6> Id cotización: {{ idCotizacion }}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!--<div class="col-sm-6 col-md-6">
                                 <div class="form-floating">
                                     <select class="form-select" [(ngModel)]="prospecto" name="IdProspecto" id="ddlProspecto">
                                         <option value="0">Selecciona una opción...</option>
@@ -25,16 +29,16 @@
                                     <label for="ddlProspecto">Prospecto</label>
                                 </div>
                                 <span class="text-danger"></span>
-                            </div>
-                            <div class="col-sm-6 col-md-6">
+                            </div>-->
+                            <div class="col-sm-12 col-md-12 col-12">
                                 <div class="form-floating">
-                                    <select class="form-select" [(ngModel)]="servicio" name="IdServicio" id="ddlServicio">
-                                        <option value="0">Selecciona una opción...</option>
+                                    <select class="form-select" [(ngModel)]="idServicio" name="IdServicio" id="ddlServicio">
+                                        <option value="0">Seleccione...</option>
                                         <option *ngFor="let s of sers" [ngValue]="s.id">{{ s.nom }}</option>
                                     </select>
                                     <label for="ddlServicio">Servicio</label>
                                 </div>
-                                <span class="text-danger"></span>
+                                <span *ngIf="ferr('IdServicio')" class="text-danger">{{ terr('IdServicio') }}</span>
                             </div>
                         </div>
                     </div>

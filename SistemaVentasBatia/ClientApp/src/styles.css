@@ -463,7 +463,9 @@ input[type="date"] {
     max-width: 6.166%;
 }
 
-::placeholder,
+::placeholder {
+    color: #6c757d; /* Color de text-muted de Bootstrap 5 */
+}
 ::-webkit-input-placeholder {
     color: rgba(0, 0, 0, 0.2);
 }

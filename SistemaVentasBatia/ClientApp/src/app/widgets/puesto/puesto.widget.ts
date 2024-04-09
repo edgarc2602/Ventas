@@ -34,6 +34,8 @@ export class PuestoWidget {
     validaMess: string = '';
     validacion: boolean = false;
     jornada: number = 0;
+    nombreSucursal: string = '';
+    puesto: string = '';
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
@@ -235,7 +237,9 @@ export class PuestoWidget {
         return msg;
     }
 
-    open(cot: number, dir: number, tab: number, pue: number) {
+    open(cot: number, dir: number, tab: number, pue: number, nombreSucursal?: string, puesto?: string) {
+        this.nombreSucursal = nombreSucursal;
+        this.puesto = puesto;
         this.lerr = {};
         this.idC = cot;
         this.idD = dir;

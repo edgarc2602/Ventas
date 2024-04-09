@@ -1,88 +1,97 @@
-﻿import { Component, Inject } from '@angular/core';
+﻿import { Component, Inject, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Prospecto } from 'src/app/models/prospecto';
-import { Cotizacion } from 'src/app/models/cotizacion';
 import { ItemN } from 'src/app/models/item';
 import { StoreUser } from 'src/app/stores/StoreUser';
-import { position } from 'html2canvas/dist/types/css/property-descriptors/position';
 declare var bootstrap: any;
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'editcot-widget',
     templateUrl: './editacotizacion.widget.html'
 })
 export class EditarCotizacion {
-    lpros: Prospecto[] = [];
-    model: Cotizacion = {} as Cotizacion;
+    @Output('editCot') sendEvent = new EventEmitter<boolean>();
     sers: ItemN[] = [];
-    lerr: any = {};
     idCotizacion: number = 0;
-    prospecto: number = 0;
-    servicio: number = 0;
-    prospectostr: string = '';
-    serviciostr: string = '';
+    idServicio: number = 0;
+    validacion: boolean = false;
+    lerr: any = {};
 
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient,
         private rtr: Router, private sinU: StoreUser
     ) {
-        this.nuevo();
-        this.http.post<Prospecto[]>(`${this.url}api/prospecto/getcatalogo`, this.sinU.idPersonal).subscribe(response => {
-            this.lpros = response;
-        }, err => console.log(err));
         http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
             this.sers = response;
         }, err => console.log(err));
     }
 
-    nuevo() {
-        let fec: Date = new Date();
-        this.model = {
-            idCotizacion: 0, idProspecto: 0, idServicio: 0, total: 0,
-            fechaAlta: fec.toISOString(), idCotizacionOriginal: 0,
-            idPersonal: this.sinU.idPersonal, listaServicios: [], salTipo: 0, listaTipoSalarios: []
-        };
-    }
-
-    obtenerids(prospecto: string, servicio: string) {
-        for (const pros of this.lpros) {
-            if (pros.nombreComercial === prospecto) {
-                this.prospecto = pros.idProspecto;
-                break;
-            }
-        }
-        for (const ser of this.sers) {
-            if (ser.nom === servicio) {
-                this.servicio = ser.id;
-                break;
-            }
-        }
-    }
-
-    guarda() {
-
-        this.model.idProspecto = this.prospecto;
-        this.model.idServicio = this.servicio;
-        this.http.post<boolean>(`${this.url}api/cotizacion/actualizarcotizacion`, this.model).subscribe(response => {
-            console.log(response);
-            if (response) {
-                console.log('La respuesta es verdadera');
-            } else {
-                console.log('La respuesta es falsa');
-            }
-        }, err => console.error(err));
-        this.close();
-        location.reload();
-    }
-
-    openSel(idCotizacion: number, prospecto: string, servicio: string) {
-        this.model.idCotizacion = idCotizacion;
-        this.obtenerids(prospecto, servicio)
+    openSel(idCotizacion: number, servicio: string) {
         this.lerr = {};
+        switch (servicio) {
+            case 'Mantenimiento':
+                this.idServicio = 1;
+                break;
+            case 'Limpieza':
+                this.idServicio = 2;
+                break;
+            case 'Sanitización':
+                this.idServicio = 3;
+                break;
+            default:
+                break;
+        }
+        this.idCotizacion = idCotizacion;
         let docModal = document.getElementById('editcot');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
+    }
+
+    guarda() {
+        if (this.valida()) {
+            this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/ ${this.idServicio}`).subscribe(response => {
+                this.close();
+                Swal.fire({
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                });
+                this.sendEvent.emit(true);
+            }, err => {
+                this.close();
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Ocurrió un error al editar el tipo de servicio',
+                    icon: 'error',
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
+            });
+        }
+    }
+
+    valida() {
+        this.validacion = true;
+        if (this.idServicio == 0) {
+            this.lerr['IdServicio'] = ['Seleccione un servicio'];
+            this.validacion = false;
+        }
+        return this.validacion;
+    }
+
+    ferr(nm: string) {
+        let fld = this.lerr[nm];
+        if (fld)
+            return true;
+        else
+            return false;
+    }
+
+    terr(nm: string) {
+        let fld = this.lerr[nm];
+        let msg: string = fld.map((x: string) => "-" + x);
+        return msg;
     }
 
     close() {

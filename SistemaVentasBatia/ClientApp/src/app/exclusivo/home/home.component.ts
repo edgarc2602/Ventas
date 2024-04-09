@@ -115,7 +115,10 @@ export class HomeComponent implements OnInit {
                     borderWidth: 0
                 }
             },
-            series: seriesOptions
+            series: seriesOptions,
+            credits: {
+                enabled: false
+            }
         });
     }
 
@@ -177,7 +180,10 @@ export class HomeComponent implements OnInit {
                     borderWidth: 0
                 }
             },
-            series: seriesOptions
+            series: seriesOptions,
+            credits: {
+                enabled: false
+            }
         });
     }
     goBack() {

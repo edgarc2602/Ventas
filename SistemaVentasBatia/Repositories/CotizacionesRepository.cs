@@ -59,7 +59,7 @@ namespace SistemaVentasBatia.Repositories
         Task InsertaCotizacion(Cotizacion cotizacion);
         Task<bool> InactivarCotizacion(int idCotizacion);
         Task DesactivarCotizaciones(int idProspecto);
-        Task ActualizarCotizacion(int idCotizacion, int idProspecto, Servicio idServicio);
+        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio);
         Task InsertarTotalCotizacion(decimal total, int idCotizacion, string numerotxt);
         Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio,int idPersonal, int autorizacion);
         Task<int> ObtenerAutorizacion(int idPersonal);
@@ -702,18 +702,20 @@ where id_cotizacion = @idCotizacion";
             }
             return result;
         }
-        public async Task ActualizarCotizacion(int idCotizacion, int idProspecto, Servicio idServicio)
+        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio)
         {
-            var query = @"UPDATE tb_cotizacion set id_prospecto = @idProspecto, id_servicio = @idServicio where id_cotizacion = @idCotizacion";
+            var query = @"UPDATE tb_cotizacion set id_servicio = @idServicio where id_cotizacion = @idCotizacion";
             try
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    await connection.ExecuteAsync(query, new { idCotizacion, idProspecto, idServicio });
+                    await connection.ExecuteAsync(query, new { idCotizacion, idServicio });
+                    return true;
                 }
             }
             catch (Exception ex)
             {
+                return false;
                 throw ex;
             }
         }

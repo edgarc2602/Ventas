@@ -248,20 +248,10 @@ namespace SistemaVentasBatia.Controllers
 
         }
 
-        [HttpPost("[action]")]
-        public async Task<ActionResult<bool>> ActualizarCotizacion([FromBody] Cotizacion cotizacionupd)
+        [HttpGet("[action]/{idCotizacion}/{idServicio}")]
+        public async Task<ActionResult<bool>> ActualizarCotizacion(int idCotizacion, int idServicio)
         {
-            bool result;
-            result = await cotizacionesSvc.ActualizarCotizacion(cotizacionupd.IdCotizacion, cotizacionupd.IdProspecto, cotizacionupd.IdServicio);
-
-            if (result == true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+             return await cotizacionesSvc.ActualizarCotizacion(idCotizacion, idServicio);
         }
 
         [HttpGet("[action]")]

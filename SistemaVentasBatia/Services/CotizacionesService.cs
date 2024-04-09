@@ -35,7 +35,7 @@ namespace SistemaVentasBatia.Services
         Task EliminarOperario(int registroAEliminar);
         Task<int> DuplicarCotizacion(int idCotizacion);
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
-        Task<bool> ActualizarCotizacion(int idCotizacion, int idProspecto, Servicio idServicio);
+        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio);
         Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id);
         Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM);
         Task<Boolean> ActualizarSalarios(PuestoTabulador salarios);
@@ -250,8 +250,9 @@ namespace SistemaVentasBatia.Services
             bool isfrontera = await cotizacionesRepo.ObtenerFronteraPorIdDireccion(operariosModel.IdDireccionCotizacion);
             var immsJornada = new ImmsJornadaDTO();
             immsJornada = mapper.Map<ImmsJornadaDTO>(await cotizacionesRepo.ObtenerImmsJornada());
-            operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 30m) / 12m);
+            operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 20m) / 12m);
             operariosModel.PrimaVacacional = ((((operariosModel.Sueldo / 30.4167m) * 12m) * .25m) / 12m);
+            operariosModel.Vacaciones = ((operariosModel.Sueldo/ 30.4167m) * 12m)/ 12m;
             if(operariosModel.DiaFestivo == true)
             {
                 operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 7) / 12m);
@@ -337,6 +338,7 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Sueldo + 
                 operariosModel.Aguinaldo + 
                 operariosModel.PrimaVacacional + 
+                operariosModel.Vacaciones +
                 operariosModel.ISN + 
                 operariosModel.IMSS +
                 operariosModel.Festivo +
@@ -735,19 +737,9 @@ namespace SistemaVentasBatia.Services
             return await cotizacionesRepo.ActualizarIndirectoUtilidad(idCotizacion, indirecto, utilidad, comisionSV, comisionExt);
         }
 
-        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idProspecto, Servicio idServicio)
+        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio)
         {
-            bool result = await cotizacionesRepo.ValidarDirecciones(idCotizacion);
-
-            if (result == true)
-            {
-                await cotizacionesRepo.ActualizarCotizacion(idCotizacion, idProspecto, idServicio);
-            }
-            else
-            {
-                result = false;
-            }
-            return result;
+            return await cotizacionesRepo.ActualizarCotizacion(idCotizacion, idServicio);
         }
 
         public async Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id)

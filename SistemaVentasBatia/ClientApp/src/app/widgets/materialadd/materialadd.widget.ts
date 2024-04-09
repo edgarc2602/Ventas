@@ -34,6 +34,9 @@ export class MaterialAddWidget {
     validaMess: string = '';
     lerr: any = {};
     validaciones: boolean = false;
+    nombreSucursal: string = '';
+    puesto: string = '';
+    isExtra: boolean = false;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
 
@@ -78,7 +81,7 @@ export class MaterialAddWidget {
         if (this.valida()) {
             this.http.post<Material>(`${this.url}api/${this.tipo}`, this.model).subscribe(response => {
                 this.close();
-                this.sendEvent.emit(2);
+                //this.sendEvent.emit(2);
                 this.isErr = false;
                 this.validaMess = 'Material agregado';
                 this.evenSub.next();
@@ -99,7 +102,15 @@ export class MaterialAddWidget {
         }
     }
 
-    open(cot: number, dir: number, pue: number, id: number, ser: number, tp: string, showS: boolean = false, edit: number) {
+    open(cot: number, dir: number, pue: number, id: number, ser: number, tp: string, showS: boolean = false, edit: number, nombreSucursal?: string, puesto?: string) {
+        this.isExtra = false;
+        if (puesto != undefined) {
+            this.puesto = puesto.charAt(0).toUpperCase() + puesto.slice(1).toLowerCase();
+        }
+        else {
+            this.isExtra = true;
+        }
+        this.nombreSucursal = nombreSucursal;
         this.lerr = {};
         this.edit = edit;
         this.idC = cot;
