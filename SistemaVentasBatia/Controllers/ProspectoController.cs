@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SistemaVentasBatia.Enums;
+using SistemaVentasBatia.Models;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -51,7 +52,7 @@ namespace SistemaVentasBatia.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IEnumerable<ProspectoDTO>> GetCatalogo([FromBody]int idPersonal = 0)
+        public async Task<IEnumerable<ProspectoDTO>> GetCatalogo([FromBody] int idPersonal = 0)
         {
             int autorizacion = await cotizacionesSvc.ObtenerAutorizacion(idPersonal);
             return await prospectosSvc.ObtenerCatalogoProspectos(autorizacion, idPersonal);
@@ -60,10 +61,22 @@ namespace SistemaVentasBatia.Controllers
         [HttpPut]
         public async Task<ActionResult<ProspectoDTO>> EditarProspecto(ProspectoDTO prospectoVM)
         {
-            if (!ModelState.IsValid)
+            var coincidencias = await prospectosSvc.ObtenerCoincidenciasProspecto(nombreComercial: null, rfc: prospectoVM.Rfc);
+            if (coincidencias.Count != 0)
             {
-                return BadRequest(ModelState);
+                if (coincidencias[0].IdProspecto != prospectoVM.IdProspecto)
+                {
+                    if (coincidencias.Count() > 0)
+                    {
+                        ModelState.AddModelError("RFC", "Este RFC ya se encuentra registrado");
+                    }
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+                }
             }
+
             await prospectosSvc.EditarProspecto(prospectoVM);
 
             return Ok(prospectoVM);
@@ -82,9 +95,9 @@ namespace SistemaVentasBatia.Controllers
         {
             var coincidencias = await prospectosSvc.ObtenerCoincidenciasProspecto(nombreComercial: null, rfc: prospectoVM.Rfc);
 
-            if (coincidencias.Count() > 0 )
+            if (coincidencias.Count() > 0)
             {
-                ModelState.AddModelError("Rfc", "Este RFC ya se encuentra registrado");
+                ModelState.AddModelError("RFC", "Este RFC ya se encuentra registrado");
             }
 
             if (!ModelState.IsValid)

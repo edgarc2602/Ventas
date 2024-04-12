@@ -419,7 +419,8 @@ namespace SistemaVentasBatia.Repositories
         {
             var query = $@"SELECT id_puesto_direccioncotizacion IdPuestoDireccionCotizacion, id_puesto IdPuesto, id_direccion_cotizacion IdDireccionCotizacion,
                             jornada Jornada,j.descripcion JornadaDesc, id_turno IdTurno, cantidad Cantidad, hr_inicio HrInicio, hr_fin HrFin, dia_inicio DiaInicio, dia_Fin DiaFin,
-                            fecha_alta FechaAlta, sueldo Sueldo , id_tabulador IdTabulador, id_clase IdClase, dia_festivo DiaFestivo, festivo Festivo, bonos Bonos, vales Vales, dia_domingo DiaDomingo, domingo Domingo
+                            fecha_alta FechaAlta, sueldo Sueldo , id_tabulador IdTabulador, id_clase IdClase, dia_festivo DiaFestivo, festivo Festivo, bonos Bonos, vales Vales, dia_domingo DiaDomingo, domingo Domingo,
+                            dia_cubredescanso DiaCubreDescanso, cubredescanso CubreDescanso, hr_inicio_fin HrInicioFin, hr_fin_fin HrFinFin, dia_inicio_fin DiaInicioFin, dia_fin_fin DiaFinFin, dia_descanso DiaDescanso
                         FROM tb_puesto_direccion_cotizacion
 						INNER JOIN tb_jornada j ON jornada = j.id_jornada
                         WHERE id_puesto_direccioncotizacion = @id";

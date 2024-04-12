@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef } from '@angular/core';
 declare var bootstrap: any;
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { HttpClient } from '@angular/common/http';
@@ -9,17 +9,18 @@ import { HttpClient } from '@angular/common/http';
     templateUrl: './latmenu.component.html'
 })
 export class LatMenuComponent implements OnInit {
-    autorizacion: number = 0;
     isDarkTheme: boolean = false;
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser) {
-        http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`).subscribe(response => {
-            this.autorizacion = response;   
-        }, err => console.log(err));
-    }
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser, private elRef: ElementRef) { }
+
     ngOnInit(): void {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+        document.addEventListener('click', (event) => {
+            if (!this.elRef.nativeElement.contains(event.target)) {
+                this.cerrarMenu();
+            }
         });
 
     }
@@ -37,5 +38,9 @@ export class LatMenuComponent implements OnInit {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+    cerrarMenu(): void {
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        sidebarMenu.classList.remove('show');
     }
 }

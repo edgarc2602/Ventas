@@ -11,6 +11,7 @@ import { AgregarUsuario } from 'src/app/models/agregarusuario';
 import { DatePipe } from '@angular/common';
 
 
+
 declare var bootstrap: any;
 import { fadeInOut } from 'src/app/fade-in-out';
 
@@ -28,27 +29,28 @@ export class CotizaComponent {
     modelp: Prospecto = {} as Prospecto;
     sers: ItemN[] = [];
     salt: ItemN[] = [];
-    lerr: any = {};
-    isErr: boolean = false;
-    validaMess: string = '';
     var1: boolean = false;
     var2: boolean = false;
     var3: boolean = false;
     var4: boolean = false;
     var5: boolean = false;
     validaciones: boolean = false;
-    evenSub: Subject<void> = new Subject<void>();
     salTipo: number = 0;
     idVendedor: number = 0;
     listUsu: AgregarUsuario[];
     docs: ItemN[] = [];
 
+    lerr: any = {};
+    evenSub: Subject<void> = new Subject<void>();
+    isErr: boolean = false;
+    errMessage: string = '';
+
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe,
-        private rtr: Router, private sinU: StoreUser
+        private rtr: Router, public user: StoreUser
     ) {
         this.nuevo();
-        http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo`, this.sinU.idPersonal).subscribe(response => {
+        http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo`, this.user.idPersonal).subscribe(response => {
             this.lpros = response;
         }, err => console.log(err));
         http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
@@ -70,7 +72,7 @@ export class CotizaComponent {
         this.model = {
             idCotizacion: 0, idProspecto: 0, idServicio: 0, total: 0,
             fechaAlta: fec.toISOString(), idCotizacionOriginal: 0,
-            idPersonal: this.sinU.idPersonal, listaServicios: [], salTipo: 0, listaTipoSalarios: []
+            idPersonal: this.user.idPersonal, listaServicios: [], salTipo: 0, listaTipoSalarios: []
         };
         this.sers.forEach(s => s.act = false);
         this.salt.forEach(s => s.act = false);
@@ -78,13 +80,16 @@ export class CotizaComponent {
         this.modelp = {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
             representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
-            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, polizaCumplimiento: false
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.user.idPersonal, idEstatusProspecto: 0, polizaCumplimiento: false
         };
         this.docs.forEach(d => d.act = false);
         this.idVendedor = 0;
     }
 
     guarda() {
+        if (this.user.idAutoriza == 0) {
+            this.idVendedor = this.user.idPersonal;
+        }
         this.quitarFocoDeElementos();
         this.lerr = {};
         this.model.listaServicios = this.sers;
@@ -95,15 +100,16 @@ export class CotizaComponent {
                 this.http.post<boolean>(`${this.url}api/cotizacion`, this.model).subscribe(response => {
                     console.log(response);
                     this.isErr = false;
-                    this.validaMess = 'Prospecto guardado';
+                    this.errMessage = 'Cotizacion creada';
                     this.evenSub.next();
                     this.closeNew();
                     this.closeSel();
                     this.rtr.navigate(['/exclusivo/cotiza/' + this.model.idProspecto]);
+                    
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
+                    this.errMessage = 'Ocurrio un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
@@ -121,6 +127,10 @@ export class CotizaComponent {
         this.modelp.listaDocumentos = this.docs;
         this.modelp.idPersonal = this.idVendedor;
         this.lerr = {};
+        if (this.user.idAutoriza == 0) {
+            this.modelp.idPersonal = this.user.idPersonal;
+            this.idVendedor = this.user.idPersonal;
+        }
         if (this.valida2()) {
             if (this.modelp.idProspecto == 0) {
                 this.http.post<Prospecto>(`${this.url}api/prospecto`, this.modelp).subscribe(response => {
@@ -129,14 +139,20 @@ export class CotizaComponent {
                     this.model.idProspecto = response.idProspecto;
                     this.guarda();
                     this.isErr = false;
-                    this.validaMess = 'Prospecto guardado';
+                    this.errMessage = 'Prospecto guardado';
                     this.evenSub.next();
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
+                    this.errMessage = 'Ocurrio un error';
                     this.evenSub.next();
                     if (err.error) {
+                        for (let key in err.error) {
+                            if (err.error.hasOwnProperty(key)) {
+                                this.lerr[key] = [err.error[key]];
+                            }
+                        }
+                        
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
                         }
@@ -149,12 +165,12 @@ export class CotizaComponent {
                     this.model.idProspecto = response.idProspecto;
                     this.guarda();
                     this.isErr = false;
-                    this.validaMess = 'Prospecto actualizado';
+                    this.errMessage = 'Prospecto actualizado';
                     this.evenSub.next();
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
+                    this.errMessage = 'Ocurrio un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
@@ -209,10 +225,10 @@ export class CotizaComponent {
             this.lerr['NumeroContacto'] = ['Tel. Contacto es requerido'];
             this.validaciones = false;
         }
-        if (this.modelp.extContacto == '' || this.modelp.extContacto == null) {
-            this.lerr['ExtContacto'] = ['Extension es requerido'];
-            this.validaciones = false;
-        }
+        //if (this.modelp.extContacto == '' || this.modelp.extContacto == null) {
+        //    this.lerr['ExtContacto'] = ['Extension es requerido'];
+        //    this.validaciones = false;
+        //}
         if (!val) {
             this.lerr['ListaServicio'] = ['Servicio es requerido'];
             this.validaciones = false;

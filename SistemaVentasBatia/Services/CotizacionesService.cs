@@ -209,6 +209,7 @@ namespace SistemaVentasBatia.Services
         public async Task CrearPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operariosVM)
         {
             var operariosModel = mapper.Map<PuestoDireccionCotizacion>(operariosVM);
+            operariosModel.HorarioStr = await CrearHorarioLetra(operariosModel);
 
             operariosModel = await CalcularCostosOperario(operariosModel);
 
@@ -268,6 +269,14 @@ namespace SistemaVentasBatia.Services
             else
             {
                 operariosModel.Domingo = 0;
+            }
+            if (operariosModel.DiaCubreDescanso == true)
+            {
+                operariosModel.CubreDescanso = ((operariosModel.Sueldo / 30.4167m) * 4.33m);
+            }
+            else
+            {
+                operariosModel.CubreDescanso = 0;
             }
             decimal imss;
             if (isfrontera)
@@ -333,7 +342,7 @@ namespace SistemaVentasBatia.Services
             //}
 
             operariosModel.IMSS = imss;
-            operariosModel.ISN = (operariosModel.Sueldo + operariosModel.Aguinaldo + operariosModel.PrimaVacacional) * .03M;
+            operariosModel.ISN = (operariosModel.Sueldo + operariosModel.Aguinaldo + operariosModel.PrimaVacacional) * .03M; // incluir isn - domingo y festivos y cubredescansos
             operariosModel.Total = Math.Round(
                 operariosModel.Sueldo + 
                 operariosModel.Aguinaldo + 
@@ -755,6 +764,8 @@ namespace SistemaVentasBatia.Services
 
             operario = await CalcularCostosOperario(operario);
 
+            operario.HorarioStr = await CrearHorarioLetra(operario);
+
             await cotizacionesRepo.ActualizarPuestoDireccionCotizacion(operario);
         }
 
@@ -845,6 +856,40 @@ namespace SistemaVentasBatia.Services
         public async Task<bool> ActualizarImssJornada(ImmsJornadaDTO imssJormada)
         {
             return await cotizacionesRepo.ActualizarImssJornada(imssJormada);
+        }
+
+        public async Task<string> CrearHorarioLetra(PuestoDireccionCotizacion operario)
+        {
+            string horarioStr = operario.DiaInicio + " a " + operario.DiaFin + " de " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
+            if (operario.DiaInicioFin == operario.DiaFinFin && operario.DiaInicioFin.ToString() != "0")
+            {
+                horarioStr += ", " + operario.DiaFinFin + " de " + operario.HrInicioFin.Hours + ":00 a " + operario.HrFinFin.Hours + ":00";
+            }
+            if (operario.DiaInicioFin != operario.DiaFinFin && operario.DiaInicioFin.ToString() != "0")
+            {
+                horarioStr += ", " + operario.DiaInicioFin + " a " + operario.DiaFinFin + " de " + operario.HrInicioFin.Hours + ":00 a " + operario.HrFinFin.Hours + ":00";
+            }
+
+            if (operario.DiaFestivo == false || operario.DiaDomingo == false || operario.DiaCubreDescanso == false)
+            {
+                horarioStr += " excepto ";
+                if (operario.DiaDomingo == false)
+                {
+                    horarioStr += "domingo ";
+                }
+                if (operario.DiaFestivo == false)
+                {
+                    if (operario.DiaDomingo == false)
+                    {
+                        horarioStr += "y dias festivos ";
+                    }
+                    else
+                    {
+                        horarioStr += "dias festivos ";
+                    }
+                }
+            }
+            return horarioStr;
         }
     }
 }

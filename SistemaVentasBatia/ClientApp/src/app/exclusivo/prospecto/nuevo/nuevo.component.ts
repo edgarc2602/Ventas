@@ -27,10 +27,11 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         idProspecto: 0, idCotizacion: 0, idDireccion: 0, pagina: 0, direcciones: [], rows: 0, numPaginas: 0
     };
     idDirecc: number = 0;
+    lerr: any = {};
     evenSub: Subject<void> = new Subject<void>();
     isErr: boolean = false;
-    validaMess: string = '';
-    lerr: any = {};
+    errMessage: string = '';
+    isLoading: boolean = false;
  
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe,
@@ -71,6 +72,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     }
 
     guarda() {
+        this.errMessage = ''
         this.quitarFocoDeElementos();
         this.pro.listaDocumentos = this.docs;
         this.lerr = {};
@@ -80,19 +82,25 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                     this.pro.idProspecto = response.idProspecto;
                     console.log(response);
                     this.isErr = false;
-                    this.validaMess = 'Prospecto guardado';
+                    this.errMessage = 'Creado';
                     this.evenSub.next();
                     setTimeout(() => {
                         this.router.navigate(['/exclusivo/prospecto']);
-                    }, 1000);
+                    }, 2000);
                 }, err => {
+                    this.isLoading = false;
                     console.log(err);
-                    //this.isErr = true;
-                    //this.validaMess = 'Ocurrio un error';
-                    //this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
+                        } else if (err.error) {
+                            this.isErr = true;
+                            for (let key in err.error) {
+                                if (err.error.hasOwnProperty(key)) {
+                                    this.errMessage += key + ": " + err.error[key] + "\n";
+                                }
+                            }
+                            this.evenSub.next();
                         }
                     }
                 });
@@ -100,19 +108,25 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                 this.http.put<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
                     console.log(response);
                     this.isErr = false;
-                    this.validaMess = 'Prospecto actualizado';
+                    this.errMessage = 'Actualizado';
                     this.evenSub.next();
                     setTimeout(() => {
                         this.router.navigate(['/exclusivo/prospecto']);
-                    }, 1000);
+                    }, 2000);
                 }, err => {
+                    this.isLoading = false;
                     console.log(err);
-                    //this.isErr = true;
-                    //this.validaMess = 'Ocurrio un error';
-                    //this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
+                        } else if (err.error) {
+                            this.isErr = true;
+                            for (let key in err.error) {
+                                if (err.error.hasOwnProperty(key)) {
+                                    this.errMessage += key + ": " + err.error[key] + "\n";
+                                }
+                            }
+                            this.evenSub.next();
                         }
                     }
                 });
@@ -138,10 +152,10 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         return msg;
     }
 
-    recEvent($event) {
-        this.selDir($event);
-        this.getDir();
-    }
+    //recEvent($event) {
+    //    this.selDir($event);
+    //    this.getDir();
+    //}
 
     ngOnInit(): void {
         this.sub = this.route.params.subscribe(params => {

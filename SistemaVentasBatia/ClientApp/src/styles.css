@@ -288,8 +288,13 @@ tbody tr:hover {
     transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
     background-color: rgba(248, 249, 250, 0.8);
     backdrop-filter: blur(2px);
-    color: black
+    color: black;
+    transition: width 0.3s ease, opacity 0.3s ease;
 }
+
+/*    #sidebarMenu.collapsing {
+        opacity: .5;
+    }*/
 
 .modal-header {
     transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
@@ -466,6 +471,7 @@ input[type="date"] {
 ::placeholder {
     color: #6c757d; /* Color de text-muted de Bootstrap 5 */
 }
+
 ::-webkit-input-placeholder {
     color: rgba(0, 0, 0, 0.2);
 }
@@ -516,6 +522,7 @@ input:focus::-webkit-input-placeholder {
 .modal-dialog {
     transition: all 0.9s ease; /* Transición suave para todas las propiedades con duración de 0.3 segundos */
 }
+
 .toggle-btn {
     width: 60px;
     height: 30px;
@@ -531,13 +538,33 @@ input:focus::-webkit-input-placeholder {
         background-color: #4a92fe;
         color: white;
     }
+
 .nav-tabs .nav-link.active {
     color: black;
     box-shadow: 0px -8px 10px rgba(0, 0, 0, 0.05);
 }
+
 .plantilla {
     background-color: rgba(0, 123, 255, 0.75);
 }
+
+.accordion-collapse {
+    transition: height 0.5s ease, opacity 0.3s ease;
+}
+
+.accordion-body {
+    transition: height 0.5s ease, opacity 0.3s ease;
+}
+
+.open .accordion-collapse {
+    opacity: 1; /* Mostrar cuando está abierto */
+    transition: height 0.5s ease, opacity 0.3s ease;
+}
+
+
+
+
+
 
 /*.modal.show::before {
     content: "";
@@ -558,7 +585,7 @@ input:focus::-webkit-input-placeholder {
 
     100% {
         backdrop-filter: blur(5px);*/ /* Establece el valor final de desenfoque */
-    /*}
+/*}
 }*/
 
 
@@ -569,6 +596,7 @@ input:focus::-webkit-input-placeholder {
     --text-color-light: #ffffff;
     transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, fill 0.3s ease, backdrop-filter 0.3s ease,
 }
+
     .dark-theme .plantilla {
         background-color: rgba(21, 21, 21, 0.8);
         border-color: black;
@@ -608,18 +636,22 @@ input:focus::-webkit-input-placeholder {
     .dark-theme .badge {
         color: #fff;
     }
+
     .dark-theme .accordion-item {
         background-color: rgba(21, 21, 21, 0.8);
         color: #fff;
         transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
         border: none;
     }
+
     .dark-theme .accordion-collapse {
         background-color: rgba(21, 21, 21, 0.8);
         color: #fff;
         transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
         border: none;
+        transition: height 0.5s ease, opacity 0.3s ease;
     }
+
     .dark-theme .accordion-header {
         background-color: rgba(21, 21, 21, 0.8);
         color: #fff;
@@ -627,18 +659,13 @@ input:focus::-webkit-input-placeholder {
         border: none;
     }
 
-
-
-
-
-
-
     .dark-theme .accordion-button:active {
         background-color: rgba(21, 21, 21, 0.8);
         color: #fff;
         transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
         border: none;
     }
+
     .dark-theme .accordion-button::selection {
         background-color: rgba(21, 21, 21, 0.8);
         color: #fff;
@@ -651,6 +678,7 @@ input:focus::-webkit-input-placeholder {
         color: #fff;
         transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
         border: none;
+        transition: height 0.5s ease, opacity 0.3s ease;
     }
 
     .dark-theme .accordion-button {
@@ -660,7 +688,7 @@ input:focus::-webkit-input-placeholder {
         border: none;
     }
 
-    
+
 
     .dark-theme input {
         background-color: rgba(56, 52, 52, 0.5);
@@ -673,6 +701,7 @@ input:focus::-webkit-input-placeholder {
             color: #fff;
             background-color: #383434;
         }
+
         .dark-theme input:disabled {
             color: #fff;
             background-color: #383434;
@@ -718,6 +747,7 @@ input:focus::-webkit-input-placeholder {
         color: #fff;
         backdrop-filter: blur(2px);
         transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        transition: width 0.3s ease, opacity 0.3s ease;
     }
 
     .dark-theme #sidebarMenustatic {
@@ -790,6 +820,7 @@ input:focus::-webkit-input-placeholder {
     .dark-theme #accordion {
         background-color: #383434;
         transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        transition: height 0.3s ease, opacity 0.3s ease;
     }
 
     .dark-theme .card-header {

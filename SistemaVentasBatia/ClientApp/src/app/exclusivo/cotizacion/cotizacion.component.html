@@ -6,8 +6,8 @@
         </div>
     </div>
     <div>
-        <div class="row">
-            <div class="col-md-3 mb-3">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-3 col-6 mb-3">
                 <div class="form-floating">
                     <select class="form-select" asp-for="IdProspecto" [(ngModel)]="lcots.idProspecto" (change)="busca()" id="ddlProspecto">
                         <option value="0">Seleccione...</option>
@@ -18,11 +18,11 @@
             </div>
             <div class="col-md-3 col-6 mb-3">
                 <div class="form-floating">
-                    <select class="form-select" [(ngModel)]="lcots.idServicio" (change)="busca()" id="ddlServicio">
+                    <select class="form-select" [(ngModel)]="lcots.idServicio" (change)="busca()" id="ddlServicioCotizacion">
                         <option value="0">Seleccione...</option>
                         <option *ngFor="let s of lsers" [ngValue]="s.id">{{ s.nom }}</option>
                     </select>
-                    <label for="ddlServicio">Servicio</label>
+                    <label for="ddlServicioCotizacion">Servicio</label>
                 </div>
             </div>
             <div class="col-md-3 col-6 mb-3">
@@ -34,7 +34,7 @@
                     <label for="ddlEstatus">Estatus</label>
                 </div>
             </div>
-            <div class="col-md-3 mb-3 text-end">
+            <div class="col-md-3 col-6 mb-3 text-end">
                 <a [routerLink]="['/exclusivo/nuevocot']" class="btn btn-outline-primary"><i class="fa-solid fa-plus"></i> Nueva Cotización</a>
             </div>
         </div>
@@ -65,7 +65,7 @@
                             <div class="col-md-1 col-sm-6 col-1">
                                 <span class="ms-2">Id</span>
                             </div>
-                            <div class="col-md-3 col-sm-6 col-5">
+                            <div [ngClass]="user.idAutoriza ? 'col-md-3 col-sm-6 col-5' : 'col-md-5 col-sm-12 col-10'">
                                 <span class="ms-2">Prospecto</span>
                             </div>
                             <div class="col-md-2 col-sm-6 col-3">
@@ -77,7 +77,7 @@
                             <div class="col-md-2 col-sm-6 col-6">
                                 <span class="ms-2">Fecha Alta</span>
                             </div>
-                            <div *ngIf="autorizacion === 1" class="col-md-2 col-sm-6 col-6">
+                            <div *ngIf="user.idAutoriza === 1" class="col-md-2 col-sm-6 col-6">
                                 <span class="ms-2">Usuario Alta</span>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                                 <span class="badge d-md-none">Id:</span>
                                 <div class="ms-2">{{ cot.idCotizacion }}</div>
                             </div>
-                            <div class="col-md-3 col-sm-6 col-5">
+                            <div [ngClass]="user.idAutoriza ? 'col-md-3 col-sm-6 col-5' : 'col-md-5 col-sm-12 col-10'">
                                 <span class="badge d-md-none">Prospecto:</span>
                                 <div class="ms-2">{{ cot.nombreComercial }}</div>
                             </div>
@@ -109,7 +109,7 @@
                                 <span class="badge d-md-none">Fecha Alta:</span>
                                 <div class="ms-2">{{ cot.fechaAlta | date: 'dd-MM-yyyy' }}</div>
                             </div>
-                            <div *ngIf="autorizacion === 1" class="col-md-2 col-sm-6 col-5">
+                            <div *ngIf="user.idAutoriza === 1" class="col-md-2 col-sm-6 col-5">
                                 <span class="badge d-md-none">Usuario Alta:</span>
                                 <div class="ms-2 small"> {{  cot.idAlta }}  </div>
                             </div>
@@ -138,5 +138,6 @@
         <pagina-widget [pagina]="lcots.pagina" [numPaginas]="lcots.numPaginas" [rows]="lcots.rows" (chgEvent)="muevePagina($event)"></pagina-widget>
     </div>
 </div>
+<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>
 <elimina-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></elimina-widget>
-<editcot-widget (editCot)="init()"></editcot-widget>
+<editcot-widget (editCot)="editReturn($event)"></editcot-widget>

@@ -33,7 +33,7 @@
                                 </div>
                                 <span *ngIf="ferr('IdTipoInmueble')" class="text-danger">{{ terr('IdTipoInmueble') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-2 mb-3">
+                            <div class="col-sm-12 col-md-4 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="model.codigoPostal" (input)="getDireccionAPI()" id="txtCPDireccion">
                                     <label for="txtCPDireccion">CP</label>
@@ -102,6 +102,5 @@
             </div>
         </div>
     </div>
-    <toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="validaMess"></toast-widget>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>

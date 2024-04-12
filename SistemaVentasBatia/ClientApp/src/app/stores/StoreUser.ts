@@ -8,4 +8,6 @@ export class StoreUser {
     idInterno: number;
     idEmpleado: number;
     estatus: number;
+    idAutoriza: number;
+    idSupervisa: number;
 }

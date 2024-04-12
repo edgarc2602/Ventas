@@ -97,16 +97,21 @@ export class ResumenComponent implements OnInit, OnDestroy {
     reportData: Blob;
     pdfUrl: string;
     autorizacion: number = 0;
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
     validaMess: string = '';
     idCotN: number = 0;
-    isLoading: boolean = false;
     isLoadinglay: boolean = false;
     isGen: number = 0;
     isSuc: number = 0;
     nombreSucursal: string = '';
     puesto: string = '';
+
+    lerr: any = {};
+    evenSub: Subject<void> = new Subject<void>();
+    isErr: boolean = false;
+    errMessage: string = '';
+    isLoading: boolean = false;
+
+    allTabsOpen = true;
 
     constructor(
         @Inject('BASE_URL') private url: string,
@@ -127,9 +132,10 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     }
 
-    //obtenerUsuarioCotizacion(idCotizacion: number) {
-    //    this.http.get<number>(`${this.url}api/cotizacion/${this.}`)
-    //}
+    toggleAllTabs() {
+        this.allTabsOpen = !this.allTabsOpen;
+        this.quitarFocoDeElementos2();
+    }
 
     nuevo() {
         this.model = {
@@ -373,6 +379,9 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.http.delete<boolean>(`${this.url}api/${this.selTipo}/${id}`).subscribe(response => {
             if (response) {
                 this.getMat(this.selTipo);
+                this.isErr = false;
+                this.validaMess = 'Se elimino el material';
+                this.evenSub.next();
             }
         }, err => console.log(err));
     }
@@ -554,9 +563,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
     eliSer(id: number) {
         this.http.delete(`${this.url}api/material/EliminarServicioCotizacion/${id}`).subscribe(response => {
+            this.getServ();
+            this.isErr = false;
+            this.validaMess = 'Se elimino el servicio';
+            this.evenSub.next();
         }, err => console.log(err));
 
-        this.getServ();
+        
     }
     goBack() {
         window.history.back();
@@ -585,7 +598,11 @@ export class ResumenComponent implements OnInit, OnDestroy {
     marcarVenta() {
         this.marven.open(this.model.idCotizacion);
     }
-    returnMarcaCotizacion() {
+    returnMarcaCotizacion($event) {
         
+    }
+
+    descargarContrato() {
+
     }
 }   

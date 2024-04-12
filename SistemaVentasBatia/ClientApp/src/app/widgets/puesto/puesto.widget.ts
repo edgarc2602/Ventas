@@ -31,7 +31,7 @@ export class PuestoWidget {
     lclas: Catalogo[] = [];
     evenSub: Subject<void> = new Subject<void>();
     isErr: boolean = false;
-    validaMess: string = '';
+    errMessage: string = '';
     validacion: boolean = false;
     jornada: number = 0;
     nombreSucursal: string = '';
@@ -72,7 +72,8 @@ export class PuestoWidget {
             jornada: 0, idTurno: 0, hrInicio: '', hrFin: '', diaInicio: 0, diaFin: 0,
             fechaAlta: dt.toISOString(), sueldo: 0, vacaciones: 0, primaVacacional: 0, imss: 0,
             isn: 0, aguinaldo: 0, total: 0, idCotizacion: this.idC, idPersonal: this.sinU.idPersonal,
-            idSalario: 0, idClase: 0, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0, diaDomingo: false, domingo: 0
+            idSalario: 0, idClase: 0, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0, diaDomingo: false, domingo: 0,
+            diaCubreDescanso: false, cubreDescanso: 0, hrInicioFin: '', hrFinFin: '', diaInicioFin: 0, diaFinFin: 0, diaDescanso: 0
         };
     }
 
@@ -81,6 +82,9 @@ export class PuestoWidget {
             this.model = response;
             this.model.hrInicio = this.model.hrInicio.substring(0, 5);
             this.model.hrFin = this.model.hrFin.substring(0, 5);
+            this.model.hrInicioFin = this.model.hrInicioFin.substring(0, 5);
+            this.model.hrFinFin = this.model.hrFinFin.substring(0, 5);
+
         }, err => {
             console.log(err);
             if (err.error) {
@@ -92,6 +96,8 @@ export class PuestoWidget {
     }
 
     guarda() {
+        this.isErr = false;
+        this.errMessage = '';
         this.lerr = {};
         if (this.model.bonos == null) {
             this.model.bonos = 0;
@@ -99,18 +105,26 @@ export class PuestoWidget {
         if (this.model.vales == null) {
             this.model.vales = 0;
         }
+        if (this.model.diaFinFin == 0) {
+            this.model.diaFinFin = 0;
+        }
+        if (this.model.diaInicioFin == 0) {
+            this.model.diaInicioFin = 0;
+        }
         if (this.valida()) {
             if (this.model.idPuestoDireccionCotizacion == 0) {
                 this.model.idDireccionCotizacion = this.idD;
                 this.model.idCotizacion = this.idC;
                 this.http.post<PuestoCotiza>(`${this.url}api/puesto`, this.model).subscribe(response => {
-                    this.sendEvent.emit(0);
-                    this.close();
+                    this.errMessage = 'Puesto creado';
                     this.isErr = false;
                     this.evenSub.next();
+                    this.sendEvent.emit(0);
+                    this.close();
                 }, err => {
                     console.log(err);
                     this.isErr = true;
+                    this.errMessage = 'Ha ocurrido un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
@@ -123,12 +137,12 @@ export class PuestoWidget {
                     this.sendEvent.emit(0);
                     this.close();
                     this.isErr = false;
-                    this.validaMess = 'Guardado correctamente';
+                    this.errMessage = 'Puesto actualizado';
                     this.evenSub.next();
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = '¡Ha ocurrido un error!';
+                    this.errMessage = 'Ha ocurrido un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
@@ -214,6 +228,10 @@ export class PuestoWidget {
         }
         if (this.model.cantidad == 0) {
             this.lerr['Cantidad'] = ['Cantidad es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.diaDescanso == 0 || this.model.diaDescanso == undefined) {
+            this.lerr['DiaDescanso'] = ['Dia Descanso es obligatorio'];
             this.validacion = false;
         }
         //if (this.model.diaFestivo == null) {

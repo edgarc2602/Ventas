@@ -30,5 +30,10 @@ namespace SistemaVentasBatia.DTOs
         public decimal Bonos { get; set; }
         public decimal Vales { get; set; }
         public decimal Domingo { get; set; }
+        public decimal CubreDescanso { get; set; }
+        public TimeSpan HrInicioFin { get; set; }
+        public TimeSpan HrFinFin { get; set; }
+        public string DiaInicioFin { get; set; }
+        public string DiaFinFin { get; set; }
     }
 }

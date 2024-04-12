@@ -326,7 +326,8 @@ ORDER BY RowNum";
         {
             var query = @"select pdc.cantidad Cantidad, p.descripcion Puesto, jornada Jornada,j.descripcion JornadaDesc, t.descripcion Turno, hr_inicio HrInicio, hr_fin HrFin, dia_inicio DiaInicio, dia_fin DiaFin,
 	                               sueldo Sueldo, dc.id_cotizacion IdCotizacion, pdc.id_direccion_cotizacion IdDireccionCotizacion, id_puesto_direccioncotizacion IdPuestoDireccionCotizacion,
-                                   aguinaldo Aguinaldo, vacaciones Vacaciones, prima_vacacional PrimaVacacional, isn ISN, imss IMSS,festivo Festivo , bonos Bonos, vales Vales, total Total, domingo Domingo
+                                   aguinaldo Aguinaldo, vacaciones Vacaciones, prima_vacacional PrimaVacacional, isn ISN, imss IMSS,festivo Festivo , bonos Bonos, vales Vales, total Total, domingo Domingo, cubredescanso CubreDescanso,
+                                   hr_inicio_fin HrInicioFin, hr_fin_fin HrFinFin, dia_inicio_fin DiaInicioFin, dia_fin_fin DiaFinFin
                             from tb_puesto_direccion_cotizacion pdc
                             join tb_puesto p on p.id_puesto = pdc.id_puesto
                             join tb_turno t on t.id_turno = pdc.id_turno
@@ -378,9 +379,11 @@ ORDER BY RowNum";
         {
             int ids = 0;
             string query = @$"INSERT INTO tb_puesto_direccion_cotizacion (id_puesto, id_direccion_cotizacion, jornada, id_turno, id_salario, cantidad, hr_inicio, hr_fin,
-                            dia_inicio, dia_fin, fecha_alta, sueldo, aguinaldo, vacaciones, prima_vacacional, isn, imss, total, id_tabulador, id_clase, festivo, dia_festivo, bonos, vales, dia_domingo,domingo)
+                            dia_inicio, dia_fin, fecha_alta, sueldo, aguinaldo, vacaciones, prima_vacacional, isn, imss, total, id_tabulador, id_clase, festivo, dia_festivo, bonos, vales, dia_domingo,domingo, 
+                            dia_cubredescanso, cubredescanso, hr_inicio_fin, hr_fin_fin, dia_inicio_fin, dia_fin_fin, dia_descanso, horario_letra)
                         VALUES(@IdPuesto, @IdDireccionCotizacion, @Jornada, @IdTurno, @IdSalario, @Cantidad, @HrInicio, @HrFin,
-                            @DiaInicio, @DiaFin, getdate(), @Sueldo, @Aguinaldo, @Vacaciones, @PrimaVacacional, @ISN, @IMSS, @Total, @IdTabulador, @IdClase, @Festivo, @DiaFestivo, @Bonos, @Vales, @DiaDomingo, @Domingo);
+                            @DiaInicio, @DiaFin, getdate(), @Sueldo, @Aguinaldo, @Vacaciones, @PrimaVacacional, @ISN, @IMSS, @Total, @IdTabulador, @IdClase, @Festivo, @DiaFestivo, @Bonos, @Vales, @DiaDomingo, @Domingo,
+                            @DiaCubreDescanso, @CubreDescanso, @HrInicioFin, @HrFinFin, @DiaInicioFin, @DiaFinFin, @DiaDescanso, @HorarioStr);
                         select SCOPE_IDENTITY() as ID;";
 
             try
@@ -1195,7 +1198,9 @@ VALUES(
                         SET id_puesto = @IdPuesto, jornada = @Jornada, id_turno = @IdTurno, cantidad = @Cantidad, hr_inicio = @HrInicio, hr_fin = @HrFin, 
                             dia_inicio = @DiaInicio, dia_fin = @DiaFin, sueldo = @Sueldo, aguinaldo = @Aguinaldo,
                             vacaciones = @Vacaciones, prima_vacacional = @PrimaVacacional, isn= @ISN, imss = @IMSS, total = @Total, id_tabulador = @IdTabulador, id_clase = @IdClase,
-                            festivo = @Festivo, dia_festivo = @DiaFestivo, bonos = @Bonos, vales = @Vales, dia_domingo = @DiaDomingo, domingo = @Domingo
+                            festivo = @Festivo, dia_festivo = @DiaFestivo, bonos = @Bonos, vales = @Vales, dia_domingo = @DiaDomingo, domingo = @Domingo,
+                            dia_cubredescanso = @DiaCubreDescanso, cubredescanso = @CubreDescanso, hr_inicio_fin = @HrInicioFin, hr_fin_fin = @HrFinFin,
+                            dia_inicio_fin = @DiaInicioFin, dia_fin_fin = @DiaFinFin, dia_descanso = @DiaDescanso, horario_letra = @HorarioStr
                         WHERE id_puesto_direccioncotizacion = @IdPuestoDireccionCotizacion";
 
             try
@@ -1203,7 +1208,7 @@ VALUES(
                 using (var connection = ctx.CreateConnection())
                 {
                     await connection.ExecuteAsync(query, operario);
-                }
+                    }
             }
             catch (Exception ex)
             {

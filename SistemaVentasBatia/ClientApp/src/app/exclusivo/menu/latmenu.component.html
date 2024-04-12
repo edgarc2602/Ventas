@@ -38,11 +38,20 @@
                 </div>
             </a>
         </li>
-        <li  class="nav-item mb-3 text-sm-start text-md-center">
+        <li *ngIf="user.idAutoriza == 1" class="nav-item mb-3 text-sm-start text-md-center">
             <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right">
                     <span> <i class="fa-solid fa-gears fa-2x mb-2"></i></span>
                     <div class=" d-block d-md-none"><h6>CONFIGURACION</h6></div>
+                    <hr class="d-block d-md-none" />
+                </div>
+            </a>
+        </li>
+        <li *ngIf="user.idAutoriza == 0" class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-rectangle-list fa-2x"></i></span>
+                    <div class=" d-block d-md-none"><h6>REPORTES</h6></div>
                     <hr class="d-block d-md-none" />
                 </div>
             </a>
@@ -99,15 +108,15 @@
             </a>
         </li>
         <!--<li class="nav-item mb-3 text-sm-start text-md-center">
-            <a class="nav-link" aria-current="page" href="#">
-                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Clientes">
-                    <span> <i class="fa-solid fa-users fa-2x"></i></span>
-                    <div class="float-end d-block d-sm-none"><h6>CLIENTES</h6></div>
-                    <hr class="d-block d-sm-none" />
+        <a class="nav-link" aria-current="page" href="#">
+            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Clientes">
+                <span> <i class="fa-solid fa-users fa-2x"></i></span>
+                <div class="float-end d-block d-sm-none"><h6>CLIENTES</h6></div>
+                <hr class="d-block d-sm-none" />
 
-                </div>
-            </a>
-        </li>-->
+            </div>
+        </a>
+    </li>-->
         <li class="nav-item mb-3 text-sm-start text-md-center">
             <a class="nav-link" [routerLink]="['/exclusivo/cotiza/0']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right" title="Cotizaciones">
@@ -117,7 +126,16 @@
                 </div>
             </a>
         </li>
-        <li  class="nav-item mb-3 text-sm-start text-md-center">
+        <li *ngIf="user.idAutoriza == 0" class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Reportes">
+                    <span> <i class="fa-solid fa-rectangle-list fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>REPORTES</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>
+        <li *ngIf="user.idAutoriza == 1" class="nav-item mb-3 text-sm-start text-md-center">
             <a class="nav-link" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right" title="Ajustes">
                     <span> <i class="fa-solid fa-gears fa-2x"></i></span>
@@ -127,15 +145,15 @@
             </a>
         </li>
         <!--<li class="nav-item mb-3 text-sm-start text-md-center">
-            <a class="nav-link" aria-current="page" href="#">
+        <a class="nav-link" aria-current="page" href="#">
 
-                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Cuenta">
-                    <span> <i class="fa-solid fa-user-tie fa-2x"></i></span>
-                    <div class="float-end d-block d-sm-none"><h6>MI CUENTA</h6></div>
-                    <hr class="d-block d-sm-none" />
-                </div>
-            </a>
-        </li>-->
+            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Cuenta">
+                <span> <i class="fa-solid fa-user-tie fa-2x"></i></span>
+                <div class="float-end d-block d-sm-none"><h6>MI CUENTA</h6></div>
+                <hr class="d-block d-sm-none" />
+            </div>
+        </a>
+    </li>-->
         <li class="nav-item mb-3 text-sm-start text-md-center">
             <div *ngIf="isDarkTheme" data-bs-toggle="tooltip" data-bs-placement="right" title="Tema claro">
                 <button class="btn" (click)="toggleTheme()"><i class="fa-solid fa-sun fa-2x " style="color: #fff;"></i></button>

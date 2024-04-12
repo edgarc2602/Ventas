@@ -74,7 +74,6 @@ export class CatalogoComponent {
     evenSub: Subject<void> = new Subject<void>();
     selectedImage: string | ArrayBuffer | null = null;
     idPersonal: number = 0;
-    autorizacion: number = 0;
     usuario: UsuarioRegistro = {
         idAutorizacionVentas: 0, idPersonal: 0, autoriza: 0, nombres: '', apellidos: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '',
         firma: '', revisa: 0
@@ -110,9 +109,6 @@ export class CatalogoComponent {
         }, err => console.log(err));
         http.get<Catalogo[]>(`${url}api/catalogo/gettiposervicio`).subscribe(response => {
             this.tser = response;
-        }, err => console.log(err));
-        http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`).subscribe(response => {
-            this.autorizacion = response;
         }, err => console.log(err));
         http.get<Catalogo[]>(`${url}api/catalogo/getclase`).subscribe(response => {
             this.lclas = response;

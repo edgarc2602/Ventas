@@ -5,6 +5,8 @@ import { ItemN } from 'src/app/models/item';
 import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
 import Swal from 'sweetalert2';
+import { Subject } from 'rxjs';
+
 
 @Component({
     selector: 'editcot-widget',
@@ -17,6 +19,10 @@ export class EditarCotizacion {
     idServicio: number = 0;
     validacion: boolean = false;
     lerr: any = {};
+    evenSub: Subject<void> = new Subject<void>();
+    isErr: boolean = false;
+    errMessage: string = '';
+    isLoading: boolean = false;
 
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient,
@@ -49,24 +55,20 @@ export class EditarCotizacion {
     }
 
     guarda() {
+        this.isErr = false;
+        this.errMessage = '';
         if (this.valida()) {
             this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/ ${this.idServicio}`).subscribe(response => {
                 this.close();
-                Swal.fire({
-                    icon: 'success',
-                    timer: 1000,
-                    showConfirmButton: false,
-                });
+                this.isErr = false;
+                this.errMessage = 'Cotizaci\u00F3n actualizada';
+                this.evenSub.next();
                 this.sendEvent.emit(true);
             }, err => {
                 this.close();
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Ocurrió un error al editar el tipo de servicio',
-                    icon: 'error',
-                    timer: 3000,
-                    showConfirmButton: false,
-                });
+                this.isErr = true;
+                this.errMessage = 'Ocurrió un error';
+                this.evenSub.next();
             });
         }
     }

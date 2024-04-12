@@ -19,7 +19,7 @@ export class ProspectoWidget implements OnChanges {
     lerr: any = {};
     evenSub: Subject<void> = new Subject<void>();
     isErr: boolean = false;
-    validaMess: string = '';
+    errMessage: string = '';
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe, private sinU: StoreUser) {
         http.get<ItemN[]>(`${url}api/prospecto/getdocumento`).subscribe(response => {
@@ -54,12 +54,12 @@ export class ProspectoWidget implements OnChanges {
                     console.log(response);
                     this.sendEvent.emit(response.idProspecto);
                     this.isErr = false;
-                    this.validaMess = 'Prospecto guardado';
+                    this.errMessage = 'Prospecto guardado';
                     this.evenSub.next();
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
+                    this.errMessage = 'Ocurrio un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
@@ -72,12 +72,12 @@ export class ProspectoWidget implements OnChanges {
                     console.log(response);
                     this.sendEvent.emit(response.idProspecto);
                     this.isErr = false;
-                    this.validaMess = 'Prospecto actualizado';
+                    this.errMessage = 'Prospecto actualizado';
                     this.evenSub.next();
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
+                    this.errMessage = 'Ocurrio un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {

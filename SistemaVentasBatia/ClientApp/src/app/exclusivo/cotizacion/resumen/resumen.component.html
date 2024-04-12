@@ -7,7 +7,7 @@
             <div class="col-12 col-md-10">
                 <h2 class="text-black-90">Cotización {{model.nombreComercial}}</h2>
             </div>
-            <div class="col-4 col-md-2 text-end">
+            <div class="col-4 col-md-2 text-end d-none">
                 <button type="button" class="btn btn-outline-primary" (click)="marcarVenta()"> Marcar Venta</button>
             </div>
             <div class="col-4 col-md-6">
@@ -312,38 +312,35 @@
                 </table>
             </div>
             <div>
-                <form id="forcotupd">
-                    <div class="row">
-                        <div class="col-3">
+                <div class="row text-center">
+                    <div class="col-4">
 
-                        </div>
-                        <div *ngIf="autorizacion === 1" class="col-4">
-                            <button type="submit" class="btn btn-outline-primary" (click)="actualizarIndirectoUtilidad()">Actualizar %</button><br><br>
-                        </div>
-                        <div *ngIf="isLoading" class="col-2 text-center">
-                            <h6>Actualizando...</h6>
-                            <i class="fas fa-spinner fa-spin fa-3x"></i>
-                        </div>
                     </div>
-                </form>
+                    <div *ngIf="autorizacion === 1" class="col-4">
+                        <button type="submit" class="btn btn-outline-primary" (click)="actualizarIndirectoUtilidad()">Actualizar porcentajes</button><br><br>
+                    </div>
+                    <div *ngIf="isLoading" class="col-4 text-center">
+                        <h6>Actualizando...</h6>
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    </div>
+                </div>
+
                 <br />
-                <div class="row">
-                    <div class="col-md-2">
-                    </div>
-                    <div class="col-4 col-md-3  col-3">
+                <div class="row text-center">
+                    <div class="col-3 col-md-3  col-3">
                         <button type="button" id="miBoton1" (click)="descargarCotizacionComponent(2)" class="btn btn-outline-success"><i class="fa-solid fa-download"></i> Propuesta Economica</button>
                         <span style="margin-left: 10px;"></span>
                         <script src="../../cotizacion/resumen/"></script>
                     </div>
-                    <div class="col-4 float-end col-md-3">
+                    <div class="col-3 float-end col-md-3">
                         <button type="button" id="miBoton2" (click)="descargarCotizacionComponent(1)" class="btn btn-outline-info "><i class="fa-solid fa-download"></i> Propuesta Técnica</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
-                    <div class="col-4 float-end col-md-3">
-                        <button type="button" id="miBoton3" (click)="descargarContrato()" class="btn btn-outline-warning "><i class="fa-solid fa-download"></i> Descargar Contrato</button>
+                    <div class="col-3 float-end col-md-3">
+                        <button type="button" id="miBoton3" (click)="descargarContrato()" class="btn btn-outline-primary" disabled><i class="fa-solid fa-download"></i> Descargar Contrato</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3 col-md-3">
                         <button type="button" (click)="elige(model.idCotizacion)" class="btn btn-outline-danger "><i class="fa-solid fa-copy"></i> Duplicar Cotización</button>
                     </div>
                 </div>
@@ -360,8 +357,8 @@
                 </div>
             </div>
             <br>
-            <div class="row">
-                <div class="col-6 col-sm-12 col-md-4 mb-3">
+            <div class="row d-flex align-items-center mb-3">
+                <div class="col-4 col-sm-12 col-md-4">
                     <div class="form-floating">
                         <select class="form-select" [(ngModel)]="modelDir.idDireccion" aria-label="IdTIpoInmueble" id="IdDireccion">
                             <option value="0">Seleccione...</option>
@@ -371,14 +368,11 @@
                     </div>
                     <span asp-validation-for="IdDireccion" class="text-danger"></span>
                 </div>
-                <div class="col-6 col-sm-12 col-md-2">
-                    <button type="button" (click)="addDir()" class="btn btn-outline-success"><i class="fa-solid fa-plus"></i> Agregar</button>
-                </div>
-                <div class="col-6 col-sm-12 col-md-3 text-end">
-
+                <div class="col-1 col-sm-12 col-md-2">
+                    <button type="button" (click)="addDir()" class="btn btn-lg btn-outline-success"><i class="fa-solid fa-plus"></i></button>
                 </div>
 
-                <div class="col-6 col-sm-12 col-md-3 text-end ">
+                <div class="col-7 col-sm-12 col-md-6 text-end ">
                     <div class="btn-group">
                         <button type="button" (click)="getNewDir()" class="btn btn-outline-primary" id="btnAgregarDireccion"><i class="fa-solid fa-plus"></i> Nueva Dirección</button>
                     </div>
@@ -394,28 +388,29 @@
             <div *ngIf="isLoading" class="text-center ">
                 <i class="fas fa-spinner fa-spin fa-3x"></i>
             </div>
-            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 400px; overflow-y: auto; overflow-x: hidden">
+            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 400px; overflow-y: auto; overflow-x: hidden" class="box-shadow">
                 <div class="row">
                     <div *ngFor="let dr of lsdir.direcciones" class="col-sm-12 col-md-6 mb-3">
                         <div class="card shadow-sm">
                             <div class="card-header text-center"><h6>{{ dr.nombreSucursal }} ({{ dr.tipoInmueble }})</h6></div>
                             <div class="card-body">
-                                <div class="row mb-2">
-                                    <div class=" col-md-12 bd-highlight">
-                                        {{ dr.domicilioCompleto }}
-                                    </div>
-                                    
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 bd-highlight text-center">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" (click)="getExistDir(dr.idDireccion)" data-bs-toggle="tooltip" title="Editar">
-                                            <i class="fa-solid fa-pencil fa-2x"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" (click)="validaDireccionCotizacion(dr.idDireccionCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
-                                            <i class="fa-solid fa-times fa-2x"></i>
-                                        </button>
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-md-8 col-8">
+                                        <div class=" col-md-12 bd-highlight">
+                                            {{ dr.domicilioCompleto }}
                                         </div>
                                     </div>
+                                    <div class="col-md-4 col-4 text-center">
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" (click)="getExistDir(dr.idDireccion)" data-bs-toggle="tooltip" title="Editar">
+                                                <i class="fa-solid fa-pencil fa-2x"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" (click)="validaDireccionCotizacion(dr.idDireccionCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
+                                                <i class="fa-solid fa-times fa-2x"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -450,13 +445,20 @@
             </div>
         </div>
         <div class="tab-pane fade " id="plantilla" role="tabpanel" aria-labelledby="plantilla-tab">
-            <div class="d-flex flex-row-reverse">
-                <h5><i class="bi bi-people-fill"></i><span class="badge plantilla text-white">No. Empleados: {{lspue.empleados}}  </span></h5>
-                <h5 class="me-1"><span class="badge plantilla text-white">Importe mensual: $ {{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt | number: '1.2' }}</span></h5>
+            <div class="row">
+                <div class="col-12 col-md-4 text-start mb-1">
+                    <button class="btn btn-outline-primary" (click)="toggleAllTabs()"><i class="fa-solid {{ allTabsOpen ? 'fa-chevron-up' : 'fa-chevron-down' }}"></i> {{ allTabsOpen ? 'Cerrar todo' : 'Abrir todo' }}</button>
+                </div>
+                <div class="col-6 col-md-6 text-end">
+                    <h5 class="me-1"><span class="badge plantilla text-white">Importe mensual: $ {{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt | number: '1.2' }}</span></h5>
+                </div>
+                <div class="col-4 col-md-2 text-end">
+                    <h5><i class="bi bi-people-fill"></i><span class="badge plantilla text-white">No. Empleados: {{lspue.empleados}}  </span></h5>
+                </div>
             </div>
             <div style="border-radius: 10px; overflow-x: hidden;max-height: 500px; overflow-y: auto; overflow-x: hidden" class="box-shadow">
-                <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" (click)="quitarFocoDeElementos2()">
-                    <div class="plantilla">
+                <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" [ngClass]="{'open': allTabsOpen}" (click)="quitarFocoDeElementos2()">
+                    <div class="plantilla shadow-sm">
                         <div class="row col-md-12 col-sm-12 col-12 shadow-sm">
 
                             <a id="aListaOperarios{{ dir.idDireccionCotizacion }}" class="btn text-white  text-start col-md-10 col-9" data-bs-toggle="collapse" href="#dvPuestosDireccion{{ dir.idDireccionCotizacion }}">
@@ -470,7 +472,7 @@
                             </a>
                         </div>
                     </div>
-                    <div id="dvPuestosDireccion{{ dir.idDireccionCotizacion }}" class="collapse" data-bs-parent="#accordion">
+                    <div id="dvPuestosDireccion{{ dir.idDireccionCotizacion }}" class="collapse" [ngClass]="{'show': allTabsOpen}">
                         <div class="card-body">
                             <div style="overflow-x: hidden;">
                                 <table class="table table-borderless table-responsive table-striped" id="tbOperarios">
@@ -486,9 +488,11 @@
                                                         <span class="badge ">Cantidad:</span>
                                                         <div class="ms-4">{{ pt.cantidad }}</div>
                                                     </div>
-                                                    <div class="col-8 col-sm-4">
+                                                    <div class="col-8 col-sm-4 small">
                                                         <span class="badge ">Horario:</span>
-                                                        <div class="ms-1">{{ pt.diaInicio }} a {{ pt.diaFin }} de {{ pt.hrInicio.substring(0, 5) }} a {{ pt.hrFin.substring(0, 5) }} hrs</div>
+                                                        <div class="ms-1">{{ pt.diaInicio }} a {{ pt.diaFin }} de {{ pt.hrInicio.substring(0, 5) }} a {{ pt.hrFin.substring(0, 5) }}</div>
+                                                        <div *ngIf="pt.diaInicioFin == pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1">{{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
+                                                        <div *ngIf="pt.diaInicioFin !== pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1">{{ pt.diaInicioFin}} a {{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
                                                     </div>
                                                     <div class="col-3 col-sm-2">
                                                         <span class="badge ">Jornada:</span>
@@ -512,9 +516,8 @@
                                                     </div>
                                                     <div class="col-4 col-sm-2">
                                                         <span class="badge ">Prima Vacacional:</span>
-                                                        <div class="ms-1">$ {{ pt.primaVacacional }}</div>
+                                                        <div class="ms-1">$ {{ pt.primaVacacional | number: '0.2' }}</div>
                                                     </div>
-
                                                     <div class="col-4 col-sm-2">
                                                         <span class="badge ">ISN:</span>
                                                         <div class="ms-1">$ {{ pt.isn | number: '0.2' }}</div>
@@ -525,19 +528,23 @@
                                                     </div>
                                                     <div class="col-4 col-sm-2">
                                                         <span class="badge ">Bonos:</span>
-                                                        <div class="ms-1">$ {{ pt.bonos }}</div>
+                                                        <div class="ms-1">$ {{ pt.bonos | number: '0.2' }}</div>
                                                     </div>
                                                     <div class="col-4 col-sm-2">
                                                         <span class="badge ">Vales:</span>
-                                                        <div class="ms-1">$ {{ pt.vales }}</div>
+                                                        <div class="ms-1">$ {{ pt.vales | number: '0.2' }}</div>
                                                     </div>
                                                     <div class="col-4 col-sm-2">
-                                                        <span class="badge ">Dias Festivos:</span>
-                                                        <div class="ms-1">$ {{ pt.festivo }}</div>
+                                                        <span class="badge ">Festivos:</span>
+                                                        <div class="ms-1">$ {{ pt.festivo | number: '0.2' }}</div>
                                                     </div>
                                                     <div class="col-4 col-sm-2">
                                                         <span class="badge ">Domingos:</span>
-                                                        <div class="ms-1">$ {{ pt.domingo }}</div>
+                                                        <div class="ms-1">$ {{ pt.domingo | number: '0.2' }}</div>
+                                                    </div>
+                                                    <div class="col-4 col-sm-2">
+                                                        <span class="badge ">Cubre descansos:</span>
+                                                        <div class="ms-1">$ {{ pt.cubreDescanso | number: '0.2' }}</div>
                                                     </div>
                                                     <div class="col-6 col-sm-2">
                                                         <span class="badge ">Total:</span>
@@ -720,196 +727,196 @@
                 <pagina-widget [pagina]="lsmat.pagina" [numPaginas]="lsmat.numPaginas" [rows]="lsmat.rows" (chgEvent)="matPagina($event)"></pagina-widget>
             </div>
         </div>
-            <div class="tab-pane fade" id="servicio" role="tabpanel" aria-labelledby="plantilla-tab">
-                <div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button type="button" (click)="servicio(0)" class="btn btn-outline-primary float-end" id="btnAgregarDireccion"><i class="fa-solid fa-plus"></i> Agregar servicio</button>
-                        </div>
+        <div class="tab-pane fade" id="servicio" role="tabpanel" aria-labelledby="plantilla-tab">
+            <div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" (click)="servicio(0)" class="btn btn-outline-primary float-end" id="btnAgregarDireccion"><i class="fa-solid fa-plus"></i> Agregar servicio</button>
                     </div>
-                    <!--  -->
                 </div>
-                <div *ngIf="isLoading || (lsser.serviciosCotizacion && lsser.serviciosCotizacion.length === 0)" class="row-12 text-center">
-                    <hr />
-                    <br />
-                    <br />
-                    <h6 *ngIf="isLoading">Cargando...</h6>
-                    <h6 *ngIf="!isLoading && lsser.serviciosCotizacion && lsser.serviciosCotizacion.length === 0">No se encontraron registros</h6>
-                </div>
-                <div *ngIf="isLoading" class="text-center ">
-                    <i class="fas fa-spinner fa-spin fa-3x"></i>
-                </div>
-
-                <ng-container *ngIf="isGen == 1">
-                    <h6>General</h6>
-                    <div class="row" style="border-radius: 10px; overflow-x: hidden;">
-                        <table class="table table-borderless table-striped table-responsive">
-                            <thead class="sticky-top">
-                                <tr class="d-md-none">
-                                    <th class="ps-2 text-start">Servicios</th>
-                                    <th></th>
-                                </tr>
-                                <tr class="d-none d-md-table-row">
-                                    <th>
-                                        <div class="row d-flex align-items-center">
-                                            <div class="col-md-3 col-sm-6 col-1">
-                                                <span class="ms-2">Servicio</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-5">
-                                                <span class="ms-2">Costo</span>
-                                            </div>
-                                            <div class="col-md-1 col-sm-6 col-3">
-                                                <span class="ms-2">Cant.</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-2">
-                                                <span class="ms-2">Frecuencia</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-2">
-                                                <span class="ms-2">Total</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-6">
-                                                <span class="ms-2">Fecha Alta</span>
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <ng-container *ngFor="let ser of lsser.serviciosCotizacion">
-                                    <tr *ngIf="ser.idDireccionCotizacion == 0">
-                                        <td>
-                                            <div class="row d-flex align-items-center">
-                                                <div class="col-md-3 col-sm-6 col-6">
-                                                    <span class="badge d-md-none">Servicio:</span>
-                                                    <div class="ms-2">{{ ser.servicioExtra }}</div>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4">
-                                                    <span class="badge d-md-none">Costo:</span>
-                                                    <div class="ms-2">${{ ser.precioUnitario | number: '0.2' }}</div>
-                                                </div>
-                                                <div class="col-md-1 col-sm-4 col-2">
-                                                    <span class="badge d-md-none">Cantidad:</span>
-                                                    <div class="ms-2">{{ ser.cantidad | number: '0.0' }}</div>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4">
-                                                    <span class="badge d-md-none">Frecuencia:</span>
-                                                    <div class="ms-2">{{ ser.idFrecuencia }}</div>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4 ">
-                                                    <span class="badge d-md-none">Total:</span>
-                                                    <div class="ms-2">${{ ser.cantidad * ser.precioUnitario | number: '0.2' }}</div>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4">
-                                                    <span class="badge d-md-none">Fecha Alta:</span>
-                                                    <div class="ms-2">{{ ser.fechaAlta | date: 'dd/MM/yyyy' }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <a class="btn btn-sm btn-outline-primary" (click)="servicio(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Editar">
-                                                <i class="fa-solid fa-pencil fa-2x"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-outline-danger" (click)="eliSer(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
-                                                <i class="fa-solid fa-times fa-2x"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </ng-container>
-                            </tbody>
-                        </table>
-                    </div>
-                </ng-container>
-                <br />
-
-                <ng-container *ngIf="isSuc == 1">
-                    <h6>Por directorio</h6>
-                    <div class="row" style="border-radius: 10px; overflow-x: hidden;">
-                        <table class="table table-borderless table-striped table-responsive">
-                            <thead class="sticky-top">
-                                <tr class="d-md-none">
-                                    <th class="ps-2 text-start">Servicios</th>
-                                    <th></th>
-                                </tr>
-                                <tr class="d-none d-md-table-row">
-                                    <th>
-                                        <div class="row d-flex align-items-center">
-                                            <div class="col-md-3 col-sm-6 col-1">
-                                                <span class="ms-2">Servicio</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-5">
-                                                <span class="ms-2">Costo</span>
-                                            </div>
-                                            <div class="col-md-1 col-sm-6 col-3">
-                                                <span class="ms-2">Cant.</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-2">
-                                                <span class="ms-2">Frecuencia</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-2">
-                                                <span class="ms-2">Total</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-6">
-                                                <span class="ms-2">Fecha Alta</span>
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <ng-container *ngFor="let ser of lsser.serviciosCotizacion">
-                                    <tr *ngIf="ser.idDireccionCotizacion != 0">
-                                        <td>
-                                            <div class="row d-flex align-items-center">
-                                                <div class="col-md-3 col-sm-6 col-6">
-                                                    <span class="badge d-md-none">Servicio:</span>
-                                                    <div class="ms-2">{{ ser.servicioExtra }}</div>
-                                                    <small class="ms-2 text-muted">{{ ser.direccion }}</small>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4">
-                                                    <span class="badge d-md-none">Costo:</span>
-                                                    <div class="ms-2">${{ ser.precioUnitario | number: '0.2' }}</div>
-                                                </div>
-                                                <div class="col-md-1 col-sm-4 col-2">
-                                                    <span class="badge d-md-none">Cantidad:</span>
-                                                    <div class="ms-2">{{ ser.cantidad | number: '0.0' }}</div>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4">
-                                                    <span class="badge d-md-none">Frecuencia:</span>
-                                                    <div class="ms-2">{{ ser.idFrecuencia }}</div>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4">
-                                                    <span class="badge d-md-none">Total:</span>
-                                                    <div class="ms-2">${{ ser.cantidad * ser.precioUnitario | number: '0.2' }}</div>
-                                                </div>
-                                                <div class="col-md-2 col-sm-4 col-4">
-                                                    <span class="badge d-md-none">Fecha Alta:</span>
-                                                    <div class="ms-2">{{ ser.fechaAlta | date: 'dd/MM/yyyy' }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <a class="btn btn-sm btn-outline-primary mb-1" (click)="servicio(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Editar">
-                                                <i class="fa-solid fa-pencil fa-2x"></i>
-                                            </a>
-                                            <a class="btn btn-sm btn-outline-danger mb-1" (click)="eliSer(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
-                                                <i class="fa-solid fa-times fa-2x"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </ng-container>
-                            </tbody>
-                        </table>
-                    </div>
-                </ng-container>
-
-                <!--<pagina-widget [pagina]="lsser.pagina" [numPaginas]="lsser.numPaginas" [rows]="lsser?.serviciosCotizacion?.rows" (chgEvent)="matPagina($event)"></pagina-widget>-->
+                <!--  -->
             </div>
+            <div *ngIf="isLoading || (lsser.serviciosCotizacion && lsser.serviciosCotizacion.length === 0)" class="row-12 text-center">
+                <hr />
+                <br />
+                <br />
+                <h6 *ngIf="isLoading">Cargando...</h6>
+                <h6 *ngIf="!isLoading && lsser.serviciosCotizacion && lsser.serviciosCotizacion.length === 0">No se encontraron registros</h6>
+            </div>
+            <div *ngIf="isLoading" class="text-center ">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+            </div>
+
+            <ng-container *ngIf="isGen == 1">
+                <h6>General</h6>
+                <div class="row" style="border-radius: 10px; overflow-x: hidden;">
+                    <table class="table table-borderless table-striped table-responsive">
+                        <thead class="sticky-top">
+                            <tr class="d-md-none">
+                                <th class="ps-2 text-start">Servicios</th>
+                                <th></th>
+                            </tr>
+                            <tr class="d-none d-md-table-row">
+                                <th>
+                                    <div class="row d-flex align-items-center">
+                                        <div class="col-md-3 col-sm-6 col-1">
+                                            <span class="ms-2">Servicio</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-5">
+                                            <span class="ms-2">Costo</span>
+                                        </div>
+                                        <div class="col-md-1 col-sm-6 col-3">
+                                            <span class="ms-2">Cant.</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-2">
+                                            <span class="ms-2">Frecuencia</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-2">
+                                            <span class="ms-2">Total</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-6">
+                                            <span class="ms-2">Fecha Alta</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let ser of lsser.serviciosCotizacion">
+                                <tr *ngIf="ser.idDireccionCotizacion == 0">
+                                    <td>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-3 col-sm-6 col-6">
+                                                <span class="badge d-md-none">Servicio:</span>
+                                                <div class="ms-2">{{ ser.servicioExtra }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4">
+                                                <span class="badge d-md-none">Costo:</span>
+                                                <div class="ms-2">${{ ser.precioUnitario | number: '0.2' }}</div>
+                                            </div>
+                                            <div class="col-md-1 col-sm-4 col-2">
+                                                <span class="badge d-md-none">Cantidad:</span>
+                                                <div class="ms-2">{{ ser.cantidad | number: '0.0' }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4">
+                                                <span class="badge d-md-none">Frecuencia:</span>
+                                                <div class="ms-2">{{ ser.idFrecuencia }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4 ">
+                                                <span class="badge d-md-none">Total:</span>
+                                                <div class="ms-2">${{ ser.cantidad * ser.precioUnitario | number: '0.2' }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4">
+                                                <span class="badge d-md-none">Fecha Alta:</span>
+                                                <div class="ms-2">{{ ser.fechaAlta | date: 'dd/MM/yyyy' }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-outline-primary" (click)="servicio(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Editar">
+                                            <i class="fa-solid fa-pencil fa-2x"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-outline-danger" (click)="eliSer(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
+                                            <i class="fa-solid fa-times fa-2x"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </ng-container>
+            <br />
+
+            <ng-container *ngIf="isSuc == 1">
+                <h6>Por directorio</h6>
+                <div class="row" style="border-radius: 10px; overflow-x: hidden;">
+                    <table class="table table-borderless table-striped table-responsive">
+                        <thead class="sticky-top">
+                            <tr class="d-md-none">
+                                <th class="ps-2 text-start">Servicios</th>
+                                <th></th>
+                            </tr>
+                            <tr class="d-none d-md-table-row">
+                                <th>
+                                    <div class="row d-flex align-items-center">
+                                        <div class="col-md-3 col-sm-6 col-1">
+                                            <span class="ms-2">Servicio</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-5">
+                                            <span class="ms-2">Costo</span>
+                                        </div>
+                                        <div class="col-md-1 col-sm-6 col-3">
+                                            <span class="ms-2">Cant.</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-2">
+                                            <span class="ms-2">Frecuencia</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-2">
+                                            <span class="ms-2">Total</span>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-6">
+                                            <span class="ms-2">Fecha Alta</span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let ser of lsser.serviciosCotizacion">
+                                <tr *ngIf="ser.idDireccionCotizacion != 0">
+                                    <td>
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-3 col-sm-6 col-6">
+                                                <span class="badge d-md-none">Servicio:</span>
+                                                <div class="ms-2">{{ ser.servicioExtra }}</div>
+                                                <small class="ms-2 text-muted">{{ ser.direccion }}</small>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4">
+                                                <span class="badge d-md-none">Costo:</span>
+                                                <div class="ms-2">${{ ser.precioUnitario | number: '0.2' }}</div>
+                                            </div>
+                                            <div class="col-md-1 col-sm-4 col-2">
+                                                <span class="badge d-md-none">Cantidad:</span>
+                                                <div class="ms-2">{{ ser.cantidad | number: '0.0' }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4">
+                                                <span class="badge d-md-none">Frecuencia:</span>
+                                                <div class="ms-2">{{ ser.idFrecuencia }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4">
+                                                <span class="badge d-md-none">Total:</span>
+                                                <div class="ms-2">${{ ser.cantidad * ser.precioUnitario | number: '0.2' }}</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-4 col-4">
+                                                <span class="badge d-md-none">Fecha Alta:</span>
+                                                <div class="ms-2">{{ ser.fechaAlta | date: 'dd/MM/yyyy' }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-outline-primary mb-1" (click)="servicio(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Editar">
+                                            <i class="fa-solid fa-pencil fa-2x"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-outline-danger mb-1" (click)="eliSer(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
+                                            <i class="fa-solid fa-times fa-2x"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </ng-container>
+            <!--<pagina-widget [pagina]="lsser.pagina" [numPaginas]="lsser.numPaginas" [rows]="lsser?.serviciosCotizacion?.rows" (chgEvent)="matPagina($event)"></pagina-widget>-->
         </div>
+    </div>
 </div>
-<direc-widget (smEvent)="saveDir($event)"></direc-widget>
 <pues-widget (smEvent)="savePlan($event)"></pues-widget>
+
+<direc-widget (smEvent)="saveDir($event)"></direc-widget>
 <pueslayout-widget (smEvent)="savePlan($event)"></pueslayout-widget>
 <mate-widget (smEvent)="newMate($event)"></mate-widget>
 <mateadd-widget (smEvent)="saveMate($event)" (returnModal)="return($event)"></mateadd-widget>
@@ -919,3 +926,4 @@
 <eliminadirectorio-widget [titulo]="" [mensaje]="" (EventDC)="eliminaDireccionCotizacion($event)"></eliminadirectorio-widget>
 <eliminaOperario-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></eliminaOperario-widget>
 <marcaventa-widget (smEvent)="returnMarcaCotizacion($event)"></marcaventa-widget>
+<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>

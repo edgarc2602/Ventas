@@ -24,13 +24,13 @@ export class LoginComponent {
     isLoading: boolean = false;
 
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) {}
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) { }
 
     onLogin() {
         this.isLoading = true;
         this.lerr = {};
         if (this.valida()) {
-            
+
             this.http.post<Usuario>(`${this.url}api/usuario/login`, this.model).subscribe(response => {
                 setTimeout(() => {
                     this.isLoading = false;
@@ -39,19 +39,19 @@ export class LoginComponent {
                     localStorage.setItem('singaUser', JSON.stringify(this.usu));
                     this.rtr.navigate(['/exclusivo']);
                 }, 500);
-                
+
             }, err => {
                 setTimeout(() => {
-                this.isLoading = false;
-                console.log(err);
-                if (err.error) {
-                    if (err.error.errors) {
-                        this.lerr = err.error.errors;
-                    } else if (err.error.message) {
-                        this.isErr = true;
-                        this.errMessage = err.error.message;
-                        this.evenSub.next();
-                    }
+                    this.isLoading = false;
+                    console.log(err);
+                    if (err.error) {
+                        if (err.error.errors) {
+                            this.lerr = err.error.errors;
+                        } else if (err.error.message) {
+                            this.isErr = true;
+                            this.errMessage = err.error.message;
+                            this.evenSub.next();
+                        }
                     }
                 }, 500);
             });

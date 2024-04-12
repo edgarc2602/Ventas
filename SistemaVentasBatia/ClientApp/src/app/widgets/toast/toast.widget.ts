@@ -9,21 +9,25 @@ declare var bootstrap: any;
 export class ToastWidget implements OnInit, OnDestroy {
     eventsSubscription: Subscription;
     @Input() isError: boolean = false;
-    @Input() message: string = '';
+    @Input() message: string = "";
     @Input() events: Observable<void>;
 
     constructor() {}
 
-    refresh() {
+    refresh(isError: boolean, message: string) {
+        this.isError = isError;
+        this.message = message;
         let toastExample = document.getElementById('glotoast');
         let toast = new bootstrap.Toast(toastExample);
         toast.show();
-        console.log(this.isError);
     }
 
     ngOnInit() {
-        this.eventsSubscription = this.events.subscribe(() => this.refresh());
+        this.eventsSubscription = this.events.subscribe(() => {
+            this.refresh(this.isError, this.message);
+        });
     }
+
 
     ngOnDestroy() {
         this.eventsSubscription.unsubscribe();

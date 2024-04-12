@@ -8,7 +8,7 @@ declare var bootstrap: any;
 export class EliminaWidget implements OnChanges {
     @Input() mensaje: string = " ";
     @Input() titulo: string = " ";
-    @Output('ansEvent') sendEvent = new EventEmitter<boolean>();
+    @Output('ansEvent') sendEventDelete = new EventEmitter<boolean>();
 
     constructor() {}
 
@@ -19,7 +19,7 @@ export class EliminaWidget implements OnChanges {
     }
 
     acepta() {
-        this.sendEvent.emit(true);
+        this.sendEventDelete.emit(true);
         this.close();
     }
 

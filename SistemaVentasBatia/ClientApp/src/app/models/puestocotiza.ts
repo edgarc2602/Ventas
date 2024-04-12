@@ -31,4 +31,13 @@
     vales: number;
     diaDomingo: boolean;
     domingo: number;
+
+    diaCubreDescanso: boolean;
+    cubreDescanso: number;
+    hrInicioFin: string;
+    hrFinFin: string;
+    diaInicioFin: number;
+    diaFinFin: number;
+    diaDescanso: number;
+
 }

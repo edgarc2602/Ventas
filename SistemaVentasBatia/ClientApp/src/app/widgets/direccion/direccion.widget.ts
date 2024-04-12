@@ -19,12 +19,11 @@ export class DireccionWidget {
     tips: Catalogo[] = [];
     edos: Catalogo[] = [];
     tabs: Catalogo[] = [];
-    lerr: any = {};
     muns: Catalogo[] = [];
+    lerr: any = {};
     evenSub: Subject<void> = new Subject<void>();
     isErr: boolean = false;
-    validaMess: string = '';
-
+    errMessage: string = '';
     direccionAPI: DireccionResponseAPI = {
         message: '',
         error: false,
@@ -39,6 +38,7 @@ export class DireccionWidget {
             colonias: []
         }
     };
+    validacion: boolean = false;
 
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
@@ -121,6 +121,8 @@ export class DireccionWidget {
     }
 
     guarda() {
+        this.isErr = false;
+        this.errMessage = ''
         for (let mun of this.muns) {
             if (mun.id == this.model.idMunicipio) {
                 this.model.municipio = mun.descripcion
@@ -133,12 +135,12 @@ export class DireccionWidget {
                     this.sendEvent.emit(response.idDireccion);
                     this.close();
                     this.isErr = false;
-                    this.validaMess = 'Direccion agregada';
+                    this.errMessage = 'Direcci\u00F3n agregada';
                     this.evenSub.next();
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
+                    this.errMessage = 'Ha ocurrido un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
@@ -148,15 +150,15 @@ export class DireccionWidget {
                 });
             } else {
                 this.http.put<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
-                    this.sendEvent.emit(response.idDireccion);
                     this.close();
                     this.isErr = false;
-                    this.validaMess = 'Dirección actualizada';
+                    this.errMessage = 'Direcci\u00F3n actualizada';
                     this.evenSub.next();
+                    this.sendEvent.emit(response.idDireccion);
                 }, err => {
                     console.log(err);
                     this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
+                    this.errMessage = 'Ha ocurrido un error';
                     this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
@@ -182,7 +184,40 @@ export class DireccionWidget {
     }
 
     valida() {
-        return true;
+        this.validacion = true;
+        if (this.model.nombreSucursal == '') {
+            this.lerr['NombreSucursal'] = ['Nombre de sucursal es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.idTipoInmueble == 0) {
+            this.lerr['IdTipoInmueble'] = ['Tipo de inmueble es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.codigoPostal == '') {
+            this.lerr['CodigoPostal'] = ['Codigo postal es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.idEstado == 0) {
+            this.lerr['IdEstado'] = ['Estado es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.idMunicipio == 0) {
+            this.lerr['IdMunicipio'] = ['Municipio es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.colonia == '') {
+            this.lerr['Colonia'] = ['Colonia es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.ciudad == '') {
+            this.lerr['Ciudad'] = ['Ciudad es obligatorio'];
+            this.validacion = false;
+        }
+        if (this.model.domicilio == '') {
+            this.lerr['Domicilio'] = ['Domicilio es obligatorio'];
+            this.validacion = false;
+        }
+        return this.validacion;
     }
 
     ferr(nm: string) {

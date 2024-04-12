@@ -149,5 +149,6 @@
         </div>
     </div>
 </div>
-<direc-widget (smEvent)="recEvent($event)"></direc-widget>
-<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="validaMess"></toast-widget>
+<!--<direc-widget (smEvent)="recEvent($event)"></direc-widget>-->
+<!--<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="validaMess"></toast-widget>-->
+<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>

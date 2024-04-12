@@ -6,14 +6,14 @@
         </div>
     </div>
     <div>
-        <div class="row">
-            <div class="col-md-3 col-7 mb-3">
+        <div class="row d-flex align-items-center">
+            <div class="col-md-3 col-4 mb-3">
                 <div class="form-floating">
                     <input type="text" class="form-control" [(ngModel)]="lspro.keywords" id="Keywords" (input)="lista()">
                     <label for="Keywords">Nombre Comercial</label>
                 </div>
             </div>
-            <div class="col-md-3 col-5 mb-3">
+            <div class="col-md-3 col-3 mb-3">
                 <div class="form-floating">
                     <select class="form-select" [(ngModel)]="lspro.idEstatusProspecto" aria-label="IdEstatusProspecto" (change)="lista()" id="ddlEstatusProspecto">
                         <option value="0">Seleccione ...</option>
@@ -22,7 +22,7 @@
                     <label for="ddlEstatusProspecto">Estatus:</label>
                 </div>
             </div>
-            <div class="col-md-6 mb-3 text-end">
+            <div class="col-md-6 col-5 mb-3 text-end">
                 <a (click)="nuevo()" class="btn btn-outline-primary"><i class="fa-solid fa-plus"></i> Nuevo Prospecto</a>
             </div>
         </div>
@@ -52,31 +52,31 @@
                 <tr *ngFor="let prospecto of lspro.prospectos">
                     <td>
                         <div class="row mb-2">
-                            <div class="col-sm-3 col-5 col-md-4">
+                            <div class="col-sm-3 col-6 col-md-4">
                                 <span class="badge">Nombre Comercial:</span>
                                 <div class="ms-2">{{ prospecto.nombreComercial }}</div>
                             </div>
-                            <div class="col-sm-2 col-3 col-md-2">
+                            <div class="col-sm-2 col-6 col-md-2">
                                 <span class="badge">RFC:</span>
                                 <div class="ms-2">{{ prospecto.rfc }}</div>
                             </div>
-                            <div class="col-sm-2 col-4 col-md-2">
+                            <div class="col-sm-2 col-6 col-md-2">
                                 <span class="badge">Teléfono:</span>
                                 <div class="ms-2">{{ prospecto.numeroContacto }}</div>
                             </div>
-                            <div class=" col-sm-4 col-5 col-md-4">
+                            <div class=" col-sm-4 col-6 col-md-4">
                                 <span class="badge">Razón Social:</span>
                                 <div class="ms-2">{{ prospecto.razonSocial }}</div>
                             </div>
-                            <div class="col-sm-5 col-7 col-md-6">
+                            <div [ngClass]="user.idAutoriza ? 'col-sm-5 col-12 col-md-6' : 'col-md-8 col-sm-8 col-12'">
                                 <span class="badge">Domicilio Fiscal:</span>
                                 <div class="ms-2">{{ prospecto.domicilioFiscal }}</div>
                             </div>
-                            <div class="col-sm-2 col-5 col-md-2">
+                            <div class="col-sm-2 col-6 col-md-2">
                                 <span class="badge">Fecha Alta:</span>
                                 <div class="ms-2">{{ prospecto.fechaAlta | date: 'dd-MM-yyyy' }}</div>
                             </div>
-                            <div *ngIf="autorizacion === 1" class="col-sm-5 col-6 col-md-4">
+                            <div *ngIf="user.idAutoriza === 1" class="col-sm-5 col-6 col-md-4">
                                 <span class="badge">Usuario Alta:</span>
                                 <div class="ms-2">{{ prospecto.representanteLegal }}</div>
                             </div>

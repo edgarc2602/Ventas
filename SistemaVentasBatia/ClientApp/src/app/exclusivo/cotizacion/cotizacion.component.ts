@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ListaCotizacion } from 'src/app/models/listacotizacion';
 import { Prospecto } from 'src/app/models/prospecto';
 import { ItemN } from 'src/app/models/item';
-
+import { Subject } from 'rxjs';
 import { CotizaResumenLim } from 'src/app/models/cotizaresumenlim';
 //import { DireccionCotizacion } from '../../models/direccioncotizacion';
 import { ListaDireccion } from '../../models/listadireccion';
@@ -42,8 +42,11 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
     @ViewChild(EditarCotizacion, { static: false }) ediw: EditarCotizacion;
     estatus: number = 1;
-    autorizacion: number = 0;
     idCotizacion: number = 0;
+    lerr: any = {};
+    evenSub: Subject<void> = new Subject<void>();
+    isErr: boolean = false;
+    errMessage: string = '';
     isLoading: boolean = false;
 
 
@@ -54,9 +57,6 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         }, err => console.log(err));
         http.get<ItemN[]>(`${url}api/cotizacion/getestatus`).subscribe(response => {
             this.lests = response;
-        }, err => console.log(err));
-        http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`).subscribe(response => {
-            this.autorizacion = response;
         }, err => console.log(err));
     }
 
@@ -160,13 +160,16 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     elige(idCotizacion) {
         this.idCotizacion = idCotizacion;
         this.eliw.titulo = 'Eliminar'; //error
-        this.eliw.mensaje = 'Se eliminar\u00E1 la cotizacion';
+        this.eliw.mensaje = 'Se eliminar\u00E1 la cotizaci\u00F3n';
         this.eliw.open();
     }
 
     elimina($event) {
         if ($event) {
             this.http.post<boolean>(`${this.url}api/cotizacion/EliminarCotizacion`, this.idCotizacion).subscribe(response => {
+                this.isErr = false;
+                this.errMessage = 'Cotizaci\u00F3n ' + this.idCotizacion + ' eliminada';
+                this.evenSub.next();
             }, err => console.log(err));
         }
         this.init();
@@ -178,32 +181,29 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         window.history.back();
     }
     chgEstatus(idCotizacion: number, idEstatusCotizacion: number) {
+        this.isErr = false;
+        this.errMessage = '';
         if (idEstatusCotizacion === 1) {
             this.http.put<boolean>(`${this.url}api/cotizacion/desactivarcotizacion`, idCotizacion).subscribe(response => {
-                Swal.fire({
-                    icon: 'success',
-                    timer: 1000,
-                    showConfirmButton: false,
-                });
                 this.lista();
+                this.isErr = false;
+                this.errMessage = 'Cotizaci\u00F3n ' + idCotizacion + ' desactivada';
+                this.evenSub.next();
             }, err => {
                 console.log(err)
             });
         } else {
             this.http.put<boolean>(`${this.url}api/cotizacion/activarcotizacion`, idCotizacion).subscribe(response => {
-                Swal.fire({
-                    icon: 'success',
-                    timer: 1000,
-                    showConfirmButton: false,
-                });
                 this.lista();
+                this.isErr = false;
+                this.errMessage = 'Cotizaci\u00F3n ' + idCotizacion + ' activada';
+                this.evenSub.next();
             }, err => {
                 console.log(err)
             });
         }
     }
-
-    descartarCotizacion() {
-
+    editReturn($event) {    
+        this.init();
     }
 }
