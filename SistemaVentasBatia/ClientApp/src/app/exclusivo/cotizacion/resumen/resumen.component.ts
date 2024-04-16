@@ -605,4 +605,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
     descargarContrato() {
 
     }
+    descargarDatosCotizacion() {
+        this.http.post(`${this.url}api/cargamasiva/DescargarDatosCotizacion/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+            saveAs(response, 'DatosCotizacion_Id' + this.model.idCotizacion +'.xlsx');
+        },
+            error => {
+                console.error('Error al descargar el archivo:', error);
+            }
+        );
+    }
 }   

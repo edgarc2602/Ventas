@@ -55,7 +55,6 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public IActionResult DescargarLayoutDirectorio()
         {
-
             string rutaArchivo = Path.Combine("Layouts", "LayoutDirectorios.xlsx");
 
             byte[] fileContents = System.IO.File.ReadAllBytes(rutaArchivo);
@@ -75,6 +74,15 @@ namespace SistemaVentasBatia.Controllers
         public async Task <bool> CargarPlantilla( IFormFile file, int idCotizacion)
         {
             return await _logic.CargarPlantilla(file, idCotizacion);
+        }
+
+        [HttpPost("[action]/{idCotizacion}")]
+        public async Task<FileContentResult> DescargarDatosCotizacion(int idCotizacion)
+        {
+            byte[] fileContents = await _logic.ObtenerDatosCotizacion(idCotizacion);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
+
         }
     }
 }

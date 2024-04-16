@@ -19,6 +19,11 @@ namespace SistemaVentasBatia.Repositories
         Task<List<int>> ObtenerIdDireccionesInsertadas(int idProspecto, int cantidadDireccionesInsertadas);
         Task InsertarDireccionCotizacion(int idDireccion, int idCotizacion);
         Task<List<Direccion>> ObtenerSucursalesCotizacion(int idCotizacion);
+        Task<ResumenCotizacionLimpieza> ObtenerResumenCotizacionLimpieza(int idCotizacion);
+        Task<decimal> ObtenerPolizaCotizacion(int idCotizacion);
+        Task<Prospecto> ObtenerProspecto(int idCotizacion);
+        Task<List<Direccion>> ObtenerDirecciones(int idCotizacion);
+        Task<Cotizacion> ObtenerCotizacion(int id);
     }
 
     public class CargaMasivaRepository : ICargaMasivaRepository
@@ -32,8 +37,8 @@ namespace SistemaVentasBatia.Repositories
         public async Task<bool> ObtenerFronteraPorIdMunicipio(int idMunicipio)
         {
             string query = @"
-SELECT frontera FROM tb_estado_municipio WHERE id_municipio = @idMunicipio
-";
+                SELECT frontera FROM tb_estado_municipio WHERE id_municipio = @idMunicipio
+                ";
             bool result;
             try
             {
@@ -196,6 +201,146 @@ SELECT frontera FROM tb_estado_municipio WHERE id_municipio = @idMunicipio
                 throw ex;
             }
             return sucursales;
+        }
+        public async Task<ResumenCotizacionLimpieza> ObtenerResumenCotizacionLimpieza(int idCotizacion)
+        {
+            var query = @"SELECT * FROM fn_resumencotizacion(@idCotizacion)";
+            var queryserv = @"SELECT ISNULL(SUM(ISNULL(importemensual,0)),0) AS Servicio
+                            FROM tb_cotiza_servicioextra
+                            WHERE id_cotizacion = @idCotizacion";
+
+            var resumen = new ResumenCotizacionLimpieza();
+
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    resumen = await connection.QueryFirstAsync<ResumenCotizacionLimpieza>(query, new { idCotizacion });
+
+                    resumen.Servicio = await connection.QueryFirstAsync<decimal>(queryserv, new { idCotizacion });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return resumen;
+        }
+        public async Task<decimal> ObtenerPolizaCotizacion(int idCotizacion)
+        {
+            var query = @"SELECT total_poliza FROM tb_cotizacion WHERE id_cotizacion = @idCotizacion";
+
+            object result;
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    result = await connection.QueryFirstOrDefaultAsync<decimal?>(query, new { idCotizacion });
+                }
+
+                if (result == null)
+                {
+                    return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return (decimal)result;
+        }
+        public async Task<Prospecto> ObtenerProspecto(int idCotizacion)
+        {
+            string query = @"
+            SELECT
+            b.id_prospecto IdProspecto,
+            b.nombre_comercial NombreComercial,
+            b.razon_social RazonSocial,
+            b.rfc Rfc,
+            b.domicilio_fiscal DomicilioFiscal,
+            b.nombre_contacto NombreContacto,
+            b.email_contacto EmailContacto,
+            b.numero_contacto NumeroContacto,
+            b.ext_contacto ExtContacto
+            FROM tb_cotizacion a
+            INNER JOIN tb_prospecto b ON b.id_prospecto = a.id_prospecto
+            WHERE a.id_cotizacion = @idCotizacion";
+
+            var prospecto = new Prospecto();
+
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    prospecto = await connection.QueryFirstAsync<Prospecto>(query, new {idCotizacion});
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return prospecto;
+        }
+        public async Task<List<Direccion>> ObtenerDirecciones(int idCotizacion)
+        {
+            string query = @"
+                SELECT
+                a.id_direccion IdDireccion,
+                a.nombre_sucursal NombreSucursal,
+                a.id_tipo_inmueble IdTipoInmueble,
+                c.descripcion TipoInmueble,
+                a.id_estado IdEstado,
+                b.descripcion Estado,
+                a.id_tabulador IdTabulador,
+                a.municipio Municipio,
+                a.ciudad Ciudad,
+                a.colonia Colonia,
+                a.domicilio Domicilio,
+                a.codigo_postal CodigoPostal
+                FROM tb_direccion a
+                INNER JOIN tb_estado b ON b.id_estado = a.id_estado
+                INNER JOIN tb_tipoinmueble c ON c.id_tipoinmueble = a.id_tipo_inmueble
+                INNER JOIN tb_direccion_cotizacion d ON a.id_direccion = d.id_direccion
+                WHERE d.id_cotizacion = @idCotizacion
+                ORDER BY a.nombre_sucursal";
+            var direcciones = new List<Direccion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    direcciones = (await connection.QueryAsync<Direccion>(query, new { idCotizacion})).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return direcciones;
+        }
+        public async Task<Cotizacion> ObtenerCotizacion(int id)
+        {
+            var cotizacion = new Cotizacion();
+
+            var query = @"SELECT id_cotizacion IdCotizacion,
+                costo_indirecto CostoIndirecto,
+                utilidad Utilidad,
+                comision_venta ComisionSV,
+                comision_externa ComisionExt
+                FROM tb_cotizacion  WHERE id_cotizacion = @id ";
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    cotizacion = await connection.QueryFirstAsync<Cotizacion>(query, new { id });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return cotizacion;
         }
     }
 }

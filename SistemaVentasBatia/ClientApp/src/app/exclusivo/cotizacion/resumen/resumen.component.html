@@ -245,7 +245,7 @@
                             <td class="border-bottom border-success">
                                 <div class="row text-muted">
                                     <div class="col-1 col-md-3"></div>
-                                    <div class="col-4 col-md-3 text-start"><h5>Comision Sobre Venta (%)</h5></div>
+                                    <div class="col-4 col-md-3 text-start"><h5>Comisión Sobre Venta (%)</h5></div>
                                     <div class="col-2 col-md-1 ">
                                         <input #CSVtxt type="text" class="form-control" id="CSV" name="CSV" [(ngModel)]="CSV" (input)="validarSoloNumeros(utilidadValue)" value="{{model.csvPor}}" placeholder="{{model.csvPor}}" autocomplete="off" required>
                                     </div>
@@ -268,7 +268,7 @@
                             <td class="border-bottom border-success">
                                 <div class="row text-muted">
                                     <div class="col-1 col-md-3"></div>
-                                    <div class="col-4 col-md-3 text-start"><h5>Comision Externa (%)</h5></div>
+                                    <div class="col-4 col-md-3 text-start"><h5>Comisión Externa (%)</h5></div>
                                     <div class="col-2 col-md-1 ">
                                         <input #comisionExttxt type="text" class="form-control" id="comisionExt" name="comisionExt" [(ngModel)]="ComisionExtValue" (input)="validarSoloNumeros(utilidadValue)" value="{{model.comisionExtPor}}" placeholder="{{model.comisionExtPor}}" autocomplete="off" required>
                                     </div>
@@ -291,7 +291,7 @@
                             <td class="border-bottom border-success">
                                 <div class="row text-muted">
                                     <div class="col-1 col-md-3"></div>
-                                    <div class="col-4 col-md-3 text-start"><h5>Poliza de cumplimiento</h5></div>
+                                    <div class="col-4 col-md-3 text-start"><h5>Póliza de cumplimiento</h5></div>
                                     <div class="col-2 col-md-1 ">
                                         <!--<input #comisionExttxt type="text" class="form-control" id="polizaCumplimiento" name="polizaCumplimiento" [(ngModel)]="model.polizaCumplimiento"  value="{{model.polizaCumplimiento}}" placeholder="{{model.polizaCumplimiento}}" autocomplete="off" required disabled>-->
                                     </div>
@@ -338,6 +338,10 @@
                     </div>
                     <div class="col-3 float-end col-md-3">
                         <button type="button" id="miBoton3" (click)="descargarContrato()" class="btn btn-outline-primary" disabled><i class="fa-solid fa-download"></i> Descargar Contrato</button>
+                        <span style="margin-right: 10px;"></span>
+                    </div>
+                    <div class="col-3 float-end col-md-3">
+                        <button type="button" id="miBoton3" (click)="descargarDatosCotizacion()" class="btn btn-outline-primary"><i class="fa-solid fa-download"></i> Descargar datos</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                     <div class="col-3 col-md-3">
