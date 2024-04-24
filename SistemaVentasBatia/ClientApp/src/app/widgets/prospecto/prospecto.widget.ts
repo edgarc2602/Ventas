@@ -32,7 +32,8 @@ export class ProspectoWidget implements OnChanges {
         this.model = {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
             representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
-            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, polizaCumplimiento: false
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal,
+            idEstatusProspecto: 0, polizaCumplimiento: false, poderRepresentanteLegal: '', actaConstitutiva: '',registroPatronal: '', empresaVenta: 0
         };
         this.docs.forEach(d => d.act = false);
     }
@@ -48,6 +49,7 @@ export class ProspectoWidget implements OnChanges {
         this.quitarFocoDeElementos();
         this.model.listaDocumentos = this.docs;
         this.lerr = {};
+        this.model.empresaVenta = 0;
         if (this.valida()) {
             if (this.model.idProspecto == 0) {
                 this.http.post<Prospecto>(`${this.url}api/prospecto`, this.model).subscribe(response => {

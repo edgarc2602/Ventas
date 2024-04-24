@@ -29,9 +29,6 @@ export class PuestoWidget {
     tabs: Catalogo[] = [];
     ljor: Catalogo[] = [];
     lclas: Catalogo[] = [];
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
     validacion: boolean = false;
     jornada: number = 0;
     nombreSucursal: string = '';
@@ -96,8 +93,6 @@ export class PuestoWidget {
     }
 
     guarda() {
-        this.isErr = false;
-        this.errMessage = '';
         this.lerr = {};
         if (this.model.bonos == null) {
             this.model.bonos = 0;
@@ -116,16 +111,10 @@ export class PuestoWidget {
                 this.model.idDireccionCotizacion = this.idD;
                 this.model.idCotizacion = this.idC;
                 this.http.post<PuestoCotiza>(`${this.url}api/puesto`, this.model).subscribe(response => {
-                    this.errMessage = 'Puesto creado';
-                    this.isErr = false;
-                    this.evenSub.next();
                     this.sendEvent.emit(0);
                     this.close();
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.errMessage = 'Ha ocurrido un error';
-                    this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -136,14 +125,9 @@ export class PuestoWidget {
                 this.http.put<boolean>(`${this.url}api/puesto`, this.model).subscribe(response => {
                     this.sendEvent.emit(0);
                     this.close();
-                    this.isErr = false;
-                    this.errMessage = 'Puesto actualizado';
-                    this.evenSub.next();
+
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.errMessage = 'Ha ocurrido un error';
-                    this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;

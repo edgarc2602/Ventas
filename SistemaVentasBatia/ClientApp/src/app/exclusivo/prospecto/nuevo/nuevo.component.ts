@@ -10,6 +10,7 @@ import { DireccionWidget } from 'src/app/widgets/direccion/direccion.widget';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { ProspectoComponent } from 'src/app/exclusivo/prospecto/prospecto.component';
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 
 
 @Component({
@@ -28,10 +29,8 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     };
     idDirecc: number = 0;
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
     isLoading: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
  
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe,
@@ -48,7 +47,8 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
             representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
             emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [],
-            idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, polizaCumplimiento: false
+            idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, polizaCumplimiento: false, 
+            poderRepresentanteLegal: '',actaConstitutiva: '', registroPatronal:'', empresaVenta: 0
         };
     }
 
@@ -72,7 +72,6 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     }
 
     guarda() {
-        this.errMessage = ''
         this.quitarFocoDeElementos();
         this.pro.listaDocumentos = this.docs;
         this.lerr = {};
@@ -81,9 +80,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                 this.http.post<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
                     this.pro.idProspecto = response.idProspecto;
                     console.log(response);
-                    this.isErr = false;
-                    this.errMessage = 'Creado';
-                    this.evenSub.next();
+                    this.okToast('Prospecto creado');
                     setTimeout(() => {
                         this.router.navigate(['/exclusivo/prospecto']);
                     }, 2000);
@@ -94,25 +91,22 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
                         } else if (err.error) {
-                            this.isErr = true;
                             for (let key in err.error) {
                                 if (err.error.hasOwnProperty(key)) {
-                                    this.errMessage += key + ": " + err.error[key] + "\n";
+                                    this.toastWidget.errMessage += key + ": " + err.error[key] + "\n";
                                 }
                             }
-                            this.evenSub.next();
+                            this.errorToast();
                         }
                     }
                 });
             } else {
                 this.http.put<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
                     console.log(response);
-                    this.isErr = false;
-                    this.errMessage = 'Actualizado';
-                    this.evenSub.next();
+                    this.okToast('Prospecto actualizado');
                     setTimeout(() => {
                         this.router.navigate(['/exclusivo/prospecto']);
-                    }, 2000);
+                    }, 1000);
                 }, err => {
                     this.isLoading = false;
                     console.log(err);
@@ -120,18 +114,28 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
                         } else if (err.error) {
-                            this.isErr = true;
                             for (let key in err.error) {
                                 if (err.error.hasOwnProperty(key)) {
-                                    this.errMessage += key + ": " + err.error[key] + "\n";
+                                    this.toastWidget.errMessage += key + ": " + err.error[key] + "\n";
                                 }
                             }
-                            this.evenSub.next();
+                            this.errorToast();
                         }
                     }
                 });
             }
         }
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+
+    errorToast() {
+        this.toastWidget.isErr = true;
+        this.toastWidget.open();
     }
 
     valida() {

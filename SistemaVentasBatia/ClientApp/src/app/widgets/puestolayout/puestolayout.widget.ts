@@ -30,9 +30,9 @@ export class PuestoLayoutWidget {
     tabs: Catalogo[] = [];
     ljor: Catalogo[] = [];
     lclas: Catalogo[] = [];
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    validaMess: string = '';
+    //evenSub: Subject<void> = new Subject<void>();
+    //isErr: boolean = false;
+    //validaMess: string = '';
     validacion: boolean = false;
     jornada: number = 0;
     tips: Catalogo[] = [];

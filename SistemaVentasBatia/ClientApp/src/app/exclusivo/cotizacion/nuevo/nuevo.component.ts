@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Prospecto } from 'src/app/models/prospecto';
@@ -41,9 +41,8 @@ export class CotizaComponent {
     docs: ItemN[] = [];
 
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+
 
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe,
@@ -80,7 +79,8 @@ export class CotizaComponent {
         this.modelp = {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
             representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
-            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.user.idPersonal, idEstatusProspecto: 0, polizaCumplimiento: false
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.user.idPersonal,
+            idEstatusProspecto: 0, polizaCumplimiento: false,poderRepresentanteLegal: '', actaConstitutiva: '', registroPatronal: '', empresaVenta: 0
         };
         this.docs.forEach(d => d.act = false);
         this.idVendedor = 0;
@@ -99,18 +99,14 @@ export class CotizaComponent {
             if (this.model.idCotizacion == 0) {
                 this.http.post<boolean>(`${this.url}api/cotizacion`, this.model).subscribe(response => {
                     console.log(response);
-                    this.isErr = false;
-                    this.errMessage = 'Cotizacion creada';
-                    this.evenSub.next();
+                    this.okToast('Cotizacion creada');
                     this.closeNew();
                     this.closeSel();
                     this.rtr.navigate(['/exclusivo/cotiza/' + this.model.idProspecto]);
                     
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.errMessage = 'Ocurrio un error';
-                    this.evenSub.next();
+                    this.errorToast('Ocurrió un error');
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -138,14 +134,10 @@ export class CotizaComponent {
                     //this.sendEvent.emit(response.idProspecto);
                     this.model.idProspecto = response.idProspecto;
                     this.guarda();
-                    this.isErr = false;
-                    this.errMessage = 'Prospecto guardado';
-                    this.evenSub.next();
+                    this.okToast('Prospecto guardado');
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.errMessage = 'Ocurrio un error';
-                    this.evenSub.next();
+                    this.errorToast('Ocurrió un error');
                     if (err.error) {
                         for (let key in err.error) {
                             if (err.error.hasOwnProperty(key)) {
@@ -164,14 +156,10 @@ export class CotizaComponent {
                     //this.sendEvent.emit(response.idProspecto);
                     this.model.idProspecto = response.idProspecto;
                     this.guarda();
-                    this.isErr = false;
-                    this.errMessage = 'Prospecto actualizado';
-                    this.evenSub.next();
+                    this.okToast('Prospecto actualizado');
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.errMessage = 'Ocurrio un error';
-                    this.evenSub.next();
+                    this.errorToast('Ocurrió un error');
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -181,6 +169,18 @@ export class CotizaComponent {
             }
         }
     }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
+    }
+
     valida1() {
         this.validaciones = true;
         let val: ItemN = this.sers.filter(x => x.act)[0];

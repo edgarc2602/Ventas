@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ListaProspecto } from '../../models/listaprospecto';
 import { ItemN } from 'src/app/models/item';
 import { EliminaWidget } from 'src/app/widgets/elimina/elimina.widget';
-
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
 
@@ -23,6 +23,8 @@ export class ProspectoComponent {
     idpro: number = 0;
     @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
     isLoading: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+
     
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rter: Router, public user: StoreUser) {
         http.get<ItemN[]>(`${url}api/prospecto/getestatus`).subscribe(response => {
@@ -82,19 +84,32 @@ export class ProspectoComponent {
 /*        if (this.ide === 1) {*/
             this.http.put<boolean>(`${this.url}api/prospecto/desactivarprospecto`, this.idpro).subscribe(response => {
                 this.lista();
+                this.okToast('Prospecto desactivado');
             }, err => {
                 console.log(err)
+                this.errorToast('Ocurrió un error');
             });
-        //} else {
-            
-        //}
         this.idpro = 0;
     }
+
     activar(idProspecto: number) {
         this.http.put<boolean>(`${this.url}api/prospecto/activarprospecto`, idProspecto).subscribe(response => {
             this.lista();
+            this.okToast('Prospecto activado');
         }, err => {
             console.log(err)
+            this.errorToast('Ocurrió un error');
         });
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

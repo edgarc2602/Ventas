@@ -32,6 +32,9 @@ namespace SistemaVentasBatia.Services
         Task<bool> ActivarProspecto(int idProspecto);
         Task<bool> DesactivarProspecto(int idProspecto);
         Task<DireccionResponseAPIDTO> GetDireccionAPI(string cp);
+        Task<ProspectoDTO> ObtenerDatosProspecto(int idProspecto);
+        Task<ClienteContratoDTO> ObtenerDatosClienteContrato(int idProspecto);
+        Task<bool> InsetarDatosClienteContrato(ClienteContratoDTO contrato);
     }
 
     public class ProspectosService : IProspectosService
@@ -277,6 +280,30 @@ namespace SistemaVentasBatia.Services
                 }
             }
         }
+        public async Task<ProspectoDTO> ObtenerDatosProspecto(int idProspecto)
+        {
+            var prospecto = mapper.Map<ProspectoDTO>(await prospectosRepo.ObtenerDatosProspecto(idProspecto));
+            return prospecto;
+        }
 
+        public async Task<ClienteContratoDTO> ObtenerDatosClienteContrato(int idProspecto)
+        {
+            var contrato = mapper.Map<ClienteContratoDTO>(await prospectosRepo.ObtenerDatosClienteContrato(idProspecto));
+            return contrato;
+        }
+
+        public async Task<bool> InsetarDatosClienteContrato(ClienteContratoDTO contrato)
+        {
+            var coincidencia = await prospectosRepo.ConsultarContratoExistente(contrato.IdProspecto);
+            var contratoData = mapper.Map<ClienteContrato>(contrato);
+            if (coincidencia)
+            {
+               return await prospectosRepo.ActualizarDatosClienteContrato(contratoData);
+            }
+            else
+            {
+                return await prospectosRepo.InsertarDatosClienteContrato(contratoData);
+            }
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> ObtenerCatalogoDireccionesCotizacion(int idCotizacion);
         Task<List<Catalogo>> ObtenerCatalogoPuestosCotizacion(int idCotizacion);
         Task<List<Catalogo>> ObtenerCatalogoProductos(Servicio idServicio);
+        Task<List<Catalogo>> ObtenerCatalogoEmpresas();
         Task<List<MaterialPuesto>> ObtenerMaterialDefaultPorPuesto(int idPuesto);
         Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByFamilia(Servicio idServicio, int[] familia);
         Task<IEnumerable<MaterialPuesto>> ObtenerHerramientaDefaultPorPuesto(int idPuesto);
@@ -422,6 +423,29 @@ FROM tb_clase";
                 throw ex;
             }
             return familias;
+        }
+
+        public async Task<List<Catalogo>> ObtenerCatalogoEmpresas()
+        {
+            var query = @"SELECT id_empresa Id,
+                        nombre Descripcion
+                        FROM tb_empresa
+                        ORDER BY nombre";
+
+            var empresas = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    empresas = (await connection.QueryAsync<Catalogo>(query)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return empresas;
         }
     }
 }

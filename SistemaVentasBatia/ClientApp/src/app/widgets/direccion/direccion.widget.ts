@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, SimpleChanges, Inject, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Input, SimpleChanges, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Direccion } from '../../models/direccion';
 import { Catalogo } from '../../models/catalogo';
@@ -21,9 +21,6 @@ export class DireccionWidget {
     tabs: Catalogo[] = [];
     muns: Catalogo[] = [];
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
     direccionAPI: DireccionResponseAPI = {
         message: '',
         error: false,
@@ -39,6 +36,8 @@ export class DireccionWidget {
         }
     };
     validacion: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+
 
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
@@ -121,8 +120,6 @@ export class DireccionWidget {
     }
 
     guarda() {
-        this.isErr = false;
-        this.errMessage = ''
         for (let mun of this.muns) {
             if (mun.id == this.model.idMunicipio) {
                 this.model.municipio = mun.descripcion
@@ -132,16 +129,12 @@ export class DireccionWidget {
         if (this.valida()) {
             if (this.model.idDireccion == 0) {
                 this.http.post<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
+                    this.okToast('Direcci\u00F3n creada')
                     this.sendEvent.emit(response.idDireccion);
                     this.close();
-                    this.isErr = false;
-                    this.errMessage = 'Direcci\u00F3n agregada';
-                    this.evenSub.next();
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.errMessage = 'Ha ocurrido un error';
-                    this.evenSub.next();
+                    this.errorToast('Ocurrió un error');
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -150,16 +143,12 @@ export class DireccionWidget {
                 });
             } else {
                 this.http.put<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
+                    this.okToast('Direcci\u00F3n actualizada')
                     this.close();
-                    this.isErr = false;
-                    this.errMessage = 'Direcci\u00F3n actualizada';
-                    this.evenSub.next();
                     this.sendEvent.emit(response.idDireccion);
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.errMessage = 'Ha ocurrido un error';
-                    this.evenSub.next();
+                    this.errorToast('Ocurrió un error');
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -275,5 +264,16 @@ export class DireccionWidget {
         let docModal = document.getElementById('modalAgregarDireccion');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.hide();
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

@@ -1,15 +1,12 @@
 <div class="position-fixed p-3" style="z-index: 1100; right: 0; top: 70px;">
-    <div id="glotoast" class="toast" role="alert" data-delay="3000" aria-live="assertive" aria-atomic="true">
+    <div id="glotoast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <strong class="mr-auto">{{ isError ? 'Revisa' : 'Ok' }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close">
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <div class="toast-body text-white" [ngClass]="isError ? 'bg-danger' : 'bg-success'">
-            {{ message }}
-        </div>
+        <div class="toast-body text-white"></div>
     </div>
 </div>
+
 
 
 <!--<style>

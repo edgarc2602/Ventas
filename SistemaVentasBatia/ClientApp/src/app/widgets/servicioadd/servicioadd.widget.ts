@@ -29,9 +29,9 @@ export class ServicioAddWidget {
     sers: Catalogo[] = [];
     fres: ItemN[] = [];
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    validaMess: string = '';
+    //evenSub: Subject<void> = new Subject<void>();
+    //isErr: boolean = false;
+    //validaMess: string = '';
     validaciones: boolean = false;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {}
@@ -89,14 +89,14 @@ export class ServicioAddWidget {
                 this.http.post<Servicio>(`${this.url}api/material/insertarserviciocotizacion`, this.model).subscribe(response => {
                     this.close();
                     this.sendEvent.emit(2);
-                    this.isErr = false;
-                    this.validaMess = 'Guardado correctamente';
-                    this.evenSub.next();
+                    //this.isErr = false;
+                    //this.validaMess = 'Guardado correctamente';
+                    //this.evenSub.next();
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
-                    this.evenSub.next();
+                    //this.isErr = true;
+                    //this.validaMess = 'Ocurrio un error';
+                    //this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -110,14 +110,14 @@ export class ServicioAddWidget {
                     this.close();
                     this.sendEvent.emit(2);
                     console.log(response);
-                    this.isErr = false;
-                    this.validaMess = 'Servicio actualizado';
-                    this.evenSub.next();
+                    //this.isErr = false;
+                    //this.validaMess = 'Servicio actualizado';
+                    //this.evenSub.next();
                 }, err => {
                     console.log(err);
-                    this.isErr = true;
-                    this.validaMess = 'Ocurrio un error';
-                    this.evenSub.next();
+                    //this.isErr = true;
+                    //this.validaMess = 'Ocurrio un error';
+                    //this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -148,9 +148,9 @@ export class ServicioAddWidget {
         myModal.hide();
     }
     ok() {
-        this.isErr = false;
-        this.validaMess = 'Actualizado correctamente';
-        this.evenSub.next();
+        //this.isErr = false;
+        //this.validaMess = 'Actualizado correctamente';
+        //this.evenSub.next();
     }
 
     valida() {

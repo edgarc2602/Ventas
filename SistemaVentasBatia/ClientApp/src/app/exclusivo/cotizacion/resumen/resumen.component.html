@@ -1,14 +1,12 @@
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible">
 <div [@fadeInOut]>
     <br />
     <div class="pt-1 mb-1">
         <div class="row d-flex align-items-center">
-            <div class="col-12 col-md-10">
+            <div class="col-12 col-md-9">
                 <h2 class="text-black-90">Cotización {{model.nombreComercial}}</h2>
             </div>
-            <div class="col-4 col-md-2 text-end d-none">
-                <button type="button" class="btn btn-outline-primary" (click)="marcarVenta()"> Marcar Venta</button>
+            <div class="col-4 col-md-3 text-end">
+                <button type="button" class="btn btn-outline-primary" (click)="marcarVenta()"><i class="fa-solid fa-clipboard-check"></i> Marcar Venta</button>
             </div>
             <div class="col-4 col-md-6">
                 <h6>Id: {{model.idCotizacion}}</h6>
@@ -317,10 +315,10 @@
 
                     </div>
                     <div *ngIf="autorizacion === 1" class="col-4">
-                        <button type="submit" class="btn btn-outline-primary" (click)="actualizarIndirectoUtilidad()">Actualizar porcentajes</button><br><br>
+                        <button type="submit" class="btn btn-outline-primary" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent"></i> Actualizar porcentajes</button><br><br>
                     </div>
                     <div *ngIf="isLoading" class="col-4 text-center">
-                        <h6>Actualizando...</h6>
+                        <!--<h6>Actualizando...</h6>-->
                         <i class="fas fa-spinner fa-spin fa-3x"></i>
                     </div>
                 </div>
@@ -328,24 +326,28 @@
                 <br />
                 <div class="row text-center">
                     <div class="col-3 col-md-3  col-3">
-                        <button type="button" id="miBoton1" (click)="descargarCotizacionComponent(2)" class="btn btn-outline-success"><i class="fa-solid fa-download"></i> Propuesta Economica</button>
+                        <button type="button" id="miBoton1" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf"></i> Propuesta Economica</button>
                         <span style="margin-left: 10px;"></span>
                         <script src="../../cotizacion/resumen/"></script>
                     </div>
                     <div class="col-3 float-end col-md-3">
-                        <button type="button" id="miBoton2" (click)="descargarCotizacionComponent(1)" class="btn btn-outline-info "><i class="fa-solid fa-download"></i> Propuesta Técnica</button>
+                        <button type="button" id="miBoton2" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                     <div class="col-3 float-end col-md-3">
-                        <button type="button" id="miBoton3" (click)="descargarContrato()" class="btn btn-outline-primary" disabled><i class="fa-solid fa-download"></i> Descargar Contrato</button>
+                        <button type="button" id="miBoton3" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-file-contract"></i> Contrato</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
-                    <div class="col-3 float-end col-md-3">
-                        <button type="button" id="miBoton3" (click)="descargarDatosCotizacion()" class="btn btn-outline-primary"><i class="fa-solid fa-download"></i> Descargar datos</button>
+                    <div class="col-3 float-end col-md-3 d-none">
+                        <button type="button" id="miBoton3" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-database"></i> Descargar datos</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                     <div class="col-3 col-md-3">
                         <button type="button" (click)="elige(model.idCotizacion)" class="btn btn-outline-danger "><i class="fa-solid fa-copy"></i> Duplicar Cotización</button>
+                    </div>
+                    <div class="col-3 float-end col-md-3">
+                        <button type="button" id="miBoton2" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica(Mano de obra)</button>
+                        <span style="margin-right: 10px;"></span>
                     </div>
                 </div>
                 <script src="script.js"></script>
@@ -930,4 +932,5 @@
 <eliminadirectorio-widget [titulo]="" [mensaje]="" (EventDC)="eliminaDireccionCotizacion($event)"></eliminadirectorio-widget>
 <eliminaOperario-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></eliminaOperario-widget>
 <marcaventa-widget (smEvent)="returnMarcaCotizacion($event)"></marcaventa-widget>
-<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>
+<toast-widget></toast-widget>
+<contrato-widget></contrato-widget>

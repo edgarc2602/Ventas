@@ -323,26 +323,14 @@ namespace SistemaVentasBatia.Services
                         break;
                 }
             }
-
-            //if (operariosModel.Sueldo > (207.44m * 30.4167m))
-            //{
-            //    //mayor o igual que el salario minimo   
-            //}
-            //else
-            //{
-            //    //operariosModel.IMSS = imss;
-            //}
-            //if(salt == 1)
-            //{
-            //    // logica para tipo de salario mixto
-            //}
-            //else
-            //{
-            //    // Logica para tipo de salario real
-            //}
-
             operariosModel.IMSS = imss;
-            operariosModel.ISN = (operariosModel.Sueldo + operariosModel.Aguinaldo + operariosModel.PrimaVacacional) * .03M; // incluir isn - domingo y festivos y cubredescansos
+            operariosModel.ISN = (
+                operariosModel.Sueldo + 
+                operariosModel.Aguinaldo + 
+                operariosModel.PrimaVacacional + 
+                operariosModel.Domingo + 
+                operariosModel.Festivo + 
+                operariosModel.CubreDescanso) * .03M; // incluir isn - domingo y festivos y cubredescansos
             operariosModel.Total = Math.Round(
                 operariosModel.Sueldo + 
                 operariosModel.Aguinaldo + 
@@ -352,6 +340,7 @@ namespace SistemaVentasBatia.Services
                 operariosModel.IMSS +
                 operariosModel.Festivo +
                 operariosModel.Domingo +
+                operariosModel.CubreDescanso +
                 operariosModel.Bonos +
                 operariosModel.Vales, 2);
             return operariosModel;

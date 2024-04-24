@@ -30,6 +30,8 @@ import { saveAs } from 'file-saver';
 import { PuestoLayoutWidget } from 'src/app/widgets/puestolayout/puestolayout.widget';
 import Swal from 'sweetalert2';
 import { MarcaVenta } from 'src/app/widgets/marcaventa/marcaventa.widget';
+import { ContratoWidget } from '../../../widgets/contrato/contrato.widget';
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 
 
 
@@ -51,6 +53,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild(ServicioAddWidget, { static: false }) serAdd: ServicioAddWidget;
     @ViewChild(PuestoLayoutWidget, { static: false }) puelay: PuestoLayoutWidget;
     @ViewChild(MarcaVenta, { static: false }) marven: MarcaVenta;
+    @ViewChild(ContratoWidget, { static: false }) contrato: ContratoWidget;
     @ViewChild('resumen', { static: false }) resumen: ElementRef;
     @ViewChild('pdfCanvas', { static: true }) pdfCanvas: ElementRef;
     @ViewChild('indirectotxt', { static: false }) indirectotxt: ElementRef;
@@ -106,12 +109,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
     puesto: string = '';
 
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
+
     isLoading: boolean = false;
 
     allTabsOpen = true;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+
 
     constructor(
         @Inject('BASE_URL') private url: string,
@@ -124,7 +127,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.nuevo();
         this.lsdir = {
             pagina: 1, idCotizacion: this.model.idProspecto, idProspecto: this.model.idProspecto,
-            idDireccion: 0, direcciones: [], rows:0,numPaginas: 0
+            idDireccion: 0, direcciones: [], rows: 0, numPaginas: 0
         };
         http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`).subscribe(response => {
             this.autorizacion = response;
@@ -164,29 +167,15 @@ export class ResumenComponent implements OnInit, OnDestroy {
         const formData = new FormData();
         formData.append('file', file);
         this.http.post<boolean>(`${this.url}api/cargamasiva/CargarDirecciones/${this.model.idCotizacion}/${this.model.idProspecto}`, formData).subscribe((response) => {
-            setTimeout(() => {
-                this.getAllDirs();
-                this.getDirs();
-                this.isLoadinglay = false;
-                Swal.fire({
-                    icon: 'success',
-                    timer: 500,
-                    showConfirmButton: false,
-                });
-            }, 300);
+            this.okToast('Direcciones cargadas');
+            this.getAllDirs();
+            this.getDirs();
+            this.isLoadinglay = false;
         }, err => {
-            setTimeout(() => {
-                this.isLoadinglay = false;
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n',
-                    icon: 'error',
-                    timer: 2000,
-                    showConfirmButton: false,
-                });
-            }, 300);
+            this.isLoadinglay = false;
+            this.errorToast('Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n')
         });
-        this.fileInputDir.nativeElement.value = ''; 
+        this.fileInputDir.nativeElement.value = '';
     }
 
     onFileChangePlan(event: any): void {
@@ -216,24 +205,26 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 });
             }, 300);
         });
-        this.fileInputPlan.nativeElement.value = ''; 
+        this.fileInputPlan.nativeElement.value = '';
     }
 
     descargarLayoutDirectorio() {
         this.http.post(`${this.url}api/cargamasiva/DescargarLayoutDirectorio`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
             saveAs(response, 'LayoutDirectorio.xlsx');
+            this.okToast('Layout descargado');
         },
             error => {
-                console.error('Error al descargar el archivo:', error);
+                this.errorToast('Ocurri\u00F3 un error')
             }
         );
     }
     descargarLayoutPlantilla() {
         this.http.post(`${this.url}api/cargamasiva/DescargarLayoutPlantilla/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
             saveAs(response, 'LayoutPlantilla.xlsx');
+            this.okToast('Layout descargado');
         },
             error => {
-                console.error('Error al descargar el archivo:', error);
+                this.errorToast('Ocurri\u00F3 un error')
             }
         );
     }
@@ -295,15 +286,19 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     updPlan(id: number, tb: number, nombreSucursal: string, puesto: string) {
         //this.selPuesto = id;
-        this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id,nombreSucursal,puesto);
+        this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id, nombreSucursal, puesto);
     }
 
     removePlan(id: number) {
         this.http.delete<boolean>(`${this.url}api/puesto/${id}`).subscribe(response => {
             if (response) {
+                this.okToast('Puesto eliminado');
                 this.getPlan();
             }
-        }, err => console.log(err));
+        }, err => {
+            console.log(err);
+            this.errorToast('Ocurri\u00F3 un error');
+        });
     }
 
     filtroPlan(id: number) {
@@ -378,12 +373,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
     removeMat(id: number) {
         this.http.delete<boolean>(`${this.url}api/${this.selTipo}/${id}`).subscribe(response => {
             if (response) {
+                this.okToast('Producto eliminado');
                 this.getMat(this.selTipo);
-                this.isErr = false;
-                this.validaMess = 'Se elimino el material';
-                this.evenSub.next();
             }
-        }, err => console.log(err));
+        }, err => {
+            console.log(err);
+            this.errorToast('Ocurri\u00F3 un error')
+        });
     }
 
     cloMate() {
@@ -436,9 +432,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if ($event == false) {
             this.http.delete<boolean>(`${this.url}api/puesto/${this.idope}`).subscribe(response => {
                 if (response) {
+                    this.okToast('Puesto eliminado');
                     this.getPlan();
                 }
-            }, err => console.log(err));
+            }, err => {
+                console.log(err);
+                this.errorToast('Ocurri\u00F3 un error')
+            });
         }
     }
     eligeOperario(idOperario) {
@@ -466,6 +466,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if (this.model.idCotizacion != 0) {
             this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarIndirectoUtilidadService`, this.modelcot).subscribe(response => {
                 setTimeout(() => {
+                    this.okToast('Porcentajes actualizados');
                     this.isLoading = false;
                     this.limpiarInputs();
                     this.existe(this.model.idCotizacion)
@@ -475,10 +476,11 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 setTimeout(() => {
                     this.isLoading = false;
                     console.log(err)
+                    this.errorToast('Ocurri\u00F3 un error')
                 }, 300);
             });
         }
-    
+
     }
 
     validarSoloNumeros(utilidadValue: string): boolean {
@@ -495,8 +497,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
     eliminaDireccionCotizacion($event) {
         if ($event == true) {
             this.http.get<boolean>(`${this.url}api/cotizacion/EliminarDireccionCotizacion/${this.idDC}`,).subscribe(response => {
+                this.okToast('Direcci\u00F3n eliminada');
                 this.getDirs();
-            }, err => console.log(err));
+            }, err => {
+                console.log(err);
+                this.errorToast('Ocurri\u00F3 un error')
+            });
         }
     }
 
@@ -517,16 +523,31 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.actCot.open();
     }
     descargarCotizacionComponent(tipo: number) {
+        this.isLoading = true;
         this.existe(this.model.idCotizacion)
         this.iniciarAnimacion();
         this.http.post(`${this.url}api/report/DescargarReporteCotizacion/${tipo}`, this.model.idCotizacion, { responseType: 'arraybuffer' })
             .subscribe(
                 (data: ArrayBuffer) => {
-                    const pdfDataUrl = this.arrayBufferToDataUrl(data);
-                    window.open(pdfDataUrl, '_blank');
+                    this.okToast('Propuesta descargada');
+                    const file = new Blob([data], { type: 'application/pdf' });
+                    const fileURL = URL.createObjectURL(file);
+                    const width = 800;
+                    const height = 550;
+                    const left = window.innerWidth / 2 - width / 2;
+                    const top = window.innerHeight / 2 - height / 2;
+                    const newWindow = window.open(fileURL, '_blank', `width=${width}, height=${height}, top=${top}, left=${left}`);
+                    if (newWindow) {
+                        newWindow.focus();
+                    } else {
+                        alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
+                    }
+                    this.isLoading = false;
                 },
                 error => {
+                    this.errorToast('Ocurri\u00F3 un error')
                     console.error('Error al obtener el archivo PDF', error);
+                    this.isLoading = false;
                 }
             );
     }
@@ -563,13 +584,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
     eliSer(id: number) {
         this.http.delete(`${this.url}api/material/EliminarServicioCotizacion/${id}`).subscribe(response => {
+            this.okToast('Servicio eliminado');
             this.getServ();
-            this.isErr = false;
-            this.validaMess = 'Se elimino el servicio';
-            this.evenSub.next();
-        }, err => console.log(err));
 
-        
+        }, err => {
+            console.log(err);
+            this.errorToast('Ocurri\u00F3 un error')
+        });
     }
     goBack() {
         window.history.back();
@@ -599,19 +620,36 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.marven.open(this.model.idCotizacion);
     }
     returnMarcaCotizacion($event) {
-        
-    }
-
-    descargarContrato() {
 
     }
+
+    modalContrato() {
+        this.contrato.open(this.model.idCotizacion, this.model.idProspecto);
+    }
+
     descargarDatosCotizacion() {
+        this.isLoading = true;
         this.http.post(`${this.url}api/cargamasiva/DescargarDatosCotizacion/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
-            saveAs(response, 'DatosCotizacion_Id' + this.model.idCotizacion +'.xlsx');
+            this.okToast('Datos descargados');
+            saveAs(response, 'DatosCotizacion_Id' + this.model.idCotizacion + '.xlsx');
+            this.isLoading = false;
         },
             error => {
                 console.error('Error al descargar el archivo:', error);
+                this.isLoading = false;
+                this.errorToast('Ocurri\u00F3 un error')
             }
         );
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }   

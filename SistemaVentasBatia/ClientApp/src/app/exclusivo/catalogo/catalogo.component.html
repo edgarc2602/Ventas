@@ -648,7 +648,7 @@
                     </div>
                     <div *ngIf="model.productos && model.productos.length > 0">
                         <div class="col-12 float-end col-md-3 text-end">
-                            <button type="button" id="btnProdDes" (click)="descargarListaProductosPorEstado()" class="btn  btn-outline-info "><i class="fa-solid fa-download"></i> Descargar listado</button>
+                            <button type="button" id="btnProdDes" (click)="descargarListaProductosPorEstado()"  class="btn  btn-outline-info" [disabled]="isLoading" ><i class="fa-solid fa-download"></i> Descargar listado</button>
                             <span style="margin-right: 10px;"></span>
                         </div>
                         <br />

@@ -16,7 +16,7 @@ namespace SistemaVentasBatia.Services
     {
         Task<List<CatalogoDTO>> ObtenerEstados();
         Task<List<CatalogoDTO>> ObtenerServicios();
-        Task<List<CatalogoDTO>> ObtenerMunicipios (int idEstado);
+        Task<List<CatalogoDTO>> ObtenerMunicipios(int idEstado);
         Task<List<CatalogoDTO>> ObtenerTiposInmueble();
         Task<List<CatalogoDTO>> ObtenerCatalogoPuestos();
         Task<List<CatalogoDTO>> ObtenerCatalogoServicios();
@@ -28,6 +28,7 @@ namespace SistemaVentasBatia.Services
         Task<List<CatalogoDTO>> ObtenerCatalogoClase();
         Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupo(Servicio servicio, string grupo);
         Task<List<CatalogoDTO>> ObtenerCatalogoFamiliasPorIdServicio(int idServicio);
+        Task<List<CatalogoDTO>> ObtenerCatalogoEmpresas();
     }
 
     public class CatalogosService : ICatalogosService
@@ -163,7 +164,7 @@ namespace SistemaVentasBatia.Services
                     fams = _option.ServicioOpe;
                     break;
                 default:
-                    fams = new int[] {};
+                    fams = new int[] { };
                     break;
             }
             return mapper.Map<IEnumerable<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoProductosByFamilia(servicio, fams));
@@ -173,6 +174,12 @@ namespace SistemaVentasBatia.Services
         {
             var familias = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoFamiliasPorIdServicio(idServicio));
             return familias;
+        }
+        public async Task<List<CatalogoDTO>> ObtenerCatalogoEmpresas()
+        {
+            var empresas = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoEmpresas());
+
+            return empresas;
         }
     }
 }

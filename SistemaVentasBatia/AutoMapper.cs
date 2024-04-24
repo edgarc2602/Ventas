@@ -80,6 +80,10 @@ namespace SistemaVentasBatia
             CreateMap<ProductoFamiliaDTO,ProductoFamilia>();
             CreateMap<ImmsJornada, ImmsJornadaDTO>();
             CreateMap<ImmsJornadaDTO, ImmsJornada>();
+            CreateMap<ClienteContrato, ClienteContratoDTO>();
+            CreateMap<ClienteContratoDTO, ClienteContrato>();
+            CreateMap<Empresa, EmpresaDTO>();
+            CreateMap<EmpresaDTO, Empresa>();
         }
     }
 }

@@ -17,4 +17,9 @@ export interface Prospecto {
     idPersonal: number;
     idEstatusProspecto: number;
     polizaCumplimiento: boolean;
+
+    poderRepresentanteLegal: string;
+    actaConstitutiva: string;
+    registroPatronal: string;
+    empresaVenta: number;
 }

@@ -43,6 +43,8 @@ import { fadeInOut } from './fade-in-out';
 import { UsuarioAddWidget } from './widgets/usuarioadd/usuarioadd.widget';
 import { PuestoLayoutWidget } from './widgets/puestolayout/puestolayout.widget';
 import { MarcaVenta } from './widgets/marcaventa/marcaventa.widget';
+import { ContratoWidget } from './widgets/contrato/contrato.widget';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -80,7 +82,8 @@ import { MarcaVenta } from './widgets/marcaventa/marcaventa.widget';
         AgregarServicioWidget,
         UsuarioAddWidget,
         PuestoLayoutWidget,
-        MarcaVenta
+        MarcaVenta,
+        ContratoWidget
         
     ],
     imports: [

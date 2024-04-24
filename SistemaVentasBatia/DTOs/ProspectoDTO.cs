@@ -28,6 +28,7 @@ namespace SistemaVentasBatia.DTOs
         [StringLength(500, ErrorMessage = "Máximo 500 posiciones")]
         public string DomicilioFiscal { get; set; }
 
+        [StringLength(500, ErrorMessage = "Máximo 500 posiciones")]
         public string RepresentanteLegal { get; set; }
 
         public string Telefono { get; set; }
@@ -56,5 +57,10 @@ namespace SistemaVentasBatia.DTOs
         public EstatusProspecto IdEstatusProspecto { get; set; }
         [Required(ErrorMessage = "Poliza de cumplimiento es necesario")]
         public bool PolizaCumplimiento { get; set; }
+
+        public string PoderRepresentanteLegal { get; set; }
+        public string ActaConstitutiva { get; set; }
+        public string RegistroPatronal { get; set; }
+        public int EmpresaVenta { get; set; }
     }
 }

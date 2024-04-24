@@ -1,0 +1,291 @@
+﻿<body>
+    <div class="modal fade" id="modalContrato" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Contrato <small class="text-muted text-capitalize"></small></h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div>
+                        <h5 class="mb-2">Prestador</h5>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="contrato.idEmpresa" id="ddlEmpresa">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let e of empresas" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlEmpresa">Empresa</label>
+                                </div>
+                                <span *ngIf="ferr('idEmpresa')" class="text-danger">{{ terr('idEmpresa') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.empresaContactoNombre" id="txtempresaContactoNombre">
+                                    <label for="txtempresaContactoNombre">Nombre contacto</label>
+                                </div>
+                                <span *ngIf="ferr('empresaContactoNombre')" class="text-danger">{{ terr('empresaContactoNombre') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-7 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.empresaContactoCorreo" id="txtempresaContactoCorreo">
+                                    <label for="txtempresaContactoCorreo">Email contacto</label>
+                                </div>
+                                <span *ngIf="ferr('empresaContactoCorreo')" class="text-danger">{{ terr('empresaContactoCorreo') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-5 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.empresaContactoTelefono" id="txtempresaContactoTelefono">
+                                    <label for="txtempresaContactoTelefono">Teléfono contacto</label>
+                                </div>
+                                <span *ngIf="ferr('empresaContactoTelefono')" class="text-danger">{{ terr('empresaContactoTelefono') }}</span>
+                            </div>
+                        </div>
+                        <h5 class="mb-2">Cliente</h5>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteRazonSocial" id="txtclienteRazonSocial" disabled>
+                                    <label for="txtclienteRazonSocial">Nombre comercial</label>
+                                </div>
+                                <span *ngIf="ferr('clienteRazonSocial')" class="text-danger">{{ terr('clienteRazonSocial') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteRfc" id="txtclienteRfc" disabled>
+                                    <label for="txtclienteRfc">RFC</label>
+                                </div>
+                                <span *ngIf="ferr('clienteRfc')" class="text-danger">{{ terr('clienteRfc') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteRepresentante" id="txtclienteRepresentante">
+                                    <label for="txtclienteRepresentante">Representante</label>
+                                </div>
+                                <span *ngIf="ferr('clienteRepresentante')" class="text-danger">{{ terr('clienteRepresentante') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-7 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteRegistroPatronal" id="txtclienteRegistroPatronal">
+                                    <label for="txtclienteRegistroPatronal">Registro Patronal</label>
+                                </div>
+                                <span *ngIf="ferr('clienteRegistroPatronal')" class="text-danger">{{ terr('clienteRegistroPatronal') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-5 mb-3">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" [(ngModel)]="contrato.contratoVigencia" id="txtcontratoVigencia">
+                                    <label for="txtcontratoVigencia">Vigencia del contrato</label>
+                                </div>
+                                <span *ngIf="ferr('contratoVigencia')" class="text-danger">{{ terr('contratoVigencia') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteContactoNombre" id="txtclienteContactoNombre">
+                                    <label for="txtclienteContactoNombre">Nombre contacto</label>
+                                </div>
+                                <span *ngIf="ferr('clienteContactoNombre')" class="text-danger">{{ terr('clienteContactoNombre') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-7 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteEmail" id="txtclienteEmail">
+                                    <label for="txtclienteEmail">Email contacto</label>
+                                </div>
+                                <span *ngIf="ferr('clienteEmail')" class="text-danger">{{ terr('clienteEmail') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-5 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteContactoTelefono" id="txtclienteContactoTelefono">
+                                    <label for="txtclienteContactoTelefono">Teléfono contacto</label>
+                                </div>
+                                <span *ngIf="ferr('clienteContactoTelefono')" class="text-danger">{{ terr('clienteContactoTelefono') }}</span>
+                            </div>
+                        </div>
+                        <h6><span class="small text-muted mb-2">DomicilioFiscal</span></h6>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-2 col-5 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.cp" (input)="getDireccionAPI()" id="txtcp">
+                                    <label for="cp">Codigo postal</label>
+                                </div>
+                                <span *ngIf="ferr('cp')" class="text-danger">{{ terr('cp') }}</span>
+                            </div>
+                            <div class="col-md-2 col-7 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdEstado" [(ngModel)]="contrato.clienteEstado" (change)="loadMun()" id="ddlEstadoDireccion">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let e of edos" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlEstadoDireccion">Estado:</label>
+                                </div>
+                                <span *ngIf="ferr('clienteEstado')" class="text-danger">{{ terr('clienteEstado') }}</span>
+                            </div>
+                            <div class="col-sm-4 col-md-2 col-6 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdMunicipio" [(ngModel)]="contrato.clienteMunicipio" id="ddlMunicipioDireccion">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let m of muns" [ngValue]="m.id">{{ m.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlMunicipioDireccion">Municipio</label>
+                                </div>
+                                <span *ngIf="ferr('clienteMunicipio')" class="text-danger">{{ terr('clienteMunicipio') }}</span>
+                            </div>
+                            <div class="col-sm-4 col-md-3 col-6 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="Colonia" [(ngModel)]="contrato.clienteColoniaDescripcion" id="ddlColoniaDireccion">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let col of direccionAPI.codigoPostal.colonias" [ngValue]="col">{{ col }}</option>
+                                    </select>
+                                    <label for="ddlColoniaDireccion">Colonia</label>
+                                </div>
+                                <span *ngIf="ferr('clienteColoniaDescripcion')" class="text-danger">{{ terr('clienteColoniaDescripcion') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteDireccion" id="txtclienteDireccion">
+                                    <label for="txtclienteDireccion">Calle y numero</label>
+                                </div>
+                                <span *ngIf="ferr('clienteDireccion')" class="text-danger">{{ terr('clienteDireccion') }}</span>
+                            </div>
+                        </div>
+                        <h6><span class="small text-muted mb-2">Notario público Constitutiva</span></h6>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-2 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.constitutivaLicenciado" id="txtconstitutivaLicenciado">
+                                    <label for="txtconstitutivaLicenciado">Licenciado</label>
+                                </div>
+                                <span *ngIf="ferr('constitutivaLicenciado')" class="text-danger">{{ terr('constitutivaLicenciado') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-7 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.constitutivaEscrituraPublica" id="txtconstitutivaEscrituraPublica">
+                                    <label for="txtconstitutivaEscrituraPublica">No. Escritura pública</label>
+                                </div>
+                                <span *ngIf="ferr('constitutivaEscrituraPublica')" class="text-danger">{{ terr('constitutivaEscrituraPublica') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-5 mb-3">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" [(ngModel)]="contrato.constitutivaFecha" id="txtconstitutivaFecha">
+                                    <label for="txtconstitutivaFecha">Fecha</label>
+                                </div>
+                                <span *ngIf="ferr('constitutivaFecha')" class="text-danger">{{ terr('constitutivaEscrituraPublica') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.constitutivaNumeroNotario" id="txtconstitutivaNumeroNotario">
+                                    <label for="txtconstitutivaNumeroNotario">No. Notario público</label>
+                                </div>
+                                <span *ngIf="ferr('constitutivaNumeroNotario')" class="text-danger">{{ terr('constitutivaNumeroNotario') }}</span>
+                            </div>
+                            <div class="col-md-2 col-7 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdEstado" [(ngModel)]="contrato.constitutivaIdEstado" id="ddlconstitutivaIdEstado">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let e of edos" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlconstitutivaIdEstado">Estado:</label>
+                                </div>
+                                <span *ngIf="ferr('constitutivaIdEstado')" class="text-danger">{{ terr('constitutivaIdEstado') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.constitutivaFolioMercantil" id="txtconstitutivaFolioMercantil">
+                                    <label for="txtconstitutivaFolioMercantil">Folio mercantil</label>
+                                </div>
+                                <span *ngIf="ferr('constitutivaFolioMercantil')" class="text-danger">{{ terr('constitutivaFolioMercantil') }}</span>
+                            </div>
+                        </div>
+                        <h6><span class="small text-muted mb-2">Notario público Poder</span></h6>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-2 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.poderLicenciado" id="txtpoderLicenciado">
+                                    <label for="txtpoderLicenciado">Licenciado</label>
+                                </div>
+                                <span *ngIf="ferr('poderLicenciado')" class="text-danger">{{ terr('poderLicenciado') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-7 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.poderEscrituraPublica" id="txtpoderEscrituraPublica">
+                                    <label for="txtpoderEscrituraPublica">No. Escritura pública</label>
+                                </div>
+                                <span *ngIf="ferr('poderEscrituraPublica')" class="text-danger">{{ terr('poderEscrituraPublica') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-5 mb-3">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" [(ngModel)]="contrato.poderFecha" id="txtpoderFecha">
+                                    <label for="txtpoderFecha">Fecha</label>
+                                </div>
+                                <span *ngIf="ferr('poderFecha')" class="text-danger">{{ terr('poderFecha') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.poderNumeroNotario" id="txtpoderNumeroNotario">
+                                    <label for="txtpoderNumeroNotario">No. Notario público</label>
+                                </div>
+                                <span *ngIf="ferr('poderNumeroNotario')" class="text-danger">{{ terr('poderNumeroNotario') }}</span>
+                            </div>
+                            <div class="col-md-2 col-7 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" aria-label="IdEstado" [(ngModel)]="contrato.poderIdEstado" id="ddlpoderIdEstado">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let e of edos" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="ddlpoderIdEstado">Estado:</label>
+                                </div>
+                                <span *ngIf="ferr('poderIdEstado')" class="text-danger">{{ terr('poderIdEstado') }}</span>
+                            </div>
+                        </div>
+                        <h6><span class="small text-muted mb-2">Póliza</span></h6>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.polizaEmpresa" id="txtpolizaEmpresa">
+                                    <label for="txtpolizaEmpresa">Empresa</label>
+                                </div>
+                                <span *ngIf="ferr('polizaEmpresa')" class="text-danger">{{ terr('polizaEmpresa') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 col-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.polizaNumero" id="txtpolizaNumero">
+                                    <label for="txtpolizaNumero">Numero de póliza</label>
+                                </div>
+                                <span *ngIf="ferr('polizaNumero')" class="text-danger">{{ terr('polizaNumero') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 col-6 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="contrato.polizaMonto" id="txtpolizaMonto">
+                                    <label for="txtpolizaMonto">Monto</label>
+                                </div>
+                                <span *ngIf="ferr('polizaMonto')" class="text-danger">{{ terr('polizaMonto') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 col-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="contrato.polizaMontoLetra" id="txtpolizaMontoLetra">
+                                    <label for="txtpolizaMontoLetra">Monto letra</label>
+                                </div>
+                                <span *ngIf="ferr('polizaMontoLetra')" class="text-danger">{{ terr('polizaMontoLetra') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <div class="row col-md-12">
+                        <div class=" col-md-4 text-start">
+                            <button type="button" (click)="guardaryGenerarContratoBase()" class="btn btn-outline-primary" [disabled]="isLoading"><i class="fa-solid fa-file-download"></i> Guardar y descargar contrato base</button>
+                        </div>
+                        <div class=" col-md-8 text-end">
+                            <button type="button" (click)="gaurdaryCargarContratoDeCliente()" class="btn btn-outline-success" [disabled]="isLoading" disabled><i class="fa-solid fa-file-arrow-up"></i> Guardar y cargar contrato de cliente</button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<toast-widget></toast-widget>

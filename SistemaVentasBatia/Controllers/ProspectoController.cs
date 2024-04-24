@@ -192,5 +192,22 @@ namespace SistemaVentasBatia.Controllers
             await cotizacionesSvc.DesactivarCotizaciones(idProspecto);
             return await prospectosSvc.DesactivarProspecto(idProspecto);
         }
+
+        [HttpGet("[action]/{idProspecto}")]
+        public async Task<ActionResult<ProspectoDTO>> ObtenerDatosExistentesProspecto(int idProspecto)
+        {
+            return await prospectosSvc.ObtenerDatosProspecto(idProspecto);
+        }
+        [HttpGet("[action]/{idProspecto}")]
+        public async Task<ActionResult<ClienteContratoDTO>> ObtenerDatosExistentesClienteContrato(int idProspecto)
+        {
+            return await prospectosSvc.ObtenerDatosClienteContrato(idProspecto);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult<bool>> InsertarDatosClienteContrato(ClienteContratoDTO contrato)
+        {
+            return await prospectosSvc.InsetarDatosClienteContrato(contrato);
+        }
     }
 }

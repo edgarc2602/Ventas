@@ -1,4 +1,4 @@
-﻿import { Component, Inject, Output, EventEmitter } from '@angular/core';
+﻿import { Component, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ItemN } from 'src/app/models/item';
@@ -6,6 +6,7 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
 import Swal from 'sweetalert2';
 import { Subject } from 'rxjs';
+import { ToastWidget } from '../toast/toast.widget';
 
 
 @Component({
@@ -19,10 +20,9 @@ export class EditarCotizacion {
     idServicio: number = 0;
     validacion: boolean = false;
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
     isLoading: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+
 
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient,
@@ -55,20 +55,14 @@ export class EditarCotizacion {
     }
 
     guarda() {
-        this.isErr = false;
-        this.errMessage = '';
         if (this.valida()) {
             this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/ ${this.idServicio}`).subscribe(response => {
                 this.close();
-                this.isErr = false;
-                this.errMessage = 'Cotizaci\u00F3n actualizada';
-                this.evenSub.next();
+                this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' actualizada');
                 this.sendEvent.emit(true);
             }, err => {
                 this.close();
-                this.isErr = true;
-                this.errMessage = 'Ocurrió un error';
-                this.evenSub.next();
+                this.errorToast('Ocurrió un error');
             });
         }
     }
@@ -100,5 +94,16 @@ export class EditarCotizacion {
         let docModal = document.getElementById('editcot');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.hide();
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

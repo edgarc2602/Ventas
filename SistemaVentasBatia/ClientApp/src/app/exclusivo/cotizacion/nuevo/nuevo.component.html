@@ -89,7 +89,7 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>
+    <!--<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>-->
 </body>
 
 <head>
@@ -128,7 +128,7 @@
                                     <input type="text" class="form-control validacion-prospecto" [(ngModel)]="modelp.rfc" data-campo="rfc" id="txtRFC">
                                     <label for="txtRFC">RFC</label>
                                 </div>
-                                <span *ngIf="ferr('RFC')" class="text-danger">{{ terr('RFC') }}</span>
+                                <span *ngIf="ferr('Rfc')" class="text-danger">{{ terr('Rfc') }}</span>
                             </div>
                         </div>
                         <div class="row">
@@ -252,4 +252,4 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>
+<toast-widget></toast-widget>

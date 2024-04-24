@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SistemaVentasBatia.Enums;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Connections;
+using System.Collections;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -38,6 +39,11 @@ namespace SistemaVentasBatia.Repositories
         Task<int> GetIdMunucipioByMunicipio(int idEstado, string municipio);
         Task<bool> GetFronteraPorIdMunicipio(int idMunicipio);
         Task<List<Direccion>> ObtenerDireccionesPorProspecto(int idProspecto, int pagina);
+        Task<Prospecto> ObtenerDatosProspecto(int idProspecto);
+        Task<ClienteContrato> ObtenerDatosClienteContrato(int idProspecto);
+        Task<bool> InsertarDatosClienteContrato(ClienteContrato contrato);
+        Task<bool> ActualizarDatosClienteContrato(ClienteContrato contrato);
+        Task<bool> ConsultarContratoExistente(int idProspecto);
     }
 
     public class ProspectosRepository : IProspectosRepository
@@ -50,10 +56,12 @@ namespace SistemaVentasBatia.Repositories
         public async Task InsertarProspecto(Prospecto prospecto)
         {
             var query = @"insert into tb_prospecto (nombre_comercial, razon_social, rfc, domicilio_fiscal, telefono, representante_legal, documentacion,
-                            id_estatus_prospecto, fecha_alta, id_personal, nombre_contacto, email_contacto, numero_contacto, ext_contacto, poliza_cumplimiento)
+                            id_estatus_prospecto, fecha_alta, id_personal, nombre_contacto, email_contacto, numero_contacto, ext_contacto, poliza_cumplimiento,
+                            poder_representante_legal, acta_constitutiva, registro_patronal, empresa_venta)
                         values(@NombreComercial, @RazonSocial, @Rfc, @DomicilioFiscal, @Telefono,
                             @RepresentanteLegal, @Documentacion, @IdEstatusProspecto, @FechaAlta,
-                            @IdPersonal, @NombreContacto, @EmailContacto, @NumeroContacto, @ExtContacto, @PolizaCumplimiento)
+                            @IdPersonal, @NombreContacto, @EmailContacto, @NumeroContacto, @ExtContacto, @PolizaCumplimiento,
+                            @PoderRepresentanteLegal, @ActaConstitutiva, @RegistroPatronal, @EmpresaVenta)
                           select scope_identity()";
 
             try
@@ -161,7 +169,8 @@ namespace SistemaVentasBatia.Repositories
             var query = @"SELECT id_prospecto IdProspecto, nombre_comercial NombreComercial , razon_social RazonSocial, rfc Rfc, 
 				                           domicilio_fiscal DomicilioFiscal, telefono Telefono, representante_legal RepresentanteLegal , documentacion Documentacion, 
 				                           id_estatus_prospecto IdEstatusProspecto, fecha_alta FechaAlta, id_personal IdPersonal, 
-                                           nombre_contacto NombreContacto, numero_contacto NumeroContacto, ext_contacto ExtContacto, email_contacto EmailContacto, poliza_cumplimiento PolizaCumplimiento
+                                           nombre_contacto NombreContacto, numero_contacto NumeroContacto, ext_contacto ExtContacto, email_contacto EmailContacto, poliza_cumplimiento PolizaCumplimiento,
+                                           poder_representante_legal PoderRepresentanteLegal, acta_constitutiva ActaConstitutiva, registro_patronal RegistroPatronal, empresa_venta EmpresaVenta
                           FROM tb_prospecto
                           WHERE id_prospecto = @idProspecto";
 
@@ -183,12 +192,24 @@ namespace SistemaVentasBatia.Repositories
         }
         public async Task ActualizarProspecto(Prospecto prospecto)
         {
-            var query = @"update tb_prospecto 
+            var query = @"";
+            if (prospecto.EmpresaVenta != 0)
+            {
+                query = @"update tb_prospecto 
+	                      set nombre_comercial = @NombreComercial, razon_social = @RazonSocial, rfc = @Rfc, domicilio_fiscal = @DomicilioFiscal, telefono = @Telefono, 
+		                      representante_legal = @RepresentanteLegal, documentacion = @Documentacion, nombre_contacto = @NombreContacto, numero_contacto = @NumeroContacto,
+                              ext_contacto = @ExtContacto, email_contacto = @EmailContacto, poliza_cumplimiento = @PolizaCumplimiento, poder_representante_legal = @PoderRepresentanteLegal,
+                              acta_constitutiva = @ActaConstitutiva, registro_patronal = @RegistroPatronal, empresa_venta = @EmpresaVenta
+	                      where id_prospecto = @IdProspecto";
+            }
+            else
+            {
+                query = @"update tb_prospecto 
 	                      set nombre_comercial = @NombreComercial, razon_social = @RazonSocial, rfc = @Rfc, domicilio_fiscal = @DomicilioFiscal, /*telefono = @Telefono, */
 		                      /*representante_legal = @RepresentanteLegal,*/ documentacion = @Documentacion, nombre_contacto = @NombreContacto, numero_contacto = @NumeroContacto,
                               ext_contacto = @ExtContacto, email_contacto = @EmailContacto, poliza_cumplimiento = @PolizaCumplimiento
 	                      where id_prospecto = @IdProspecto";
-
+            }
             try
             {
                 using (var connection = ctx.CreateConnection())
@@ -570,5 +591,174 @@ UPDATE tb_cotizacion SET total_poliza = 0 WHERE id_prospecto = @idProspecto";
                 throw ex;
             }
         }
+        public async Task<Prospecto> ObtenerDatosProspecto(int idProspecto)
+        {
+            string query = "SELECT nombre_comercial NombreComercial, razon_social RazonSocial, rfc Rfc FROM tb_prospecto WHERE id_prospecto = @idProspecto";
+            var prospecto = new Prospecto();
+            try
+            {
+                using(var connection = ctx.CreateConnection())
+                {
+                    prospecto = await connection.QueryFirstAsync<Prospecto>(query, new { idProspecto });
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return prospecto;
+        }
+        public async Task<ClienteContrato> ObtenerDatosClienteContrato(int idProspecto)
+        {
+            var contrato = new ClienteContrato();
+
+            string query = @"
+                        SELECT
+                        id_clientecontrato IdClienteContrato, id_empresa IdEmpresa, id_prospecto IdProspecto, id_cotizacion IdCotizacion,
+                        constitutiva_escriturapublica ConstitutivaEscrituraPublica, constitutiva_fecha ConstitutivaFecha,
+                        constitutiva_licenciado ConstitutivaLicenciado, constitutiva_numeronotario ConstitutivaNumeroNotario,
+                        constitutiva_foliomercantil ConstitutivaFolioMercantil, poder_escriturapublica PoderEscrituraPublica,
+                        poder_fecha PoderFecha, poder_licenciado PoderLicenciado, poder_numeronotario PoderNumeroNotario,
+                        cliente_registropatronal ClienteRegistroPatronal, poliza_monto PolizaMonto, poliza_montoletra PolizaMontoLetra, poliza_empresa PolizaEmpresa,
+                        contrato_vigencia ContratoVigencia, empresa_contacto_nombre EmpresaContactoNombre, empresa_contacto_correo EmpresaContactoCorreo,
+                        empresa_contacto_telefono EmpresaContactoTelefono, cliente_direccion ClienteDireccion, cliente_colonia ClienteColoniaDescripcion,
+                        cliente_municipio ClienteMunicipio, cliente_estado ClienteEstado, cliente_cp CP, poliza_numero PolizaNumero, cliente_email ClienteEmail, cliente_representante ClienteRepresentante,
+                        cliente_contacto_nombre ClienteContactoNombre, cliente_contacto_telefono ClienteContactoTelefono, constitutiva_idestado ConstitutivaIdEstado, poder_idestado PoderIdEstado
+                        FROM tb_cliente_contrato
+                        WHERE id_prospecto = @idProspecto";
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    contrato = await connection.QueryFirstOrDefaultAsync<ClienteContrato>(query, new { idProspecto });
+                    if (contrato == null)
+                    {
+                        var clientecontrato = new ClienteContrato();
+                        return clientecontrato;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener datos del contrato: {ex.Message}");
+            }
+            return contrato;
+        }
+        public async Task<bool> InsertarDatosClienteContrato(ClienteContrato contrato)
+        {
+            string query = @"
+                            INSERT INTO tb_cliente_contrato
+                            (id_empresa , id_prospecto ,id_cotizacion, constitutiva_escriturapublica , constitutiva_fecha ,
+                            constitutiva_licenciado , constitutiva_numeronotario ,constitutiva_foliomercantil , poder_escriturapublica ,
+                            poder_fecha, poder_licenciado , poder_numeronotario ,cliente_registropatronal , poliza_monto , 
+                            poliza_montoletra , poliza_empresa ,contrato_vigencia, empresa_contacto_nombre , empresa_contacto_correo,
+                            empresa_contacto_telefono , cliente_direccion , cliente_colonia ,cliente_municipio, cliente_estado , cliente_cp, poliza_numero,
+                            cliente_email, cliente_representante, cliente_contacto_nombre, cliente_contacto_telefono, constitutiva_idestado, poder_idestado)
+                            VALUES
+                            (
+                            @IdEmpresa,  @IdProspecto, @IdCotizacion, @ConstitutivaEscrituraPublica, @ConstitutivaFecha,@ConstitutivaLicenciado, 
+                            @ConstitutivaNumeroNotario,@ConstitutivaFolioMercantil, @PoderEscrituraPublica, @PoderFecha,  @PoderLicenciado,  
+                            @PoderNumeroNotario, @ClienteRegistroPatronal,  @PolizaMonto,  @PolizaMontoLetra, @PolizaEmpresa,@ContratoVigencia,  @EmpresaContactoNombre,  
+                            @EmpresaContactoCorreo,@EmpresaContactoTelefono, @ClienteDireccion, @ClienteColoniaDescripcion,@ClienteMunicipio, @ClienteEstado, @CP,
+                            @PolizaNumero, @ClienteEmail, @ClienteRepresentante, @ClienteContactoNombre, @ClienteContactoTelefono, @ConstitutivaIdEstado, @PoderIdEstado)
+                            ";
+            bool result = false;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    var rowsAffected = await connection.ExecuteAsync(query, contrato);
+                    if (rowsAffected > 0)
+                    {
+                        result = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                throw ex;
+            }
+            return result;
+        }
+        public async Task<bool> ActualizarDatosClienteContrato(ClienteContrato contrato)
+        {
+            string query = @"
+        UPDATE tb_cliente_contrato
+        SET 
+            id_empresa = @IdEmpresa,
+            constitutiva_escriturapublica = @ConstitutivaEscrituraPublica,
+            constitutiva_fecha = @ConstitutivaFecha,
+            constitutiva_licenciado = @ConstitutivaLicenciado,
+            constitutiva_numeronotario = @ConstitutivaNumeroNotario,
+            constitutiva_foliomercantil = @ConstitutivaFolioMercantil,
+            poder_escriturapublica = @PoderEscrituraPublica,
+            poder_fecha = @PoderFecha,
+            poder_licenciado = @PoderLicenciado,
+            poder_numeronotario = @PoderNumeroNotario,
+            cliente_registropatronal = @ClienteRegistroPatronal,
+            poliza_monto = @PolizaMonto,
+            poliza_montoletra = @PolizaMontoLetra,
+            poliza_empresa = @PolizaEmpresa,
+            contrato_vigencia = @ContratoVigencia,
+            empresa_contacto_nombre = @EmpresaContactoNombre,
+            empresa_contacto_correo = @EmpresaContactoCorreo,
+            empresa_contacto_telefono = @EmpresaContactoTelefono,
+            cliente_direccion = @ClienteDireccion,
+            cliente_colonia = @ClienteColoniaDescripcion,
+            cliente_municipio = @ClienteMunicipio,
+            cliente_estado = @ClienteEstado,
+            cliente_cp = @CP,
+            poliza_numero = @PolizaNumero,
+            cliente_email = @ClienteEmail,
+            cliente_representante = @ClienteRepresentante,
+            cliente_contacto_nombre = @ClienteContactoNombre,
+            cliente_contacto_telefono = @ClienteContactoTelefono,
+            constitutiva_idestado = @ConstitutivaIdEstado,
+            poder_idestado = @PoderIdEstado
+        WHERE id_prospecto = @IdProspecto";
+
+            bool result = false;
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    var rowsAffected = await connection.ExecuteAsync(query, contrato);
+
+                    if (rowsAffected > 0)
+                    {
+                        result = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar datos en la tabla: {ex.Message}");
+            }
+
+            return result;
+        }
+        public async Task<bool> ConsultarContratoExistente(int idProspecto)
+        {
+            string query = "SELECT COUNT(*) FROM tb_cliente_contrato WHERE id_prospecto = @IdProspecto";
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    var count = await connection.ExecuteScalarAsync<int>(query, new { IdProspecto = idProspecto });
+
+                    return count > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al consultar la existencia del contrato: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

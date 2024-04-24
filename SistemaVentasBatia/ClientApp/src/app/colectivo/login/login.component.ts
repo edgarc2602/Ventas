@@ -1,10 +1,10 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Acceso } from 'src/app/models/acceso';
 import { Usuario } from 'src/app/models/usuario';
 import { Subject } from 'rxjs';
-
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { fadeInOut } from 'src/app/fade-in-out';
 
 
@@ -18,9 +18,11 @@ export class LoginComponent {
     model: Acceso = { usuario: '', contrasena: '' };
     usu: Usuario = {} as Usuario;
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+
+    //evenSub: Subject<void> = new Subject<void>();
+    //isErr: boolean = false;
+    //errMessage: string = '';
     isLoading: boolean = false;
 
 
@@ -48,9 +50,9 @@ export class LoginComponent {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
                         } else if (err.error.message) {
-                            this.isErr = true;
-                            this.errMessage = err.error.message;
-                            this.evenSub.next();
+                            this.toastWidget.isErr = true;
+                            this.toastWidget.errMessage = err.error.message;
+                            this.toastWidget.open();
                         }
                     }
                 }, 500);

@@ -69,6 +69,7 @@ namespace SistemaVentasBatia
             services.AddScoped<ITabuladorService, TabuladorService>();
             services.AddScoped<ISalarioService, SalarioService>();
             services.AddScoped<ICargaMasivaService, CargaMasivaService>();
+            services.AddScoped<IReportService, ReportService>();
 
             // Repositories
             services.AddScoped<ICotizacionesRepository, CotizacionesRepository>();
@@ -81,6 +82,7 @@ namespace SistemaVentasBatia
             services.AddScoped<ISalarioRepository, SalarioRepository>();
             services.AddScoped<IServicioRepository, ServicioRepository>();
             services.AddScoped<ICargaMasivaRepository, CargaMasivaRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
 
             //Excel
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

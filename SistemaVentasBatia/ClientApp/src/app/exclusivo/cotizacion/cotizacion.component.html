@@ -138,6 +138,6 @@
         <pagina-widget [pagina]="lcots.pagina" [numPaginas]="lcots.numPaginas" [rows]="lcots.rows" (chgEvent)="muevePagina($event)"></pagina-widget>
     </div>
 </div>
-<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>
+<toast-widget></toast-widget>
 <elimina-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></elimina-widget>
 <editcot-widget (editCot)="editReturn($event)"></editcot-widget>

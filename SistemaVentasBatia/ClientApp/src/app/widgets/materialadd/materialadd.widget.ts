@@ -29,9 +29,9 @@ export class MaterialAddWidget {
     mats: Catalogo[] = [];
     fres: ItemN[] = [];
     hidedir: number = 0;
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    validaMess: string = '';
+    //evenSub: Subject<void> = new Subject<void>();
+    //isErr: boolean = false;
+    //validaMess: string = '';
     lerr: any = {};
     validaciones: boolean = false;
     nombreSucursal: string = '';
@@ -82,9 +82,9 @@ export class MaterialAddWidget {
             this.http.post<Material>(`${this.url}api/${this.tipo}`, this.model).subscribe(response => {
                 this.close();
                 //this.sendEvent.emit(2);
-                this.isErr = false;
-                this.validaMess = 'Material agregado';
-                this.evenSub.next();
+                //this.isErr = false;
+                //this.validaMess = 'Material agregado';
+                //this.evenSub.next();
                 if (this.model.idPuestoDireccionCotizacion != 0) {
                     this.returnModal.emit(true);
                 }

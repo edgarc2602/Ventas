@@ -16,6 +16,8 @@ import { EditarCotizacion } from 'src/app/widgets/editacotizacion/editacotizacio
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
 import Swal from 'sweetalert2';
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
+
 
 @Component({
     selector: 'cotizacion',
@@ -44,10 +46,11 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     estatus: number = 1;
     idCotizacion: number = 0;
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
-    isErr: boolean = false;
-    errMessage: string = '';
+    //evenSub: Subject<void> = new Subject<void>();
+    //isErr: boolean = false;
+    //errMessage: string = '';
     isLoading: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, public user: StoreUser) {
@@ -167,10 +170,11 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     elimina($event) {
         if ($event) {
             this.http.post<boolean>(`${this.url}api/cotizacion/EliminarCotizacion`, this.idCotizacion).subscribe(response => {
-                this.isErr = false;
-                this.errMessage = 'Cotizaci\u00F3n ' + this.idCotizacion + ' eliminada';
-                this.evenSub.next();
-            }, err => console.log(err));
+                this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' eliminada');
+            }, err => {
+                console.log(err);
+                this.errorToast('Ocurrió un error')
+            });
         }
         this.init();
     }
@@ -181,29 +185,36 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         window.history.back();
     }
     chgEstatus(idCotizacion: number, idEstatusCotizacion: number) {
-        this.isErr = false;
-        this.errMessage = '';
         if (idEstatusCotizacion === 1) {
             this.http.put<boolean>(`${this.url}api/cotizacion/desactivarcotizacion`, idCotizacion).subscribe(response => {
                 this.lista();
-                this.isErr = false;
-                this.errMessage = 'Cotizaci\u00F3n ' + idCotizacion + ' desactivada';
-                this.evenSub.next();
+                this.okToast('Cotizaci\u00F3n ' + idCotizacion + ' desactivada');
             }, err => {
-                console.log(err)
+                console.log(err);
+                this.errorToast('Ocurrió un error')
             });
         } else {
             this.http.put<boolean>(`${this.url}api/cotizacion/activarcotizacion`, idCotizacion).subscribe(response => {
                 this.lista();
-                this.isErr = false;
-                this.errMessage = 'Cotizaci\u00F3n ' + idCotizacion + ' activada';
-                this.evenSub.next();
+                this.okToast('Cotizaci\u00F3n ' + idCotizacion + ' activada');
             }, err => {
-                console.log(err)
+                console.log(err);
+                this.errorToast('Ocurrió un error');
             });
         }
     }
     editReturn($event) {    
         this.init();
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

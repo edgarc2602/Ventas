@@ -485,8 +485,7 @@ export class CatalogoComponent {
     }
 
     descargarListaProductosPorEstado() {
-        const boton1 = document.getElementById("btnProdDes") as HTMLButtonElement;
-        boton1.disabled = true;
+        this.isLoading = true;
         this.http.get(`${this.url}api/report/DescargarListaProductosPorEstado/${this.idEstado}/${this.idFamilia}`, { responseType: 'arraybuffer' })
             .subscribe(
                 (data: ArrayBuffer) => {
@@ -502,13 +501,13 @@ export class CatalogoComponent {
                     } else {
                         alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
                     }
-                    boton1.disabled = false;                },
+                    this.isLoading = false;
+                },
                 error => {
                     console.error('Error al obtener el archivo PDF', error);
-                    boton1.disabled = false;
+                    this.isLoading = false;
                 }
-        );
-        boton1.disabled = false;
+            );
     }
     arrayBufferToDataUrl(buffer: ArrayBuffer): string {
         const blob = new Blob([buffer], { type: 'application/pdf' });

@@ -1,35 +1,33 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-declare var bootstrap: any;
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'toast-widget',
     templateUrl: './toast.widget.html'
 })
-export class ToastWidget implements OnInit, OnDestroy {
-    eventsSubscription: Subscription;
-    @Input() isError: boolean = false;
-    @Input() message: string = "";
-    @Input() events: Observable<void>;
+export class ToastWidget {
+    @Input() isErr: boolean = false;
+    @Input() errMessage: string = "";
 
-    constructor() {}
-
-    refresh(isError: boolean, message: string) {
-        this.isError = isError;
-        this.message = message;
-        let toastExample = document.getElementById('glotoast');
-        let toast = new bootstrap.Toast(toastExample);
-        toast.show();
-    }
-
-    ngOnInit() {
-        this.eventsSubscription = this.events.subscribe(() => {
-            this.refresh(this.isError, this.message);
-        });
-    }
-
-
-    ngOnDestroy() {
-        this.eventsSubscription.unsubscribe();
+    open() {
+        let toastElement = document.getElementById('glotoast');
+        let titleElement = toastElement.querySelector('.toast-header');
+        if (this.isErr == false) {
+            titleElement.textContent = "Ok";
+        }
+        else {
+            titleElement.textContent = "Revisa";
+        }
+        let messageElement = toastElement.querySelector('.toast-body');
+        messageElement.textContent = this.errMessage;
+        toastElement.classList.add('show');
+        toastElement.classList.toggle('bg-danger', this.isErr);
+        toastElement.classList.toggle('bg-success', !this.isErr);
+        setTimeout(() => {
+            toastElement.classList.remove('show');
+            this.isErr = false;
+            this.errMessage
+            messageElement.textContent = '';
+            titleElement.textContent = '';
+        }, 3000);
     }
 }
