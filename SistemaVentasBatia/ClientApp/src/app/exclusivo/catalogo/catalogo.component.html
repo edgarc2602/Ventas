@@ -293,7 +293,7 @@
                             <br />
                             <div class="row">
                                 <div class="col d-flex justify-content-end">
-                                    <button type="button" (click)="openMat(0)" [disabled]="selPuesto == 0" class="btn  btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar producto</button>
+                                    <button type="button" (click)="openMat(0)" [disabled]="selPuesto == 0" class="btn  btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar material</button>
                                 </div>
                             </div>
                             <br>
@@ -668,3 +668,4 @@
 <agregarservicio-widget (serEvent)="reloadServicios()"></agregarservicio-widget>
 <usuarioadd-widget (actualizarUsuarios)="obtenerUsuarios()"></usuarioadd-widget>
 <elimina-widget [titulo]="" [mensaje]="" (ansEvent)="eliminarUsuario($event)"></elimina-widget>
+<toast-widget></toast-widget>

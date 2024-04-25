@@ -33,6 +33,7 @@ export class PuestoWidget {
     jornada: number = 0;
     nombreSucursal: string = '';
     puesto: string = '';
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
@@ -57,9 +58,6 @@ export class PuestoWidget {
         http.get<Catalogo[]>(`${url}api/catalogo/getclase`).subscribe(response => {
             this.lclas = response;
         }, err => console.log(err));
-        //this.http.get<ItemN[]>(`${this.url}api/catalogo/getfrecuencia`).subscribe(response => {
-        //    this.fres = response;
-        //}, err => console.log(err));
     }
 
     nuevo() {
@@ -113,6 +111,7 @@ export class PuestoWidget {
                 this.http.post<PuestoCotiza>(`${this.url}api/puesto`, this.model).subscribe(response => {
                     this.sendEvent.emit(0);
                     this.close();
+                    this.okToast('Puesto agregado');
                 }, err => {
                     console.log(err);
                     if (err.error) {
@@ -120,12 +119,13 @@ export class PuestoWidget {
                             this.lerr = err.error.errors;
                         }
                     }
+                    this.errorToast('Ocurri\u00F3 un error');
                 });
             } else {
                 this.http.put<boolean>(`${this.url}api/puesto`, this.model).subscribe(response => {
                     this.sendEvent.emit(0);
                     this.close();
-
+                    this.okToast('Puesto actualizado');
                 }, err => {
                     console.log(err);
                     if (err.error) {
@@ -133,6 +133,7 @@ export class PuestoWidget {
                             this.lerr = err.error.errors;
                         }
                     }
+                    this.errorToast('Ocurri\u00F3 un error');
                 });
             }
         }
@@ -218,10 +219,6 @@ export class PuestoWidget {
             this.lerr['DiaDescanso'] = ['Dia Descanso es obligatorio'];
             this.validacion = false;
         }
-        //if (this.model.diaFestivo == null) {
-        //    this.lerr['diaFestivo'] = ['Seleccione una opción'];
-        //    this.validacion = false;
-        //}
         return this.validacion;
     }
 
@@ -268,5 +265,16 @@ export class PuestoWidget {
         this.http.get<number>(`${this.url}api/salario/getzonadefault/${idDireccionCotizacion}`).subscribe(response => {
             this.model.idTabulador = response;
         }, err => console.log(err));
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

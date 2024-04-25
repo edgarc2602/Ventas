@@ -1,9 +1,10 @@
-import { Component, Inject, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, Output, EventEmitter,ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
 import { AgregarUsuario } from 'src/app/models/agregarusuario';
 import Swal from 'sweetalert2';
+import { ToastWidget } from '../toast/toast.widget';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class UsuarioAddWidget {
     selectedImage: string | ArrayBuffer | null = null;
     lerr: any = {};
     validaciones: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) { }
 
@@ -63,41 +65,32 @@ export class UsuarioAddWidget {
         if (this.valida()) {
             if (this.edit > 0) {
                 this.http.put<boolean>(`${this.url}api/usuario/actualizarusuario`, this.agregarusuario).subscribe(response => {
+                    this.okToast('Usuario actualizado');
                     this.response = response;
                     this.close();
                     this.returnUsuarioAdd.emit();
                 }, err => {
+                    this.errorToast('Ocurri\u00F3 un error');
                     console.log(err);
 
                 });
             }
             if (this.edit == 0) {
                 this.http.put<boolean>(`${this.url}api/usuario/agregarusuario`, this.agregarusuario).subscribe(response => {
+                    
                     this.response = response;
 
                     if (response == false) {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'No se encuentra el usuario, porfavor verifique el nombre',
-                            icon: 'error',
-                            timer: 2000,
-                            showConfirmButton: false,
-                        });
+                        this.errorToast('No se encuentra el usuario, porfavor verifique el nombre');
                     }
                     else {
+                        this.okToast('Usuario agregado');
                         this.close();
                         this.returnUsuarioAdd.emit();
 
                     }
                 }, err => {
-                    //console.log(err);
-                    //Swal.fire({
-                    //    title: 'Error',
-                    //    text: 'No se encuentra el usuario, porfavor verifique el nombre',
-                    //    icon: 'error',
-                    //    timer: 2000,
-                    //    showConfirmButton: false,
-                    //});
+                    this.errorToast('Ocurri\u00F3 un error');
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -217,5 +210,16 @@ export class UsuarioAddWidget {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

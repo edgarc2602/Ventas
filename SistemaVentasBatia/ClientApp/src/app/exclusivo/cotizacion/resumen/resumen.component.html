@@ -5,7 +5,7 @@
             <div class="col-12 col-md-9">
                 <h2 class="text-black-90">Cotización {{model.nombreComercial}}</h2>
             </div>
-            <div class="col-4 col-md-3 text-end">
+            <div class="col-4 col-md-3 text-end d-none">
                 <button type="button" class="btn btn-outline-primary" (click)="marcarVenta()"><i class="fa-solid fa-clipboard-check"></i> Marcar Venta</button>
             </div>
             <div class="col-4 col-md-6">
@@ -334,7 +334,7 @@
                         <button type="button" id="miBoton2" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
-                    <div class="col-3 float-end col-md-3">
+                    <div class="col-3 float-end col-md-3 d-none">
                         <button type="button" id="miBoton3" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-file-contract"></i> Contrato</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
@@ -360,7 +360,7 @@
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-12">
                     Seleccionar una dirección existente
-                </div>
+                </div>-
             </div>
             <br>
             <div class="row d-flex align-items-center mb-3">
@@ -372,7 +372,7 @@
                         </select>
                         <label for="IdDireccion">Sucursal</label>
                     </div>
-                    <span asp-validation-for="IdDireccion" class="text-danger"></span>
+                    <span *ngIf="ferr('SLidDireccion')" class="text-danger">{{ terr('SLidDireccion') }}</span>
                 </div>
                 <div class="col-1 col-sm-12 col-md-2">
                     <button type="button" (click)="addDir()" class="btn btn-lg btn-outline-success"><i class="fa-solid fa-plus"></i></button>
@@ -394,7 +394,7 @@
             <div *ngIf="isLoading" class="text-center ">
                 <i class="fas fa-spinner fa-spin fa-3x"></i>
             </div>
-            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 400px; overflow-y: auto; overflow-x: hidden" class="box-shadow">
+            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 400px; overflow-y: auto; overflow-x: hidden" >
                 <div class="row">
                     <div *ngFor="let dr of lsdir.direcciones" class="col-sm-12 col-md-6 mb-3">
                         <div class="card shadow-sm">

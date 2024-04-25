@@ -9,6 +9,8 @@ declare var bootstrap: any;
 import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
 
+
+
 @Component({
     selector: 'mateadd-widget',
     templateUrl: './materialadd.widget.html'
@@ -29,14 +31,12 @@ export class MaterialAddWidget {
     mats: Catalogo[] = [];
     fres: ItemN[] = [];
     hidedir: number = 0;
-    //evenSub: Subject<void> = new Subject<void>();
-    //isErr: boolean = false;
-    //validaMess: string = '';
     lerr: any = {};
     validaciones: boolean = false;
     nombreSucursal: string = '';
     puesto: string = '';
     isExtra: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
 
@@ -81,10 +81,7 @@ export class MaterialAddWidget {
         if (this.valida()) {
             this.http.post<Material>(`${this.url}api/${this.tipo}`, this.model).subscribe(response => {
                 this.close();
-                //this.sendEvent.emit(2);
-                //this.isErr = false;
-                //this.validaMess = 'Material agregado';
-                //this.evenSub.next();
+                this.okToast(this.model.claveProducto + ' guardado');
                 if (this.model.idPuestoDireccionCotizacion != 0) {
                     this.returnModal.emit(true);
                 }
@@ -98,6 +95,7 @@ export class MaterialAddWidget {
                         this.lerr = err.error.errors;
                     }
                 }
+                this.errorToast('Ocurri\u00F3 un error')
             });
         }
     }
@@ -188,5 +186,16 @@ export class MaterialAddWidget {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

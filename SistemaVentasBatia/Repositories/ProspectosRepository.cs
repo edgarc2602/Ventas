@@ -169,11 +169,11 @@ namespace SistemaVentasBatia.Repositories
             var query = @"SELECT id_prospecto IdProspecto, nombre_comercial NombreComercial , razon_social RazonSocial, rfc Rfc, 
 				                           domicilio_fiscal DomicilioFiscal, telefono Telefono, representante_legal RepresentanteLegal , documentacion Documentacion, 
 				                           id_estatus_prospecto IdEstatusProspecto, fecha_alta FechaAlta, id_personal IdPersonal, 
-                                           nombre_contacto NombreContacto, numero_contacto NumeroContacto, ext_contacto ExtContacto, email_contacto EmailContacto, poliza_cumplimiento PolizaCumplimiento,
-                                           poder_representante_legal PoderRepresentanteLegal, acta_constitutiva ActaConstitutiva, registro_patronal RegistroPatronal, empresa_venta EmpresaVenta
+                                           nombre_contacto NombreContacto, numero_contacto NumeroContacto, ext_contacto ExtContacto, email_contacto EmailContacto, poliza_cumplimiento PolizaCumplimiento
+                                           
                           FROM tb_prospecto
                           WHERE id_prospecto = @idProspecto";
-
+            //,poder_representante_legal PoderRepresentanteLegal, acta_constitutiva ActaConstitutiva, registro_patronal RegistroPatronal, empresa_venta EmpresaVenta
             var prospecto = new Prospecto();
 
             try

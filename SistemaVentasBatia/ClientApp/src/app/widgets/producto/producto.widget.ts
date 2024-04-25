@@ -1,10 +1,11 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Catalogo } from 'src/app/models/catalogo';
 import { ItemN } from 'src/app/models/item';
 import { MaterialPuesto } from 'src/app/models/materialpuesto';
 import { StoreUser } from '../../stores/StoreUser';
 declare var bootstrap: any;
+import { ToastWidget } from '../toast/toast.widget';
 
 @Component({
     selector: 'producto-widget',
@@ -21,6 +22,7 @@ export class ProductoWidget implements OnChanges {
     idSer: number = 2;
     validaciones: boolean = false;
     lerr: any = {};
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<ItemN[]>(`${url}api/catalogo/getfrecuencia`).subscribe(response => {
@@ -61,9 +63,11 @@ export class ProductoWidget implements OnChanges {
         if (this.valida()) {
             if (this.model.idMaterialPuesto == 0) {
                 this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
+                    this.okToast(this.grupo + ' agregado');
                     this.sendEvent.emit(true);
                     this.close();
                 }, err => {
+                    this.errorToast('Ocurri\u00F3 un error');
                     console.log(err);
                     if (err.error) {
                         if (err.error.errors) {
@@ -74,9 +78,11 @@ export class ProductoWidget implements OnChanges {
             }
             if (this.model.idMaterialPuesto != 0) {
                 this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
+                    this.okToast( this.grupo +' actualizado');
                     this.sendEvent.emit(true);
                     this.close();
                 }, err => {
+                    this.errorToast('Ocurri\u00F3 un error');
                     console.log(err);
                     if (err.error) {
                         if (err.error.errors) {
@@ -162,5 +168,16 @@ export class ProductoWidget implements OnChanges {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

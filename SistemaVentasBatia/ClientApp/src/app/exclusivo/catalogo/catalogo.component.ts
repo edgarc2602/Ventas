@@ -21,6 +21,7 @@ import { EliminaWidget } from 'src/app/widgets/elimina/elimina.widget';
 import Swal from 'sweetalert2';
 import { ListaProducto } from '../../models/listaproducto';
 import { ImmsJornada } from '../../models/immsjornada';
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 
 @Component({
     selector: 'catalogo-comp',
@@ -98,6 +99,8 @@ export class CatalogoComponent {
     immsJornada: ImmsJornada = {
         idImmsJornadaCotizador: 0, normal2: 0, normal4: 0, normal8: 0, normal12: 0, frontera2: 0, frontera4: 0, frontera8: 0, frontera12: 0, fechaAlta: null, idPersonal: 0, usuario: ''
     }
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+
 
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser) {
@@ -204,8 +207,12 @@ export class CatalogoComponent {
 
     deleteServ(id) {
         this.http.delete(`${this.url}api/producto/EliminarServicio/${id}`).subscribe(response => {
+            this.okToast('Servicio Eliminado');
             this.getServicios();
-        }, err => console.log(err));
+        }, err => {
+            this.errorToast('Ocurri\u00F3 un error');
+            console.log(err);
+        });
     }
 
     limpiarPorcentajesNG() {
@@ -255,21 +262,11 @@ export class CatalogoComponent {
             this.limpiarPorcentajesNG();
             this.limpiarPorcentajes();
             this.getPorcentajes();
-            Swal.fire({
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
-            });
+            this.okToast('Porcentajes actualizados'); 
         }, err => {
-            Swal.fire({
-                title: 'Error',
-                text: 'No se guardaron los cambios, porfavor revise la informaci\u00F3n',
-                icon: 'error',
-                timer: 2000,
-                showConfirmButton: false,
-            });
-            this.getPorcentajes()
-            console.log(err)
+            this.getPorcentajes();
+            console.log(err);
+            this.errorToast('Ocurri\u00F3 un error');
         });
     }
 
@@ -337,20 +334,10 @@ export class CatalogoComponent {
     actualizarSalarios(id: number) {
         this.obtenerValores();
         this.http.post<PuestoTabulador>(`${this.url}api/cotizacion/actualizarsalarios`, this.sal).subscribe(response => {
+            this.okToast('Salarios actualizados');
             this.getTabulador();
-            Swal.fire({
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
-            });
         }, err => {
-            Swal.fire({
-                title: 'Error',
-                text: 'No se guardaron los cambios, porfavor revise la informaci\u00F3n',
-                icon: 'error',
-                timer: 2000,
-                showConfirmButton: false,
-            });
+            this.errorToast('Ocurri\u00F3 un error');
             console.log(err)
         });
     }
@@ -408,27 +395,31 @@ export class CatalogoComponent {
         const dato = { idPersonal: idPersonal };
         if (estatusVentas === 1) {
             this.http.put<boolean>(`${this.url}api/usuario/desactivarusuario`, idPersonal).subscribe(response => {
+                this.okToast('Usuario desactivado');
                 this.obtenerUsuarios();
             }, err => {
-                console.log(err)
+                this.errorToast('Ocurri\u00F3 un error');
+                console.log(err);
             });
-            //estatusVentas = 0;
         } else {
             this.http.put<boolean>(`${this.url}api/usuario/activarusuario`, idPersonal).subscribe(response => {
+                this.okToast('Usuario activado');
                 this.obtenerUsuarios();
             }, err => {
-                console.log(err)
+                this.errorToast('Ocurri\u00F3 un error');
+                console.log(err);
             });
-            //estatusVentas = 1;
         }
     }
 
     eliminarUsuario($event) {
         this.idPersonal = this.elimina;
         this.http.put<boolean>(`${this.url}api/usuario/eliminarusuario`, this.idPersonal).subscribe(response => {
+            this.okToast('Usuario eliminado');
             this.obtenerUsuarios();
         }, err => {
-            console.log(err)
+            this.errorToast('Ocurri\u00F3 un error');
+            console.log(err);
         });
         this.idPersonal = 0;
         this.elimina = 0;
@@ -524,19 +515,32 @@ export class CatalogoComponent {
         this.immsJornada.idPersonal = this.user.idPersonal;
         this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarImssJornada`, this.immsJornada).subscribe(response => {
             this.obtenerImmsJornada();
-            Swal.fire({
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
-            });
+            //Swal.fire({
+            //    icon: 'success',
+            //    timer: 1000,
+            //    showConfirmButton: false,
+            //});
+            this.okToast('IMMS actualizado');
         }, err => {
-            Swal.fire({
-                title: 'Error',
-                text: 'No se guardaron los cambios, porfavor revise la informaci\u00F3n',
-                icon: 'error',
-                timer: 2000,
-                showConfirmButton: false,
-            });
+            //Swal.fire({
+            //    title: 'Error',
+            //    text: 'No se guardaron los cambios, porfavor revise la informaci\u00F3n',
+            //    icon: 'error',
+            //    timer: 2000,
+            //    showConfirmButton: false,
+            //});
+            this.errorToast('Ocurri\u00F3 un error');
         });
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

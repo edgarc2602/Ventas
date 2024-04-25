@@ -256,17 +256,30 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     saveDir($event) {
         this.modelDir.idDireccion = $event;
-        this.addDir();
+        //this.addDir();
         this.getAllDirs();
     }
-
+    
     addDir() {
+        this.lerr = {};
         this.modelDir.idCotizacion = this.model.idCotizacion;
         this.modelDir.idDireccionCotizacion = 0;
         if (this.modelDir.idDireccion != 0) {
             this.http.post<DireccionCotizacion>(`${this.url}api/cotizacion/agregardireccion`, this.modelDir).subscribe(response => {
+                this.okToast('Direcci\u00F3n agregada');
                 this.getDirs();
-            }, err => console.log(err));
+            }, err => {
+                if (err.error) {
+                    this.errorToast(err.error.message);
+                }
+                console.log(err)
+            });
+        }
+        else {
+            if (this.modelDir.idDireccion == 0) {
+                this.lerr['SLidDireccion'] = ['Seleccione una direcci\u00F3n'];
+                
+            }
         }
     }
 
@@ -637,7 +650,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
             error => {
                 console.error('Error al descargar el archivo:', error);
                 this.isLoading = false;
-                this.errorToast('Ocurri\u00F3 un error')
+                this.errorToast('Ocurri\u00F3 un error');
             }
         );
     }
@@ -651,5 +664,19 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    ferr(nm: string) {
+        let fld = this.lerr[nm];
+        if (fld)
+            return true;
+        else
+            return false;
+    }
+
+    terr(nm: string) {
+        let fld = this.lerr[nm];
+        let msg: string = fld.map((x: string) => "-" + x);
+        return msg;
     }
 }   

@@ -164,7 +164,8 @@ namespace SistemaVentasBatia.Controllers
             {
                 if (direccionCVM.IdDireccion == direccion.IdDireccion)
                 {
-                    return direccionCVM;
+                    throw new CustomException("La dirección ya esta registrada en la cotización actual");
+                    //return direccionCVM;
                     // TempData["DescripcionAlerta"] = "La dirección ya esta registrada en la cotización actual.";
                     // TempData["IdTipoAlerta"] = TipoAlerta.False;
                 }

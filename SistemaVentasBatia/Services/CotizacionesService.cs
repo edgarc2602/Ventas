@@ -28,7 +28,7 @@ namespace SistemaVentasBatia.Services
         Task ObtenerCatalogoDireccionesPorCotizacion(ListaPuestosDireccionCotizacionDTO listaPuestosDireccionCotizacionVM);
         Task CrearPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM);
         Task<ResumenCotizacionLimpiezaDTO> ObtenerResumenCotizacionLimpieza(int id);
-        Task <bool> EliminarCotizacion(int registroAEliminar);
+        Task<bool> EliminarCotizacion(int registroAEliminar);
         Task EliminarDireccionCotizacion(int registroAEliminar);
         Task<int> ObtenerIdCotizacionPorDireccion(int registroAEliminar);
         Task<int> ObtenerIdDireccionCotizacionPorOperario(int registroAEliminar);
@@ -253,8 +253,8 @@ namespace SistemaVentasBatia.Services
             immsJornada = mapper.Map<ImmsJornadaDTO>(await cotizacionesRepo.ObtenerImmsJornada());
             operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 20m) / 12m);
             operariosModel.PrimaVacacional = ((((operariosModel.Sueldo / 30.4167m) * 12m) * .25m) / 12m);
-            operariosModel.Vacaciones = ((operariosModel.Sueldo/ 30.4167m) * 12m)/ 12m;
-            if(operariosModel.DiaFestivo == true)
+            operariosModel.Vacaciones = ((operariosModel.Sueldo / 30.4167m) * 12m) / 12m;
+            if (operariosModel.DiaFestivo == true)
             {
                 operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 7) / 12m);
             }
@@ -264,7 +264,7 @@ namespace SistemaVentasBatia.Services
             }
             if (operariosModel.DiaDomingo == true)
             {
-                operariosModel.Domingo = (((operariosModel.Sueldo / 30.4167m)*.25m) * 4.33m) ;
+                operariosModel.Domingo = (((operariosModel.Sueldo / 30.4167m) * .25m) * 4.33m);
             }
             else
             {
@@ -324,25 +324,30 @@ namespace SistemaVentasBatia.Services
                 }
             }
             operariosModel.IMSS = imss;
+
             operariosModel.ISN = (
-                operariosModel.Sueldo + 
-                operariosModel.Aguinaldo + 
-                operariosModel.PrimaVacacional + 
-                operariosModel.Domingo + 
-                operariosModel.Festivo + 
-                operariosModel.CubreDescanso) * .03M; // incluir isn - domingo y festivos y cubredescansos
-            operariosModel.Total = Math.Round(
-                operariosModel.Sueldo + 
-                operariosModel.Aguinaldo + 
-                operariosModel.PrimaVacacional + 
+                operariosModel.Sueldo +
+                operariosModel.Aguinaldo +
                 operariosModel.Vacaciones +
-                operariosModel.ISN + 
-                operariosModel.IMSS +
+                operariosModel.PrimaVacacional +
+                operariosModel.Bonos +
+                operariosModel.Vales +
                 operariosModel.Festivo +
                 operariosModel.Domingo +
-                operariosModel.CubreDescanso +
+                operariosModel.CubreDescanso) * .03M;
+
+            operariosModel.Total = Math.Round(
+                operariosModel.Sueldo +
+                operariosModel.Aguinaldo +
+                operariosModel.Vacaciones +
+                operariosModel.PrimaVacacional +
+                operariosModel.ISN +
+                operariosModel.IMSS +
                 operariosModel.Bonos +
-                operariosModel.Vales, 2);
+                operariosModel.Vales +
+                operariosModel.Festivo +
+                operariosModel.Domingo +
+                operariosModel.CubreDescanso , 2);
             return operariosModel;
         }
 
@@ -470,7 +475,7 @@ namespace SistemaVentasBatia.Services
             var obtenernombre = mapper.Map<Cotizacion>(await cotizacionesRepo.ObtenerNombreComercialCotizacion(id));
             try
             {
-                resumenCotizacion.SubTotal = resumenCotizacion.Salario + resumenCotizacion.Provisiones + resumenCotizacion.CargaSocial + resumenCotizacion.Prestaciones+ resumenCotizacion.Material + resumenCotizacion.Uniforme + resumenCotizacion.Equipo + resumenCotizacion.Herramienta + resumenCotizacion.Servicio;
+                resumenCotizacion.SubTotal = resumenCotizacion.Salario + resumenCotizacion.Provisiones + resumenCotizacion.CargaSocial + resumenCotizacion.Prestaciones + resumenCotizacion.Material + resumenCotizacion.Uniforme + resumenCotizacion.Equipo + resumenCotizacion.Herramienta + resumenCotizacion.Servicio;
                 resumenCotizacion.Indirecto = resumenCotizacion.SubTotal * obtenercot.CostoIndirecto;
                 resumenCotizacion.Utilidad = (resumenCotizacion.SubTotal + resumenCotizacion.Indirecto) * obtenercot.Utilidad;
                 resumenCotizacion.ComisionSV = (resumenCotizacion.SubTotal + resumenCotizacion.Indirecto + resumenCotizacion.Utilidad) * (obtenercot.ComisionSV);
@@ -565,7 +570,7 @@ namespace SistemaVentasBatia.Services
 
                 }
 
-                
+
 
                 await cotizacionesRepo.InsertarTotalCotizacion(total, id, numerotxt);
                 return resumenCotizacion;
@@ -621,7 +626,7 @@ namespace SistemaVentasBatia.Services
 
             var equiposcotizacion = await materialRepo.ObtieneEquiposPorIdCotizacion(idCotizacion);
 
-            var herramientascotizacion = await materialRepo.ObtieneHerramientasPorIdCotizacion(idCotizacion);  
+            var herramientascotizacion = await materialRepo.ObtieneHerramientasPorIdCotizacion(idCotizacion);
 
             var servicioscotizacion = await materialRepo.ObtieneServiciosPorIdCotizacion(idCotizacion);
 
@@ -632,7 +637,7 @@ namespace SistemaVentasBatia.Services
                 var idPuestoDireccionCotizacionNuevo = await cotizacionesRepo.CopiarPlantillaDireccionCotizacion(direccionesNuevas.IdDireccionCotizacion, direccionCotizacionNueva.IdDireccionCotizacion);
             }
             var operariosCotizacion = await cotizacionesRepo.ObtieneOperariosCotizacion(idCotizacionNueva);
-            
+
             var operariosCotizacionAnteriores = await cotizacionesRepo.ObtieneOperariosCotizacion(idCotizacion);
 
             foreach (var (dir, dirnueva) in direccionesCotizacion.Zip(direccionesCotizacionNueva))

@@ -72,7 +72,7 @@ export class ContratoWidget {
             this.contrato = response;
             this.http.get<Prospecto>(`${this.url}api/prospecto/ObtenerDatosExistentesProspecto/${this.idProspecto}`).subscribe(response => {
                 this.contrato.clienteRazonSocial = response.nombreComercial;
-                this.contrato.clienteRfc = response.rfc
+                this.contrato.clienteRfc = response.rfc;
                 this.getDireccionAPI();
             }, err => console.log(err));
         }, err => console.log(err));
@@ -93,7 +93,7 @@ export class ContratoWidget {
         }
     }
 
-    gaurdaryCargarContratoDeCliente() {
+    guardaryCargarContratoDeCliente() {
         this.lerr = {};
         if (this.valida()) {
             this.guardarDatosContrato();
@@ -118,7 +118,7 @@ export class ContratoWidget {
                         console.error('Error al obtener el archivo DOCX', error);
                         this.isLoading = false;
                         this.toastWidget.isErr = true;
-                        this.toastWidget.errMessage = 'Ocurrió un error';
+                        this.toastWidget.errMessage = 'Ocurri\u00F3 un error';
                         this.toastWidget.open();
                     }
                 });
@@ -259,7 +259,6 @@ export class ContratoWidget {
         }
         return this.validacion;
     }
-
 
     ferr(nm: string) {
         let fld = this.lerr[nm];

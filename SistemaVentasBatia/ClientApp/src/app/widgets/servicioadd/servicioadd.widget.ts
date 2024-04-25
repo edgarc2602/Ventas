@@ -7,6 +7,7 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 import { numberFormat } from 'highcharts';
 declare var bootstrap: any;
 import { Subject } from 'rxjs';
+import { ToastWidget } from '../toast/toast.widget';
 
 @Component({
     selector: 'servadd-widget',
@@ -29,10 +30,8 @@ export class ServicioAddWidget {
     sers: Catalogo[] = [];
     fres: ItemN[] = [];
     lerr: any = {};
-    //evenSub: Subject<void> = new Subject<void>();
-    //isErr: boolean = false;
-    //validaMess: string = '';
     validaciones: boolean = false;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {}
         
@@ -82,26 +81,19 @@ export class ServicioAddWidget {
         this.quitarFocoDeElementos();
         this.lerr = {};
         if (this.valida()) {
-            //if (this.model.idDireccionCotizacion == 0) {
-            //    this.model.idDireccionCotizacion = 0
-            //}
             if (this.edit == 0) {
                 this.http.post<Servicio>(`${this.url}api/material/insertarserviciocotizacion`, this.model).subscribe(response => {
                     this.close();
                     this.sendEvent.emit(2);
-                    //this.isErr = false;
-                    //this.validaMess = 'Guardado correctamente';
-                    //this.evenSub.next();
+                    this.okToast('Servicio agregado');
                 }, err => {
                     console.log(err);
-                    //this.isErr = true;
-                    //this.validaMess = 'Ocurrio un error';
-                    //this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
                         }
                     }
+                    this.errorToast('Ocurri\u00F3 un error')
                 });
             }
             if (this.edit == 1) {
@@ -110,19 +102,15 @@ export class ServicioAddWidget {
                     this.close();
                     this.sendEvent.emit(2);
                     console.log(response);
-                    //this.isErr = false;
-                    //this.validaMess = 'Servicio actualizado';
-                    //this.evenSub.next();
+                    this.okToast('Servicio actualizado');
                 }, err => {
                     console.log(err);
-                    //this.isErr = true;
-                    //this.validaMess = 'Ocurrio un error';
-                    //this.evenSub.next();
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
                         }
                     }
+                    this.errorToast('Ocurri\u00F3 un error');
                 });
             }
         }
@@ -148,17 +136,11 @@ export class ServicioAddWidget {
         myModal.hide();
     }
     ok() {
-        //this.isErr = false;
-        //this.validaMess = 'Actualizado correctamente';
-        //this.evenSub.next();
+
     }
 
     valida() {
         this.validaciones = true;
-        //if (this.model.idDireccionCotizacion == 0) {
-        //    this.lerr['IdDireccionCotizacion'] = ['Sucursal es necesaria'];
-        //    this.validaciones = false;
-        //}
         if (this.model.idServicioExtra == 0) {
             this.lerr['IdServicioExtra'] = ['Servicio es necesario'];
             this.validaciones = false;
@@ -204,5 +186,16 @@ export class ServicioAddWidget {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

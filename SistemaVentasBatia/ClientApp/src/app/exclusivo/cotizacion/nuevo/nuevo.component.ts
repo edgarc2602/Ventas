@@ -99,14 +99,14 @@ export class CotizaComponent {
             if (this.model.idCotizacion == 0) {
                 this.http.post<boolean>(`${this.url}api/cotizacion`, this.model).subscribe(response => {
                     console.log(response);
-                    this.okToast('Cotizacion creada');
+                    this.okToast('Cotizaci\u00F3n creada');
                     this.closeNew();
                     this.closeSel();
                     this.rtr.navigate(['/exclusivo/cotiza/' + this.model.idProspecto]);
                     
                 }, err => {
                     console.log(err);
-                    this.errorToast('Ocurrió un error');
+                    this.errorToast('Ocurri\u00F3 un error');
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -137,7 +137,7 @@ export class CotizaComponent {
                     this.okToast('Prospecto guardado');
                 }, err => {
                     console.log(err);
-                    this.errorToast('Ocurrió un error');
+                    this.errorToast('Ocurri\u00F3 un error');
                     if (err.error) {
                         for (let key in err.error) {
                             if (err.error.hasOwnProperty(key)) {
@@ -159,7 +159,7 @@ export class CotizaComponent {
                     this.okToast('Prospecto actualizado');
                 }, err => {
                     console.log(err);
-                    this.errorToast('Ocurrió un error');
+                    this.errorToast('Ocurri\u00F3 un error');
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -240,6 +240,10 @@ export class CotizaComponent {
         }
         if (this.idVendedor == 0 || this.idVendedor == null) {
             this.lerr['IdVendedor'] = ['Vendedor es requerido'];
+            this.validaciones = false;
+        }
+        if (this.modelp.rfc.length > 13) {
+            this.lerr['RfcLenght'] = ['El RFC no puede contener m\u00E1s de 13 caracteres'];
             this.validaciones = false;
         }
 

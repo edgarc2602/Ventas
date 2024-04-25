@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
 import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
 
-
 @Component({
     selector: 'editcot-widget',
     templateUrl: './editacotizacion.widget.html'
@@ -22,7 +21,6 @@ export class EditarCotizacion {
     lerr: any = {};
     isLoading: boolean = false;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
-
 
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient,
