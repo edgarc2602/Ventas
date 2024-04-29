@@ -4,6 +4,9 @@ import { fadeInOut } from 'src/app/fade-in-out';
 import { HttpClient } from '@angular/common/http';
 import { UsuarioGrafica } from '../../models/usuariografica';
 import { UsuarioGraficaMensual } from '../../models/usuariograficamensual';
+import { CotizaResumenLim } from '../../models/cotizaresumenlim';
+import { Catalogo } from '../../models/catalogo';
+import { CotizacionVendedorDetalle } from '../../models/cotizacionvendedordetalle';
 interface DatosAgrupados {
     nombre: string;
     cotizacionMes: number[];
@@ -30,6 +33,11 @@ export class HomeComponent implements OnInit {
     usuariosMensual: UsuarioGraficaMensual[] = [];
     datosAgrupadosMensuales: Record<number, UsuarioGraficaMensual[]> = {};
     datosAgrupados: DatosAgrupados[] = [];
+    cotizacionDetalle: CotizacionVendedorDetalle = {
+        idVendedor: 0, cotizacionDetalle: []
+    }
+    vendedores: Catalogo[] = [];
+    idVendedor: number = 0;
 
 
     constructor(
@@ -49,6 +57,13 @@ export class HomeComponent implements OnInit {
         this.agruparDatosMensuales()
         this.getTop();
         this.getDonut();
+        this.getVendedores();
+    }
+
+    getVendedores() {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/ObtenerCatalogoVendedores`).subscribe(response => {
+            this.vendedores = response;
+        }, err => console.log(err));
     }
 
     agruparDatosMensuales() {
@@ -188,5 +203,12 @@ export class HomeComponent implements OnInit {
     }
     goBack() {
         window.history.back();
+    }
+    getCotizacionesVendedor(idVendedor: number) {
+        this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`).subscribe(response => {
+            this.cotizacionDetalle = response;
+        }, err => {
+            console.log(err)
+        });
     }
 }

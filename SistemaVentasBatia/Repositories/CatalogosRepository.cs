@@ -31,6 +31,7 @@ namespace SistemaVentasBatia.Repositories
         Task<IEnumerable<MaterialPuesto>> ObtenerEquipoDefaultPorPuesto(int idPuesto);
         Task<IEnumerable<MaterialPuesto>> ObtenerUniformeDefaultPorPuesto(int idPuesto);
         Task<List<Catalogo>> ObtenerCatalogoFamiliasPorIdServicio(int idServicio);
+        Task<List<Catalogo>> ObtenerCatalogoVendedores();
     }
 
     public class CatalogosRepository : ICatalogosRepository
@@ -446,6 +447,27 @@ FROM tb_clase";
                 throw ex;
             }
             return empresas;
+        }
+
+        public async Task<List<Catalogo>> ObtenerCatalogoVendedores()
+        {
+            string query = @"SELECT IdPersonal Id, Per_Nombre + ' ' + Per_Paterno + ' ' + Per_Materno Descripcion
+                            FROM Personal WHERE per_cotizadorventas = 1 AND per_revisaventas = 0 ORDER BY Per_Nombre";
+
+            var vendedores = new List<Catalogo>();
+
+            try
+            {
+                 using ( var connection = ctx.CreateConnection())
+                {
+                    vendedores = (await connection.QueryAsync<Catalogo>(query)).ToList();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return vendedores;
         }
     }
 }

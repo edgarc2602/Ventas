@@ -53,6 +53,7 @@ namespace SistemaVentasBatia.Services
         Task DesactivarCotizaciones(int idProspecto);
         Task<ImmsJornadaDTO> ObtenerImssJornada();
         Task<bool> ActualizarImssJornada(ImmsJornadaDTO imssJormada);
+        Task<CotizacionVendedorDetalleDTO> ObtenerCotizacionVendedorDetallePorIdVendedor(int idVendedor);
     }
 
     public class CotizacionesService : ICotizacionesService
@@ -884,6 +885,22 @@ namespace SistemaVentasBatia.Services
                 }
             }
             return horarioStr;
+        }
+
+        public async Task<CotizacionVendedorDetalleDTO> ObtenerCotizacionVendedorDetallePorIdVendedor(int idVendedor)
+        {
+            var idCotizacion = mapper.Map<List<CatalogoDTO>>(await cotizacionesRepo.ObtenerListaCotizaciones(idVendedor));
+            
+            var vendedorCotizaciones = new CotizacionVendedorDetalleDTO();
+            vendedorCotizaciones.CotizacionDetalle = new List<ResumenCotizacionLimpiezaDTO>();
+            vendedorCotizaciones.IdVendedor = idVendedor;
+            foreach (var id in idCotizacion)
+            {
+                var cotizacion = await ObtenerResumenCotizacionLimpieza(id.Id);
+                vendedorCotizaciones.CotizacionDetalle.Add(cotizacion);
+            }
+
+            return vendedorCotizaciones;
         }
     }
 }

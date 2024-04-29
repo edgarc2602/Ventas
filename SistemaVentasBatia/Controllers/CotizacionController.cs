@@ -313,5 +313,11 @@ namespace SistemaVentasBatia.Controllers
         {
             return await cotizacionesSvc.ActualizarImssJornada(imssJormada);
         }
+
+        [HttpGet("[action]/{idVendedor}")]
+        public async Task<ActionResult<CotizacionVendedorDetalleDTO>> CotizacionVendedorDetallePorIdVendedor(int idVendedor)
+        {
+            return await cotizacionesSvc.ObtenerCotizacionVendedorDetallePorIdVendedor(idVendedor);
+        }
     }
 }

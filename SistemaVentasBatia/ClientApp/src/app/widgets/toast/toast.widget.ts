@@ -25,7 +25,7 @@ export class ToastWidget {
         setTimeout(() => {
             toastElement.classList.remove('show');
             this.isErr = false;
-            this.errMessage
+            this.errMessage = '';
             messageElement.textContent = '';
             titleElement.textContent = '';
         }, 3000);

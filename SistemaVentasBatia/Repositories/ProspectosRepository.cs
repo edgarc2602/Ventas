@@ -56,14 +56,14 @@ namespace SistemaVentasBatia.Repositories
         public async Task InsertarProspecto(Prospecto prospecto)
         {
             var query = @"insert into tb_prospecto (nombre_comercial, razon_social, rfc, domicilio_fiscal, telefono, representante_legal, documentacion,
-                            id_estatus_prospecto, fecha_alta, id_personal, nombre_contacto, email_contacto, numero_contacto, ext_contacto, poliza_cumplimiento,
-                            poder_representante_legal, acta_constitutiva, registro_patronal, empresa_venta)
+                            id_estatus_prospecto, fecha_alta, id_personal, nombre_contacto, email_contacto, numero_contacto, ext_contacto, poliza_cumplimiento
+                            )
                         values(@NombreComercial, @RazonSocial, @Rfc, @DomicilioFiscal, @Telefono,
                             @RepresentanteLegal, @Documentacion, @IdEstatusProspecto, @FechaAlta,
-                            @IdPersonal, @NombreContacto, @EmailContacto, @NumeroContacto, @ExtContacto, @PolizaCumplimiento,
-                            @PoderRepresentanteLegal, @ActaConstitutiva, @RegistroPatronal, @EmpresaVenta)
+                            @IdPersonal, @NombreContacto, @EmailContacto, @NumeroContacto, @ExtContacto, @PolizaCumplimiento)
                           select scope_identity()";
-
+            //,poder_representante_legal, acta_constitutiva, registro_patronal, empresa_venta
+            //,@PoderRepresentanteLegal, @ActaConstitutiva, @RegistroPatronal, @EmpresaVenta
             try
             {
                 using (var connection = ctx.CreateConnection())
@@ -192,24 +192,11 @@ namespace SistemaVentasBatia.Repositories
         }
         public async Task ActualizarProspecto(Prospecto prospecto)
         {
-            var query = @"";
-            if (prospecto.EmpresaVenta != 0)
-            {
-                query = @"update tb_prospecto 
+            var query = @"update tb_prospecto 
 	                      set nombre_comercial = @NombreComercial, razon_social = @RazonSocial, rfc = @Rfc, domicilio_fiscal = @DomicilioFiscal, telefono = @Telefono, 
 		                      representante_legal = @RepresentanteLegal, documentacion = @Documentacion, nombre_contacto = @NombreContacto, numero_contacto = @NumeroContacto,
-                              ext_contacto = @ExtContacto, email_contacto = @EmailContacto, poliza_cumplimiento = @PolizaCumplimiento, poder_representante_legal = @PoderRepresentanteLegal,
-                              acta_constitutiva = @ActaConstitutiva, registro_patronal = @RegistroPatronal, empresa_venta = @EmpresaVenta
-	                      where id_prospecto = @IdProspecto";
-            }
-            else
-            {
-                query = @"update tb_prospecto 
-	                      set nombre_comercial = @NombreComercial, razon_social = @RazonSocial, rfc = @Rfc, domicilio_fiscal = @DomicilioFiscal, /*telefono = @Telefono, */
-		                      /*representante_legal = @RepresentanteLegal,*/ documentacion = @Documentacion, nombre_contacto = @NombreContacto, numero_contacto = @NumeroContacto,
                               ext_contacto = @ExtContacto, email_contacto = @EmailContacto, poliza_cumplimiento = @PolizaCumplimiento
 	                      where id_prospecto = @IdProspecto";
-            }
             try
             {
                 using (var connection = ctx.CreateConnection())

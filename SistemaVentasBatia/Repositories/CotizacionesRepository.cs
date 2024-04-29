@@ -89,6 +89,8 @@ namespace SistemaVentasBatia.Repositories
         Task<decimal> ObtenerSueldoPorIdTabuladorIdClase(int idPuesto, int idClase, int idZona);
         Task<ImmsJornada> ObtenerImmsJornada();
         Task<CotizaPorcentajes> ObtenerPorcentajesCotizacion();
+        Task<List<Catalogo>> ObtenerListaCotizaciones(int idVendedor);
+
 
     }
 
@@ -1913,5 +1915,24 @@ WHERE b.id_cotizacion = @idCotizacion
             return rows;
         }
 
+        public async Task<List<Catalogo>> ObtenerListaCotizaciones(int idVendedor)
+        {
+            string query = @"SELECT id_cotizacion Id FROM tb_cotizacion WHERE id_personal = @idVendedor ORDER BY id_cotizacion DESC";
+
+            var vendedores = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    vendedores = (await connection.QueryAsync<Catalogo>(query, new { idVendedor })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return vendedores;
+        }
     }
 }

@@ -16,4 +16,67 @@
             </div>
         </div>
     </div>
+    <div class="row pt-1 mb-3">
+        <div>
+            <h6 class="h6">Utilidad de cotizaciones</h6>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-4 col-12 mb-3">
+            <div class="form-floating">
+                <select class="form-select" [(ngModel)]="idVendedor" (change)="getCotizacionesVendedor(idVendedor)" id="ddlVendedores">
+                    <option value="0">Seleccione...</option>
+                    <option *ngFor="let v of vendedores" [ngValue]="v.id">{{ v.descripcion }}</option>
+                </select>
+                <label for="ddlVendedores">Vendedor</label>
+            </div>
+        </div>
+        <div class="col-md-8 mb-3 col-12">
+            <div *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                <table class="table table-striped">
+                    <thead class="sticky-top">
+                        <tr>
+                            <th>
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-md-2 col-sm-6 col-2">
+                                        <span class="ms-2">Id</span>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 col-4">
+                                        <span class="ms-2">Nombre comercial</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-3">
+                                        <span class="ms-2">Utilidad</span>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-3">
+                                        <span class="ms-2">Total</span>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cotizaciones of cotizacionDetalle.cotizacionDetalle">
+                            <td>
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-md-2 col-sm-6 col-2">
+                                        <div class="ms-2">{{ cotizaciones.idCotizacion }}</div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 col-4">
+                                        <div class="ms-2">{{ cotizaciones.nombreComercial }}</div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-3">
+                                        <div class="ms-2">${{ cotizaciones.utilidad | number: '1.2-2' }}</div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 col-3">
+                                        <div class="ms-2">${{ cotizaciones.total | number: '1.2-2' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

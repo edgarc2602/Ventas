@@ -256,11 +256,11 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     saveDir($event) {
         this.modelDir.idDireccion = $event;
-        //this.addDir();
+        this.addDir(0);
         this.getAllDirs();
     }
     
-    addDir() {
+    addDir(edit: number) {
         this.lerr = {};
         this.modelDir.idCotizacion = this.model.idCotizacion;
         this.modelDir.idDireccionCotizacion = 0;
@@ -270,7 +270,10 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 this.getDirs();
             }, err => {
                 if (err.error) {
-                    this.errorToast(err.error.message);
+                    if (edit == 1) {
+                        this.errorToast(err.error.message);
+                    }
+                    
                 }
                 console.log(err)
             });
