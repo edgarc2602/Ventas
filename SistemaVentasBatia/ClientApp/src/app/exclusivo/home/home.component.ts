@@ -1,11 +1,14 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { HttpClient } from '@angular/common/http';
+import { ItemN } from 'src/app/models/item';
 import { UsuarioGrafica } from '../../models/usuariografica';
 import { UsuarioGraficaMensual } from '../../models/usuariograficamensual';
 import { Catalogo } from '../../models/catalogo';
 import { CotizacionVendedorDetalle } from '../../models/cotizacionvendedordetalle';
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
+
 interface DatosAgrupados {
     nombre: string;
     cotizacionMes: number[];
@@ -16,6 +19,7 @@ interface DatosAgrupados {
     animations: [fadeInOut],
 })
 export class HomeComponent implements OnInit {
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     model: UsuarioGrafica = {
         idPersonal: 0, nombre: '', cotizaciones: 0, prospectos: 0
     };
@@ -30,8 +34,10 @@ export class HomeComponent implements OnInit {
     datosAgrupados: DatosAgrupados[] = [];
     usuarios: UsuarioGrafica[] = [];
     vendedores: Catalogo[] = [];
+    lests: ItemN[] = [];
     idVendedor: number = 0;
     isLoading: boolean = false;
+    idEstatus: number = 0;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
         http.get<UsuarioGrafica[]>(`${url}api/usuario/obtenercotizacionesusuarios/`).subscribe(response => {
@@ -40,6 +46,9 @@ export class HomeComponent implements OnInit {
         }, err => console.log(err));
         http.get<UsuarioGraficaMensual[]>(`${url}api/usuario/obtenercotizacionesmensuales`).subscribe(response => {
             this.usuariosMensual = response;
+        }, err => console.log(err));
+        http.get<ItemN[]>(`${url}api/prospecto/getestatus`).subscribe(response => {
+            this.lests = response;
         }, err => console.log(err));
     }
 
@@ -205,5 +214,44 @@ export class HomeComponent implements OnInit {
                 console.log(err)
             });
         }
+    }
+
+    descargarReporteProspectos() {
+        this.isLoading = true;
+        this.http.get(`${this.url}api/report/DescargarReporteProspectos/${this.idEstatus}`, { responseType: 'arraybuffer' })
+            .subscribe(
+                (data: ArrayBuffer) => {
+                    this.okToast('Reporte descargado');
+                    const file = new Blob([data], { type: 'application/pdf' });
+                    const fileURL = URL.createObjectURL(file);
+                    const width = 800;
+                    const height = 550;
+                    const left = window.innerWidth / 2 - width / 2;
+                    const top = window.innerHeight / 2 - height / 2;
+                    const newWindow = window.open(fileURL, '_blank', `width=${width}, height=${height}, top=${top}, left=${left}`);
+                    if (newWindow) {
+                        newWindow.focus();
+                    } else {
+                        alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
+                    }
+                    this.isLoading = false;
+                },
+                error => {
+                    this.errorToast('Ocurri\u00F3 un error')
+                    console.error('Error al obtener el archivo PDF', error);
+                    this.isLoading = false;
+                }
+            );
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
     }
 }

@@ -19,7 +19,7 @@ using iTextSharp.text.log;
 
 namespace SistemaVentasBatia.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class ReportController : ControllerBase
@@ -190,6 +190,33 @@ namespace SistemaVentasBatia.Controllers
                 Console.WriteLine("Error al descargar el contrato Word: " + ex.Message);
                 return StatusCode(500, "Error al descargar el contrato Word");
             }
+        }
+
+        [HttpGet("[action]/{idEstatus}")]
+        public IActionResult DescargarReporteProspectos(int idEstatus)
+        {
+
+            try
+            {
+                var url = ("http://192.168.2.4/Reporte?%2freporteprospectos&rs:Format=PDF&idEstatus=" + idEstatus.ToString());
+                WebClient wc = new WebClient
+                {
+                    Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
+                };
+                byte[] myDataBuffer = wc.DownloadData(url.ToString());
+
+                return new FileContentResult(myDataBuffer, "application/pdf")
+                {
+                    FileDownloadName = "ReporteProspectos"
+                };
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el archivo PDF: {ex.Message}");
+                return StatusCode(500, "Error al obtener el archivo PDF");
+            }
+
         }
     }
 }

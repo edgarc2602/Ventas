@@ -3,7 +3,6 @@
     <div class="row pt-1 mb-3">
         <div>
             <h1 class="h2">Dashboard</h1>
-
         </div>
     </div>
     <div class="container">
@@ -98,4 +97,24 @@
             </div>
         </div>
     </div>
+    <div class="row pt-1 mb-3">
+        <div>
+            <h6 class="h6">Reporte de prospectos</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-3 mb-3">
+            <div class="form-floating">
+                <select class="form-select" [(ngModel)]="idEstatus" aria-label="IdEstatusProspecto" id="ddlEstatusProspecto">
+                    <option value="0">Seleccione ...</option>
+                    <option *ngFor="let s of lests" [ngValue]="s.id">{{ s.nom }}</option>
+                </select>
+                <label for="ddlEstatusProspecto">Estatus:</label>
+            </div>
+        </div>
+        <div class="col-md-3 col-3 mb-3">
+            <button class="btn btn-outline-info" (click)="descargarReporteProspectos()"><i class="fa fa-solid fa-file-download"></i> Descargar</button>
+        </div>
+    </div>
 </div>
+<toast-widget></toast-widget>
