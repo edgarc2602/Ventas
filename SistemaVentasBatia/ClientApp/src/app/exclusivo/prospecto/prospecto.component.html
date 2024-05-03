@@ -9,10 +9,12 @@
         <div class="row d-flex align-items-center">
             <div class="col-md-3 col-4 mb-3">
                 <div class="form-floating">
-                    <input type="text" class="form-control" [(ngModel)]="lspro.keywords" id="Keywords" (input)="lista()">
+                    <input type="text" class="form-control" [(ngModel)]="lspro.keywords" id="Keywords" (keyup)="onKeywordsInput()">
                     <label for="Keywords">Nombre Comercial</label>
                 </div>
             </div>
+
+
             <div class="col-md-3 col-3 mb-3">
                 <div class="form-floating">
                     <select class="form-select" [(ngModel)]="lspro.idEstatusProspecto" aria-label="IdEstatusProspecto" (change)="lista()" id="ddlEstatusProspecto">
@@ -100,7 +102,6 @@
     <br />
     <div *ngIf="lspro.prospectos && lspro.prospectos.length > 0" class="fade-in-container">
         <pagina-widget [pagina]="lspro.pagina" [numPaginas]="lspro.numPaginas" [rows]="lspro.rows" (chgEvent)="muevePagina($event)"></pagina-widget>
-
     </div>
 </div>
 <elimina-widget [titulo]="" [mensaje]="" (ansEvent)="desactivar()"></elimina-widget>

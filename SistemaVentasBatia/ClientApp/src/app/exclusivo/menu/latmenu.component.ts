@@ -41,6 +41,8 @@ export class LatMenuComponent implements OnInit {
     }
     cerrarMenu(): void {
         const sidebarMenu = document.getElementById('sidebarMenu');
-        sidebarMenu.classList.remove('show');
+        if (sidebarMenu) {
+            sidebarMenu.classList.remove('show');
+        }
     }
 }

@@ -12,20 +12,18 @@ import { ToastWidget } from '../toast/toast.widget';
     templateUrl: './usuarioadd.widget.html'
 })
 export class UsuarioAddWidget {
-
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @Output('actualizarUsuarios') returnUsuarioAdd = new EventEmitter();
-    edit: number = 0;
-    response: boolean = false;
-    idPersonal: number = 0;
     agregarusuario: AgregarUsuario = {
-        idPersonal: 0, autorizaVentas: 0, estatusVentas: 0, cotizadorVentas: 0, revisaVentas: 0, nombres: '', apellidoPaterno: '',
-        apellidoMaterno: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '', firma: '',
+        idPersonal: 0, autorizaVentas: 0, estatusVentas: 0, cotizadorVentas: 0, revisaVentas: 0, nombres: '', apellidoPaterno: '', apellidoMaterno: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '', firma: '',
         usuario: '', password: ''
     }
+    idPersonal: number = 0;
+    edit: number = 0;
+    validaciones: boolean = false;
+    response: boolean = false;
     selectedImage: string | ArrayBuffer | null = null;
     lerr: any = {};
-    validaciones: boolean = false;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) { }
 
@@ -77,7 +75,6 @@ export class UsuarioAddWidget {
             }
             if (this.edit == 0) {
                 this.http.put<boolean>(`${this.url}api/usuario/agregarusuario`, this.agregarusuario).subscribe(response => {
-                    
                     this.response = response;
 
                     if (response == false) {
@@ -87,7 +84,6 @@ export class UsuarioAddWidget {
                         this.okToast('Usuario agregado');
                         this.close();
                         this.returnUsuarioAdd.emit();
-
                     }
                 }, err => {
                     this.errorToast('Ocurri\u00F3 un error');
@@ -109,11 +105,11 @@ export class UsuarioAddWidget {
         }
         this.selectedImage = null;
     }
+
     existe() {
         this.nuevo();
         this.http.get<AgregarUsuario>(`${this.url}api/usuario/obtenerusuarioporidpersonal/${this.idPersonal}`).subscribe(response => {
             this.agregarusuario = response;
-            
             if (this.agregarusuario.firma != '') {
                 this.agregarusuario.firma = 'data:image/jpeg;base64,' + this.agregarusuario.firma;
                 this.selectedImage = this.agregarusuario.firma;
@@ -145,11 +141,11 @@ export class UsuarioAddWidget {
         myModal.hide();
     }
 
-
     arrayBufferToBase64(arrayBuffer: ArrayBuffer): string {
         const uint8Array = new Uint8Array(arrayBuffer);
         return btoa(String.fromCharCode.apply(null, uint8Array));
     }
+
     convertirImagen(): void {
         this.selectedImage = null;
         if (this.selectedImage) {
@@ -163,6 +159,7 @@ export class UsuarioAddWidget {
             }
         }
     }
+
     onFileSelected(event: any): void {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
@@ -217,6 +214,7 @@ export class UsuarioAddWidget {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

@@ -14,5 +14,7 @@ namespace SistemaVentasBatia.DTOs
         public string NombreComercial { get; set; }
         public string IdAlta { get; set; }
         public EstatusCotizacion IdEstatusCotizacion { get; set; }
+        public bool polizaCumplimiento { get; set; }
+        public int DiasVigencia { get; set; }
     }
 }

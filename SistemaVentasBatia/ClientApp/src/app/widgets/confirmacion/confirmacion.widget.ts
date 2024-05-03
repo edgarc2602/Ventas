@@ -2,35 +2,40 @@ import { Component, Input, OnChanges, Output, EventEmitter, SimpleChanges } from
 declare var bootstrap: any;
 
 @Component({
-    selector: 'elimina-widget',
-    templateUrl: './elimina.widget.html'
+    selector: 'confirmacion-widget',
+    templateUrl: './confirmacion.widget.html'
 })
-export class EliminaWidget implements OnChanges {
-    @Output('ansEvent') sendEventDelete = new EventEmitter<boolean>();
+export class ConfirmacionWidget implements OnChanges {
     @Input() mensaje: string = " ";
     @Input() titulo: string = " ";
+    @Output('confirmaEvent') confirmaEvent = new EventEmitter<string>();
+    accion: string = '';
 
     constructor() {}
 
-    open() { 
-        let docModal = document.getElementById('modalEliminarRegistro');
+    open(accion: string) { 
+        this.accion = accion;
+        let docModal = document.getElementById('modalConfirmacion');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
     }
 
     acepta() {
-        this.sendEventDelete.emit(true);
+        this.confirmaEvent.emit(this.accion);
         this.close();
     }
 
     cancela() {
+        this.accion = '';
         this.close();
     }
 
     close() {
-        let docModal = document.getElementById('modalEliminarRegistro');
+        let docModal = document.getElementById('modalConfirmacion');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.hide();
+        this.mensaje = '';
+        this.titulo = '';
     }
 
     ngOnChanges(changes: SimpleChanges): void {

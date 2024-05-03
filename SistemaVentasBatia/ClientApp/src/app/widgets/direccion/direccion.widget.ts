@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Direccion } from '../../models/direccion';
 import { Catalogo } from '../../models/catalogo';
 declare var bootstrap: any;
-import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
 import { DireccionResponseAPI } from '../../models/direccionresponseapi';
 
@@ -12,15 +11,15 @@ import { DireccionResponseAPI } from '../../models/direccionresponseapi';
     templateUrl: './direccion.widget.html'
 })
 export class DireccionWidget {
-    idD: number = 0;
-    idP: number = 0;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @Output('smEvent') sendEvent = new EventEmitter<any>();
     model: Direccion = {} as Direccion;
     tips: Catalogo[] = [];
     edos: Catalogo[] = [];
     tabs: Catalogo[] = [];
     muns: Catalogo[] = [];
-    lerr: any = {};
+    idD: number = 0;
+    idP: number = 0;
     direccionAPI: DireccionResponseAPI = {
         message: '',
         error: false,
@@ -36,9 +35,7 @@ export class DireccionWidget {
         }
     };
     validacion: boolean = false;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
-
-
+    lerr: any = {};
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
         http.get<Catalogo[]>(`${url}api/catalogo/getestado`).subscribe(response => {
@@ -164,12 +161,11 @@ export class DireccionWidget {
             this.tabs = response;
         }, err => console.log(err));
     }
+
     loadMun() {
         this.http.get<Catalogo[]>(`${this.url}api/catalogo/getmunicipio/${this.model.idEstado}`).subscribe(response => {
             this.muns = response;
         }, err => console.log(err));
-
-        
     }
 
     valida() {
@@ -222,6 +218,7 @@ export class DireccionWidget {
         let msg: string = fld.map((x: string) => "-" + x);
         return msg;
     }
+
     existe() {
         this.http.get<Direccion>(`${this.url}api/direccion/obtenerdireccion/${this.idD}/${this.idP}`).subscribe(response => {
             this.model = response;
@@ -235,7 +232,6 @@ export class DireccionWidget {
                 }
             }
         });
-        
         let docModal = document.getElementById('modalAgregarDireccion');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
@@ -271,6 +267,7 @@ export class DireccionWidget {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

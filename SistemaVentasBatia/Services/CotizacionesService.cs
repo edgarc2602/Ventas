@@ -35,7 +35,7 @@ namespace SistemaVentasBatia.Services
         Task EliminarOperario(int registroAEliminar);
         Task<int> DuplicarCotizacion(int idCotizacion);
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
-        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio);
+        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento);
         Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id);
         Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM);
         Task<Boolean> ActualizarSalarios(PuestoTabulador salarios);
@@ -50,6 +50,7 @@ namespace SistemaVentasBatia.Services
         Task<bool> ActualizarImssBase(decimal imss);
         Task<bool> ActivarCotizacion(int idCotizacion);
         Task<bool> DesactivarCotizacion(int idCotizacion);
+        Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre,int idCotizacion);
         Task DesactivarCotizaciones(int idProspecto);
         Task<ImmsJornadaDTO> ObtenerImssJornada();
         Task<bool> ActualizarImssJornada(ImmsJornadaDTO imssJormada);
@@ -108,7 +109,10 @@ namespace SistemaVentasBatia.Services
                         IdCotizacionOriginal = c.IdCotizacionOriginal,
                         NombreComercial = c.NombreComercial,
                         IdAlta = c.IdAlta,
-                        IdEstatusCotizacion = c.IdEstatusCotizacion
+                        IdEstatusCotizacion = c.IdEstatusCotizacion,
+                        DiasVigencia = c.DiasVigencia,
+                        polizaCumplimiento = c.PolizaCumplimiento
+
                     }).ToList();
             }
             else
@@ -348,7 +352,7 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Vales +
                 operariosModel.Festivo +
                 operariosModel.Domingo +
-                operariosModel.CubreDescanso , 2);
+                operariosModel.CubreDescanso, 2);
             return operariosModel;
         }
 
@@ -741,9 +745,9 @@ namespace SistemaVentasBatia.Services
             return await cotizacionesRepo.ActualizarIndirectoUtilidad(idCotizacion, indirecto, utilidad, comisionSV, comisionExt);
         }
 
-        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio)
+        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
         {
-            return await cotizacionesRepo.ActualizarCotizacion(idCotizacion, idServicio);
+            return await cotizacionesRepo.ActualizarCotizacion(idCotizacion, idServicio, polizaCumplimiento);
         }
 
         public async Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id)
@@ -835,6 +839,10 @@ namespace SistemaVentasBatia.Services
         {
             return await cotizacionesRepo.DesactivarCotizacion(idCotizacion);
         }
+        public async Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre, int idCotizacion)
+        {
+            return await cotizacionesRepo.InsertarMotivoCierreCotizacion(motivoCierre, idCotizacion);
+        }
 
         public async Task DesactivarCotizaciones(int idProspecto)
         {
@@ -890,7 +898,7 @@ namespace SistemaVentasBatia.Services
         public async Task<CotizacionVendedorDetalleDTO> ObtenerCotizacionVendedorDetallePorIdVendedor(int idVendedor)
         {
             var idCotizacion = mapper.Map<List<CatalogoDTO>>(await cotizacionesRepo.ObtenerListaCotizaciones(idVendedor));
-            
+
             var vendedorCotizaciones = new CotizacionVendedorDetalleDTO();
             vendedorCotizaciones.CotizacionDetalle = new List<ResumenCotizacionLimpiezaDTO>();
             vendedorCotizaciones.IdVendedor = idVendedor;

@@ -4,21 +4,15 @@ import { Catalogo } from 'src/app/models/catalogo';
 import { ProductoItem } from 'src/app/models/productoitem';
 import { ProductoWidget } from 'src/app/widgets/producto/producto.widget';
 import { AgregarServicioWidget } from 'src/app/widgets/agregarservicio/agregarservicio.widget'
-
 import { PuestoTabulador } from 'src/app/models/puestotabulador';
 import { Subject } from 'rxjs';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { CotizaPorcentajes } from 'src/app/models/cotizaporcentajes';
-
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { UsuarioRegistro } from 'src/app/models/usuarioregistro';
-import { Usuario } from '../../models/usuario';
 import { UsuarioAddWidget } from 'src/app/widgets/usuarioadd/usuarioadd.widget';
 import { AgregarUsuario } from 'src/app/models/agregarusuario';
 import { EliminaWidget } from 'src/app/widgets/elimina/elimina.widget';
-
-
-import Swal from 'sweetalert2';
 import { ListaProducto } from '../../models/listaproducto';
 import { ImmsJornada } from '../../models/immsjornada';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
@@ -29,79 +23,71 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
     animations: [fadeInOut],
 })
 export class CatalogoComponent {
-    @ViewChild(ProductoWidget, { static: false }) prow: ProductoWidget;
     @ViewChild(AgregarServicioWidget, { static: false }) addSer: AgregarServicioWidget;
     @ViewChild(UsuarioAddWidget, { static: false }) addUsu: UsuarioAddWidget;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(ProductoWidget, { static: false }) prow: ProductoWidget;
     @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
-
     @ViewChild('zona1txt', { static: false }) zona1txt: ElementRef;
     @ViewChild('zona2txt', { static: false }) zona2txt: ElementRef;
     @ViewChild('zona3txt', { static: false }) zona3txt: ElementRef;
     @ViewChild('zona4txt', { static: false }) zona4txt: ElementRef;
     @ViewChild('zona5txt', { static: false }) zona5txt: ElementRef;
-
     @ViewChild('costoIndirectotxt', { static: false }) costoIndirectotxt: ElementRef;
     @ViewChild('utilidadtxt', { static: false }) utilidadtxt: ElementRef;
     @ViewChild('comisionSobreVentatxt', { static: false }) comisionSobreVentatxt: ElementRef;
     @ViewChild('comisionExternatxt', { static: false }) comisionExternatxt: ElementRef;
     @ViewChild('fechaAplicatxt', { static: false }) fechaAplicatxt: ElementRef;
-
     @ViewChild('imsstxt', { static: false }) imsstxt: ElementRef;
-
-    pues: Catalogo[] = [];
-    selPuesto: number = 0;
-    tipoServicio: number = 2;
-    mates: ProductoItem[] = [];
-    sers: Catalogo[] = [];
-    tser: Catalogo[] = [];
-    grupo: string = 'material';
-    zona1: number = 0;
-    zona2: number = 0;
-    zona3: number = 0;
-    zona4: number = 0;
-    zona5: number = 0;
-    costoIndirecto: number = 0;
-    utilidad: number = 0;
-    comisionSobreVenta: number = 0;
-    comisionExterna: number = 0;
-    fechaAplica: Date;
     cotpor: CotizaPorcentajes = {
         idPersonal: 0, costoIndirecto: 0, utilidad: 0, comisionSobreVenta: 0, comisionExterna: 0, fechaAlta: null, personal: '', fechaAplica: null
     };
     sal: PuestoTabulador = {
         idSueldoZonaClase: 0, idPuesto: 0, idClase: 0, zona1: 0, zona2: 0, zona3: 0, zona4: 0, zona5: 0
     };
-    validaMess: string = '';
-    evenSub: Subject<void> = new Subject<void>();
-    selectedImage: string | ArrayBuffer | null = null;
-    idPersonal: number = 0;
     usuario: UsuarioRegistro = {
-        idAutorizacionVentas: 0, idPersonal: 0, autoriza: 0, nombres: '', apellidos: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '',
-        firma: '', revisa: 0
+        idAutorizacionVentas: 0, idPersonal: 0, autoriza: 0, nombres: '', apellidos: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '', firma: '', revisa: 0
     }
-    lclas: Catalogo[] = [];
-    idClase: number = 1;
-    tipoProd: string = '';
-    imss: number = 0;
-
-    lusu: AgregarUsuario[];
     agregarusuario: AgregarUsuario = {
         idPersonal: 0, autorizaVentas: 0, estatusVentas: 0, cotizadorVentas: 0, revisaVentas: 0, nombres: '', apellidoPaterno: '', apellidoMaterno: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '', firma: '', usuario: '', password: ''
     }
-    elimina: number = 0;
     model: ListaProducto = {
         productos: [], familias: [], pagina: 1, numPaginas: 0, rows: 0, idProveedor: 0, proveedor: ''
     }
-    idEstado: number = 0;
-    isLoading: boolean = false;
-    estados: Catalogo[];
-    idFamilia: number = 0;
     immsJornada: ImmsJornada = {
         idImmsJornadaCotizador: 0, normal2: 0, normal4: 0, normal8: 0, normal12: 0, frontera2: 0, frontera4: 0, frontera8: 0, frontera12: 0, fechaAlta: null, idPersonal: 0, usuario: ''
     }
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
-
-
+    mates: ProductoItem[] = [];
+    lclas: Catalogo[] = [];
+    pues: Catalogo[] = [];
+    sers: Catalogo[] = [];
+    tser: Catalogo[] = [];
+    lusu: AgregarUsuario[];
+    estados: Catalogo[];
+    zona1: number = 0;
+    zona2: number = 0;
+    zona3: number = 0;
+    zona4: number = 0;
+    zona5: number = 0;
+    elimina: number = 0;
+    costoIndirecto: number = 0;
+    utilidad: number = 0;
+    comisionSobreVenta: number = 0;
+    comisionExterna: number = 0;
+    selPuesto: number = 0;
+    tipoServicio: number = 2;
+    idFamilia: number = 0;
+    idPersonal: number = 0;
+    idClase: number = 1;
+    imss: number = 0;
+    idEstado: number = 0;
+    grupo: string = 'material';
+    validaMess: string = '';
+    tipoProd: string = '';
+    isLoading: boolean = false;
+    selectedImage: string | ArrayBuffer | null = null;
+    evenSub: Subject<void> = new Subject<void>();
+    fechaAplica: Date;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
@@ -119,15 +105,6 @@ export class CatalogoComponent {
         http.get<Catalogo[]>(`${url}api/catalogo/getestado`).subscribe(response => {
             this.estados = response;
         }, err => console.log(err));
-
-        this.http.get<CotizaPorcentajes>(`${this.url}api/cotizacion/obtenerporcentajescotizacion`).subscribe(response => { //falta
-            this.cotpor = response;
-            this.costoIndirecto = this.cotpor.costoIndirecto;
-            this.utilidad = this.cotpor.utilidad;
-            this.comisionSobreVenta = this.cotpor.comisionSobreVenta;
-            this.comisionExterna = this.cotpor.comisionExterna;
-            this.fechaAplica = this.cotpor.fechaAplica;
-        }, err => console.log(err));
         this.http.get<number>(`${this.url}api/cotizacion/obtenerimssbase`).subscribe(response => {
             this.imss = response;
         }, err => console.log(err));
@@ -137,10 +114,20 @@ export class CatalogoComponent {
         this.http.get<ImmsJornada>(`${this.url}api/cotizacion/ObtenerImssJornada`).subscribe(response => {
             this.immsJornada = response;
         })
+        this.http.get<CotizaPorcentajes>(`${this.url}api/cotizacion/obtenerporcentajescotizacion`).subscribe(response => { //falta
+            this.cotpor = response;
+            this.costoIndirecto = this.cotpor.costoIndirecto;
+            this.utilidad = this.cotpor.utilidad;
+            this.comisionSobreVenta = this.cotpor.comisionSobreVenta;
+            this.comisionExterna = this.cotpor.comisionExterna;
+            this.fechaAplica = this.cotpor.fechaAplica;
+        }, err => console.log(err));
     }
+
     chgServicio() {
 
     }
+
     chgPuesto() {
         this.getMaterial();
         this.getTabulador();
@@ -174,9 +161,11 @@ export class CatalogoComponent {
     openSer() {
         this.addSer.open();
     }
+
     closeMat($event) {
         this.getMaterial();
     }
+
     reloadServicios() {
         this.getServicios();
     }
@@ -250,7 +239,6 @@ export class CatalogoComponent {
             this.comisionSobreVenta = this.cotpor.comisionSobreVenta;
             this.comisionExterna = this.cotpor.comisionExterna;
             this.fechaAplica = this.cotpor.fechaAplica;
-            //this.limpiarPorcentajesNG();
         }, err => console.log(err));
         this.getImss();
     }
@@ -262,7 +250,7 @@ export class CatalogoComponent {
             this.limpiarPorcentajesNG();
             this.limpiarPorcentajes();
             this.getPorcentajes();
-            this.okToast('Porcentajes actualizados'); 
+            this.okToast('Porcentajes actualizados');
         }, err => {
             this.getPorcentajes();
             console.log(err);
@@ -309,19 +297,23 @@ export class CatalogoComponent {
             });
         }
     }
+
     goBack() {
         window.history.back();
     }
+
     arrayBufferToBase64(arrayBuffer: ArrayBuffer): string {
         const uint8Array = new Uint8Array(arrayBuffer);
         return btoa(String.fromCharCode.apply(null, uint8Array));
     }
+
     nuevoUsuario() {
         this.usuario = {
             idAutorizacionVentas: 0, idPersonal: 0, autoriza: 0, nombres: '', apellidos: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '',
             firma: '', revisa: 0
         }
     }
+
     openUsu(idPuesto: number) {
         this.addUsu.open(idPuesto);
     }
@@ -331,6 +323,7 @@ export class CatalogoComponent {
             this.sal = response;
         }, err => console.log(err));
     }
+
     actualizarSalarios(id: number) {
         this.obtenerValores();
         this.http.post<PuestoTabulador>(`${this.url}api/cotizacion/actualizarsalarios`, this.sal).subscribe(response => {
@@ -341,6 +334,7 @@ export class CatalogoComponent {
             console.log(err)
         });
     }
+
     limpiarObjeto() {
         this.sal.zona1 = 0;
         this.sal.zona2 = 0;
@@ -348,6 +342,7 @@ export class CatalogoComponent {
         this.sal.zona4 = 0;
         this.sal.zona5 = 0;
     }
+
     obtenerValores() {
         this.sal.zona1 = parseFloat(this.zona1txt.nativeElement.value);
         this.sal.zona2 = parseFloat(this.zona2txt.nativeElement.value);
@@ -367,19 +362,9 @@ export class CatalogoComponent {
     updImss() {
         this.imss = parseFloat(this.imsstxt.nativeElement.value);
         this.http.put<boolean>(`${this.url}api/cotizacion/actualizarimssbase`, this.imss).subscribe(response => {
-            Swal.fire({
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
-            });
+            this.okToast('Actualizado');
         }, err => {
-            Swal.fire({
-                title: 'Error',
-                text: 'No se guardaron los cambios, porfavor revise la informaci\u00F3n',
-                icon: 'error',
-                timer: 2000,
-                showConfirmButton: false,
-            });
+            this.errorToast('Ocurri\u00F3 un error');
             this.getPorcentajes();
             console.log(err)
         });
@@ -515,20 +500,8 @@ export class CatalogoComponent {
         this.immsJornada.idPersonal = this.user.idPersonal;
         this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarImssJornada`, this.immsJornada).subscribe(response => {
             this.obtenerImmsJornada();
-            //Swal.fire({
-            //    icon: 'success',
-            //    timer: 1000,
-            //    showConfirmButton: false,
-            //});
             this.okToast('IMMS actualizado');
         }, err => {
-            //Swal.fire({
-            //    title: 'Error',
-            //    text: 'No se guardaron los cambios, porfavor revise la informaci\u00F3n',
-            //    icon: 'error',
-            //    timer: 2000,
-            //    showConfirmButton: false,
-            //});
             this.errorToast('Ocurri\u00F3 un error');
         });
     }

@@ -6,10 +6,10 @@
     <div class="d-flex flex-column justify-content-center h-100">
         <div class="row">
             <div class="col-sm-12 col-md-6 text-center mb-2">
-                <button type="button" (click)="openSel()" class="btn btn-lg btn-outline-primary" id="btnSeleccionarProspecto"><i class="fa-solid fa-list"></i> Elegir un prospecto existente</button>
+                <button type="button" (click)="openNew(1)" class="btn btn-lg btn-outline-primary" id="btnSeleccionarProspecto"><i class="fa-solid fa-list"></i> Elegir un prospecto existente</button>
             </div>
             <div class="col-sm-12 col-md-6 text-center">
-                <button type="button" (click)="openNew()" class="btn btn-lg btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Crear un nuevo prospecto</button>
+                <button type="button" (click)="openNew(2)" class="btn btn-lg btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Crear un nuevo prospecto</button>
             </div>
         </div>
     </div>
@@ -20,95 +20,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="modal fade" id="modalSeleccionarProspecto" data-bs-backdrop="static">
+    <div class="modal fade" id="modalAgregarCotizacion" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Seleccionar Prospecto</h4>
+                    <h4 class="modal-title">Nueva cotización</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div>
-                        <div class="row mb-3">
-                            <div class="col-sm-6 col-md-6 col-12 mb-3">
-                                <div class="form-floating">
-                                    <select class="form-select" [(ngModel)]="model.idProspecto" name="IdProspecto" required>
-                                        <option value="0">Seleccione</option>
-                                        <option *ngFor="let p of lpros" [ngValue]="p.idProspecto">{{ p.nombreComercial }}</option>
-                                    </select>
-                                    <label for="IdProspecto">Prospecto</label>
-                                </div>
-                                <span *ngIf="ferr('Prospecto')" class="text-danger">{{ terr('Prospecto') }}</span>
-                            </div>
-                            <div *ngIf="user.idAutoriza == 1" class="col-sm-6 col-md-6 col-12">
-                                <div class="form-floating">
-                                    <select class="form-select" [(ngModel)]="idVendedor" name="IdVendedor" required>
-                                        <option value="0">Seleccione</option>
-                                        <option *ngFor="let u of listUsu" [ngValue]="u.idPersonal">{{ u.nombres + ' ' + u.apellidoPaterno }}</option>
-                                    </select>
-                                    <label for="IdVendedor">Vendedor</label>
-                                </div>
-                                <span *ngIf="ferr('IdVendedor')" class="text-danger">{{ terr('IdVendedor') }}</span>
-                            </div>
-                        </div>
-                        <h5>Servicio</h5>
+                        <h5>Prospecto</h5>
                         <br />
-                        <div class="row">
-                            <div *ngFor="let s of sers" class="col-sm-6 col-md-3 col-4">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="selectedServicio2" [checked]="s.act" (change)="updateSelectedServicio(s)" required /> {{ s.nom }}
-                                    </label><br />
-                                </div>
-                            </div>
-                            <span *ngIf="ferr('ListaServicio')" class="text-danger">{{ terr('ListaServicio') }}</span>
-                        </div>
-                        <br />
-                        <h5>Tipo de Salario</h5>
-                        <br />
-                        <div class="row">
-                            <div *ngFor="let s of salt" class="col-sm-6 col-md-3 col-4">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="selectedTipoSalario2" [checked]="s.act" (change)="updateSelectedSalario(s)" required /> {{ s.nom }}
-                                    </label><br />
-                                </div>
-                            </div>
-                            <span *ngIf="ferr('ListaTipoSalario')" class="text-danger">{{ terr('ListaTipoSalario') }}</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" (click)="guarda()" class="btn btn-outline-success"><i class="fa-solid fa-check"></i> Iniciar Cotización</button>
-                    <button type="button" (click)="closeSel()" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!--<toast-widget [events]="evenSub.asObservable()" [isError]="isErr" [message]="errMessage"></toast-widget>-->
-</body>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <div class="modal fade" id="modalCrearProspecto" data-bs-backdrop="static">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Nuevo Prospecto</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div>
-                        <div class="row">
+                        <!--Agregar prospecto-->
+                        <div *ngIf="agregarTipo == 2" class="row">
                             <div class="col-sm-12 col-md-4 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control validacion-prospecto" [(ngModel)]="modelp.nombreComercial" data-campo="nombreComercial" id="txtNombreComercial">
@@ -131,8 +57,6 @@
                                 <span *ngIf="ferr('Rfc')" class="text-danger">{{ terr('Rfc') }}</span>
                                 <span *ngIf="ferr('RfcLenght')" class="text-danger">{{ terr('RfcLenght') }}</span>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-8 col-sm-12 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.domicilioFiscal" id="txtDomicicioFiscal">
@@ -147,8 +71,6 @@
                                 </div>
                                 <span *ngIf="ferr('NombreContacto')" class="text-danger">{{ terr('NombreContacto') }}</span>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4 col-sm-12 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.emailContacto" id="txtEmailContacto">
@@ -171,9 +93,9 @@
                                 <span *ngIf="ferr('ExtContacto')" class="text-danger">{{ terr('ExtContacto') }}</span>
                             </div>
                         </div>
-                        <h5>Documentación</h5>
-                        <br />
-                        <div class="row">
+                        <br *ngIf="agregarTipo == 2" />
+                        <h6 *ngIf="agregarTipo == 2"><span class="small text-muted mb-2">Documentación</span></h6>
+                        <div *ngIf="agregarTipo == 2" class="row">
                             <div class="col-sm-6 col-md-3 col-4" *ngFor="let d of docs">
                                 <div class="form-check">
                                     <label class="form-check-label">
@@ -182,69 +104,89 @@
                                 </div>
                             </div>
                         </div>
+                        <!--Elegir Prospecto-->
+                        <div *ngIf="agregarTipo == 1" class="row mb-3">
+                            <div class="col-sm-6 col-md-6 col-12 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.idProspecto" name="IdProspecto" id="IdNuevoProspecto" required>
+                                        <option value="0">Seleccione</option>
+                                        <option *ngFor="let p of lpros" [ngValue]="p.idProspecto">{{ p.nombreComercial }}</option>
+                                    </select>
+                                    <label for="IdNuevoProspecto">Prospecto</label>
+                                </div>
+                                <span *ngIf="ferr('Prospecto')" class="text-danger">{{ terr('Prospecto') }}</span>
+                            </div>
+                        </div>
+                        <hr />
+                        <h5>Cotización</h5>
                         <br />
-                        <h5>Poliza de cumplimiento</h5>
+                        <h6><span class="small text-muted mb-2">Tipo de servicio</span></h6>
+                        <div class="row">
+                            <div *ngFor="let s of sers" class="col-sm-6 col-md-3 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="selectedServicio" [checked]="s.act" (change)="updateSelectedServicio(s)" required /> {{ s.nom }}
+                                    </label><br />
+                                </div>
+                            </div>
+                            <span *ngIf="ferr('ListaServicio')" class="text-danger">{{ terr('ListaServicio') }}</span>
+                        </div>
                         <br />
+                        <h6><span class="small text-muted mb-2">Tipo de salario</span></h6>
+                        <div class="row">
+                            <div *ngFor="let s of salt" class="col-sm-6 col-md-3 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="selectedTipoSalario1" [checked]="s.act" (change)="updateSelectedSalario(s)" required /> {{ s.nom }}
+                                    </label><br />
+                                </div>
+                            </div>
+                            <span *ngIf="ferr('ListaTipoSalario')" class="text-danger">{{ terr('ListaTipoSalario') }}</span>
+                        </div>
+                        <br />
+                        <h6><span class="small text-muted mb-2">Póliza de cumplimiento</span></h6>
                         <div class="row">
                             <div class="col-sm-6 col-md-3 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="true" [(ngModel)]="modelp.polizaCumplimiento" required /> Si
+                                        <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="true" [(ngModel)]="model.polizaCumplimiento" required /> Si
                                     </label><br />
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="false" [(ngModel)]="modelp.polizaCumplimiento" required /> No
+                                        <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="false" [(ngModel)]="model.polizaCumplimiento" required /> No
                                     </label><br />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <br />
-                    <h5 *ngIf="user.idAutoriza == 1">Vendedor</h5>
-                    <div *ngIf="user.idAutoriza == 1" class="row mb-3">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" [(ngModel)]="idVendedor" name="IdVendedor" required>
-                                    <option value="0">Seleccione</option>
-                                    <option *ngFor="let u of listUsu" [ngValue]="u.idPersonal">{{ u.nombres + ' ' + u.apellidoPaterno }}</option>
-                                </select>
-                                <!--<label for="IdVendedor">Vendedor</label>-->
+                        <br />
+
+                        <div class="row mb-3">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="idVendedor" name="IdVendedor" required [disabled]="user.idAutoriza != 1" id="IdNuevoVendedor">
+                                        <option value="0">Seleccione</option>
+                                        <option *ngFor="let u of listUsu" [ngValue]="u.idPersonal">{{ u.nombres + ' ' + u.apellidoPaterno }}</option>
+                                    </select>
+                                    <label for="IdNuevoVendedor">Vendedor</label>
+                                </div>
+                                <span *ngIf="ferr('IdVendedor')" class="text-danger">{{ terr('IdVendedor') }}</span>
                             </div>
-                            <span *ngIf="ferr('IdVendedor')" class="text-danger">{{ terr('IdVendedor') }}</span>
-                        </div>
-                    </div>
-                    <h5>Servicio</h5>
-                    <br />
-                    <div class="row">
-                        <div *ngFor="let s of sers" class="col-sm-6 col-md-3 col-4">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" name="selectedServicio" [checked]="s.act" (change)="updateSelectedServicio(s)" required /> {{ s.nom }}
-                                </label><br />
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control validacion-prospecto" [(ngModel)]="model.diasVigencia" data-campo="diasVigencia" id="txtdiasVigencia">
+                                    <label for="txtdiasVigencia">Vigencia (dias)</label>
+                                </div>
+                                <span *ngIf="ferr('diasVigencia')" class="text-danger">{{ terr('diasVigencia') }}</span>
                             </div>
                         </div>
-                        <span *ngIf="ferr('ListaServicio')" class="text-danger">{{ terr('ListaServicio') }}</span>
-                    </div>
-                    <br />
-                    <h5>Tipo de Salario</h5>
-                    <br />
-                    <div class="row">
-                        <div *ngFor="let s of salt" class="col-sm-6 col-md-3 col-4">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" name="selectedTipoSalario1" [checked]="s.act" (change)="updateSelectedSalario(s)" required /> {{ s.nom }}
-                                </label><br />
-                            </div>
-                        </div>
-                        <span *ngIf="ferr('ListaTipoSalario')" class="text-danger">{{ terr('ListaTipoSalario') }}</span>
                     </div>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" (click)="guardaP()" class="btn btn-outline-success" id="btnGuardarProspecto"><i class="fa-solid fa-save"></i> Guardar</button>
+                    <button type="button" (click)="guarda()" class="btn btn-outline-success" id="btnGuardarProspecto"><i class="fa-solid fa-save"></i> Guardar</button>
 
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>

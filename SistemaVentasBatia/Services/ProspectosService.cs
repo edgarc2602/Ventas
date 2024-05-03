@@ -135,10 +135,10 @@ namespace SistemaVentasBatia.Services
             prospecto.Documentacion = (Documento)prospectoVM.ListaDocumentos.Where(x => x.Act).Sum(x => x.Id);
 
             await prospectosRepo.ActualizarProspecto(prospecto);
-            if (prospecto.PolizaCumplimiento == false)
-            {
-                await prospectosRepo.EliminarTotalPolizasByIdProspecto(prospecto.IdProspecto);
-            }
+            //if (prospecto.PolizaCumplimiento == false)
+            //{
+            //    await prospectosRepo.EliminarTotalPolizasByIdProspecto(prospecto.IdProspecto);
+            //}
         }
 
         public async Task ObtenerListaDirecciones(ListaDireccionDTO listaDireccionesVM)

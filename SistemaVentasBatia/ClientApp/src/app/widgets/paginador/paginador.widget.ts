@@ -5,10 +5,10 @@ import { Component, OnChanges, Input, SimpleChanges, Output, EventEmitter } from
     templateUrl: './paginador.widget.html'
 })
 export class PaginaWidget implements OnChanges {
-    @Input() pagina: number = 0;
-    @Input() numPaginas: number = 0;
-    @Input() rows: number = 0;
     @Output('chgEvent') changeEvent = new EventEmitter<number>();
+    @Input() numPaginas: number = 0;
+    @Input() pagina: number = 0;
+    @Input() rows: number = 0;
     bloqueActual: number = 1;
 
     constructor() { }
@@ -62,6 +62,7 @@ export class PaginaWidget implements OnChanges {
         }
         this.quitarFocoDeElementos();
     }
+
     quitarFocoDeElementos(): void {
         const elementos = document.querySelectorAll('button, input[type="text"]');
         elementos.forEach((elemento: HTMLElement) => {

@@ -7,7 +7,8 @@ import { EliminaWidget } from 'src/app/widgets/elimina/elimina.widget';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
-
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'prospecto',
@@ -15,24 +16,32 @@ import { fadeInOut } from 'src/app/fade-in-out';
     animations: [fadeInOut],
 })
 export class ProspectoComponent {
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
     lspro: ListaProspecto = {
-        idEstatusProspecto: 1, keywords: '', numPaginas: 0,
-        pagina: 1, prospectos: [], rows: 0       
+        idEstatusProspecto: 1, keywords: '', numPaginas: 0, pagina: 1, prospectos: [], rows: 0       
     };
     lests: ItemN[] = [];
     idpro: number = 0;
-    @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
     isLoading: boolean = false;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
-
+    private searchKeyword$ = new Subject<string>();
     
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rter: Router, public user: StoreUser) {
         http.get<ItemN[]>(`${url}api/prospecto/getestatus`).subscribe(response => {
             this.lests = response;
         }, err => console.log(err));
         this.lista();
+        this.searchKeyword$.pipe(
+            debounceTime(800),
+            distinctUntilChanged()
+        ).subscribe(() => {
+            this.lista();
+        });
     }
 
+    onKeywordsInput() {
+        this.searchKeyword$.next(this.lspro.keywords);
+    }
     lista() {
         this.lspro.prospectos = [];
         this.isLoading = true;
@@ -42,13 +51,11 @@ export class ProspectoComponent {
                 this.lspro = response;
                 this.isLoading = false;
             }, 300);
-
         }, err => {
             setTimeout(() => {
                 this.isLoading = false;
                 console.log(err)
             }, 300);
-
         });
     }
 
@@ -76,12 +83,12 @@ export class ProspectoComponent {
         }
         this.lista();
     }
+
     goBack() {
         window.history.back();
     }
 
     desactivar() {
-/*        if (this.ide === 1) {*/
             this.http.put<boolean>(`${this.url}api/prospecto/desactivarprospecto`, this.idpro).subscribe(response => {
                 this.lista();
                 this.okToast('Prospecto desactivado');
@@ -107,6 +114,7 @@ export class ProspectoComponent {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

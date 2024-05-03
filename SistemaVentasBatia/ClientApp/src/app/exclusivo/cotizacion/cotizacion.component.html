@@ -68,14 +68,15 @@
                             <div [ngClass]="user.idAutoriza ? 'col-md-3 col-sm-6 col-5' : 'col-md-5 col-sm-12 col-10'">
                                 <span class="ms-2">Prospecto</span>
                             </div>
-                            <div class="col-md-2 col-sm-6 col-3">
-                                <span class="ms-2">Servicio</span>
-                            </div>
+
                             <div class="col-md-2 col-sm-6 col-2">
                                 <span class="ms-2">Total</span>
                             </div>
                             <div class="col-md-2 col-sm-6 col-6">
                                 <span class="ms-2">Fecha Alta</span>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-3">
+                                <span class="ms-2">Vigencia</span>
                             </div>
                             <div *ngIf="user.idAutoriza === 1" class="col-md-2 col-sm-6 col-6">
                                 <span class="ms-2">Usuario Alta</span>
@@ -96,11 +97,9 @@
                             <div [ngClass]="user.idAutoriza ? 'col-md-3 col-sm-6 col-5' : 'col-md-5 col-sm-12 col-10'">
                                 <span class="badge d-md-none">Prospecto:</span>
                                 <div class="ms-2">{{ cot.nombreComercial }}</div>
+                                <small class="ms-2 text-muted">Servicio: {{ cot.servicio }}</small>
                             </div>
-                            <div class="col-md-2 col-sm-6 col-5">
-                                <span class="badge d-md-none">Servicio:</span>
-                                <div class="ms-2 ">{{ cot.servicio }}</div>
-                            </div>
+
                             <div class="col-md-2 col-sm-6 col-3 ">
                                 <span class="badge d-md-none">Total:</span>
                                 <div class="ms-2">${{cot.total | number: '1.2'}}</div>
@@ -109,6 +108,10 @@
                                 <span class="badge d-md-none">Fecha Alta:</span>
                                 <div class="ms-2">{{ cot.fechaAlta | date: 'dd-MM-yyyy' }}</div>
                             </div>
+                            <div class="col-md-2 col-sm-6 col-5">
+                                <span class="badge d-md-none">Vigencia:</span>
+                                <div class="ms-2 ">{{ cot.diasVigencia }} Dias</div>
+                            </div>
                             <div *ngIf="user.idAutoriza === 1" class="col-md-2 col-sm-6 col-5">
                                 <span class="badge d-md-none">Usuario Alta:</span>
                                 <div class="ms-2 small"> {{  cot.idAlta }}  </div>
@@ -116,18 +119,11 @@
                         </div>
                     </td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-outline-primary" [routerLink]="['/exclusivo/resumen/' + cot.idCotizacion]" data-bs-toggle="tooltip" title="Detalle">
-                            <i class="fa-solid fa-search-dollar fa-2x"></i>
-                        </button>
-                        <a class="btn btn-sm btn-outline-success" (click)="editar(cot.idCotizacion,cot.servicio)" data-bs-toggle="tooltip" title="Editar tipo de servicio">
-                            <i class="fa-solid fa-pencil fa-2x"></i>
-                        </a>
-                        <button id="statusButton" (click)="chgEstatus(cot.idCotizacion, cot.idEstatusCotizacion)" class="toggle-btn {{ cot.idEstatusCotizacion === 1 ? 'active' : '' }}">
-                            {{ cot.idEstatusCotizacion === 1 ? 'Activa' : 'Inactiva' }}
-                        </button>
-                        <button *ngIf="cot.idEstatusCotizacion == 3" type="button" (click)="elige(cot.idCotizacion)" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar">
-                            <i class="fa-solid fa-times fa-2x"></i>
-                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" [routerLink]="['/exclusivo/resumen/' + cot.idCotizacion]" data-bs-toggle="tooltip" title="Detalle"><i class="fa-solid fa-search-dollar fa-2x"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-success" (click)="editar(cot.idCotizacion,cot.servicio, cot.polizaCumplimiento)" data-bs-toggle="tooltip" title="Editar tipo de servicio"><i class="fa-solid fa-pencil fa-2x"></i></button>
+                        <button id="statusButton" (click)="openCerrarCotizacion(cot.idCotizacion)" class="toggle-btn {{ cot.idEstatusCotizacion === 1 ? 'active' : '' }}" data-bs-toggle="tooltip" title="Desactivar cotización" [disabled]="cot.idEstatusCotizacion != 1">{{ cot.idEstatusCotizacion === 1 ? 'Cerrar' : 'Activar' }}</button>
+                        <!--<button id="statusButton" (click)="openValida('cambiarEstatusCotizacion','¿Est\u00E1 seguro que desea cambiar el estatus de la cotizaci\u00F3n con ID: ' + cot.idCotizacion + '?',cot.idCotizacion, cot.idEstatusCotizacion)" class="toggle-btn {{ cot.idEstatusCotizacion === 1 ? 'active' : '' }}" data-bs-toggle="tooltip" title="Cambiar estatus">{{ cot.idEstatusCotizacion === 1 ? 'Activa' : 'Inactiva' }}</button>-->
+                        <!--<button *ngIf="cot.idEstatusCotizacion == 3" type="button" (click)="openValida('eliminarCotizacion','¿Est\u00E1 seguro que desea eliminar la cotizaci\u00F3n con ID: ' + cot.idCotizacion + '?', cot.idCotizacion, cot.idEstatusCotizacion)" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="fa-solid fa-times fa-2x"></i></button>-->
                     </td>
                 </tr>
             </tbody>
@@ -139,5 +135,6 @@
     </div>
 </div>
 <toast-widget></toast-widget>
-<elimina-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></elimina-widget>
 <editcot-widget (editCot)="editReturn($event)"></editcot-widget>
+<confirmacion-widget (confirmaEvent)="confirmacionEvent($event)"></confirmacion-widget>
+<cerrarcotizacion-widget (cerrarCotizacionEvent)="cerrarCotizacionEvent($event)"></cerrarcotizacion-widget>

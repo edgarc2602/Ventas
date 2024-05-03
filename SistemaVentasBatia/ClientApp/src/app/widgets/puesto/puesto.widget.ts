@@ -14,26 +14,26 @@ declare var bootstrap: any;
     templateUrl: './puesto.widget.html'
 })
 export class PuestoWidget {
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @Output('smEvent') sendEvent = new EventEmitter<number>();
+    model: PuestoCotiza = {} as PuestoCotiza;
+    lclas: Catalogo[] = [];
+    pues: Catalogo[] = [];
+    turs: Catalogo[] = [];
+    tabs: Catalogo[] = [];
+    ljor: Catalogo[] = [];
+    hors: string[] = [];
+    dias: ItemN[] = [];
+    suel: SalarioMin = {} as SalarioMin;
+    lerr: any = {};
     idD: number = 0;
     idC: number = 0;
     idP: number = 0;
     idT: number = 0;
-    @Output('smEvent') sendEvent = new EventEmitter<number>();
-    model: PuestoCotiza = {} as PuestoCotiza;
-    pues: Catalogo[] = [];
-    turs: Catalogo[] = [];
-    dias: ItemN[] = [];
-    hors: string[] = [];
-    suel: SalarioMin = {} as SalarioMin;
-    lerr: any = {};
-    tabs: Catalogo[] = [];
-    ljor: Catalogo[] = [];
-    lclas: Catalogo[] = [];
-    validacion: boolean = false;
     jornada: number = 0;
+    validacion: boolean = false;
     nombreSucursal: string = '';
     puesto: string = '';
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
@@ -51,7 +51,6 @@ export class PuestoWidget {
         http.get<Catalogo[]>(`${this.url}api/tabulador/getbyedo/${1}`).subscribe(response => {
             this.tabs = response;
         }, err => console.log(err));
-
         http.get<Catalogo[]>(`${url}api/catalogo/getjornada`).subscribe(response => {
             this.ljor = response;
         }, err => console.log(err));
@@ -63,12 +62,9 @@ export class PuestoWidget {
     nuevo() {
         let dt: Date = new Date();
         this.model = {
-            idPuestoDireccionCotizacion: 0, idPuesto: 0, idDireccionCotizacion: this.idD,
-            jornada: 0, idTurno: 0, hrInicio: '', hrFin: '', diaInicio: 0, diaFin: 0,
-            fechaAlta: dt.toISOString(), sueldo: 0, vacaciones: 0, primaVacacional: 0, imss: 0,
-            isn: 0, aguinaldo: 0, total: 0, idCotizacion: this.idC, idPersonal: this.sinU.idPersonal,
-            idSalario: 0, idClase: 0, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0, diaDomingo: false, domingo: 0,
-            diaCubreDescanso: false, cubreDescanso: 0, hrInicioFin: '', hrFinFin: '', diaInicioFin: 0, diaFinFin: 0, diaDescanso: 0
+            idPuestoDireccionCotizacion: 0, idPuesto: 0, idDireccionCotizacion: this.idD, jornada: 0, idTurno: 0, hrInicio: '', hrFin: '', diaInicio: 0, diaFin: 0, fechaAlta: dt.toISOString(), sueldo: 0, vacaciones: 0, primaVacacional: 0,
+            imss: 0, isn: 0, aguinaldo: 0, total: 0, idCotizacion: this.idC, idPersonal: this.sinU.idPersonal, idSalario: 0, idClase: 0, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0,
+            diaDomingo: false, domingo: 0, diaCubreDescanso: false, cubreDescanso: 0, hrInicioFin: '', hrFinFin: '', diaInicioFin: 0, diaFinFin: 0, diaDescanso: 0
         };
     }
 
@@ -79,7 +75,6 @@ export class PuestoWidget {
             this.model.hrFin = this.model.hrFin.substring(0, 5);
             this.model.hrInicioFin = this.model.hrInicioFin.substring(0, 5);
             this.model.hrFinFin = this.model.hrFinFin.substring(0, 5);
-
         }, err => {
             console.log(err);
             if (err.error) {
@@ -146,6 +141,7 @@ export class PuestoWidget {
             this.model.sueldo = response.salarioI;
         }, err => console.log(err));
     }
+
     chgSalariodos() {
         this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}`).subscribe(response => {
             this.model.sueldo = response;
@@ -272,6 +268,7 @@ export class PuestoWidget {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

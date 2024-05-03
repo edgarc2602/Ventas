@@ -2,14 +2,12 @@ import { Component, Inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
 import { Prospecto } from '../../../models/prospecto';
 import { ItemN } from '../../../models/item';
 import { ListaDireccion } from 'src/app/models/listadireccion';
 import { DireccionWidget } from 'src/app/widgets/direccion/direccion.widget';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
-import { ProspectoComponent } from 'src/app/exclusivo/prospecto/prospecto.component';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 
 
@@ -21,17 +19,17 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 })
 export class ProsNuevoComponent implements OnInit, OnDestroy {
     @ViewChild(DireccionWidget, { static: false }) dirAdd: DireccionWidget;
-    pro: Prospecto = {} as Prospecto;
-    sub: any;
-    docs: ItemN[] = [];
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     direcs: ListaDireccion = {
         idProspecto: 0, idCotizacion: 0, idDireccion: 0, pagina: 0, direcciones: [], rows: 0, numPaginas: 0
     };
+    pro: Prospecto = {} as Prospecto;
     idDirecc: number = 0;
-    lerr: any = {};
     isLoading: boolean = false;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
- 
+    docs: ItemN[] = [];
+    lerr: any = {};
+    sub: any;
+
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe,
         private router: Router, private route: ActivatedRoute, private sinU: StoreUser
@@ -44,11 +42,8 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     nuevo() {
         let fec: Date = new Date();
         this.pro = {
-            idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
-            representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
-            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [],
-            idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, polizaCumplimiento: false, 
-            poderRepresentanteLegal: '',actaConstitutiva: '', registroPatronal:'', empresaVenta: 0
+            idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '', representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0
         };
     }
 
@@ -83,7 +78,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                     this.okToast('Prospecto creado');
                     setTimeout(() => {
                         this.router.navigate(['/exclusivo/prospecto']);
-                    }, 2000);
+                    }, 1000);
                 }, err => {
                     this.isLoading = false;
                     console.log(err);
@@ -156,11 +151,6 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         return msg;
     }
 
-    //recEvent($event) {
-    //    this.selDir($event);
-    //    this.getDir();
-    //}
-
     ngOnInit(): void {
         this.sub = this.route.params.subscribe(params => {
             let idpro: number = +params['id'];
@@ -170,16 +160,18 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                 else
                     this.existe(+params['id']);
             } else
-            this.nuevo();
+                this.nuevo();
         });
     }
 
     ngOnDestroy(): void {
         this.sub.unsubscribe();
     }
+
     goBack() {
         window.history.back();
     }
+
     quitarFocoDeElementos(): void {
         const elementos = document.querySelectorAll('button, input[type="text"]');
         elementos.forEach((elemento: HTMLElement) => {

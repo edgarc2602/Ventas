@@ -28,6 +28,7 @@ namespace SistemaVentasBatia.Models
         public string IdAlta { get; set; }
         public SalarioTipo SalTipo { get; set; }
 
-
+        public bool PolizaCumplimiento { get; set; }
+        public int DiasVigencia { get; set; }
     }
 }

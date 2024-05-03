@@ -33,10 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="ClientApp\src\app\exclusivo\cotizacion\descargar\PDFAPI.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Remove="ClientApp\src\app\exclusivo\cotizacion\resumen\Effects.css" />
 	  <None Remove="ClientApp\src\app\models\acceso.ts" />
 	  <None Remove="ClientApp\src\app\models\listapuesto.ts" />

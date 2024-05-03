@@ -16,27 +16,27 @@ import { ToastWidget } from '../toast/toast.widget';
     templateUrl: './materialadd.widget.html'
 })
 export class MaterialAddWidget {
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @Output('returnModal') returnModal = new EventEmitter<boolean>();
+    @Output('smEvent') sendEvent = new EventEmitter<number>();
+    dirs: Catalogo[] = [];
+    pues: Catalogo[] = [];
+    mats: Catalogo[] = [];
+    fres: ItemN[] = [];
+    model: Material = {} as Material;
+    lerr: any = {};
     idD: number = 0;
     idC: number = 0;
     idP: number = 0;
     idS: number = 0;
     showSuc: boolean = false;
-    tipo: string = 'material';
-    edit: number = 0;
-    @Output('smEvent') sendEvent = new EventEmitter<number>();
-    @Output('returnModal') returnModal = new EventEmitter<boolean>();
-    model: Material = {} as Material;
-    dirs: Catalogo[] = [];
-    pues: Catalogo[] = [];
-    mats: Catalogo[] = [];
-    fres: ItemN[] = [];
-    hidedir: number = 0;
-    lerr: any = {};
+    isExtra: boolean = false;
     validaciones: boolean = false;
+    edit: number = 0;
+    hidedir: number = 0;
     nombreSucursal: string = '';
     puesto: string = '';
-    isExtra: boolean = false;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    tipo: string = 'material';
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
 
@@ -138,7 +138,6 @@ export class MaterialAddWidget {
         let docModal = document.getElementById('modalLimpiezaAgregarMaterialCotizacion');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.hide();
-        //this.returnModal.emit(true);
         if (this.model.idPuestoDireccionCotizacion != 0) {
             this.returnModal.emit(true);
         }
@@ -146,6 +145,7 @@ export class MaterialAddWidget {
             this.returnModal.emit(false);
         }
     }
+
     valida() {
         this.validaciones = true;
         if (this.model.idDireccionCotizacion == 0) {
@@ -164,7 +164,7 @@ export class MaterialAddWidget {
             this.lerr['Cantidad'] = ['Cantidad debe ser mayor que 0'];
             this.validaciones = false;
         }
-            return this.validaciones;
+        return this.validaciones;
     }
 
     ferr(nm: string) {
@@ -193,6 +193,7 @@ export class MaterialAddWidget {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

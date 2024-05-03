@@ -8,16 +8,16 @@ declare var bootstrap: any;
     templateUrl: './material.widget.html'
 })
 export class MaterialWidget {
+    @Output('smEvent') sendEvent = new EventEmitter<number>();
+    model: ListaMaterial = {} as ListaMaterial;
     idD: number = 0;
     idC: number = 0;
     idP: number = 0;
-    tipo: string = '';
     edit: number = 0;
-    @Output('smEvent') sendEvent = new EventEmitter<number>();
-    model: ListaMaterial = {} as ListaMaterial;
     total: number = 0;
     nombreSucursal: string = '';
     puesto: string = '';
+    tipo: string = '';
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) { }
 
     existe(id: number) {
@@ -29,7 +29,6 @@ export class MaterialWidget {
             this.model = response;
             this.totalModal();
         }, err => console.log(err));
-
     }
 
     agregarMaterial() {
@@ -56,13 +55,10 @@ export class MaterialWidget {
 
     open(cot: number, dir: number, pue: number, tp: string, edit: number, nombreSucursal?: string, puesto?: string) {
         if (nombreSucursal == undefined || nombreSucursal == '') {
-
         }
         else {
             this.nombreSucursal = nombreSucursal;
-
         }
-        
         if (puesto != undefined) {
             this.puesto = puesto.charAt(0).toUpperCase() + puesto.slice(1).toLowerCase();
         }
@@ -75,11 +71,9 @@ export class MaterialWidget {
         this.tipo = tp.charAt(0).toUpperCase() + tp.slice(1).toLowerCase();
         this.total = 0;
         this.existe(this.idP);
-
         let docModal = document.getElementById('modalLimpiezaMaterialOperario');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
-
     }
 
     close() {

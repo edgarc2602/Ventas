@@ -65,7 +65,7 @@ namespace SistemaVentasBatia.Controllers
             foreach (var servicio in cotizacionVM.ListaTipoSalarios)
             {
                 if (servicio.Act)
-                {   
+                {
                     cotizacionVM.SalTipo = (SalarioTipo)servicio.Id;
                 }
             }
@@ -181,11 +181,11 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<bool> EliminarCotizacion([FromBody] int idCotizacion)
         {
-             return await cotizacionesSvc.EliminarCotizacion(idCotizacion);
+            return await cotizacionesSvc.EliminarCotizacion(idCotizacion);
         }
 
         [HttpGet("[action]/{idDC}")]
-        public async Task<bool> EliminarDireccionCotizacion( int idDC)
+        public async Task<bool> EliminarDireccionCotizacion(int idDC)
         {
             var idCotizacion = await cotizacionesSvc.ObtenerIdCotizacionPorDireccion(idDC);
 
@@ -249,10 +249,10 @@ namespace SistemaVentasBatia.Controllers
 
         }
 
-        [HttpGet("[action]/{idCotizacion}/{idServicio}")]
-        public async Task<ActionResult<bool>> ActualizarCotizacion(int idCotizacion, int idServicio)
+        [HttpGet("[action]/{idCotizacion}/{idServicio}/{polizaCumplimiento}")]
+        public async Task<ActionResult<bool>> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
         {
-             return await cotizacionesSvc.ActualizarCotizacion(idCotizacion, idServicio);
+            return await cotizacionesSvc.ActualizarCotizacion(idCotizacion, idServicio, polizaCumplimiento);
         }
 
         [HttpGet("[action]")]
@@ -264,10 +264,10 @@ namespace SistemaVentasBatia.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<ActionResult<bool>> ActualizarPorcentajesPredeterminadosCotizacion([FromBody]CotizaPorcentajes porcentajes)
+        public async Task<ActionResult<bool>> ActualizarPorcentajesPredeterminadosCotizacion([FromBody] CotizaPorcentajes porcentajes)
         {
             await cotizacionesSvc.ActualizarPorcentajesPredeterminadosCotizacion(porcentajes);
-                return true;
+            return true;
         }
 
         [HttpGet("[action]/{idPersonal}")]
@@ -318,6 +318,13 @@ namespace SistemaVentasBatia.Controllers
         public async Task<ActionResult<CotizacionVendedorDetalleDTO>> CotizacionVendedorDetallePorIdVendedor(int idVendedor)
         {
             return await cotizacionesSvc.ObtenerCotizacionVendedorDetallePorIdVendedor(idVendedor);
+        }
+
+        [HttpGet("[action]/{idCotizacion}/{motivoCierre}")]
+        public async Task<ActionResult<bool>> CerrarCotizacion(int idCotizacion, string motivoCierre)
+        {
+             await cotizacionesSvc.DesactivarCotizacion(idCotizacion);
+             return await cotizacionesSvc.InsertarMotivoCierreCotizacion(motivoCierre, idCotizacion);
         }
     }
 }

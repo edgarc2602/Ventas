@@ -24,11 +24,5 @@ namespace SistemaVentasBatia.Models
         public string EmailContacto { get; set; }
         public string NumeroContacto { get; set; }
         public string  ExtContacto { get; set; }
-        public bool PolizaCumplimiento { get; set; }
-
-        public string PoderRepresentanteLegal { get; set; }
-        public string ActaConstitutiva { get; set; }
-        public string RegistroPatronal { get; set; }
-        public int EmpresaVenta { get; set; }
     }
 }

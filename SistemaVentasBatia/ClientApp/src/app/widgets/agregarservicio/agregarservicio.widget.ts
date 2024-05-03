@@ -10,11 +10,11 @@ import { ToastWidget } from '../toast/toast.widget';
     templateUrl: './agregarservicio.widget.html'
 })
 export class AgregarServicioWidget {
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @Output('serEvent') sendEvent = new EventEmitter<number>();
     servicio: string = '';
     validaciones: boolean = false;
     lerr: any = {};
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
 
@@ -84,6 +84,7 @@ export class AgregarServicioWidget {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

@@ -18,17 +18,8 @@ declare var bootstrap: any;
     providers: [DatePipe]
 })
 export class ContratoWidget {
-    @Output('contratoEvent') sendEvent = new EventEmitter<number>();
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
-    validacion: boolean = false;
-    lerr: any = {};
-    isLoading: boolean = false;
-    empresas: Catalogo[] = [];
-    model: Prospecto = {} as Prospecto;
-    docs: ItemN[] = [];
-    idCotizacion: number = 0;
-    idProspecto: number = 0;
-    contrato: ClienteContrato = {} as ClienteContrato;
+    @Output('contratoEvent') sendEvent = new EventEmitter<number>();
     direccionAPI: DireccionResponseAPI = {
         message: '',
         error: false,
@@ -43,8 +34,17 @@ export class ContratoWidget {
             colonias: []
         }
     };
+    contrato: ClienteContrato = {} as ClienteContrato;
+    model: Prospecto = {} as Prospecto;
+    empresas: Catalogo[] = [];
     edos: Catalogo[] = [];
     muns: Catalogo[] = [];
+    docs: ItemN[] = [];
+    idCotizacion: number = 0;
+    idProspecto: number = 0;
+    validacion: boolean = false;
+    isLoading: boolean = false;
+    lerr: any = {};
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser, private dtpipe: DatePipe) {
         http.get<Catalogo[]>(`${url}api/catalogo/getestado`).subscribe(response => {
@@ -57,9 +57,9 @@ export class ContratoWidget {
         let fec: Date = new Date();
         this.contrato = {
             idClienteContrato: 0, idEmpresa: 0, idProspecto: 0, idCotizacion: 0, constitutivaEscrituraPublica: '', constitutivaFecha: '', constitutivaLicenciado: '', constitutivaNumeroNotario: '', constitutivaFolioMercantil: '', constitutivaIdEstado: 0,
-            poderEscrituraPublica: '', poderFecha: '', poderLicenciado: '', poderNumeroNotario: '', poderIdEstado: 0, polizaMonto: 0, polizaMontoLetra: '', polizaEmpresa: '', polizaNumero: '',
-            contratoVigencia: '', empresaContactoNombre: '', empresaContactoCorreo: '', empresaContactoTelefono: '', clienteDireccion: '', clienteColonia: 0, clienteColoniaDescripcion: '', clienteMunicipio: 0,
-            clienteMunicipioDescripcion: '', clienteEstado: 0, cp: '', clienteRegistroPatronal: '', clienteRazonSocial: '', clienteRfc: '', clienteEmail: '',clienteContactoNombre:'', clienteContactoTelefono: '', clienteRepresentante: ''
+            poderEscrituraPublica: '', poderFecha: '', poderLicenciado: '', poderNumeroNotario: '', poderIdEstado: 0, polizaMonto: 0, polizaMontoLetra: '', polizaEmpresa: '', polizaNumero: '', contratoVigencia: '', empresaContactoNombre: '',
+            empresaContactoCorreo: '', empresaContactoTelefono: '', clienteDireccion: '', clienteColonia: 0, clienteColoniaDescripcion: '', clienteMunicipio: 0, clienteMunicipioDescripcion: '', clienteEstado: 0, cp: '', clienteRegistroPatronal: '',
+            clienteRazonSocial: '', clienteRfc: '', clienteEmail: '', clienteContactoNombre: '', clienteContactoTelefono: '', clienteRepresentante: ''
         }
     }
 
@@ -138,7 +138,7 @@ export class ContratoWidget {
             this.validacion = false;
         }
         if (this.contrato.empresaContactoNombre == '' || this.contrato.empresaContactoNombre == undefined) {
-            this.lerr['empresaContactoNombre'] = ['Contacto es obligatorio'];
+            this.lerr['empresaContactoNombre'] = ['Nombre es obligatorio'];
             this.validacion = false;
         }
         if (this.contrato.empresaContactoCorreo == '' || this.contrato.empresaContactoNombre == undefined) {

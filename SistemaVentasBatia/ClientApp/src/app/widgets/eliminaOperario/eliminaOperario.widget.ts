@@ -6,9 +6,9 @@ declare var bootstrap: any;
     templateUrl: './eliminaOperario.widget.html'
 })
 export class EliminaOperarioWidget implements OnChanges {
+    @Output('ansEvent') sendEvent = new EventEmitter<boolean>();
     @Input() mensaje: string = '';
     @Input() titulo: string = '';
-    @Output('ansEvent') sendEvent = new EventEmitter<boolean>();
 
     constructor() {}
 

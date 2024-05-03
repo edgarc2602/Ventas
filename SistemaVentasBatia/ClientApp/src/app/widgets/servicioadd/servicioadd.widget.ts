@@ -1,37 +1,35 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Catalogo } from 'src/app/models/catalogo';
 import { ItemN } from 'src/app/models/item';
 import { Servicio } from 'src/app/models/servicio';
 import { StoreUser } from 'src/app/stores/StoreUser';
-import { numberFormat } from 'highcharts';
-declare var bootstrap: any;
-import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
+declare var bootstrap: any;
 
 @Component({
     selector: 'servadd-widget',
     templateUrl: './servicioadd.widget.html'
 })
 export class ServicioAddWidget {
-    idD: number = 0;
-    idC: number = 0;
-    idP: number = 0;
-    idS: number = 0;
-    showSuc: boolean = false;
-    tipo: string = 'servicio';
-    edit: number = 0;
-    @Output('smEvent') sendEvent = new EventEmitter<number>();
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @Output('returnModal') returnModal = new EventEmitter<boolean>();
-    model: Servicio = {} as Servicio;
+    @Output('smEvent') sendEvent = new EventEmitter<number>();
     dirs: Catalogo[] = [];
     pues: Catalogo[] = [];
     mats: Catalogo[] = [];
     sers: Catalogo[] = [];
     fres: ItemN[] = [];
-    lerr: any = {};
+    model: Servicio = {} as Servicio;
+    idD: number = 0;
+    idC: number = 0;
+    idP: number = 0;
+    idS: number = 0;
+    edit: number = 0;
     validaciones: boolean = false;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    showSuc: boolean = false;
+    tipo: string = 'servicio';
+    lerr: any = {};
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {}
         
@@ -52,20 +50,8 @@ export class ServicioAddWidget {
         this.edit = 0;
         let fec: Date = new Date();
         this.model = {
-            idServicioExtraCotizacion: 0,
-            idServicioExtra: 0,
-            ServicioExtra: '',
-            idCotizacion: this.idC,
-            idDireccionCotizacion: this.idD,
-            direccion: '',
-            precioUnitario: 0,
-            cantidad: 0,
-            total: 0,
-            importeMensual: 0,
-            idFrecuencia: 0,
-            fechaAlta: fec.toISOString(),
-            idPersonal: this.sinU.idPersonal,
-            edit: this.edit
+            idServicioExtraCotizacion: 0, idServicioExtra: 0, ServicioExtra: '', idCotizacion: this.idC, idDireccionCotizacion: this.idD,direccion: '', precioUnitario: 0, cantidad: 0, total: 0, importeMensual: 0,
+            idFrecuencia: 0, fechaAlta: fec.toISOString(), idPersonal: this.sinU.idPersonal, edit: this.edit
         };
     }
         
@@ -135,6 +121,7 @@ export class ServicioAddWidget {
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.hide();
     }
+
     ok() {
 
     }
@@ -193,6 +180,7 @@ export class ServicioAddWidget {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

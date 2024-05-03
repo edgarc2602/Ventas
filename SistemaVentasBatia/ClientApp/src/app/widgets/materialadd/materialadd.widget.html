@@ -9,8 +9,6 @@
                 <!-- Modal Header -->
                 <div *ngIf="nombreSucursal != undefined" class="modal-header">
                     <h4 *ngIf="model.idMaterialCotizacion == 0" class="modal-title">Agregar {{ tipo }} - <small class="text-muted">{{ puesto }} ({{ nombreSucursal }})</small></h4>
-                    <!--<h4  class="modal-title">Agregar {{ tipo }}</h4>-->
-                    <!--<h4 *ngIf="model.idMaterialCotizacion > 0" class="modal-title">Editar {{ tipo }}</h4>-->
                     <h4 *ngIf="model.idMaterialCotizacion > 0" class="modal-title">Editar {{ tipo }} - <small class="text-muted">{{ puesto }} ({{ nombreSucursal }})</small></h4>
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

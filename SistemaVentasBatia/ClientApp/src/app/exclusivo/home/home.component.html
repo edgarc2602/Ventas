@@ -16,10 +16,10 @@
             </div>
         </div>
     </div>
+    <br />
     <div class="row pt-1 mb-3">
         <div>
-            <h6 class="h6">Utilidad de cotizaciones</h6>
-
+            <h6 class="h6">Rentabilidad por vendedor</h6>
         </div>
     </div>
     <div class="row">
@@ -32,23 +32,35 @@
                 <label for="ddlVendedores">Vendedor</label>
             </div>
         </div>
-        <div class="col-md-8 mb-3 col-12">
-            <div *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+        <div *ngIf="isLoading || (cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length === 0 )" class="row-12 text-center">
+            <hr />
+            <br />
+            <h6 *ngIf="isLoading">Cargando...</h6>
+        </div>
+        <div *ngIf="isLoading" class="text-center ">
+            <i class="fas fa-spinner fa-spin fa-3x"></i>
+        </div>
+        <h6 *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" class="h6 text-muted">Cotizaciones</h6>
+        <div class="col-md-12 mb-3 col-12">
+            <div *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 400px; overflow-y: auto; overflow-x: hidden">
                 <table class="table table-striped">
                     <thead class="sticky-top">
                         <tr>
                             <th>
                                 <div class="row d-flex align-items-center">
-                                    <div class="col-md-2 col-sm-6 col-2">
+                                    <div class="col-md-1 col-sm-6 col-2">
                                         <span class="ms-2">Id</span>
                                     </div>
-                                    <div class="col-md-4 col-sm-6 col-4">
+                                    <div class="col-md-5 col-sm-6 col-4">
                                         <span class="ms-2">Nombre comercial</span>
                                     </div>
-                                    <div class="col-md-3 col-sm-6 col-3">
-                                        <span class="ms-2">Utilidad</span>
+                                    <div class="col-md-2 col-sm-6 col-4">
+                                        <span class="ms-2">Costo indirecto</span>
                                     </div>
-                                    <div class="col-md-3 col-sm-6 col-3">
+                                    <div class="col-md-2 col-sm-6 col-3">
+                                        <span class="ms-2">Utilidad %</span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-3">
                                         <span class="ms-2">Total</span>
                                     </div>
                                 </div>
@@ -56,20 +68,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let cotizaciones of cotizacionDetalle.cotizacionDetalle">
+                        <tr *ngFor="let c of cotizacionDetalle.cotizacionDetalle">
                             <td>
                                 <div class="row d-flex align-items-center">
-                                    <div class="col-md-2 col-sm-6 col-2">
-                                        <div class="ms-2">{{ cotizaciones.idCotizacion }}</div>
+                                    <div class="col-md-1 col-sm-6 col-2">
+                                        <div class="ms-2">{{ c.idCotizacion }}</div>
                                     </div>
-                                    <div class="col-md-4 col-sm-6 col-4">
-                                        <div class="ms-2">{{ cotizaciones.nombreComercial }}</div>
+                                    <div class="col-md-5 col-sm-6 col-4">
+                                        <div class="ms-2">{{ c.nombreComercial }}</div>
+                                        <small *ngIf="c.idServicio == 1" class="ms-2 text-muted">Servicio: Mantenimiento</small>
+                                        <small *ngIf="c.idServicio == 2" class="ms-2 text-muted">Servicio: Limpieza</small>
+                                        <small *ngIf="c.idServicio == 3" class="ms-2 text-muted">Servicio: Jardineria</small>
+                                        <small *ngIf="c.idServicio == 4" class="ms-2 text-muted">Servicio: Fumigación</small>
                                     </div>
-                                    <div class="col-md-3 col-sm-6 col-3">
-                                        <div class="ms-2">${{ cotizaciones.utilidad | number: '1.2-2' }}</div>
+                                    <div class="col-md-2 col-sm-6 col-3">
+                                        <div class="ms-2">${{ c.subTotal + c.indirecto | number: '1.2-2' }}</div>
                                     </div>
-                                    <div class="col-md-3 col-sm-6 col-3">
-                                        <div class="ms-2">${{ cotizaciones.total | number: '1.2-2' }}</div>
+                                    <div class="col-md-2 col-sm-6 col-3">
+                                        <div class="ms-2">{{ c.utilidadPor }}%</div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-3">
+                                        <div class="ms-2">${{  c.subTotal + c.indirecto + c.utilidad | number: '1.2-2' }}</div>
                                     </div>
                                 </div>
                             </td>

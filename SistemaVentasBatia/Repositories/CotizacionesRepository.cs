@@ -59,13 +59,14 @@ namespace SistemaVentasBatia.Repositories
         Task InsertaCotizacion(Cotizacion cotizacion);
         Task<bool> InactivarCotizacion(int idCotizacion);
         Task DesactivarCotizaciones(int idProspecto);
-        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio);
+        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento);
         Task InsertarTotalCotizacion(decimal total, int idCotizacion, string numerotxt);
         Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio,int idPersonal, int autorizacion);
         Task<int> ObtenerAutorizacion(int idPersonal);
         Task<int> ObtieneIdCotizacionPorOperario(int idPuestoDireccionCotizacion);
         Task<bool> ActivarCotizacion(int idCotizacion);
         Task<bool> DesactivarCotizacion(int idCotizacion);
+        Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre,int idCotizacion);
         Task<string> ObtenerNombreSucursalPorIdOperario(int id);
         Task<Cotizacion> ObtenerCotizacion(int id);
         Task<Cotizacion> ObtenerNombreComercialCotizacion(int idCotizacion);
@@ -110,8 +111,8 @@ namespace SistemaVentasBatia.Repositories
                         where fechaaplica <= @FechaAlta
                         order by id_porcentaje desc;
 
-                        insert into tb_cotizacion(id_prospecto, id_servicio, costo_indirecto, utilidad, total, id_estatus_cotizacion, fecha_alta, id_personal, id_porcentaje, comision_venta, comision_externa, id_tiposalario)
-                        values(@IdProspecto, @IdServicio, @pci, @pu, @Total, @IdEstatusCotizacion, @FechaAlta, @IdPersonal, @idp, @cv, @ce, @SalTipo)
+                        insert into tb_cotizacion(id_prospecto, id_servicio, costo_indirecto, utilidad, total, id_estatus_cotizacion, fecha_alta, id_personal, id_porcentaje, comision_venta, comision_externa, id_tiposalario, poliza_cumplimiento, dias_vigencia)
+                        values(@IdProspecto, @IdServicio, @pci, @pu, @Total, @IdEstatusCotizacion, @FechaAlta, @IdPersonal, @idp, @cv, @ce, @SalTipo, @PolizaCumplimiento, @DiasVigencia)
                         select scope_identity()";
             try
             {
@@ -176,7 +177,7 @@ namespace SistemaVentasBatia.Repositories
 
             var queryadmin = @"SELECT  *
                           FROM (SELECT ROW_NUMBER() OVER ( ORDER BY id_cotizacion desc ) AS RowNum, id_cotizacion IdCotizacion, id_servicio IdServicio, nombre_comercial NombreComercial, 
-                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta
+                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta, ISNULL(c.poliza_cumplimiento, 0) AS PolizaCumplimiento, ISNULL(c.dias_vigencia, 0) AS DiasVigencia
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
@@ -193,7 +194,7 @@ namespace SistemaVentasBatia.Repositories
                           ORDER BY RowNum";
             var queryuser = @"SELECT  *
                           FROM (SELECT ROW_NUMBER() OVER ( ORDER BY id_cotizacion desc ) AS RowNum, id_cotizacion IdCotizacion, id_servicio IdServicio, nombre_comercial NombreComercial, 
-                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta
+                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta, ISNULL(c.poliza_cumplimiento, 0) AS PolizaCumplimiento, ISNULL(c.dias_vigencia, 0) AS DiasVigencia
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
@@ -373,9 +374,8 @@ ORDER BY RowNum";
             catch (Exception ex)
             {
                 throw ex;
-            }
-
-            return direcciones;
+            } 
+                          return direcciones;
         }
         public async Task<int> InsertaPuestoDireccionCotizacion(PuestoDireccionCotizacion operario)
         {
@@ -707,14 +707,14 @@ where id_cotizacion = @idCotizacion";
             }
             return result;
         }
-        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio)
+        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
         {
-            var query = @"UPDATE tb_cotizacion set id_servicio = @idServicio where id_cotizacion = @idCotizacion";
+            var query = @"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento where id_cotizacion = @idCotizacion";
             try
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    await connection.ExecuteAsync(query, new { idCotizacion, idServicio });
+                    await connection.ExecuteAsync(query, new { idCotizacion, idServicio, polizaCumplimiento });
                     return true;
                 }
             }
@@ -1731,6 +1731,27 @@ WHERE id_cotizacion = @idCotizacion
             }
             return result;
         }
+        public async Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre, int idCotizacion)
+        {
+            string query = @"
+                UPDATE tb_cotizacion
+                SET cierre_motivo = @motivoCierre
+                WHERE id_cotizacion = @idCotizacion
+";
+            bool result;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    result = await connection.ExecuteScalarAsync<bool>(query, new { motivoCierre, idCotizacion });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
         public async Task DesactivarCotizaciones(int idProspecto)
         {
             string query = @"
@@ -1852,11 +1873,10 @@ GETDATE(),
         public async Task<bool> GetPolizaCumplimiento(int idCotizacion)
         {
             string query = @"
-
-SELECT a.poliza_cumplimiento Poliza FROM tb_prospecto a
-INNER JOIN tb_cotizacion b ON b.id_prospecto = a.id_prospecto
-WHERE b.id_cotizacion = @idCotizacion
-";
+                SELECT COALESCE(poliza_cumplimiento, 0) AS Poliza
+                FROM tb_cotizacion
+                WHERE id_cotizacion = @idCotizacion
+                ";
             bool result;
             try
             {

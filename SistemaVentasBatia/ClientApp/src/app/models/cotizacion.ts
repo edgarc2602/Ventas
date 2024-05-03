@@ -11,4 +11,7 @@ export interface Cotizacion {
     listaServicios: ItemN[];
     listaTipoSalarios: ItemN[];
     salTipo: number;
+
+    polizaCumplimiento: boolean;
+    diasVigencia: number;
 }

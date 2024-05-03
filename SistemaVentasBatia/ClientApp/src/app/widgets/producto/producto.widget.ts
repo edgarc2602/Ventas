@@ -4,25 +4,25 @@ import { Catalogo } from 'src/app/models/catalogo';
 import { ItemN } from 'src/app/models/item';
 import { MaterialPuesto } from 'src/app/models/materialpuesto';
 import { StoreUser } from '../../stores/StoreUser';
-declare var bootstrap: any;
 import { ToastWidget } from '../toast/toast.widget';
+declare var bootstrap: any;
 
 @Component({
     selector: 'producto-widget',
     templateUrl: './producto.widget.html'
 })
 export class ProductoWidget implements OnChanges {
-    @Input() idP: number = 0;
-    @Input() grupo: string = '';
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @Output('saveEvent') sendEvent = new EventEmitter<boolean>();
+    @Input() grupo: string = '';
+    @Input() idP: number = 0;
     model: MaterialPuesto = {} as MaterialPuesto;
+    lsmat: Catalogo[] = [];
     sers: ItemN[] = [];
     fres: ItemN[] = [];
-    lsmat: Catalogo[] = [];
     idSer: number = 2;
     validaciones: boolean = false;
     lerr: any = {};
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<ItemN[]>(`${url}api/catalogo/getfrecuencia`).subscribe(response => {
@@ -36,7 +36,7 @@ export class ProductoWidget implements OnChanges {
     inicio(id: number, tipo: number, idPuesto: number) {
         this.lerr = {};
         if (id != 0) {
-            this.existe(id,tipo,idPuesto);
+            this.existe(id, tipo, idPuesto);
         }
         else {
             this.model = {
@@ -73,12 +73,12 @@ export class ProductoWidget implements OnChanges {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
                         }
-                    }   
+                    }
                 });
             }
             if (this.model.idMaterialPuesto != 0) {
                 this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
-                    this.okToast( this.grupo +' actualizado');
+                    this.okToast(this.grupo + ' actualizado');
                     this.sendEvent.emit(true);
                     this.close();
                 }, err => {
@@ -175,6 +175,7 @@ export class ProductoWidget implements OnChanges {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

@@ -11,6 +11,12 @@ declare var bootstrap: any;
     templateUrl: './materialoperarioadd.widget.html'
 })
 export class MaterialOperarioAddWidget {
+    @Output('smEvent2') sendEvent = new EventEmitter<number>();
+    model: Material = {} as Material;
+    dirs: Catalogo[] = [];
+    pues: Catalogo[] = [];
+    mats: Catalogo[] = [];
+    fres: ItemN[] = [];
     idD: number = 0;
     idC: number = 0;
     idP: number = 0;
@@ -18,12 +24,7 @@ export class MaterialOperarioAddWidget {
     edit: number = 0;
     showSuc: boolean = false;
     tipo: string = 'material';
-    @Output('smEvent2') sendEvent = new EventEmitter<number>();
-    model: Material = {} as Material;
-    dirs: Catalogo[] = [];
-    pues: Catalogo[] = [];
-    mats: Catalogo[] = [];
-    fres: ItemN[] = [];
+    
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {}
         
     lista() {

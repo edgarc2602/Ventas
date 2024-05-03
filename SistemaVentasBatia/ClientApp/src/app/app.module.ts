@@ -36,7 +36,6 @@ import { EditarCotizacion } from './widgets/editacotizacion/editacotizacion.widg
 import { ServicioAddWidget } from './widgets/servicioadd/servicioadd.widget';
 import { AgregarServicioWidget } from './widgets/agregarservicio/agregarservicio.widget';
 import { StoreUser } from './stores/StoreUser';
-import { DescargarComponent } from './exclusivo/cotizacion/descargar/descargar.component';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { fadeInOut } from './fade-in-out';
@@ -44,6 +43,8 @@ import { UsuarioAddWidget } from './widgets/usuarioadd/usuarioadd.widget';
 import { PuestoLayoutWidget } from './widgets/puestolayout/puestolayout.widget';
 import { MarcaVenta } from './widgets/marcaventa/marcaventa.widget';
 import { ContratoWidget } from './widgets/contrato/contrato.widget';
+import { ConfirmacionWidget } from './widgets/confirmacion/confirmacion.widget';
+import { CerrarCotizacion } from './widgets/cerrarcotizacion/cerrarcotizacion.widget';
 
 @NgModule({
     declarations: [
@@ -76,15 +77,15 @@ import { ContratoWidget } from './widgets/contrato/contrato.widget';
         ProductoWidget,
         EliminaDirectorioWidget,
         ActualizaCotizacionWidget,
-        DescargarComponent,
         EditarCotizacion,
         ServicioAddWidget,
         AgregarServicioWidget,
         UsuarioAddWidget,
         PuestoLayoutWidget,
         MarcaVenta,
-        ContratoWidget
-        
+        ContratoWidget,
+        ConfirmacionWidget,
+        CerrarCotizacion
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -111,8 +112,7 @@ import { ContratoWidget } from './widgets/contrato/contrato.widget';
                     { path: 'cotiza/:idp', component: CotizacionComponent },
                     { path: 'nuevocot', component: CotizaComponent },
                     { path: 'resumen/:id', component: ResumenComponent },
-                    { path: 'catalogo', component: CatalogoComponent },
-                    { path: 'descargar/:id', component: DescargarComponent }
+                    { path: 'catalogo', component: CatalogoComponent }
                 ]
             }
         ])

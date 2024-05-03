@@ -16,10 +16,10 @@ export interface Prospecto {
     idCotizacion: number;
     idPersonal: number;
     idEstatusProspecto: number;
-    polizaCumplimiento: boolean;
+    /*polizaCumplimiento: boolean;*/
 
-    poderRepresentanteLegal: string;
-    actaConstitutiva: string;
-    registroPatronal: string;
-    empresaVenta: number;
+    //poderRepresentanteLegal: string;
+    //actaConstitutiva: string;
+    //registroPatronal: string;
+    //empresaVenta: number;
 }

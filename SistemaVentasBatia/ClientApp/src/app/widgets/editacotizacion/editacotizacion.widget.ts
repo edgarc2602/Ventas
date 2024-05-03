@@ -4,23 +4,28 @@ import { Router } from '@angular/router';
 import { ItemN } from 'src/app/models/item';
 import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
-import Swal from 'sweetalert2';
-import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
+import { CotizaResumenLim } from '../../models/cotizaresumenlim';
 
 @Component({
     selector: 'editcot-widget',
     templateUrl: './editacotizacion.widget.html'
 })
 export class EditarCotizacion {
-    @Output('editCot') sendEvent = new EventEmitter<boolean>();
-    sers: ItemN[] = [];
-    idCotizacion: number = 0;
-    idServicio: number = 0;
-    validacion: boolean = false;
-    lerr: any = {};
-    isLoading: boolean = false;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @Output('editCot') sendEvent = new EventEmitter<boolean>();
+    model: CotizaResumenLim = {
+        idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
+        material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
+        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0
+    };
+    sers: ItemN[] = [];
+    idServicio: number = 0;
+    idCotizacion: number = 0;
+    polizaCumplimiento: boolean = false;
+    validacion: boolean = false;
+    isLoading: boolean = false;
+    lerr: any = {};
 
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient,
@@ -31,8 +36,9 @@ export class EditarCotizacion {
         }, err => console.log(err));
     }
 
-    openSel(idCotizacion: number, servicio: string) {
+    openSel(idCotizacion: number, servicio: string, polizaCumplimiento: boolean) {
         this.lerr = {};
+        this.polizaCumplimiento = polizaCumplimiento;
         switch (servicio) {
             case 'Mantenimiento':
                 this.idServicio = 1;
@@ -54,7 +60,13 @@ export class EditarCotizacion {
 
     guarda() {
         if (this.valida()) {
-            this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/ ${this.idServicio}`).subscribe(response => {
+            this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/${this.idServicio}/${this.polizaCumplimiento}`).subscribe(response => {
+                //actualizar monto
+                this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.idCotizacion}`).subscribe(response => {
+                    this.model = response;
+                }, err => {
+                    console.log(err)
+                });
                 this.close();
                 this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' actualizada');
                 this.sendEvent.emit(true);
@@ -99,6 +111,7 @@ export class EditarCotizacion {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;

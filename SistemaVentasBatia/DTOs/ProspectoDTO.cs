@@ -55,12 +55,5 @@ namespace SistemaVentasBatia.DTOs
 
         public int IdCotizacion { get; set; }
         public EstatusProspecto IdEstatusProspecto { get; set; }
-        [Required(ErrorMessage = "Poliza de cumplimiento es necesario")]
-        public bool PolizaCumplimiento { get; set; }
-
-        public string PoderRepresentanteLegal { get; set; }
-        public string ActaConstitutiva { get; set; }
-        public string RegistroPatronal { get; set; }
-        public int EmpresaVenta { get; set; }
     }
 }

@@ -4,7 +4,6 @@ import { fadeInOut } from 'src/app/fade-in-out';
 import { HttpClient } from '@angular/common/http';
 import { UsuarioGrafica } from '../../models/usuariografica';
 import { UsuarioGraficaMensual } from '../../models/usuariograficamensual';
-import { CotizaResumenLim } from '../../models/cotizaresumenlim';
 import { Catalogo } from '../../models/catalogo';
 import { CotizacionVendedorDetalle } from '../../models/cotizacionvendedordetalle';
 interface DatosAgrupados {
@@ -18,41 +17,32 @@ interface DatosAgrupados {
 })
 export class HomeComponent implements OnInit {
     model: UsuarioGrafica = {
-        idPersonal: 0,
-        nombre: '',
-        cotizaciones: 0,
-        prospectos: 0
+        idPersonal: 0, nombre: '', cotizaciones: 0, prospectos: 0
     };
     modelMensual: UsuarioGraficaMensual = {
-        idPersonal: 0,
-        nombre: '',
-        mes: 0,
-        cotizacionesPorMes: 0
+        idPersonal: 0, nombre: '', mes: 0, cotizacionesPorMes: 0
     }
-    usuarios: UsuarioGrafica[] = [];
-    usuariosMensual: UsuarioGraficaMensual[] = [];
-    datosAgrupadosMensuales: Record<number, UsuarioGraficaMensual[]> = {};
-    datosAgrupados: DatosAgrupados[] = [];
     cotizacionDetalle: CotizacionVendedorDetalle = {
         idVendedor: 0, cotizacionDetalle: []
     }
+    datosAgrupadosMensuales: Record<number, UsuarioGraficaMensual[]> = {};
+    usuariosMensual: UsuarioGraficaMensual[] = [];
+    datosAgrupados: DatosAgrupados[] = [];
+    usuarios: UsuarioGrafica[] = [];
     vendedores: Catalogo[] = [];
     idVendedor: number = 0;
+    isLoading: boolean = false;
 
-
-    constructor(
-        @Inject('BASE_URL') private url: string,
-        private http: HttpClient
-    ) {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
         http.get<UsuarioGrafica[]>(`${url}api/usuario/obtenercotizacionesusuarios/`).subscribe(response => {
             this.usuarios = response;
             this.getDonut();
         }, err => console.log(err));
-
         http.get<UsuarioGraficaMensual[]>(`${url}api/usuario/obtenercotizacionesmensuales`).subscribe(response => {
             this.usuariosMensual = response;
         }, err => console.log(err));
     }
+
     ngOnInit(): void {
         this.agruparDatosMensuales()
         this.getTop();
@@ -68,7 +58,7 @@ export class HomeComponent implements OnInit {
 
     agruparDatosMensuales() {
         this.http.get<UsuarioGraficaMensual[]>(`${this.url}api/usuario/obtenercotizacionesmensuales`).subscribe(response => {
-            const datosAgrupados: DatosAgrupados[] = [];    
+            const datosAgrupados: DatosAgrupados[] = [];
             response.forEach(dato => {
                 const { nombre, mes, cotizacionesPorMes } = dato;
                 const datosAgrupadosExistente = datosAgrupados.find(item => item.nombre === nombre);
@@ -80,11 +70,10 @@ export class HomeComponent implements OnInit {
                         cotizacionMes: Array(12).fill(0)
                     };
                     nuevoDatoAgrupado.cotizacionMes[mes - 1] = cotizacionesPorMes;
-
                     datosAgrupados.push(nuevoDatoAgrupado);
                 }
             });
-            this.datosAgrupados = datosAgrupados;            
+            this.datosAgrupados = datosAgrupados;
             this.getTop();
         }, err => console.log(err));
 
@@ -99,7 +88,6 @@ export class HomeComponent implements OnInit {
                 type: 'column',
             });
         });
-
         Highcharts.chart(container, {
             chart: {
                 type: 'column'
@@ -121,7 +109,7 @@ export class HomeComponent implements OnInit {
             tooltip: {
                 formatter: function () {
                     return '<b>' + this.x + '</b><br/>' +
-                        this.series.name + ': ' + this.y + '<br/>' ;
+                        this.series.name + ': ' + this.y + '<br/>';
                 }
             },
             plotOptions: {
@@ -154,7 +142,6 @@ export class HomeComponent implements OnInit {
             title: {
                 text: 'Cotizaciones por mes'
             },
-            
             xAxis: {
                 categories: [
                     'Jan',
@@ -174,7 +161,7 @@ export class HomeComponent implements OnInit {
             },
             yAxis: {
                 allowDecimals: false,
-                
+
                 min: 0,
                 title: {
                     text: ''
@@ -201,14 +188,22 @@ export class HomeComponent implements OnInit {
             }
         });
     }
+
     goBack() {
         window.history.back();
     }
+
     getCotizacionesVendedor(idVendedor: number) {
-        this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`).subscribe(response => {
-            this.cotizacionDetalle = response;
-        }, err => {
-            console.log(err)
-        });
+        this.cotizacionDetalle.cotizacionDetalle = []; 
+        if (idVendedor != 0) {
+            this.isLoading = true;
+            this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`).subscribe(response => {
+                this.isLoading = false;
+                this.cotizacionDetalle = response;
+            }, err => {
+                this.isLoading = false;
+                console.log(err)
+            });
+        }
     }
 }

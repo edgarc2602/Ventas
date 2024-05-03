@@ -6,4 +6,6 @@ export interface CotizacionMin {
     fechaAlta: string;
     nombreComercial: string;
     idEstatusCotizacion: number;
+    polizaCumplimiento: boolean;
+    diasVigencia: number;
 }

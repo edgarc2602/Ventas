@@ -4,29 +4,31 @@ import { ActivatedRoute } from '@angular/router';
 import { ListaCotizacion } from 'src/app/models/listacotizacion';
 import { Prospecto } from 'src/app/models/prospecto';
 import { ItemN } from 'src/app/models/item';
-import { Subject } from 'rxjs';
 import { CotizaResumenLim } from 'src/app/models/cotizaresumenlim';
-//import { DireccionCotizacion } from '../../models/direccioncotizacion';
 import { ListaDireccion } from '../../models/listadireccion';
-import { Cotizacion } from '../../models/cotizacion';
-
 import { EliminaWidget } from 'src/app/widgets/elimina/elimina.widget';
 import { EditarCotizacion } from 'src/app/widgets/editacotizacion/editacotizacion.widget';
-
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
-import Swal from 'sweetalert2';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
-
+import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
+import { CerrarCotizacion } from '../../widgets/cerrarcotizacion/cerrarcotizacion.widget';
 
 @Component({
     selector: 'cotizacion',
     templateUrl: './cotizacion.component.html',
     animations: [fadeInOut],
-
 })
 export class CotizacionComponent implements OnInit, OnDestroy {
-    sub: any;
+    @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
+    @ViewChild(EditarCotizacion, { static: false }) ediw: EditarCotizacion;
+    @ViewChild(ConfirmacionWidget, { static: false }) conw: ConfirmacionWidget;
+    @ViewChild(CerrarCotizacion, { static: false }) cerrarCot: CerrarCotizacion;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    model: CotizaResumenLim = {
+        idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, provisiones: 0, prestaciones: 0, material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0, subTotal: 0, indirecto: 0, utilidad: 0,
+        total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', indirectoPor: '', utilidadPor: '', csvPor: '', comisionSV: 0, comisionExtPor: '', comisionExt: 0, totalPolizaCumplimiento: 0, polizaCumplimiento: false
+    };
     lcots: ListaCotizacion = {
         idProspecto: 0, idServicio: 0, pagina: 1, numPaginas: 0,
         rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0
@@ -34,27 +36,18 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     lsers: ItemN[] = [];
     lests: ItemN[] = [];
     lpros: Prospecto[] = [];
-    model: CotizaResumenLim = {
-        idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, provisiones: 0, prestaciones: 0,
-        material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
-        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', indirectoPor: '', utilidadPor: '', csvPor: '', comisionSV: 0, comisionExtPor: '', comisionExt: 0, totalPolizaCumplimiento: 0, polizaCumplimiento: false
-    };
     lsdir: ListaDireccion = {} as ListaDireccion;
     idpro: number = 0;
-    @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
-    @ViewChild(EditarCotizacion, { static: false }) ediw: EditarCotizacion;
+    idEstatus: number = 0;
     estatus: number = 1;
     idCotizacion: number = 0;
-    lerr: any = {};
-    //evenSub: Subject<void> = new Subject<void>();
-    //isErr: boolean = false;
-    //errMessage: string = '';
     isLoading: boolean = false;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
-
+    lerr: any = {};
+    validaDato1: any;
+    validaDato2: any;
+    sub: any;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, public user: StoreUser) {
-
         http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
             this.lsers = response;
         }, err => console.log(err));
@@ -69,6 +62,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
             rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0
         };
     }
+
     init() {
         this.lcots.cotizaciones = [];
         this.isLoading = true;
@@ -116,7 +110,6 @@ export class CotizacionComponent implements OnInit, OnDestroy {
                 this.isLoading = false;
                 console.log(err)
             }, 300);
-
         });
     }
 
@@ -125,18 +118,12 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         this.lista();
     }
 
-    getDet(id: number, ser: string) {
-        console.log(`${id} : ${ser}`);
-    }
-
     muevePagina(event) {
         this.lcots.pagina = event;
         this.lista();
     }
 
     ngOnInit(): void {
-
-
         this.sub = this.route.params.subscribe(params => {
             let idp: number = +params['idp'];
             if (idp > 0) {
@@ -159,51 +146,69 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         }, err => console.log(err));
     }
 
-
-    elige(idCotizacion) {
-        this.idCotizacion = idCotizacion;
-        this.eliw.titulo = 'Eliminar'; //error
-        this.eliw.mensaje = 'Se eliminar\u00E1 la cotizaci\u00F3n';
-        this.eliw.open();
+    //Abrir modal editar cotizacion
+    editar(idCotizacion: number, servicio: string, polizaCumplimiento: boolean) {
+        this.ediw.openSel(idCotizacion, servicio, polizaCumplimiento);
     }
 
-    elimina($event) {
-        if ($event) {
-            this.http.post<boolean>(`${this.url}api/cotizacion/EliminarCotizacion`, this.idCotizacion).subscribe(response => {
-                this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' eliminada');
-            }, err => {
-                console.log(err);
-                this.errorToast('Ocurrió un error')
-            });
+    openCerrarCotizacion(idCotizacion: number) {
+        this.cerrarCot.open(idCotizacion);
+        //Vigente, vencida
+    }
+    cerrarCotizacionEvent($event) {
+        this.lista();
+    }
+
+    //Abrir modal cofirmacion
+    openValida(tipo: string,mensaje: string, dato1?: any, dato2?: any) {
+        this.idCotizacion = dato1;
+        this.estatus = dato2;
+        this.conw.titulo = "Confirmaci\u00F3n";
+        this.conw.mensaje = mensaje;
+        this.conw.open(tipo)
+    }
+
+    //Respuesta de confirmacion
+    confirmacionEvent($event) {
+        if ($event == 'cambiarEstatusCotizacion') {
+            this.cambiarEstatusCotizacion();
         }
-        this.init();
+        if ($event == 'eliminarCotizacion') {
+            this.eliminarCotizacion();
+        }
     }
-    editar(idCotizacion: number, servicio: string) {
-        this.ediw.openSel(idCotizacion,servicio);
-    }
-    goBack() {
-        window.history.back();
-    }
-    chgEstatus(idCotizacion: number, idEstatusCotizacion: number) {
-        if (idEstatusCotizacion === 1) {
-            this.http.put<boolean>(`${this.url}api/cotizacion/desactivarcotizacion`, idCotizacion).subscribe(response => {
+
+    cambiarEstatusCotizacion() {
+        if (this.idEstatus === 1) {
+            this.http.put<boolean>(`${this.url}api/cotizacion/desactivarcotizacion`, this.idCotizacion).subscribe(response => {
                 this.lista();
-                this.okToast('Cotizaci\u00F3n ' + idCotizacion + ' desactivada');
+                this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' desactivada');
             }, err => {
                 console.log(err);
                 this.errorToast('Ocurrió un error')
             });
         } else {
-            this.http.put<boolean>(`${this.url}api/cotizacion/activarcotizacion`, idCotizacion).subscribe(response => {
+            this.http.put<boolean>(`${this.url}api/cotizacion/activarcotizacion`, this.idCotizacion).subscribe(response => {
                 this.lista();
-                this.okToast('Cotizaci\u00F3n ' + idCotizacion + ' activada');
+                this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' activada');
             }, err => {
                 console.log(err);
                 this.errorToast('Ocurrió un error');
             });
         }
     }
-    editReturn($event) {    
+
+    eliminarCotizacion() {
+        this.http.post<boolean>(`${this.url}api/cotizacion/EliminarCotizacion`, this.idCotizacion).subscribe(response => {
+            this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' eliminada');
+            this.init();
+        }, err => {
+            console.log(err);
+            this.errorToast('Ocurrió un error')
+        });
+    }
+
+    editReturn($event) {
         this.init();
     }
 
@@ -212,9 +217,14 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
+
     errorToast(message: string) {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    goBack() {
+        window.history.back();
     }
 }

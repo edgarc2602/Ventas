@@ -6,9 +6,9 @@ declare var bootstrap: any;
     templateUrl: './eliminadirectorio.widget.html'
 })
 export class EliminaDirectorioWidget implements OnChanges {
+    @Output('EventDC') sendEvent = new EventEmitter<boolean>();
     @Input() mensaje: string = '';
     @Input() titulo: string = '';
-    @Output('EventDC') sendEvent = new EventEmitter<boolean>();
 
     constructor() {}
 

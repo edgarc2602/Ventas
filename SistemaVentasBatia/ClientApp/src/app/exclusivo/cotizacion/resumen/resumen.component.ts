@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CotizaResumenLim } from 'src/app/models/cotizaresumenlim';
 import { ItemN } from 'src/app/models/item';
@@ -25,20 +24,20 @@ import { Router } from '@angular/router';
 import { ReportService } from 'src/app/report.service';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { StoreUser } from 'src/app/stores/StoreUser';
-import internal = require('assert');
 import { saveAs } from 'file-saver';
 import { PuestoLayoutWidget } from 'src/app/widgets/puestolayout/puestolayout.widget';
 import Swal from 'sweetalert2';
 import { MarcaVenta } from 'src/app/widgets/marcaventa/marcaventa.widget';
 import { ContratoWidget } from '../../../widgets/contrato/contrato.widget';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
-
-
+import { Prospecto } from '../../../models/prospecto';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'resumen',
     templateUrl: './resumen.component.html',
     animations: [fadeInOut],
+    providers: [DatePipe]
 })
 export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild(MaterialAddWidget, { static: false }) proAdd: MaterialAddWidget;
@@ -54,6 +53,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild(PuestoLayoutWidget, { static: false }) puelay: PuestoLayoutWidget;
     @ViewChild(MarcaVenta, { static: false }) marven: MarcaVenta;
     @ViewChild(ContratoWidget, { static: false }) contrato: ContratoWidget;
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @ViewChild('resumen', { static: false }) resumen: ElementRef;
     @ViewChild('pdfCanvas', { static: true }) pdfCanvas: ElementRef;
     @ViewChild('indirectotxt', { static: false }) indirectotxt: ElementRef;
@@ -62,77 +62,67 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild('comisionExttxt', { static: false }) comisionExttxt: ElementRef;
     @ViewChild('fileInputDir', { static: false }) fileInputDir: ElementRef<HTMLInputElement>;
     @ViewChild('fileInputPlan', { static: false }) fileInputPlan: ElementRef<HTMLInputElement>;
-    sub: any;
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
         subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0
     };
+    modelDir: DireccionCotizacion = {
+        idCotizacion: 0, idDireccionCotizacion: 0, idDireccion: 0, nombreSucursal: ''
+    };
+    modelcot: Cotizacionupd = {
+        idCotizacion: 0, indirecto: '', utilidad: '', comisionSV: '', comisionExt: ''
+    };
     dirs: ItemN[] = [];
     cotdirs: Catalogo[] = [];
+    docs: ItemN[] = [];
     lsdir: ListaDireccion = {} as ListaDireccion;
     lspue: ListaPuesto = {} as ListaPuesto;
     lsmat: ListaMaterial = {} as ListaMaterial;
     lsher: ListaMaterial = {} as ListaMaterial;
     lsser: ListaServicio = {} as ListaServicio;
+    modelpros: Prospecto = {} as Prospecto;
     selDireccion: number = 0;
     selPuesto: number = 0;
     selMatDir: number = 0;
     selMatPue: number = 0;
     edit: number = 0;
+    isGen: number = 0;
+    isSuc: number = 0;
+    autorizacion: number = 0;
+    idCotN: number = 0;
+    idpro: number = 0;
+    idope: number = 0;
+    idDC: number = 0;
+    sDir: boolean = false;
+    isLoadinglay: boolean = false;
+    isLoading: boolean = false;
+    validaciones: boolean = false;
+    allTabsOpen = true;
     selTipo: string = 'material';
     txtMatKey: string = '';
-    sDir: boolean = false;
-    modelcot: Cotizacionupd = {
-        idCotizacion: 0, indirecto: '', utilidad: '', comisionSV: '', comisionExt: ''
-    };
     indirectoValue: string = this.model.utilidadPor;
     utilidadValue: string = this.model.indirectoPor;
     CSV: string = this.model.csvPor;
     ComisionExtValue: string = this.model.comisionExtPor;
-    modelDir: DireccionCotizacion = {
-        idCotizacion: 0, idDireccionCotizacion: 0, idDireccion: 0, nombreSucursal: ''
-    };
-    idpro: number = 0;
-    idope: number = 0;
-    idDC: number = 0;
     urlF: string = '';
-    reportData: Blob;
     pdfUrl: string;
-    autorizacion: number = 0;
     validaMess: string = '';
-    idCotN: number = 0;
-    isLoadinglay: boolean = false;
-    isGen: number = 0;
-    isSuc: number = 0;
     nombreSucursal: string = '';
     puesto: string = '';
-
+    reportData: Blob;
     lerr: any = {};
-
-    isLoading: boolean = false;
-
-    allTabsOpen = true;
-    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    sub: any;
 
 
-    constructor(
-        @Inject('BASE_URL') private url: string,
-        private http: HttpClient,
-        private route: ActivatedRoute,
-        private router: Router,
-        private reportService: ReportService,
-        public user: StoreUser
-    ) {
+    constructor(@Inject('BASE_URL') private url: string,private http: HttpClient,private route: ActivatedRoute,private router: Router,private reportService: ReportService,public user: StoreUser,private dtpipe: DatePipe,private sinU: StoreUser){
         this.nuevo();
         this.lsdir = {
-            pagina: 1, idCotizacion: this.model.idProspecto, idProspecto: this.model.idProspecto,
-            idDireccion: 0, direcciones: [], rows: 0, numPaginas: 0
+            pagina: 1, idCotizacion: this.model.idProspecto, idProspecto: this.model.idProspecto, idDireccion: 0, direcciones: [], rows: 0, numPaginas: 0
         };
         http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`).subscribe(response => {
             this.autorizacion = response;
         }, err => console.log(err));
-
     }
 
     toggleAllTabs() {
@@ -142,20 +132,27 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     nuevo() {
         this.model = {
-            idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
-            material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
-            subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0
+            idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0, material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0, subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0,
+            idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0
         };
+        let fec: Date = new Date();
+        this.modelpros = {
+            idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal,idEstatusProspecto: 0
+        };
+        this.docs.forEach(d => d.act = false);
     }
 
     existe(id: number) {
-        //this.obtenerUsuarioCotizacion(id);
         this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${id}`).subscribe(response => {
             this.model = response;
+            this.http.get<Prospecto>(`${this.url}api/prospecto/${this.model.idProspecto}`).subscribe(response => {
+                this.modelpros = response;
+                this.docs = this.modelpros.listaDocumentos;
+            }, err => console.log(err));
             this.getAllDirs();
             this.getDirs();
             this.getPlan();
-
         }, err => {
             console.log(err)
         });
@@ -234,6 +231,56 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.getAllDirs();
     }
 
+    guardaPros() {
+        this.quitarFocoDeElementos2();
+        this.modelpros.listaDocumentos = this.docs;
+        this.lerr = {};
+        if (this.validaPros()) {
+            this.http.put<Prospecto>(`${this.url}api/prospecto`, this.modelpros).subscribe(response => {
+                console.log(response);
+                this.okToast('Prospecto actualizado')
+            }, err => {
+                console.log(err);
+                if (err.error) {
+                    for (let key in err.error) {
+                        if (err.error.hasOwnProperty(key)) {
+                            this.lerr[key] = [err.error[key]];
+                        }
+                    }
+                    if (err.error.errors) {
+                        this.lerr = err.error.errors;
+                    }
+                }
+            });
+        }
+    }
+
+    validaPros() {
+        this.validaciones = true;
+        if (this.modelpros.nombreComercial == '' || this.modelpros.nombreComercial == null) {
+            this.lerr['NombreComercial'] = ['Nombre Comercial es requerido'];
+            this.validaciones = false;
+        }
+        if (this.modelpros.rfc.length > 13) {
+            this.lerr['RfcLenght'] = ['El RFC no puede contener m\u00E1s de 13 caracteres'];
+            this.validaciones = false;
+        }
+        if (this.modelpros.nombreContacto == '' || this.modelpros.nombreContacto == null) {
+            this.lerr['NombreContacto'] = ['Contacto es requerido'];
+            this.validaciones = false;
+        }
+        if (this.modelpros.emailContacto == '' || this.modelpros.emailContacto == null) {
+            this.lerr['EmailContacto'] = ['Email es requerido'];
+            this.validaciones = false;
+        }
+        if (this.modelpros.numeroContacto == '' || this.modelpros.numeroContacto == null) {
+            this.lerr['NumeroContacto'] = ['Tel. Contacto es requerido'];
+            this.validaciones = false;
+        }
+        return this.validaciones;
+    }
+
+
     savePlan(event) {
         this.getPlan();
     }
@@ -259,7 +306,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.addDir(0);
         this.getAllDirs();
     }
-    
+
     addDir(edit: number) {
         this.lerr = {};
         this.modelDir.idCotizacion = this.model.idCotizacion;
@@ -273,7 +320,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                     if (edit == 1) {
                         this.errorToast(err.error.message);
                     }
-                    
+
                 }
                 console.log(err)
             });
@@ -281,7 +328,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         else {
             if (this.modelDir.idDireccion == 0) {
                 this.lerr['SLidDireccion'] = ['Seleccione una direcci\u00F3n'];
-                
+
             }
         }
     }
@@ -301,7 +348,6 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     updPlan(id: number, tb: number, nombreSucursal: string, puesto: string) {
-        //this.selPuesto = id;
         this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id, nombreSucursal, puesto);
     }
 
@@ -323,7 +369,6 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     getMat(tb: string) {
-        //this.selPuesto = 0;
         this.isLoading = true;
         this.selTipo = tb;
         let fil: string = (this.txtMatKey != '' ? 'keywords=' + this.txtMatKey : '');

@@ -12,12 +12,13 @@ import { Subject } from 'rxjs';
     providers: [DatePipe]
 })
 export class ProspectoWidget implements OnChanges {
-    @Input() idP: number = 0;
+
     @Output('smEvent') sendEvent = new EventEmitter<number>();
+    @Input() idP: number = 0;
+    evenSub: Subject<void> = new Subject<void>();
     model: Prospecto = {} as Prospecto;
     docs: ItemN[] = [];
     lerr: any = {};
-    evenSub: Subject<void> = new Subject<void>();
     isErr: boolean = false;
     errMessage: string = '';
 
@@ -33,7 +34,7 @@ export class ProspectoWidget implements OnChanges {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
             representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
             emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal,
-            idEstatusProspecto: 0, polizaCumplimiento: false, poderRepresentanteLegal: '', actaConstitutiva: '',registroPatronal: '', empresaVenta: 0
+            idEstatusProspecto: 0
         };
         this.docs.forEach(d => d.act = false);
     }
@@ -49,7 +50,6 @@ export class ProspectoWidget implements OnChanges {
         this.quitarFocoDeElementos();
         this.model.listaDocumentos = this.docs;
         this.lerr = {};
-        this.model.empresaVenta = 0;
         if (this.valida()) {
             if (this.model.idProspecto == 0) {
                 this.http.post<Prospecto>(`${this.url}api/prospecto`, this.model).subscribe(response => {
@@ -116,6 +116,7 @@ export class ProspectoWidget implements OnChanges {
             this.existe(this.idP);
         }
     }
+
     quitarFocoDeElementos(): void {
         const elementos = document.querySelectorAll('button, input[type="text"]');
         elementos.forEach((elemento: HTMLElement) => {

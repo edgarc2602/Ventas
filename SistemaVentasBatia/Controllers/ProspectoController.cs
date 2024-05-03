@@ -68,7 +68,7 @@ namespace SistemaVentasBatia.Controllers
                 {
                     if (coincidencias.Count() > 0)
                     {
-                        ModelState.AddModelError("RFC", "Este RFC ya se encuentra registrado");
+                        ModelState.AddModelError("Rfc", "Este RFC ya se encuentra registrado");
                     }
                     if (!ModelState.IsValid)
                     {
@@ -97,7 +97,7 @@ namespace SistemaVentasBatia.Controllers
 
             if (coincidencias.Count() > 0)
             {
-                ModelState.AddModelError("RFC", "Este RFC ya se encuentra registrado");
+                ModelState.AddModelError("Rfc", "Este RFC ya se encuentra registrado");
             }
 
             if (!ModelState.IsValid)

@@ -6,7 +6,9 @@ using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Services
@@ -60,11 +62,13 @@ namespace SistemaVentasBatia.Services
 
         public async Task<UsuarioDTO> Login(AccesoDTO dto)
         {
+            dto.Contrasena = Encriptar(dto.Contrasena);
             UsuarioDTO usu;
             try
             {
                 Acceso acc = _mapper.Map<Acceso>(dto);
                 usu = _mapper.Map<UsuarioDTO>(await _repo.Login(acc));
+
                 if (usu == null)
                 {
                     throw new CustomException("Usuario no Existe");
@@ -81,7 +85,28 @@ namespace SistemaVentasBatia.Services
 
             return usu;
         }
+        public static string Encriptar(string pass)
+        {
+            // Convertir la contraseña a bytes UTF-8
+            byte[] bytes = Encoding.UTF8.GetBytes(pass);
 
+            // Crear un objeto SHA256 para calcular el hash
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                // Calcular el hash de la contraseña
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+
+                // Convertir el hash a una cadena hexadecimal
+                StringBuilder builder = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+
+                // Devolver el hash en formato hexadecimal
+                return builder.ToString();
+            }
+        }
         public async Task<bool> InsertarUsuario(UsuarioRegistro usuario)
         {
             bool existe = false;
