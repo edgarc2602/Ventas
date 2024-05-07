@@ -8,6 +8,7 @@ import { UsuarioGraficaMensual } from '../../models/usuariograficamensual';
 import { Catalogo } from '../../models/catalogo';
 import { CotizacionVendedorDetalle } from '../../models/cotizacionvendedordetalle';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
+import { saveAs } from 'file-saver';
 
 interface DatosAgrupados {
     nombre: string;
@@ -38,6 +39,11 @@ export class HomeComponent implements OnInit {
     idVendedor: number = 0;
     isLoading: boolean = false;
     idEstatus: number = 0;
+    Finicio: Date = null;
+    Ffin: Date = null;
+    lerr: any = {};
+    validacion: boolean = false;
+
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
         http.get<UsuarioGrafica[]>(`${url}api/usuario/obtenercotizacionesusuarios/`).subscribe(response => {
@@ -203,7 +209,7 @@ export class HomeComponent implements OnInit {
     }
 
     getCotizacionesVendedor(idVendedor: number) {
-        this.cotizacionDetalle.cotizacionDetalle = []; 
+        this.cotizacionDetalle.cotizacionDetalle = [];
         if (idVendedor != 0) {
             this.isLoading = true;
             this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`).subscribe(response => {
@@ -216,7 +222,7 @@ export class HomeComponent implements OnInit {
         }
     }
 
-    descargarReporteProspectos() {
+    descargarReporteProspectosOld() {
         this.isLoading = true;
         this.http.get(`${this.url}api/report/DescargarReporteProspectos/${this.idEstatus}`, { responseType: 'arraybuffer' })
             .subscribe(
@@ -242,6 +248,69 @@ export class HomeComponent implements OnInit {
                     this.isLoading = false;
                 }
             );
+    }
+    descargarReporteProspectos(formato: string) {
+        this.lerr = {};
+        if (this.valida()) {
+            if (formato == 'Word') {
+                this.http.get(`${this.url}api/report/DescargarProspectosCotizacionesDocx/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, { responseType: 'arraybuffer' })
+                    .subscribe(
+                        (data: ArrayBuffer) => {
+                            const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                            saveAs(blob, 'ReporteProspectosCotizaciones.docx');
+                            this.isLoading = false;
+                            this.toastWidget.isErr = false;
+                            this.toastWidget.errMessage = 'Reporte descargado';
+                            this.toastWidget.open();
+                            error => {
+                                console.error('Error al obtener el archivo DOCX', error);
+                                this.isLoading = false;
+                                this.toastWidget.isErr = true;
+                                this.toastWidget.errMessage = 'Ocurri\u00F3 un error';
+                                this.toastWidget.open();
+                            }
+                        });
+            }
+            if (formato == 'Excel') {
+                this.isLoading = true;
+                this.http.post(`${this.url}api/report/DescargarProspectosCotizacionesExcel/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+                    this.okToast('Reporte descargado');
+                    saveAs(response, 'ReporteProspectosCotizaciones.xlsx');
+                    this.isLoading = false;
+                },
+                    error => {
+                        console.error('Error al descargar el archivo:', error);
+                        this.isLoading = false;
+                        this.errorToast('Ocurri\u00F3 un error');
+                    }
+                );
+            }
+        }
+    }
+    valida() {
+        this.validacion = true;
+        if (this.Finicio == undefined || this.Finicio == null) {
+            this.lerr['Finicio'] = ['Seleccione la fecha inicial'];
+            this.validacion = false;
+        }
+        if (this.Ffin == undefined || this.Ffin == null) {
+            this.lerr['Ffin'] = ['Seleccione la fecha fin'];
+            this.validacion = false;
+        }
+        return this.validacion;
+    }
+    ferr(nm: string) {
+        let fld = this.lerr[nm];
+        if (fld)
+            return true;
+        else
+            return false;
+    }
+
+    terr(nm: string) {
+        let fld = this.lerr[nm];
+        let msg: string = fld.map((x: string) => "-" + x);
+        return msg;
     }
 
     okToast(message: string) {

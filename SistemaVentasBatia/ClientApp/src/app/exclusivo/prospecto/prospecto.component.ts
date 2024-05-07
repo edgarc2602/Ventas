@@ -35,6 +35,7 @@ export class ProspectoComponent {
             debounceTime(800),
             distinctUntilChanged()
         ).subscribe(() => {
+            this.lspro.pagina = 1;
             this.lista();
         });
     }
@@ -43,7 +44,7 @@ export class ProspectoComponent {
         this.searchKeyword$.next(this.lspro.keywords);
     }
     lista() {
-        this.lspro.prospectos = [];
+        //ocultar tabla prospectos
         this.isLoading = true;
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
         this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`).subscribe(response => {

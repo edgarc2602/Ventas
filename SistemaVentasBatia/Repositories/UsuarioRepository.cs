@@ -306,8 +306,8 @@ WHERE IdPersonal = @IdPersonal
 SELECT
 p.Per_Nombre + ' ' + p.Per_Paterno AS Nombre,
 p.IdPersonal AS IdPersonal,
-(SELECT COUNT(id_personal) FROM tb_cotizacion c WHERE c.id_personal = p.IdPersonal AND c.id_estatus_cotizacion = 1) AS Cotizaciones,
-(SELECT COUNT(id_personal) FROM tb_prospecto pros WHERE pros.id_personal = p.IdPersonal AND pros.id_estatus_prospecto = 1 ) AS Prospectos
+(SELECT COUNT(id_personal) FROM tb_cotizacion c WHERE c.id_personal = p.IdPersonal) AS Cotizaciones,
+(SELECT COUNT(id_personal) FROM tb_prospecto pros WHERE pros.id_personal = p.IdPersonal ) AS Prospectos
 FROM Personal p
 WHERE p.per_cotizadorventas = 1 AND  p.per_revisaventas = 0
 ";
@@ -352,7 +352,7 @@ CROSS JOIN
     MesesDeReferencia m
 LEFT JOIN
     tb_cotizacion c ON p.IdPersonal = c.id_personal
-        AND MONTH(c.fecha_alta) = m.Mes AND c.id_estatus_cotizacion = 1
+        AND MONTH(c.fecha_alta) = m.Mes
 WHERE
     p.per_revisaventas = 0 AND p.per_cotizadorventas = 1
 GROUP BY

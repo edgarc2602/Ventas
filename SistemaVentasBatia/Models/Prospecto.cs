@@ -24,5 +24,6 @@ namespace SistemaVentasBatia.Models
         public string EmailContacto { get; set; }
         public string NumeroContacto { get; set; }
         public string  ExtContacto { get; set; }
+        public List<Cotizacion> Cotizaciones { get; set; }
     }
 }

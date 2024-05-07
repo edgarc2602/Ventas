@@ -177,7 +177,7 @@ namespace SistemaVentasBatia.Controllers
         }
 
         [HttpPost("[action]/{idCotizacion}")]
-        public async Task<IActionResult> DescargarContratoDOCX(int idCotizacion, ClienteContratoDTO contrato )
+        public async Task<IActionResult> DescargarContratoDOCX(int idCotizacion, ClienteContratoDTO contrato)
         {
             try
             {
@@ -217,6 +217,30 @@ namespace SistemaVentasBatia.Controllers
                 return StatusCode(500, "Error al obtener el archivo PDF");
             }
 
+        }
+
+        [HttpGet("[action]/{idEstatus}/{Finicio}/{Ffin}")]
+        public async Task<IActionResult> DescargarProspectosCotizacionesDocx(int idEstatus, DateTime Finicio, DateTime Ffin)
+        {
+            try
+            {
+                byte[] contratoBytes = await _reportService.DescargarProspectosCotizacionesDocx(idEstatus, Finicio, Ffin);
+
+                return File(contratoBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "LIMPIEZASERV.IND.BATIA_actualizado.docx");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al descargar el contrato Word: " + ex.Message);
+                return StatusCode(500, "Error al descargar el contrato Word");
+            }
+        }
+
+        [HttpPost("[action]/{idEstatus}/{Finicio}/{Ffin}")]
+        public async Task<FileContentResult> DescargarProspectosCotizacionesExcel(int idEstatus, DateTime Finicio, DateTime Ffin)
+        {
+            byte[] fileContents = await _reportService.DescargarProspectosCotizacionesExcel(idEstatus, Finicio, Ffin);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
         }
     }
 }
