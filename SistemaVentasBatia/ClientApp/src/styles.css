@@ -176,6 +176,15 @@ html {
 thead.sticky-top {
     z-index: 99;
 }
+tfoot.sticky-bottom {
+    z-index: 99;
+}
+tfoot {
+    transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+    background-color: #4a92fe;
+    color: #fff;
+}
+
 
 /*td, th {
     vertical-align: middle;
@@ -585,8 +594,31 @@ input:focus::-webkit-input-placeholder {
     }
 }
 
+table {
+    margin-bottom: 0; /* Elimina el margen inferior */
+    border-spacing: 0; /* Elimina el espacio entre las celdas de la tabla */
+    border-collapse: collapse; /* Fusiona los bordes de las celdas adyacentes */
+}
 
+.table-container {
+    border-radius: 10px;
+    overflow-x: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-left: 0; /* Eliminar margen izquierdo */
+    margin-right: 0; /* Eliminar margen derecho */
+    padding-left: 0; /* Eliminar relleno izquierdo */
+    padding-right: 0; /* Eliminar relleno derecho */
+}
 
+    .table-container table {
+        width: 100%;
+        margin: 0; /* Eliminar márgenes */
+        padding: 0; /* Eliminar relleno */
+        padding-left: 0;
+        padding-right: 0;
+    }
 
 /*.modal.show::before {
     content: "";
@@ -992,6 +1024,12 @@ input:focus::-webkit-input-placeholder {
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         transition: box-shadow 0.3s ease;
         background-color: #282424;
+    }
+    .dark-theme tfoot {
+        background-color: #151515;
+        color: #fff;
+        transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
     }
 
 .loading-bar {

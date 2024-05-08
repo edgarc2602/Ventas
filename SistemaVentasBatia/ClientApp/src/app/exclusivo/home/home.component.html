@@ -40,67 +40,89 @@
             <i class="fas fa-spinner fa-spin fa-3x"></i>
         </div>
         <h6 *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" class="h6 text-muted">Cotizaciones</h6>
-        <div class="col-md-12 mb-3 col-12">
-            <div *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" style="border-radius: 10px; overflow-x: hidden;max-height: 400px; overflow-y: auto; overflow-x: hidden">
-                <table class="table table-striped">
-                    <thead class="sticky-top">
-                        <tr>
-                            <th>
-                                <div class="row d-flex align-items-center">
-                                    <div class="col-md-1 col-sm-6 col-2">
-                                        <span class="ms-2">Id</span>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6 col-4">
-                                        <span class="ms-2">Nombre comercial</span>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-4">
-                                        <span class="ms-2">Costo indirecto</span>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
-                                        <span class="ms-2">Utilidad(%) </span>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
-                                        <span class="ms-2">Utilidad</span>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
-                                        <span class="ms-2">Total</span>
-                                    </div>
+
+        <div *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" class="table-container">
+            <table class="table table-striped">
+                <thead class="sticky-top">
+                    <tr>
+                        <th>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-md-1 col-sm-6 col-2">
+                                    <span class="ms-2">Id</span>
                                 </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let c of cotizacionDetalle.cotizacionDetalle">
-                            <td>
-                                <div class="row d-flex align-items-center">
-                                    <div class="col-md-1 col-sm-6 col-2">
-                                        <div class="ms-2">{{ c.idCotizacion }}</div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-6 col-4">
-                                        <div class="ms-2">{{ c.nombreComercial }}</div>
-                                        <small *ngIf="c.idServicio == 1" class="ms-2 text-muted">Servicio: Mantenimiento</small>
-                                        <small *ngIf="c.idServicio == 2" class="ms-2 text-muted">Servicio: Limpieza</small>
-                                        <small *ngIf="c.idServicio == 3" class="ms-2 text-muted">Servicio: Jardineria</small>
-                                        <small *ngIf="c.idServicio == 4" class="ms-2 text-muted">Servicio: Fumigación</small>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
-                                        <div class="ms-2">${{ c.subTotal + c.indirecto | number: '1.2-2' }}</div>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
-                                        <div class="ms-2">{{ c.utilidadPor }} %</div>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
-                                        <div class="ms-2">${{ c.utilidad  | number: '1.2-2' }}</div>
-                                    </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
-                                        <div class="ms-2">${{  c.subTotal + c.indirecto + c.utilidad | number: '1.2-2' }}</div>
-                                    </div>
+                                <div class="col-md-3 col-sm-6 col-4">
+                                    <span class="ms-2">Nombre comercial</span>
                                 </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                <div class="col-md-2 col-sm-6 col-4">
+                                    <span class="ms-2">Costo indirecto</span>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <span class="ms-2">Utilidad(%) </span>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <span class="ms-2">Utilidad</span>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <span class="ms-2">Total</span>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of cotizacionDetalle.cotizacionDetalle">
+                        <td>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-md-1 col-sm-6 col-2">
+                                    <div class="ms-2">{{ c.idCotizacion }}</div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 col-4">
+                                    <div class="ms-2">{{ c.nombreComercial }}</div>
+                                    <small *ngIf="c.idServicio == 1" class="ms-2 text-muted">Servicio: Mantenimiento</small>
+                                    <small *ngIf="c.idServicio == 2" class="ms-2 text-muted">Servicio: Limpieza</small>
+                                    <small *ngIf="c.idServicio == 3" class="ms-2 text-muted">Servicio: Jardineria</small>
+                                    <small *ngIf="c.idServicio == 4" class="ms-2 text-muted">Servicio: Fumigación</small>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <div class="ms-2">${{ c.subTotal + c.indirecto | number: '1.2-2' }}</div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <div class="ms-2">{{ c.utilidadPor }} %</div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <div class="ms-2">${{ c.utilidad  | number: '1.2-2' }}</div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <div class="ms-2">${{  c.subTotal + c.indirecto + c.utilidad | number: '1.2-2' }}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+                <tfoot class="sticky-bottom">
+                    <tr>
+                        <td>
+                            <div class="row d-flex align-items">
+                                <div class="col-md-4 col-sm-6 col-2 text-end">
+                                    <div class="ms-2">Total:</div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <div class="ms-2">${{ totalIndirecto | number: '1.2-2' }}</div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <div class="ms-2">${{ totalUtilidad  | number: '1.2-2' }}</div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 col-3">
+                                    <div class="ms-2">${{  total | number: '1.2-2' }}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
     <div class="row pt-1 mb-3">
@@ -109,35 +131,35 @@
         </div>
     </div>
     <div class="row">
-            <div class="col-md-2 col-6 mb-3">
-                <div class="form-floating">
-                    <select class="form-select" [(ngModel)]="idEstatus" aria-label="IdEstatusProspecto" id="ddlEstatusProspecto">
-                        <option value="0">Seleccione ...</option>
-                        <option *ngFor="let s of lests" [ngValue]="s.id">{{ s.nom }}</option>
-                    </select>
-                    <label for="ddlEstatusProspecto">Estatus:</label>
-                </div>
+        <div class="col-md-2 col-6 mb-3">
+            <div class="form-floating">
+                <select class="form-select" [(ngModel)]="idEstatus" aria-label="IdEstatusProspecto" id="ddlEstatusProspecto">
+                    <option value="0">Seleccione ...</option>
+                    <option *ngFor="let s of lests" [ngValue]="s.id">{{ s.nom }}</option>
+                </select>
+                <label for="ddlEstatusProspecto">Estatus:</label>
             </div>
-            <div class="col-sm-12 col-md-3 col-6 mb-3">
-                <div class="form-floating">
-                    <input type="date" class="form-control" [(ngModel)]="Finicio" id="txtFinicio">
-                    <label for="txtFinicio">Fecha inicial</label>
-                </div>
-                <span *ngIf="ferr('Finicio')" class="text-danger">{{ terr('Finicio') }}</span>
+        </div>
+        <div class="col-sm-12 col-md-3 col-6 mb-3">
+            <div class="form-floating">
+                <input type="date" class="form-control" [(ngModel)]="Finicio" id="txtFinicio">
+                <label for="txtFinicio">Fecha inicial</label>
             </div>
-            <div class="col-sm-12 col-md-3 col-6 mb-3">
-                <div class="form-floating">
-                    <input type="date" class="form-control" [(ngModel)]="Ffin" id="txtFfin">
-                    <label for="txtFfin">Fecha final</label>
-                </div>
-                <span *ngIf="ferr('Ffin')" class="text-danger">{{ terr('Ffin') }}</span>
+            <span *ngIf="ferr('Finicio')" class="text-danger">{{ terr('Finicio') }}</span>
+        </div>
+        <div class="col-sm-12 col-md-3 col-6 mb-3">
+            <div class="form-floating">
+                <input type="date" class="form-control" [(ngModel)]="Ffin" id="txtFfin">
+                <label for="txtFfin">Fecha final</label>
             </div>
-            <!--<div class="col-md-2 col-2 mb-3">
-                <button class="btn btn-outline-info" (click)="descargarReporteProspectos('Word')"><i class="fa fa-solid fa-file-download"></i> Docx</button>
-            </div>-->
-            <div class="col-md-2 col-6 mb-3 text-center">
-                <button class="btn btn-outline-info" (click)="descargarReporteProspectos('Excel')"><i class="fa fa-solid fa-file-excel"></i> Descargar</button>
-            </div>
+            <span *ngIf="ferr('Ffin')" class="text-danger">{{ terr('Ffin') }}</span>
+        </div>
+        <!--<div class="col-md-2 col-2 mb-3">
+            <button class="btn btn-outline-info" (click)="descargarReporteProspectos('Word')"><i class="fa fa-solid fa-file-download"></i> Docx</button>
+        </div>-->
+        <div class="col-md-2 col-6 mb-3 text-center">
+            <button class="btn btn-outline-info" (click)="descargarReporteProspectos('Excel')"><i class="fa fa-solid fa-file-excel"></i> Descargar</button>
+        </div>
     </div>
 </div>
 <toast-widget></toast-widget>

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ListaProspecto } from '../../models/listaprospecto';
@@ -18,6 +18,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class ProspectoComponent {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
+    @ViewChild('tbprospectos', { static: false }) tablaContainer: ElementRef;
+
     lspro: ListaProspecto = {
         idEstatusProspecto: 1, keywords: '', numPaginas: 0, pagina: 1, prospectos: [], rows: 0       
     };
@@ -44,13 +46,14 @@ export class ProspectoComponent {
         this.searchKeyword$.next(this.lspro.keywords);
     }
     lista() {
-        //ocultar tabla prospectos
         this.isLoading = true;
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
         this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`).subscribe(response => {
             setTimeout(() => {
                 this.lspro = response;
                 this.isLoading = false;
+                const container = this.tablaContainer.nativeElement;
+                container.scrollTop = 0;
             }, 300);
         }, err => {
             setTimeout(() => {

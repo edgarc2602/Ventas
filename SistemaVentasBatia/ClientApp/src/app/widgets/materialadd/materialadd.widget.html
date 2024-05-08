@@ -20,8 +20,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <div>
-                        <div class="row">
+                        <div class="row d-flex align-items-center">
                             <div *ngIf="hidedir == 0" class="col-md-4 mb-3 col-12" id="dvSucursal">
                                 <div class="form-floating">
                                     <select class="form-select" [(ngModel)]="model.idDireccionCotizacion" aria-label="IdDireccionCotizacion" id="txtSucursalMaterial">
@@ -69,7 +68,6 @@
                                 <span *ngIf="ferr('IdFrecuencia')" class="text-danger">{{ terr('IdFrecuencia') }}</span>
                             </div>
                         </div>
-                    </div>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">

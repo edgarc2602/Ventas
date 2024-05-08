@@ -43,6 +43,9 @@ export class HomeComponent implements OnInit {
     Ffin: Date = null;
     lerr: any = {};
     validacion: boolean = false;
+    totalIndirecto: number = 0;
+    totalUtilidad: number = 0;
+    total: number = 0;
 
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
@@ -209,12 +212,20 @@ export class HomeComponent implements OnInit {
     }
 
     getCotizacionesVendedor(idVendedor: number) {
+        this.totalIndirecto = 0;
+        this.totalUtilidad = 0;
+        this.total = 0;
         this.cotizacionDetalle.cotizacionDetalle = [];
         if (idVendedor != 0) {
             this.isLoading = true;
             this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`).subscribe(response => {
                 this.isLoading = false;
                 this.cotizacionDetalle = response;
+                this.cotizacionDetalle.cotizacionDetalle.forEach (cot=> {
+                    this.totalIndirecto += cot.subTotal + cot.indirecto;
+                    this.totalUtilidad += cot.utilidad;
+                    this.total += cot.subTotal + cot.indirecto + cot.utilidad;
+                })
             }, err => {
                 this.isLoading = false;
                 console.log(err)
