@@ -45,6 +45,7 @@ import { MarcaVenta } from './widgets/marcaventa/marcaventa.widget';
 import { ContratoWidget } from './widgets/contrato/contrato.widget';
 import { ConfirmacionWidget } from './widgets/confirmacion/confirmacion.widget';
 import { CerrarCotizacion } from './widgets/cerrarcotizacion/cerrarcotizacion.widget';
+import { CargaWidget } from './widgets/carga/carga.widget';
 
 @NgModule({
     declarations: [
@@ -85,7 +86,8 @@ import { CerrarCotizacion } from './widgets/cerrarcotizacion/cerrarcotizacion.wi
         MarcaVenta,
         ContratoWidget,
         ConfirmacionWidget,
-        CerrarCotizacion
+        CerrarCotizacion,
+        CargaWidget
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

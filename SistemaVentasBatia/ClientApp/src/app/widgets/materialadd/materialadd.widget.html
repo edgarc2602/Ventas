@@ -23,7 +23,7 @@
                         <div class="row d-flex align-items-center">
                             <div *ngIf="hidedir == 0" class="col-md-4 mb-3 col-12" id="dvSucursal">
                                 <div class="form-floating">
-                                    <select class="form-select" [(ngModel)]="model.idDireccionCotizacion" aria-label="IdDireccionCotizacion" id="txtSucursalMaterial">
+                                    <select class="form-select" [(ngModel)]="model.idDireccionCotizacion" aria-label="IdDireccionCotizacion" id="txtSucursalMaterial" [disabled]="radiobutton == 1">
                                         <option value="0">Selecciona una opción...</option>
                                         <option *ngFor="let d of dirs" [ngValue]="d.id">{{ d.descripcion }}</option>
                                     </select>

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ListaProspecto } from '../../models/listaprospecto';
@@ -9,25 +9,27 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 @Component({
     selector: 'prospecto',
     templateUrl: './prospecto.component.html',
     animations: [fadeInOut],
 })
-export class ProspectoComponent {
+export class ProspectoComponent implements OnInit, OnDestroy {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
     @ViewChild('tbprospectos', { static: false }) tablaContainer: ElementRef;
-
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     lspro: ListaProspecto = {
-        idEstatusProspecto: 1, keywords: '', numPaginas: 0, pagina: 1, prospectos: [], rows: 0       
+        idEstatusProspecto: 1, keywords: '', numPaginas: 0, pagina: 1, prospectos: [], rows: 0
     };
     lests: ItemN[] = [];
     idpro: number = 0;
     isLoading: boolean = false;
     private searchKeyword$ = new Subject<string>();
-    
+    sub: any;
+
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rter: Router, public user: StoreUser) {
         http.get<ItemN[]>(`${url}api/prospecto/getestatus`).subscribe(response => {
             this.lests = response;
@@ -41,35 +43,57 @@ export class ProspectoComponent {
             this.lista();
         });
     }
-
-    onKeywordsInput() {
-        this.searchKeyword$.next(this.lspro.keywords);
+    ngOnInit(): void {
+        this.init();
     }
-    lista() {
+
+    ngOnDestroy(): void {
+    }
+
+    init() {
         this.isLoading = true;
+        let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
+        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`).subscribe(response => {
+            this.isLoading = false;
+            this.lspro = response;
+        }, err => {
+            this.isLoading = false;
+            console.log(err);
+        });
+    }
+    
+    lista() {
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
         this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`).subscribe(response => {
             setTimeout(() => {
                 this.lspro = response;
-                this.isLoading = false;
-                const container = this.tablaContainer.nativeElement;
-                container.scrollTop = 0;
+                if (this.tablaContainer) {
+                    const container = this.tablaContainer.nativeElement;
+                    container.scrollTop = 0;
+                }
+                this.detenerCarga();
             }, 300);
         }, err => {
             setTimeout(() => {
                 this.isLoading = false;
-                console.log(err)
+                console.log(err);
+                this.detenerCarga();
             }, 300);
         });
     }
 
+    nuevo() {
+        this.rter.navigate(['/exclusivo/nuevopros']);
+    }
+
     muevePagina(event) {
+        this.iniciarCarga();
         this.lspro.pagina = event;
         this.lista();
     }
 
-    nuevo() {
-        this.rter.navigate(['/exclusivo/nuevopros']);
+    onKeywordsInput() {
+        this.searchKeyword$.next(this.lspro.keywords);
     }
 
     elige(idProspecto: number) {
@@ -93,13 +117,13 @@ export class ProspectoComponent {
     }
 
     desactivar() {
-            this.http.put<boolean>(`${this.url}api/prospecto/desactivarprospecto`, this.idpro).subscribe(response => {
-                this.lista();
-                this.okToast('Prospecto desactivado');
-            }, err => {
-                console.log(err)
-                this.errorToast('Ocurrió un error');
-            });
+        this.http.put<boolean>(`${this.url}api/prospecto/desactivarprospecto`, this.idpro).subscribe(response => {
+            this.lista();
+            this.okToast('Prospecto desactivado');
+        }, err => {
+            console.log(err)
+            this.errorToast('Ocurrió un error');
+        });
         this.idpro = 0;
     }
 
@@ -123,5 +147,15 @@ export class ProspectoComponent {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

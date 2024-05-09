@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { ListaCotizacion } from 'src/app/models/listacotizacion';
@@ -13,6 +13,7 @@ import { fadeInOut } from 'src/app/fade-in-out';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
 import { CerrarCotizacion } from '../../widgets/cerrarcotizacion/cerrarcotizacion.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 @Component({
     selector: 'cotizacion',
@@ -25,6 +26,8 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     @ViewChild(ConfirmacionWidget, { static: false }) conw: ConfirmacionWidget;
     @ViewChild(CerrarCotizacion, { static: false }) cerrarCot: CerrarCotizacion;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild('tbcotizaciones', { static: false }) tablaContainer: ElementRef;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, provisiones: 0, prestaciones: 0, material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0, subTotal: 0, indirecto: 0, utilidad: 0,
         total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', indirectoPor: '', utilidadPor: '', csvPor: '', comisionSV: 0, comisionExtPor: '', comisionExt: 0, totalPolizaCumplimiento: 0, polizaCumplimiento: false
@@ -56,16 +59,24 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         }, err => console.log(err));
     }
 
-    nuevo() {
-        this.lcots = {
-            idProspecto: 0, idServicio: 0, pagina: 1, numPaginas: 0,
-            rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0
-        };
+    ngOnInit(): void {
+        this.sub = this.route.params.subscribe(params => {
+            let idp: number = +params['idp'];
+            if (idp > 0) {
+                this.lcots.idProspecto = idp;
+            } else {
+                this.nuevo();
+            }
+            this.init();
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.sub.unsubscribe();
     }
 
     init() {
         this.lcots.cotizaciones = [];
-        this.isLoading = true;
         let fil: string = (this.lcots.idEstatusCotizacion > 0 ? `estatus=1` : '');
         if (fil.length > 0) fil += '&';
         fil += (this.lcots.idServicio > 0 ? `servicio=${this.lcots.idServicio}` : '');
@@ -73,17 +84,9 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         fil += (this.lcots.idProspecto > 0 ? `idProspecto=${this.lcots.idProspecto}` : '');
         if (fil.length > 0) fil = '?' + fil;
         this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`).subscribe(response => {
-            setTimeout(() => {
-                this.lcots = response;
-                this.isLoading = false;
-            }, 300);
-
+            this.lcots = response;
         }, err => {
-            setTimeout(() => {
-                this.isLoading = false;
-                console.log(err)
-            }, 300);
-
+            console.log(err);
         });
         this.http.post<Prospecto[]>(`${this.url}api/prospecto/getcatalogo`, this.user.idPersonal).subscribe(response => {
             this.lpros = response;
@@ -91,8 +94,6 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     }
 
     lista() {
-        this.lcots.cotizaciones = [];
-        this.isLoading = true;
         let fil: string = (this.lcots.idEstatusCotizacion > 0 ? `estatus=${this.lcots.idEstatusCotizacion}` : '');
         if (fil.length > 0) fil += '&';
         fil += (this.lcots.idServicio > 0 ? `servicio=${this.lcots.idServicio}` : '');
@@ -102,15 +103,25 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`).subscribe(response => {
             setTimeout(() => {
                 this.lcots = response;
-                this.isLoading = false;
+                if (this.tablaContainer) {
+                    const container = this.tablaContainer.nativeElement;
+                    container.scrollTop = 0;
+                }
+                this.detenerCarga();
             }, 300);
-
         }, err => {
             setTimeout(() => {
-                this.isLoading = false;
-                console.log(err)
+                this.detenerCarga();
+                console.log(err);
             }, 300);
         });
+    }
+
+    nuevo() {
+        this.lcots = {
+            idProspecto: 0, idServicio: 0, pagina: 1, numPaginas: 0,
+            rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0
+        };
     }
 
     busca() {
@@ -119,25 +130,9 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     }
 
     muevePagina(event) {
+        this.iniciarCarga();
         this.lcots.pagina = event;
         this.lista();
-    }
-
-    ngOnInit(): void {
-        this.sub = this.route.params.subscribe(params => {
-            let idp: number = +params['idp'];
-            if (idp > 0) {
-                this.lcots.idProspecto = idp;
-            } else {
-                this.nuevo();
-            }
-            this.lista();
-            this.init();
-        });
-    }
-
-    ngOnDestroy(): void {
-        this.sub.unsubscribe();
     }
 
     getDirs() {
@@ -160,7 +155,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     }
 
     //Abrir modal cofirmacion
-    openValida(tipo: string,mensaje: string, dato1?: any, dato2?: any) {
+    openValida(tipo: string, mensaje: string, dato1?: any, dato2?: any) {
         this.idCotizacion = dato1;
         this.estatus = dato2;
         this.conw.titulo = "Confirmaci\u00F3n";
@@ -226,5 +221,15 @@ export class CotizacionComponent implements OnInit, OnDestroy {
 
     goBack() {
         window.history.back();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

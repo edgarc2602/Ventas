@@ -176,13 +176,16 @@ html {
 thead.sticky-top {
     z-index: 99;
 }
+
 tfoot.sticky-bottom {
     z-index: 99;
 }
+
 tfoot {
     transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
     background-color: #4a92fe;
     color: #fff;
+    font-weight: bold;
 }
 
 
@@ -606,28 +609,36 @@ table {
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
-    margin-left: 0; /* Eliminar margen izquierdo */
-    margin-right: 0; /* Eliminar margen derecho */
-    padding-left: 0; /* Eliminar relleno izquierdo */
-    padding-right: 0; /* Eliminar relleno derecho */
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
     .table-container table {
         width: 100%;
-        margin: 0; /* Eliminar márgenes */
-        padding: 0; /* Eliminar relleno */
+        margin: 0;
+        padding: 0;
         padding-left: 0;
         padding-right: 0;
     }
 
-/*.modal.show::before {
+.toast-background {
+    background: linear-gradient(to right,rgba(74, 146, 254, 1), rgba(255, 255, 255, .02));
+    backdrop-filter: blur(5px);
+    color: white;
+    box-shadow: none;
+    border: none;
+}
+
+.modal.show::before {
     content: "";
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(2px);
     animation: blurAnimation 0.8s;
     z-index: -1;
 }
@@ -638,9 +649,9 @@ table {
     }
 
     100% {
-        backdrop-filter: blur(5px);*/ /* Establece el valor final de desenfoque */
-/*}
-}*/
+        backdrop-filter: blur(2px)
+    }
+}
 
 
 /* Tema obscuro
@@ -1025,10 +1036,18 @@ table {
         transition: box-shadow 0.3s ease;
         background-color: #282424;
     }
+
     .dark-theme tfoot {
         background-color: #151515;
         color: #fff;
         transition: background-color 0.3s ease,color 0.3s ease,border-color 0.3s ease;
+        border: none;
+    }
+    .dark-theme .toast-background {
+        background: linear-gradient(to right,rgba(21, 21, 21, 1), rgba(255, 255, 255, .02));
+        backdrop-filter: blur(5px);
+        color: white;
+        box-shadow: none;
         border: none;
     }
 
