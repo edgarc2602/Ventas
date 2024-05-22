@@ -5,6 +5,7 @@ import { ItemN } from 'src/app/models/item';
 import { Servicio } from 'src/app/models/servicio';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { ToastWidget } from '../toast/toast.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 declare var bootstrap: any;
 
 @Component({
@@ -13,6 +14,7 @@ declare var bootstrap: any;
 })
 export class ServicioAddWidget {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @Output('returnModal') returnModal = new EventEmitter<boolean>();
     @Output('smEvent') sendEvent = new EventEmitter<number>();
     dirs: Catalogo[] = [];
@@ -27,12 +29,13 @@ export class ServicioAddWidget {
     idS: number = 0;
     edit: number = 0;
     validaciones: boolean = false;
+    isLoading: boolean = false;
     showSuc: boolean = false;
     tipo: string = 'servicio';
     lerr: any = {};
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {}
-        
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
+
     lista() {
         this.http.get<Catalogo[]>(`${this.url}api/catalogo/getservicio`).subscribe(response => {
             this.sers = response;
@@ -50,11 +53,11 @@ export class ServicioAddWidget {
         this.edit = 0;
         let fec: Date = new Date();
         this.model = {
-            idServicioExtraCotizacion: 0, idServicioExtra: 0, ServicioExtra: '', idCotizacion: this.idC, idDireccionCotizacion: this.idD,direccion: '', precioUnitario: 0, cantidad: 0, total: 0, importeMensual: 0,
+            idServicioExtraCotizacion: 0, idServicioExtra: 0, ServicioExtra: '', idCotizacion: this.idC, idDireccionCotizacion: this.idD, direccion: '', precioUnitario: 0, cantidad: 0, total: 0, importeMensual: 0,
             idFrecuencia: 0, fechaAlta: fec.toISOString(), idPersonal: this.sinU.idPersonal, edit: this.edit
         };
     }
-        
+
     existe(id: number) {
         this.edit = 1;
         this.model.edit = this.edit;
@@ -67,38 +70,52 @@ export class ServicioAddWidget {
         this.quitarFocoDeElementos();
         this.lerr = {};
         if (this.valida()) {
-            if (this.edit == 0) {
-                this.http.post<Servicio>(`${this.url}api/material/insertarserviciocotizacion`, this.model).subscribe(response => {
-                    this.close();
-                    this.sendEvent.emit(2);
-                    this.okToast('Servicio agregado');
-                }, err => {
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
-                        }
-                    }
-                    this.errorToast('Ocurri\u00F3 un error')
-                });
-            }
-            if (this.edit == 1) {
-                this.http.post<Servicio>(`${this.url}api/material/actualizarserviciocotizacion`, this.model).subscribe(response => {
+            this.iniciarCarga();
+            setTimeout(() => {
+                if (this.edit == 0) {
+                    this.http.post<Servicio>(`${this.url}api/material/insertarserviciocotizacion`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Servicio agregado');
+                        }, 300);
+                        this.close();
+                        this.sendEvent.emit(2);
 
-                    this.close();
-                    this.sendEvent.emit(2);
-                    console.log(response);
-                    this.okToast('Servicio actualizado');
-                }, err => {
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
                         }
-                    }
-                    this.errorToast('Ocurri\u00F3 un error');
-                });
-            }
+                        console.log(err);
+                    });
+                }
+                if (this.edit == 1) {
+                    this.http.post<Servicio>(`${this.url}api/material/actualizarserviciocotizacion`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Servicio actualizado');
+                        }, 300);
+                        this.close();
+                        this.sendEvent.emit(2);
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300); 
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
+                        }
+                        console.log(err);
+                    });
+                }
+            }, 300);
         }
     }
 
@@ -185,5 +202,15 @@ export class ServicioAddWidget {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

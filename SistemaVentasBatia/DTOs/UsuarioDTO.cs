@@ -10,5 +10,6 @@
         public int Estatus { get; set; }
         public int IdAutoriza { get; set; }
         public int IdSupervisa { get; set; }
+        public string DireccionIP { get; set; }
     }
 }

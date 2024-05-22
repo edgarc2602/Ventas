@@ -1,39 +1,53 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StoreUser } from 'src/app/stores/StoreUser';
-declare var bootstrap: any;
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+declare var bootstrap: any;
 
 @Component({
-    selector: 'agregarservicio-widget',
-    templateUrl: './agregarservicio.widget.html'
+    selector: 'subircontratocliente-widget',
+    templateUrl: './subircontratocliente.widget.html'
 })
-export class AgregarServicioWidget {
+export class SubirContratoClienteWidget {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
-    @Output('serEvent') sendEvent = new EventEmitter<number>();
-    servicio: string = '';
-    validaciones: boolean = false;
+    @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+    @Output('subirContratoEvent') sendEvent = new EventEmitter<number>();
     isLoading: boolean = false;
+    validaciones: boolean = false;
     lerr: any = {};
+    selectedFile: File | null = null;
+    idAsuntoLegal: number = 0;
+    idCliente: number = 0;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
 
-    guarda() {
-        this.quitarFocoDeElementos();
+    open(idCliente: number, idAsuntoLegal) {
+        this.idCliente = idCliente;
+        this.idAsuntoLegal = idAsuntoLegal;
+        this.nuevo();
+        let docModal = document.getElementById('modalSubirContratoCliente');
+        let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
+        myModal.show();
+    }
+
+    nuevo() {
         this.lerr = {};
+        this.selectedFile = null;
+        this.limpiarArchivoSeleccionado();
+    }
+
+    guarda() {
         if (this.valida()) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.get<boolean>(`${this.url}api/producto/agregarservicio/${this.servicio}/${this.sinU.idPersonal}`).subscribe(response => {
+                this.http.get<boolean>(`${this.url}api/prospecto/SubirContratoCliente/${this.idCliente}/${this.idAsuntoLegal}`).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
-                        this.okToast('Servicio agregado');
+                        this.okToast('Contrato enviado para su revisi\u00F3n');
                     }, 300);
                     this.close();
-                    this.servicio = '';
-                    this.sendEvent.emit(4);
                 }, err => {
                     this.detenerCarga();
                     setTimeout(() => {
@@ -48,25 +62,36 @@ export class AgregarServicioWidget {
             }, 300);
         }
     }
-
-    open() {
-        let docModal = document.getElementById('modalLimpiezaAgregarServicio');
-        let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
-        myModal.show();
+    onFileSelected(event: any) {
+        this.selectedFile = event.target.files[0];
+        this.quitarFocoDeElementos();
+        this.lerr = {};
     }
-    close() {
-        let docModal = document.getElementById('modalLimpiezaAgregarServicio');
-        let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
-        myModal.hide();
+    limpiarArchivoSeleccionado() {
+        this.selectedFile = null;
+        if (this.fileInput) {
+            this.fileInput.nativeElement.value = '';
+        }
+
     }
 
     valida() {
         this.validaciones = true;
-        if (this.servicio == '') {
-            this.lerr['Servicio'] = ['Ingrese un servicio'];
+        //if (this.servicio == '') {
+        //    this.lerr['Servicio'] = ['Ingrese un servicio'];
+        //    this.validaciones = false;
+        //}
+        if (this.selectedFile == null) {
+            this.lerr['archivoSeleccionado'] = ['Seleccione el contrato'];
             this.validaciones = false;
         }
         return this.validaciones;
+    }
+
+    close() {
+        let docModal = document.getElementById('modalSubirContratoCliente');
+        let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
+        myModal.hide();
     }
 
     ferr(nm: string) {

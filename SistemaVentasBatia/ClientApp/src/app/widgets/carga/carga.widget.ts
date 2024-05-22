@@ -9,20 +9,15 @@ export class CargaWidget {
 
     open(isCarga: boolean) {
         let toastElement = document.getElementById('gloload');
-        if (isCarga == true) {
-            if (isCarga == this.isCarga) {
-            }
-            else {
-                //let titleElement = toastElement.querySelector('.toast-header');
-                //titleElement.textContent = 'Cargando...';
-                this.isCarga = true;
-                toastElement.classList.add('show');
-                
-            }
-        }
-        else {
-            this.isCarga = false;
+        if (isCarga) {
             toastElement.classList.remove('show');
+            toastElement.classList.remove('hide');
+            this.isCarga = true;
+            toastElement.classList.add('show');
+        } else {
+            this.isCarga = false;
+            toastElement.classList.add('hide');
         }
     }
+
 }

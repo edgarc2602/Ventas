@@ -5,6 +5,7 @@ import { Catalogo } from '../../models/catalogo';
 declare var bootstrap: any;
 import { ToastWidget } from '../toast/toast.widget';
 import { DireccionResponseAPI } from '../../models/direccionresponseapi';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 @Component({
     selector: 'direc-widget',
@@ -12,6 +13,7 @@ import { DireccionResponseAPI } from '../../models/direccionresponseapi';
 })
 export class DireccionWidget {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @Output('smEvent') sendEvent = new EventEmitter<any>();
     model: Direccion = {} as Direccion;
     tips: Catalogo[] = [];
@@ -35,6 +37,7 @@ export class DireccionWidget {
         }
     };
     validacion: boolean = false;
+    isLoading: boolean = false;
     lerr: any = {};
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
@@ -48,6 +51,7 @@ export class DireccionWidget {
 
     getDireccionAPI() {
         if (this.model.codigoPostal.length === 5) {
+            this.iniciarCarga();
             this.direccionAPI = {
                 message: '',
                 error: false,
@@ -63,11 +67,15 @@ export class DireccionWidget {
                 }
             };
             this.http.get<DireccionResponseAPI>(`${this.url}api/direccion/GetDireccionAPI/${this.model.codigoPostal}`).subscribe(response => {
+                this.detenerCarga();
                 this.direccionAPI = response
                 this.model.idEstado = this.direccionAPI.codigoPostal.idEstado;
                 this.loadMun();
                 this.model.idMunicipio = this.direccionAPI.codigoPostal.idMunicipio;
-            })
+            }, err => {
+                this.detenerCarga();
+                console.log(err);
+            });
         }
         else {
             this.direccionAPI = {
@@ -124,35 +132,50 @@ export class DireccionWidget {
         }
         this.lerr = {};
         if (this.valida()) {
-            if (this.model.idDireccion == 0) {
-                this.http.post<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
-                    this.okToast('Direcci\u00F3n creada')
-                    this.sendEvent.emit(response.idDireccion);
-                    this.close();
-                }, err => {
-                    console.log(err);
-                    this.errorToast('Ocurrió un error');
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+            this.iniciarCarga();
+            setTimeout(() => {
+                if (this.model.idDireccion == 0) {
+                    this.http.post<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Direcci\u00F3n creada');
+                        }, 300);
+                        this.sendEvent.emit(response.idDireccion);
+                        this.close();
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
                         }
-                    }
-                });
-            } else {
-                this.http.put<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
-                    this.okToast('Direcci\u00F3n actualizada')
-                    this.close();
-                    this.sendEvent.emit(response.idDireccion);
-                }, err => {
-                    console.log(err);
-                    this.errorToast('Ocurrió un error');
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+                        console.log(err);
+                    });
+                } else {
+                    this.http.put<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Direcci\u00F3n actualizada');
+                        }, 300);
+                        this.close();
+                        this.sendEvent.emit(response.idDireccion);
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
                         }
-                    }
-                });
-            }
+                        console.log(err);
+                    });
+                }
+            }, 300);
         }
     }
 
@@ -272,5 +295,15 @@ export class DireccionWidget {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

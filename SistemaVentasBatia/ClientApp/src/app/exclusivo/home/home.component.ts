@@ -8,6 +8,7 @@ import { UsuarioGraficaMensual } from '../../models/usuariograficamensual';
 import { Catalogo } from '../../models/catalogo';
 import { CotizacionVendedorDetalle } from '../../models/cotizacionvendedordetalle';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { saveAs } from 'file-saver';
 
 interface DatosAgrupados {
@@ -21,6 +22,7 @@ interface DatosAgrupados {
 })
 export class HomeComponent implements OnInit {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     model: UsuarioGrafica = {
         idPersonal: 0, nombre: '', cotizaciones: 0, prospectos: 0
     };
@@ -212,29 +214,37 @@ export class HomeComponent implements OnInit {
     }
 
     getCotizacionesVendedor(idVendedor: number) {
-        this.totalIndirecto = 0;
-        this.totalUtilidad = 0;
-        this.total = 0;
-        this.cotizacionDetalle.cotizacionDetalle = [];
+
+
         if (idVendedor != 0) {
-            this.isLoading = true;
+            this.iniciarCarga();
             this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`).subscribe(response => {
-                this.isLoading = false;
-                this.cotizacionDetalle = response;
-                this.cotizacionDetalle.cotizacionDetalle.forEach (cot=> {
-                    this.totalIndirecto += cot.subTotal + cot.indirecto;
-                    this.totalUtilidad += cot.utilidad;
-                    this.total += cot.subTotal + cot.indirecto + cot.utilidad;
-                })
+                setTimeout(() => {
+                    this.detenerCarga();
+                    this.totalIndirecto = 0;
+                    this.totalUtilidad = 0;
+                    this.total = 0;
+                    this.cotizacionDetalle = response;
+                    this.cotizacionDetalle.cotizacionDetalle.forEach(cot => {
+                        this.totalIndirecto += cot.subTotal + cot.indirecto;
+                        this.totalUtilidad += cot.utilidad;
+                        this.total += cot.subTotal + cot.indirecto + cot.utilidad;
+                    })
+                }, 300);
             }, err => {
-                this.isLoading = false;
-                console.log(err)
+                setTimeout(() => {
+                    this.detenerCarga();
+                    console.log(err)
+                }, 300);
             });
+        }
+        else {
+            this.cotizacionDetalle.cotizacionDetalle = [];
         }
     }
 
     descargarReporteProspectosOld() {
-        this.isLoading = true;
+        this.iniciarCarga();
         this.http.get(`${this.url}api/report/DescargarReporteProspectos/${this.idEstatus}`, { responseType: 'arraybuffer' })
             .subscribe(
                 (data: ArrayBuffer) => {
@@ -251,47 +261,44 @@ export class HomeComponent implements OnInit {
                     } else {
                         alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
                     }
-                    this.isLoading = false;
+                    this.detenerCarga();
                 },
                 error => {
                     this.errorToast('Ocurri\u00F3 un error')
                     console.error('Error al obtener el archivo PDF', error);
-                    this.isLoading = false;
+                    this.detenerCarga();
                 }
             );
     }
     descargarReporteProspectos(formato: string) {
         this.lerr = {};
         if (this.valida()) {
+            this.iniciarCarga();
             if (formato == 'Word') {
                 this.http.get(`${this.url}api/report/DescargarProspectosCotizacionesDocx/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, { responseType: 'arraybuffer' })
                     .subscribe(
                         (data: ArrayBuffer) => {
                             const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
                             saveAs(blob, 'ReporteProspectosCotizaciones.docx');
-                            this.isLoading = false;
-                            this.toastWidget.isErr = false;
-                            this.toastWidget.errMessage = 'Reporte descargado';
-                            this.toastWidget.open();
+                            this.detenerCarga();
+                            this.okToast('Reporte descargado')
                             error => {
                                 console.error('Error al obtener el archivo DOCX', error);
-                                this.isLoading = false;
-                                this.toastWidget.isErr = true;
-                                this.toastWidget.errMessage = 'Ocurri\u00F3 un error';
-                                this.toastWidget.open();
+                                this.detenerCarga();
+                                this.errorToast('Ocurri\u00F3 un error');
                             }
                         });
             }
             if (formato == 'Excel') {
-                this.isLoading = true;
+                this.iniciarCarga();
                 this.http.post(`${this.url}api/report/DescargarProspectosCotizacionesExcel/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
                     this.okToast('Reporte descargado');
                     saveAs(response, 'ReporteProspectosCotizaciones.xlsx');
-                    this.isLoading = false;
+                    this.detenerCarga();
                 },
                     error => {
                         console.error('Error al descargar el archivo:', error);
-                        this.isLoading = false;
+                        this.detenerCarga();
                         this.errorToast('Ocurri\u00F3 un error');
                     }
                 );
@@ -333,5 +340,15 @@ export class HomeComponent implements OnInit {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

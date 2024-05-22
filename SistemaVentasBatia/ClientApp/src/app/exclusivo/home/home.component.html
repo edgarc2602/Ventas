@@ -31,16 +31,7 @@
                 <label for="ddlVendedores">Vendedor</label>
             </div>
         </div>
-        <div *ngIf="isLoading || (cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length === 0 )" class="row-12 text-center">
-            <hr />
-            <br />
-            <h6 *ngIf="isLoading">Cargando...</h6>
-        </div>
-        <div *ngIf="isLoading" class="text-center ">
-            <i class="fas fa-spinner fa-spin fa-3x"></i>
-        </div>
         <h6 *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" class="h6 text-muted">Cotizaciones</h6>
-
         <div *ngIf="cotizacionDetalle.cotizacionDetalle && cotizacionDetalle.cotizacionDetalle.length > 0" class="table-container">
             <table class="table table-striped">
                 <thead class="sticky-top">
@@ -163,3 +154,4 @@
     </div>
 </div>
 <toast-widget></toast-widget>
+<carga-widget></carga-widget>

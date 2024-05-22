@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ListaProspecto } from '../../models/listaprospecto';
 import { ItemN } from 'src/app/models/item';
-import { EliminaWidget } from 'src/app/widgets/elimina/elimina.widget';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
 
 @Component({
     selector: 'prospecto',
@@ -17,8 +17,8 @@ import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
     animations: [fadeInOut],
 })
 export class ProspectoComponent implements OnInit, OnDestroy {
+    @ViewChild(ConfirmacionWidget, { static: false }) confirma: ConfirmacionWidget;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
-    @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
     @ViewChild('tbprospectos', { static: false }) tablaContainer: ElementRef;
     @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     lspro: ListaProspecto = {
@@ -43,6 +43,7 @@ export class ProspectoComponent implements OnInit, OnDestroy {
             this.lista();
         });
     }
+
     ngOnInit(): void {
         this.init();
     }
@@ -61,7 +62,7 @@ export class ProspectoComponent implements OnInit, OnDestroy {
             console.log(err);
         });
     }
-    
+
     lista() {
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
         this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`).subscribe(response => {
@@ -96,27 +97,38 @@ export class ProspectoComponent implements OnInit, OnDestroy {
         this.searchKeyword$.next(this.lspro.keywords);
     }
 
-    elige(idProspecto: number) {
+
+    //Abrir modal cofirmacion
+    confirmaActivarProspecto(idProspecto: number) {
         this.idpro = idProspecto;
-        this.eliw.titulo = 'Desactivar prospecto';
-        this.eliw.mensaje = 'Se desactivarán las cotizaciones relacionadas y no serán visibles';
-        this.eliw.open();
+        const tipo = 'activarProspecto';
+        const titulo = 'Activar prospecto';
+        const mensaje = 'Se activara el prospecto';
+        this.confirma.open(tipo, titulo, mensaje);
     }
 
-    elimina($event) {
-        if ($event) {
-            this.http.delete<boolean>(`${this.url}api/prospecto/${this.idpro}`).subscribe(response => {
-                console.log(response);
-            }, err => console.log(err));
+    confirmaDesactivarProspecto(idProspecto: number) {
+        this.idpro = idProspecto;
+        const tipo = 'desactivarProspecto';
+        const titulo = 'Desactivar prospecto';
+        const mensaje = 'Se desactivarán las cotizaciones relacionadas y no serán visibles';
+        this.confirma.open(tipo, titulo, mensaje);
+    }
+
+
+    //Respuesta de confirmacion
+    confirmacionEvent($event) {
+        if ($event == 'activarProspecto') {
+            this.activarProspecto();
         }
-        this.lista();
+        if ($event == 'desactivarProspecto') {
+            this.desactivarProspecto();
+        }
     }
 
-    goBack() {
-        window.history.back();
-    }
 
-    desactivar() {
+    //acciones de confirmacion
+    desactivarProspecto() {
         this.http.put<boolean>(`${this.url}api/prospecto/desactivarprospecto`, this.idpro).subscribe(response => {
             this.lista();
             this.okToast('Prospecto desactivado');
@@ -127,14 +139,27 @@ export class ProspectoComponent implements OnInit, OnDestroy {
         this.idpro = 0;
     }
 
-    activar(idProspecto: number) {
-        this.http.put<boolean>(`${this.url}api/prospecto/activarprospecto`, idProspecto).subscribe(response => {
+    activarProspecto() {
+        this.http.put<boolean>(`${this.url}api/prospecto/activarprospecto`, this.idpro).subscribe(response => {
             this.lista();
             this.okToast('Prospecto activado');
         }, err => {
             console.log(err)
             this.errorToast('Ocurrió un error');
         });
+    }
+
+    //eliminarProspecto() {
+    //    this.http.delete<boolean>(`${this.url}api/prospecto/${this.idpro}`).subscribe(response => {
+    //        this.lista();
+    //        console.log(response);
+    //    }, err => console.log(err));
+    //}
+
+    //imports
+
+    goBack() {
+        window.history.back();
     }
 
     okToast(message: string) {

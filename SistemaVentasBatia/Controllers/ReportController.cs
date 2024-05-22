@@ -25,10 +25,11 @@ namespace SistemaVentasBatia.Controllers
     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
-        public ReportController(IReportService reportService)
+        private readonly IClienteService _clienteService;
+        public ReportController(IReportService reportService, IClienteService clienteService)
         {
             this._reportService = reportService;
-
+            _clienteService = clienteService;
         }
         [HttpPost("[action]/{tipo}")]
         public IActionResult DescargarReporteCotizacion([FromBody] int idCotizacion, int tipo = 0)
@@ -176,13 +177,16 @@ namespace SistemaVentasBatia.Controllers
             }
         }
 
-        [HttpPost("[action]/{idCotizacion}")]
-        public async Task<IActionResult> DescargarContratoDOCX(int idCotizacion, ClienteContratoDTO contrato)
+        [HttpPost("[action]/{idCotizacion}/{idClienteGenerado}")]
+        public async Task<IActionResult> GenerarYDescargarContratoBaseCliente(int idCotizacion, int idClienteGenerado, ClienteContratoDTO contrato)
         {
             try
             {
+                //GENERAR CONTRATO
                 byte[] contratoBytes = await _reportService.ObtenerContratoDOCX(idCotizacion, contrato);
-
+                //INSERTAR CONTRATO 
+                bool result = await _clienteService.InsertarContratoCliente(contratoBytes, idClienteGenerado, contrato.ClienteRazonSocial);
+                //REGRESAR COPIA DE CONTRATO AL USUARIO
                 return File(contratoBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "LIMPIEZASERV.IND.BATIA_actualizado.docx");
             }
             catch (Exception ex)

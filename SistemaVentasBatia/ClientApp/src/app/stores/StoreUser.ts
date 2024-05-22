@@ -10,4 +10,5 @@ export class StoreUser {
     estatus: number;
     idAutoriza: number;
     idSupervisa: number;
+    direccionIP: string;
 }

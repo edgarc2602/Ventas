@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -198,16 +199,8 @@ namespace SistemaVentasBatia.Controllers
         {
             return await prospectosSvc.ObtenerDatosProspecto(idProspecto);
         }
-        [HttpGet("[action]/{idProspecto}")]
-        public async Task<ActionResult<ClienteContratoDTO>> ObtenerDatosExistentesClienteContrato(int idProspecto)
-        {
-            return await prospectosSvc.ObtenerDatosClienteContrato(idProspecto);
-        }
+        
 
-        [HttpPost("[action]")]
-        public async Task<ActionResult<bool>> InsertarDatosClienteContrato(ClienteContratoDTO contrato)
-        {
-            return await prospectosSvc.InsetarDatosClienteContrato(contrato);
-        }
+        
     }
 }

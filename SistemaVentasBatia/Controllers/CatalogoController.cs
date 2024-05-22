@@ -154,5 +154,18 @@ namespace SistemaVentasBatia.Controllers
         {
             return await logic.ObtenerCatalogoVendedores();
         }
+
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoEjecutivos()
+        {
+            return await logic.ObtenerCatalogoEjecutivos();
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoGerentesLimpieza()
+        {
+            return await logic.ObtenerCatalogoGerentesLimpieza();
+        }
+
     }
 }

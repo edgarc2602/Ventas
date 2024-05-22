@@ -12,10 +12,11 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 import { UsuarioRegistro } from 'src/app/models/usuarioregistro';
 import { UsuarioAddWidget } from 'src/app/widgets/usuarioadd/usuarioadd.widget';
 import { AgregarUsuario } from 'src/app/models/agregarusuario';
-import { EliminaWidget } from 'src/app/widgets/elimina/elimina.widget';
 import { ListaProducto } from '../../models/listaproducto';
 import { ImmsJornada } from '../../models/immsjornada';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
 
 @Component({
     selector: 'catalogo-comp',
@@ -24,10 +25,11 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 })
 export class CatalogoComponent {
     @ViewChild(AgregarServicioWidget, { static: false }) addSer: AgregarServicioWidget;
+    @ViewChild(ConfirmacionWidget, { static: false }) confirma: ConfirmacionWidget;
     @ViewChild(UsuarioAddWidget, { static: false }) addUsu: UsuarioAddWidget;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @ViewChild(ProductoWidget, { static: false }) prow: ProductoWidget;
-    @ViewChild(EliminaWidget, { static: false }) eliw: EliminaWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @ViewChild('zona1txt', { static: false }) zona1txt: ElementRef;
     @ViewChild('zona2txt', { static: false }) zona2txt: ElementRef;
     @ViewChild('zona3txt', { static: false }) zona3txt: ElementRef;
@@ -195,13 +197,22 @@ export class CatalogoComponent {
     }
 
     deleteServ(id) {
-        this.http.delete(`${this.url}api/producto/EliminarServicio/${id}`).subscribe(response => {
-            this.okToast('Servicio Eliminado');
-            this.getServicios();
-        }, err => {
-            this.errorToast('Ocurri\u00F3 un error');
-            console.log(err);
-        });
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.delete(`${this.url}api/producto/EliminarServicio/${id}`).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast('Servicio eliminado');
+                }, 300);
+                this.getServicios();
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+                console.log(err);
+            });
+        }, 300);
     }
 
     limpiarPorcentajesNG() {
@@ -246,16 +257,25 @@ export class CatalogoComponent {
     actualizarPorcentajesPredeterminadosCotizacion() {
         this.limpiarPorcentajes();
         this.obtenerPorcentajesCotizacion();
-        this.http.post<CotizaPorcentajes>(`${this.url}api/cotizacion/actualizarporcentajespredeterminadoscotizacion`, this.cotpor).subscribe(response => {
-            this.limpiarPorcentajesNG();
-            this.limpiarPorcentajes();
-            this.getPorcentajes();
-            this.okToast('Porcentajes actualizados');
-        }, err => {
-            this.getPorcentajes();
-            console.log(err);
-            this.errorToast('Ocurri\u00F3 un error');
-        });
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.post<CotizaPorcentajes>(`${this.url}api/cotizacion/actualizarporcentajespredeterminadoscotizacion`, this.cotpor).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast('Porcentajes actualizados');
+                }, 300);
+                this.limpiarPorcentajesNG();
+                this.limpiarPorcentajes();
+                this.getPorcentajes();
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+                this.getPorcentajes();
+                console.log(err);
+            });
+        }, 300);
     }
 
     onFileSelected(event: any): void {
@@ -326,13 +346,22 @@ export class CatalogoComponent {
 
     actualizarSalarios(id: number) {
         this.obtenerValores();
-        this.http.post<PuestoTabulador>(`${this.url}api/cotizacion/actualizarsalarios`, this.sal).subscribe(response => {
-            this.okToast('Salarios actualizados');
-            this.getTabulador();
-        }, err => {
-            this.errorToast('Ocurri\u00F3 un error');
-            console.log(err)
-        });
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.post<PuestoTabulador>(`${this.url}api/cotizacion/actualizarsalarios`, this.sal).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast('Salarios actualizados');
+                }, 300);
+                this.getTabulador();
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+                console.log(err)
+            });
+        }, 300);
     }
 
     limpiarObjeto() {
@@ -361,13 +390,22 @@ export class CatalogoComponent {
 
     updImss() {
         this.imss = parseFloat(this.imsstxt.nativeElement.value);
-        this.http.put<boolean>(`${this.url}api/cotizacion/actualizarimssbase`, this.imss).subscribe(response => {
-            this.okToast('Actualizado');
-        }, err => {
-            this.errorToast('Ocurri\u00F3 un error');
-            this.getPorcentajes();
-            console.log(err)
-        });
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.put<boolean>(`${this.url}api/cotizacion/actualizarimssbase`, this.imss).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast('Actualizado');
+                }, 300);
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+                this.getPorcentajes();
+                console.log(err)
+            });
+        }, 300);
     }
 
     obtenerUsuarios() {
@@ -378,80 +416,116 @@ export class CatalogoComponent {
 
     chgEstatus(estatusVentas: number, idPersonal: number) {
         const dato = { idPersonal: idPersonal };
-        if (estatusVentas === 1) {
-            this.http.put<boolean>(`${this.url}api/usuario/desactivarusuario`, idPersonal).subscribe(response => {
-                this.okToast('Usuario desactivado');
-                this.obtenerUsuarios();
-            }, err => {
-                this.errorToast('Ocurri\u00F3 un error');
-                console.log(err);
-            });
-        } else {
-            this.http.put<boolean>(`${this.url}api/usuario/activarusuario`, idPersonal).subscribe(response => {
-                this.okToast('Usuario activado');
-                this.obtenerUsuarios();
-            }, err => {
-                this.errorToast('Ocurri\u00F3 un error');
-                console.log(err);
-            });
-        }
-    }
-
-    eliminarUsuario($event) {
-        this.idPersonal = this.elimina;
-        this.http.put<boolean>(`${this.url}api/usuario/eliminarusuario`, this.idPersonal).subscribe(response => {
-            this.okToast('Usuario eliminado');
-            this.obtenerUsuarios();
-        }, err => {
-            this.errorToast('Ocurri\u00F3 un error');
-            console.log(err);
-        });
-        this.idPersonal = 0;
-        this.elimina = 0;
+        this.iniciarCarga();
+        setTimeout(() => {
+            if (estatusVentas === 1) {
+                this.http.put<boolean>(`${this.url}api/usuario/desactivarusuario`, idPersonal).subscribe(response => {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.okToast('Usuario desactivado');
+                    }, 300);
+                    this.obtenerUsuarios();
+                }, err => {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.errorToast('Ocurri\u00F3 un error');
+                    }, 300);
+                    console.log(err);
+                });
+            } else {
+                this.http.put<boolean>(`${this.url}api/usuario/activarusuario`, idPersonal).subscribe(response => {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.okToast('Usuario activado');
+                    }, 300);
+                    this.obtenerUsuarios();
+                }, err => {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.errorToast('Ocurri\u00F3 un error');
+                    }, 300);
+                    console.log(err);
+                });
+            }
+        }, 300);
     }
 
     confirmarEliminarUsuario(idPersonal: number) {
         this.elimina = idPersonal;
-        this.eliw.titulo = 'Eliminar Usuario';
-        this.eliw.mensaje = 'Las cotizaciones y prospectos relacionados no ser\u00E1n afectados';
-        this.eliw.open();
+        const tipo = 'eliminarUsuario'
+        const titulo = 'Eliminar usuario';
+        const mensaje = 'Las cotizaciones y prospectos relacionados no ser\u00E1n afectados';
+        this.confirma.open(tipo, titulo, mensaje);
     }
 
-    getPrecioProductoByEstado(filtro: number) {
-        if (filtro == 2) {
-            this.model.pagina = 1;
-            this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
-                this.model = response;
-            }, err => {
-            });
+    confirmacionEvent($event) {
+        if ($event == 'eliminarUsuario') {
+            this.eliminarUsuario();
         }
-        if (filtro == 0) {
-            this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
-                this.model = response;
-            }, err => {
-            });
-        }
-        if (filtro == 1) {
-            this.model.productos = [];
-            this.model.proveedor = '';
-            this.idFamilia = 0;
-            this.model.pagina = 1;
-            this.isLoading = true;
+    }
 
-            this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
+    eliminarUsuario() {
+        this.idPersonal = this.elimina;
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.put<boolean>(`${this.url}api/usuario/eliminarusuario`, this.idPersonal).subscribe(response => {
+                this.detenerCarga();
                 setTimeout(() => {
+                    this.okToast('Usuario eliminado');
+                }, 300);
+                this.obtenerUsuarios();
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+                console.log(err);
+            });
+        }, 300);
+        this.idPersonal = 0;
+        this.elimina = 0;
+    }
+
+    
+
+    getPrecioProductoByEstado(filtro: number) {
+        this.iniciarCarga();
+        setTimeout(() => {
+            if (filtro == 2) {
+                this.model.pagina = 1;
+                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
+                    this.detenerCarga();
+                    this.model = response;
+                }, err => {
+                });
+            }
+            if (filtro == 0) {
+                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
+                    this.detenerCarga();
+                    this.model = response;
+                }, err => {
+                    this.detenerCarga();
+                });
+            }
+            if (filtro == 1) {
+                this.model.productos = [];
+                this.model.proveedor = '';
+                this.idFamilia = 0;
+                this.model.pagina = 1;
+                this.isLoading = true;
+
+                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
+                    this.detenerCarga();
                     this.model = response;
                     this.isLoading = false;
-                }, 300);
-            }, err => {
-                setTimeout(() => {
-                    this.isLoading = false;
-                }, 300);
-            });
-            if (this.model.productos.length == 0) {
-                this.model.familias = [];
+                }, err => {
+                    this.detenerCarga();
+                });
+                if (this.model.productos.length == 0) {
+                    this.model.familias = [];
+                }
             }
-        }
+        }, 300);
 
 
     }
@@ -461,29 +535,37 @@ export class CatalogoComponent {
     }
 
     descargarListaProductosPorEstado() {
-        this.isLoading = true;
-        this.http.get(`${this.url}api/report/DescargarListaProductosPorEstado/${this.idEstado}/${this.idFamilia}`, { responseType: 'arraybuffer' })
-            .subscribe(
-                (data: ArrayBuffer) => {
-                    const file = new Blob([data], { type: 'application/pdf' });
-                    const fileURL = URL.createObjectURL(file);
-                    const width = 800;
-                    const height = 550;
-                    const left = window.innerWidth / 2 - width / 2;
-                    const top = window.innerHeight / 2 - height / 2;
-                    const newWindow = window.open(fileURL, '_blank', `width=${width}, height=${height}, top=${top}, left=${left}`);
-                    if (newWindow) {
-                        newWindow.focus();
-                    } else {
-                        alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.get(`${this.url}api/report/DescargarListaProductosPorEstado/${this.idEstado}/${this.idFamilia}`, { responseType: 'arraybuffer' })
+                .subscribe(
+                    (data: ArrayBuffer) => {
+                        const file = new Blob([data], { type: 'application/pdf' });
+                        const fileURL = URL.createObjectURL(file);
+                        const width = 800;
+                        const height = 550;
+                        const left = window.innerWidth / 2 - width / 2;
+                        const top = window.innerHeight / 2 - height / 2;
+                        const newWindow = window.open(fileURL, '_blank', `width=${width}, height=${height}, top=${top}, left=${left}`);
+                        if (newWindow) {
+                            newWindow.focus();
+                        } else {
+                            alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
+                        }
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Reporte descargado');
+                        }, 300);
+                    },
+                    error => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.error('Error al obtener el archivo PDF', error);
                     }
-                    this.isLoading = false;
-                },
-                error => {
-                    console.error('Error al obtener el archivo PDF', error);
-                    this.isLoading = false;
-                }
-            );
+                );
+        }, 300);
     }
     arrayBufferToDataUrl(buffer: ArrayBuffer): string {
         const blob = new Blob([buffer], { type: 'application/pdf' });
@@ -498,12 +580,22 @@ export class CatalogoComponent {
     }
     actualizarImmsJornada() {
         this.immsJornada.idPersonal = this.user.idPersonal;
-        this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarImssJornada`, this.immsJornada).subscribe(response => {
-            this.obtenerImmsJornada();
-            this.okToast('IMMS actualizado');
-        }, err => {
-            this.errorToast('Ocurri\u00F3 un error');
-        });
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarImssJornada`, this.immsJornada).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast('IMSS actualizado');
+                }, 300);
+                this.obtenerImmsJornada();
+
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+            });
+        }, 300);
     }
 
     okToast(message: string) {
@@ -515,5 +607,15 @@ export class CatalogoComponent {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

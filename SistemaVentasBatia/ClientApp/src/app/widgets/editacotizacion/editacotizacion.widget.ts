@@ -6,6 +6,7 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
 import { ToastWidget } from '../toast/toast.widget';
 import { CotizaResumenLim } from '../../models/cotizaresumenlim';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 @Component({
     selector: 'editcot-widget',
@@ -13,6 +14,7 @@ import { CotizaResumenLim } from '../../models/cotizaresumenlim';
 })
 export class EditarCotizacion {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @Output('editCot') sendEvent = new EventEmitter<boolean>();
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
@@ -60,20 +62,28 @@ export class EditarCotizacion {
 
     guarda() {
         if (this.valida()) {
-            this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/${this.idServicio}/${this.polizaCumplimiento}`).subscribe(response => {
-                //actualizar monto
-                this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.idCotizacion}`).subscribe(response => {
-                    this.model = response;
+            this.iniciarCarga();
+            setTimeout(() => {
+                this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/${this.idServicio}/${this.polizaCumplimiento}`).subscribe(response => {
+                    //actualizar monto
+                    this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.idCotizacion}`).subscribe(response => {
+                        this.model = response;
+                    }, err => {
+                        console.log(err)
+                    });
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' actualizada');
+                    }, 300);
+                    this.close();
+                    this.sendEvent.emit(true);
                 }, err => {
-                    console.log(err)
+                    this.close();
+                    setTimeout(() => {
+                        this.errorToast('Ocurrió un error');
+                    }, 300);
                 });
-                this.close();
-                this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' actualizada');
-                this.sendEvent.emit(true);
-            }, err => {
-                this.close();
-                this.errorToast('Ocurrió un error');
-            });
+            }, 300);
         }
     }
 
@@ -116,5 +126,15 @@ export class EditarCotizacion {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

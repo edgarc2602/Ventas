@@ -7,6 +7,7 @@ import { SalarioMin } from '../../models/salariomin';
 import { StoreUser } from '../../stores/StoreUser';
 import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 declare var bootstrap: any;
 
 @Component({
@@ -15,6 +16,7 @@ declare var bootstrap: any;
 })
 export class PuestoWidget {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @Output('smEvent') sendEvent = new EventEmitter<number>();
     model: PuestoCotiza = {} as PuestoCotiza;
     lclas: Catalogo[] = [];
@@ -32,6 +34,7 @@ export class PuestoWidget {
     idT: number = 0;
     jornada: number = 0;
     validacion: boolean = false;
+    isLoading: boolean = false;
     nombreSucursal: string = '';
     puesto: string = '';
 
@@ -100,73 +103,103 @@ export class PuestoWidget {
             this.model.diaInicioFin = 0;
         }
         if (this.valida()) {
-            if (this.model.idPuestoDireccionCotizacion == 0) {
-                this.model.idDireccionCotizacion = this.idD;
-                this.model.idCotizacion = this.idC;
-                this.http.post<PuestoCotiza>(`${this.url}api/puesto`, this.model).subscribe(response => {
-                    this.sendEvent.emit(0);
-                    this.close();
-                    this.okToast('Puesto agregado');
-                }, err => {
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+            this.iniciarCarga();
+            setTimeout(() => {
+                if (this.model.idPuestoDireccionCotizacion == 0) {
+                    this.model.idDireccionCotizacion = this.idD;
+                    this.model.idCotizacion = this.idC;
+                    this.http.post<PuestoCotiza>(`${this.url}api/puesto`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Puesto agregado');
+                        }, 300);
+                        this.sendEvent.emit(0);
+                        this.close();
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.log(err);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
                         }
-                    }
-                    this.errorToast('Ocurri\u00F3 un error');
-                });
-            } else {
-                this.http.put<boolean>(`${this.url}api/puesto`, this.model).subscribe(response => {
-                    this.sendEvent.emit(0);
-                    this.close();
-                    this.okToast('Puesto actualizado');
-                }, err => {
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+                    });
+                } else {
+                    this.http.put<boolean>(`${this.url}api/puesto`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Puesto actualizado');
+                        }, 300);
+                        this.sendEvent.emit(0);
+                        this.close();
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.log(err);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
                         }
-                    }
-                    this.errorToast('Ocurri\u00F3 un error');
-                });
-            }
+                    });
+                }
+            }, 300);
         }
     }
 
     chgSalario() {
-        this.http.get<SalarioMin>(`${this.url}api/salario/${this.idT}/${this.model.idPuesto}/${this.model.idTurno}`).subscribe(response => {
-            this.suel = response;
-            this.model.idSalario = response.idSalario;
-            this.model.sueldo = response.salarioI;
-        }, err => console.log(err));
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.get<SalarioMin>(`${this.url}api/salario/${this.idT}/${this.model.idPuesto}/${this.model.idTurno}`).subscribe(response => {
+                this.detenerCarga();
+                this.suel = response;
+                this.model.idSalario = response.idSalario;
+                this.model.sueldo = response.salarioI;
+            }, err => {
+                this.detenerCarga();
+                console.log(err);
+            });
+        }, 300);
     }
 
     chgSalariodos() {
-        this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}`).subscribe(response => {
-            this.model.sueldo = response;
-            this.jornada = 0;
-            switch (this.model.jornada) {
-                case 1:
-                    this.jornada = 2
-                    this.model.sueldo = this.model.sueldo * 0.35;
-                    break;
-                case 2:
-                    this.jornada = 4
-                    this.model.sueldo = this.model.sueldo * 0.60;
-                    break;
-                case 3:
-                    this.jornada = 8
-                    this.model.sueldo = this.model.sueldo;
-                    break;
-                case 4:
-                    this.jornada = 12
-                    this.model.sueldo = this.model.sueldo * 1.5;
-                    break;
-                default:
-                    break;
-            }
-        }, err => console.log(err));
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}`).subscribe(response => {
+                this.detenerCarga();
+                this.model.sueldo = response;
+                this.jornada = 0;
+                switch (this.model.jornada) {
+                    case 1:
+                        this.jornada = 2
+                        this.model.sueldo = this.model.sueldo * 0.35;
+                        break;
+                    case 2:
+                        this.jornada = 4
+                        this.model.sueldo = this.model.sueldo * 0.60;
+                        break;
+                    case 3:
+                        this.jornada = 8
+                        this.model.sueldo = this.model.sueldo;
+                        break;
+                    case 4:
+                        this.jornada = 12
+                        this.model.sueldo = this.model.sueldo * 1.5;
+                        break;
+                    default:
+                        break;
+                }
+            }, err => {
+                this.detenerCarga();
+                console.log(err);
+
+            });
+        }, 300);
     }
 
     valida() {
@@ -273,5 +306,15 @@ export class PuestoWidget {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

@@ -99,7 +99,7 @@
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-6 col-md-3 text-start"><h5>Mano de obra</h5></div>
                                     <div class="col-4 col-md-3 text-end"><h5>${{ model.salario | number: '1.2-2' }}</h5></div>
-                                    <div class="col-1 col-md-2"></div>
+                                    <div class="col-1 col-md-3"></div>
                                 </div>
                             </td>
                         </tr>
@@ -198,9 +198,7 @@
                                 <div class="row  text-muted">
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-4 col-md-3 text-start"><h5>Costo Indirecto (%)</h5></div>
-                                    <div class="col-2 col-md-1">
-                                        <input #indirectotxt type="text" class="form-control" id="indirectoPor" name="indirecto" [(ngModel)]="indirectoValue" value="{{model.indirectoPor}}" placeholder="{{model.indirectoPor}}" autocomplete="off" required>
-                                    </div>
+                                    <div class="col-2 col-md-1"><input type="number" class="form-control" [(ngModel)]="indirectoValue" value="{{model.indirectoPor}}" placeholder="{{model.indirectoPor}}" autocomplete="off" required></div>
                                     <div class="col-4 col-md-2 text-end"><h5>${{ model.indirecto | number:'1.2-2'}}</h5></div>
                                     <div class="col-1 col-md-2"></div>
                                 </div>
@@ -221,9 +219,7 @@
                                 <div class="row text-muted">
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-4 col-md-3 text-start"><h5>Utilidad (%)</h5></div>
-                                    <div class="col-2 col-md-1">
-                                        <input #utilidadtxt type="text" class="form-control" id="utilidad" name="utilidadPor" [(ngModel)]="utilidadValue" (input)="validarSoloNumeros(utilidadValue)" value="{{model.utilidadPor}}" placeholder="{{model.utilidadPor}}" autocomplete="off" required>
-                                    </div>
+                                    <div class="col-2 col-md-1"><input type="number" class="form-control" [(ngModel)]="model.utilidadPor" placeholder="{{model.utilidadPor}}" autocomplete="off" required></div>
                                     <div class="col-4 col-md-2  text-end"><h5>${{ model.utilidad | number:'1.2-2' }}</h5></div>
                                     <div class="col-1 col-md-2"></div>
                                 </div>
@@ -245,8 +241,7 @@
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-4 col-md-3 text-start"><h5>Comisión Sobre Venta (%)</h5></div>
                                     <div class="col-2 col-md-1 ">
-                                        <input #CSVtxt type="text" class="form-control" id="CSV" name="CSV" [(ngModel)]="CSV" (input)="validarSoloNumeros(utilidadValue)" value="{{model.csvPor}}" placeholder="{{model.csvPor}}" autocomplete="off" required>
-                                    </div>
+                                        <input type="number" class="form-control" [(ngModel)]="model.csvPor" placeholder="{{model.csvPor}}" autocomplete="off" required></div>
                                     <div class="col-4 col-md-2 text-end"><h5>${{ model.comisionSV | number:'1.2-2' }}</h5></div>
                                     <div class="col-1 col-md-2"></div>
                                 </div>
@@ -268,7 +263,7 @@
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-4 col-md-3 text-start"><h5>Comisión Externa (%)</h5></div>
                                     <div class="col-2 col-md-1 ">
-                                        <input #comisionExttxt type="text" class="form-control" id="comisionExt" name="comisionExt" [(ngModel)]="ComisionExtValue" (input)="validarSoloNumeros(utilidadValue)" value="{{model.comisionExtPor}}" placeholder="{{model.comisionExtPor}}" autocomplete="off" required>
+                                        <input type="number" class="form-control" [(ngModel)]="model.comisionExtPor" placeholder="{{model.comisionExtPor}}" autocomplete="off" required>
                                     </div>
                                     <div class="col-4 col-md-2  text-end"><h5>${{ model.comisionExt | number:'1.2-2' }}</h5></div>
                                     <div class="col-1 col-md-2"></div>
@@ -317,36 +312,32 @@
                     <div *ngIf="autorizacion === 1" class="col-4">
                         <button type="submit" class="btn btn-outline-primary" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent"></i> Actualizar porcentajes</button><br><br>
                     </div>
-                    <div *ngIf="isLoading" class="col-4 text-center">
-                        <!--<h6>Actualizando...</h6>-->
-                        <i class="fas fa-spinner fa-spin fa-3x"></i>
-                    </div>
                 </div>
 
                 <br />
                 <div class="row text-center">
                     <div class="col-3 col-md-3  col-3">
-                        <button type="button" id="miBoton1" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf"></i> Propuesta Economica</button>
+                        <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf"></i> Propuesta Economica</button>
                         <span style="margin-left: 10px;"></span>
                         <script src="../../cotizacion/resumen/"></script>
                     </div>
                     <div class="col-3 float-end col-md-3">
-                        <button type="button" id="miBoton2" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica</button>
+                        <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                     <div class="col-3 float-end col-md-3">
-                        <button type="button" id="miBoton3" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-file-contract"></i> Contrato</button>
+                        <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-user-check"></i> Convertir prospecto a cliente</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                     <div class="col-3 float-end col-md-3 d-none">
-                        <button type="button" id="miBoton3" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-database"></i> Descargar datos</button>
+                        <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-database"></i> Descargar datos</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                     <div class="col-3 col-md-3">
-                        <button type="button" (click)="elige(model.idCotizacion)" class="btn btn-outline-danger "><i class="fa-solid fa-copy"></i> Duplicar Cotización</button>
+                        <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" class="btn btn-outline-danger "><i class="fa-solid fa-copy"></i> Duplicar Cotización</button>
                     </div>
                     <div class="col-3 float-end col-md-3">
-                        <button type="button" id="miBoton2" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica(Mano de obra)</button>
+                        <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica(Mano de obra)</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                 </div>
@@ -428,24 +419,24 @@
                 </div>
             </div>
             <!--<br />
-    <h5>Poliza de cumplimiento</h5>
-    <br />
-    <div class="row">
-        <div class="col-sm-6 col-md-3 col-4">
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="true" [(ngModel)]="model.polizaCumplimiento" required /> Si
-                </label><br />
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3 col-4">
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="false" [(ngModel)]="model.polizaCumplimiento" required /> No
-                </label><br />
-            </div>
-        </div>
-    </div>-->
+            <h5>Poliza de cumplimiento</h5>
+            <br />
+            <div class="row">
+                <div class="col-sm-6 col-md-3 col-4">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="true" [(ngModel)]="model.polizaCumplimiento" required /> Si
+                        </label><br />
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3 col-4">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="false" [(ngModel)]="model.polizaCumplimiento" required /> No
+                        </label><br />
+                    </div>
+                </div>
+            </div>-->
 
             <div class="row mb-3">
                 <div>
@@ -461,7 +452,7 @@
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-12">
                     Seleccionar una dirección existente
-                </div>-
+                </div>
             </div>
             <br>
             <div class="row d-flex align-items-center mb-3">
@@ -485,7 +476,7 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="isLoading || (lsdir.direcciones && lsdir.direcciones.length === 0)" class="row-12 text-center">
+            <!--<div *ngIf="isLoading || (lsdir.direcciones && lsdir.direcciones.length === 0)" class="row-12 text-center">
                 <hr />
                 <br />
                 <h6 *ngIf="isLoading">Cargando...</h6>
@@ -494,8 +485,8 @@
             </div>
             <div *ngIf="isLoading" class="text-center ">
                 <i class="fas fa-spinner fa-spin fa-3x"></i>
-            </div>
-            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0"class="table-container">
+            </div>-->
+            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" class="table-container">
                 <div class="row">
                     <div *ngFor="let dr of lsdir.direcciones" class="col-sm-12 col-md-6 mb-3">
                         <div class="card shadow-sm">
@@ -512,7 +503,7 @@
                                             <button type="button" class="btn btn-sm btn-outline-primary" (click)="getExistDir(dr.idDireccion)" data-bs-toggle="tooltip" title="Editar">
                                                 <i class="fa-solid fa-pencil fa-2x"></i>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" (click)="validaDireccionCotizacion(dr.idDireccionCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
+                                            <button type="button" class="btn btn-sm btn-outline-danger" (click)="confirmaEliminarDireccionCotizacion(dr.idDireccionCotizacion)" data-bs-toggle="tooltip" title="Eliminar">
                                                 <i class="fa-solid fa-times fa-2x"></i>
                                             </button>
                                         </div>
@@ -566,7 +557,6 @@
                 <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" [ngClass]="{'open': allTabsOpen}" (click)="quitarFocoDeElementos2()">
                     <div class="plantilla shadow-sm">
                         <div class="row col-md-12 col-sm-12 col-12 shadow-sm">
-
                             <a id="aListaOperarios{{ dir.idDireccionCotizacion }}" class="btn text-white  text-start col-md-10 col-9" data-bs-toggle="collapse" href="#dvPuestosDireccion{{ dir.idDireccionCotizacion }}">
                                 <h6 style="margin-bottom:0;">
                                     {{ dir.nombreSucursal }}
@@ -675,7 +665,7 @@
                                                     <a class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.idTabulador, dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Editar">
                                                         <i class="fa-solid fa-pencil fa-2x"></i>
                                                     </a>
-                                                    <a class="btn btn-sm btn-outline-danger mb-1" (click)="eligeOperario(pt.idPuestoDireccionCotizacion)" title="Descartar">
+                                                    <a class="btn btn-sm btn-outline-danger mb-1" (click)="confirmaEliminarPuestoDireccionCotizacion(pt.idPuestoDireccionCotizacion)" title="Descartar">
                                                         <i class="fa-solid fa-times fa-2x"></i>
                                                     </a>
                                                 </div>
@@ -735,7 +725,7 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="isLoading || (lsmat.materialesCotizacion && lsmat.materialesCotizacion.length === 0)" class="row-12 text-center">
+            <!--<div *ngIf="isLoading || (lsmat.materialesCotizacion && lsmat.materialesCotizacion.length === 0)" class="row-12 text-center">
                 <hr />
                 <br />
                 <br />
@@ -744,6 +734,10 @@
             </div>
             <div *ngIf="isLoading" class="text-center ">
                 <i class="fas fa-spinner fa-spin fa-3x"></i>
+            </div>-->
+            <div *ngIf="lsmat.materialesCotizacion && lsmat.materialesCotizacion.length == 0 && isLoading == false" class="text-center">
+                <hr />
+                <h6>No se encontraron registros</h6>
             </div>
             <div *ngIf="lsmat.materialesCotizacion && lsmat.materialesCotizacion.length > 0" class="table-container box-shadow fade-in-container">
                 <table class="table table-striped table-responsive">
@@ -1026,10 +1020,11 @@
 <mate-widget (smEvent)="newMate($event)"></mate-widget>
 <mateadd-widget (smEvent)="saveMate($event)" (returnModal)="return($event)"></mateadd-widget>
 <servadd-widget (smEvent)="getServ()"></servadd-widget>
-<actualizacotizacion-widget (valida)="actualizarIndirectoUtilidad()"></actualizacotizacion-widget>
-<elimina-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></elimina-widget>
-<eliminadirectorio-widget [titulo]="" [mensaje]="" (EventDC)="eliminaDireccionCotizacion($event)"></eliminadirectorio-widget>
-<eliminaOperario-widget [titulo]="" [mensaje]="" (ansEvent)="elimina($event)"></eliminaOperario-widget>
 <marcaventa-widget (smEvent)="returnMarcaCotizacion($event)"></marcaventa-widget>
 <toast-widget></toast-widget>
-<contrato-widget></contrato-widget>
+<contrato-widget (contratoEvent)="openFormularioCliente($event)"></contrato-widget>
+<cliente-widget (clienteEvent)="openCargaContratoWidget"></cliente-widget>
+<carga-widget></carga-widget>
+<confirmacion-widget (confirmaEvent)="confirmacionEvent($event)"></confirmacion-widget>
+<subircontratocliente-widget (subirContratoEvent)="subirContratoEvent($event)"></subircontratocliente-widget>
+

@@ -326,5 +326,16 @@ namespace SistemaVentasBatia.Controllers
              await cotizacionesSvc.DesactivarCotizacion(idCotizacion);
              return await cotizacionesSvc.InsertarMotivoCierreCotizacion(motivoCierre, idCotizacion);
         }
+
+        [HttpGet("[action]/{idCotizacion}")]
+        public async Task<int> ObtenerTotalSucursalesCotizacion(int idCotizacion)
+        {
+            return await cotizacionesSvc.ObtenerTotalSucursalesCotizacion(idCotizacion);
+        }
+        [HttpGet("[action]/{idCotizacion}")]
+        public async Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion)
+        {
+            return await cotizacionesSvc.ObtenerTotalEmpleadosCotizacion(idCotizacion);
+        }
     }
 }

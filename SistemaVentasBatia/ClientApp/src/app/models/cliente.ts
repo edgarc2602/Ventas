@@ -1,0 +1,36 @@
+﻿export interface Cliente {
+    idServicio: number;
+    idCotizacion: number;
+    idProspecto: number;
+    idPersonal: number;
+    idCliente: number;
+    codigo: string;
+    idTipo: number,
+    nombreComercial: string;
+    contacto: string;
+    departamento: string;
+    puesto: string;
+    email: string;
+    telefonos: string;
+    idEjecutivo: number;
+    idGerenteLimpieza: number;
+    idEmpresaPagadora: number;
+    facturacion: string;
+    tipoFacturacion: string;
+    credito: number;
+    diasFacturacion: number;
+    fechaInicio: Date;
+    vigencia: number;
+    fechaTermino: Date;
+    porcentajeMateriales: number;
+    porcentajeIndirectos: number;
+    diaLimiteFacturar: number;
+    totalSucursales: number;
+    totalEmpleados: number;
+    incluyeMaterial: boolean;
+    incluyeHerramienta: boolean;
+    deductivaMaterial: boolean;
+    deductivaServicio: boolean;
+    deductivaPlantilla: boolean
+    deductivaPlazoEntrega: boolean;
+}

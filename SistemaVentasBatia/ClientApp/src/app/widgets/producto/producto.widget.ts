@@ -5,6 +5,7 @@ import { ItemN } from 'src/app/models/item';
 import { MaterialPuesto } from 'src/app/models/materialpuesto';
 import { StoreUser } from '../../stores/StoreUser';
 import { ToastWidget } from '../toast/toast.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 declare var bootstrap: any;
 
 @Component({
@@ -13,6 +14,7 @@ declare var bootstrap: any;
 })
 export class ProductoWidget implements OnChanges {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @Output('saveEvent') sendEvent = new EventEmitter<boolean>();
     @Input() grupo: string = '';
     @Input() idP: number = 0;
@@ -22,6 +24,7 @@ export class ProductoWidget implements OnChanges {
     fres: ItemN[] = [];
     idSer: number = 2;
     validaciones: boolean = false;
+    isLoading: boolean = false;
     lerr: any = {};
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
@@ -61,36 +64,51 @@ export class ProductoWidget implements OnChanges {
         this.quitarFocoDeElementos();
         this.lerr = {};
         if (this.valida()) {
-            if (this.model.idMaterialPuesto == 0) {
-                this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
-                    this.okToast(this.grupo + ' agregado');
-                    this.sendEvent.emit(true);
-                    this.close();
-                }, err => {
-                    this.errorToast('Ocurri\u00F3 un error');
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+            this.iniciarCarga();
+            setTimeout(() => {
+                if (this.model.idMaterialPuesto == 0) {
+                    this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast(this.grupo + ' agregado');
+                        }, 300);
+                        this.sendEvent.emit(true);
+                        this.close();
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.log(err);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
                         }
-                    }
-                });
-            }
-            if (this.model.idMaterialPuesto != 0) {
-                this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
-                    this.okToast(this.grupo + ' actualizado');
-                    this.sendEvent.emit(true);
-                    this.close();
-                }, err => {
-                    this.errorToast('Ocurri\u00F3 un error');
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+                    });
+                }
+                if (this.model.idMaterialPuesto != 0) {
+                    this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast(this.grupo + ' actualizado');
+                        }, 300);
+                        this.sendEvent.emit(true);
+                        this.close();
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.log(err);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
+            }, 300);
         }
     }
 
@@ -180,5 +198,15 @@ export class ProductoWidget implements OnChanges {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

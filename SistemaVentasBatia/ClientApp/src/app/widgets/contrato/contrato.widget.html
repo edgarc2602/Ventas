@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Contrato <small class="text-muted text-capitalize"></small></h4>
+                    <h4 class="modal-title">Generar contrato <small class="text-muted text-capitalize"></small></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <!-- Modal body -->
@@ -48,14 +48,14 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-4 col-12 mb-3">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteRazonSocial" id="txtclienteRazonSocial" disabled>
+                                    <input type="text" class="form-control custom-input" [(ngModel)]="contrato.clienteRazonSocial" id="txtclienteRazonSocial" disabled>
                                     <label for="txtclienteRazonSocial">Nombre comercial</label>
                                 </div>
                                 <span *ngIf="ferr('clienteRazonSocial')" class="text-danger">{{ terr('clienteRazonSocial') }}</span>
                             </div>
                             <div class="col-sm-12 col-md-2 col-12 mb-3">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" [(ngModel)]="contrato.clienteRfc" id="txtclienteRfc" disabled>
+                                    <input type="text" class="form-control custom-input" [(ngModel)]="contrato.clienteRfc" id="txtclienteRfc" disabled>
                                     <label for="txtclienteRfc">RFC</label>
                                 </div>
                                 <span *ngIf="ferr('clienteRfc')" class="text-danger">{{ terr('clienteRfc') }}</span>
@@ -274,15 +274,8 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <div class="row col-md-12">
-                        <div class=" col-md-4 text-start">
-                            <button type="button" (click)="guardaryGenerarContratoBase()" class="btn btn-outline-primary" [disabled]="isLoading"><i class="fa-solid fa-file-download"></i> Guardar y descargar contrato base</button>
-                        </div>
-                        <div class=" col-md-8 text-end">
-                            <button type="button" (click)="guardaryCargarContratoDeCliente()" class="btn btn-outline-success d-none" [disabled]="isLoading" disabled><i class="fa-solid fa-file-arrow-up"></i> Guardar y cargar contrato de cliente</button>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        </div>
-                    </div>
+                    <button type="button" (click)="guardar()" class="btn btn-outline-primary" [disabled]="isLoading"><i class="fa-solid fa-file-contract"></i> Guardar datos de contrato</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>

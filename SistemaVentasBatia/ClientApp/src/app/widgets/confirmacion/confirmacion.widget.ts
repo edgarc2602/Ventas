@@ -6,15 +6,17 @@ declare var bootstrap: any;
     templateUrl: './confirmacion.widget.html'
 })
 export class ConfirmacionWidget implements OnChanges {
-    @Input() mensaje: string = " ";
-    @Input() titulo: string = " ";
     @Output('confirmaEvent') confirmaEvent = new EventEmitter<string>();
+    mensaje: string = " ";
+    titulo: string = " ";
     accion: string = '';
 
     constructor() {}
 
-    open(accion: string) { 
+    open(accion: string, titulo: string, mensaje: string ) { 
         this.accion = accion;
+        this.titulo = titulo;
+        this.mensaje = mensaje;
         let docModal = document.getElementById('modalConfirmacion');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
@@ -26,7 +28,6 @@ export class ConfirmacionWidget implements OnChanges {
     }
 
     cancela() {
-        this.accion = '';
         this.close();
     }
 
@@ -34,8 +35,9 @@ export class ConfirmacionWidget implements OnChanges {
         let docModal = document.getElementById('modalConfirmacion');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.hide();
-        this.mensaje = '';
+        this.accion = '';
         this.titulo = '';
+        this.mensaje = '';
     }
 
     ngOnChanges(changes: SimpleChanges): void {

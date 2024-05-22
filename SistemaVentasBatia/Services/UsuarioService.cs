@@ -15,7 +15,7 @@ namespace SistemaVentasBatia.Services
 {
     public interface IUsuarioService
     {
-        Task<UsuarioDTO> Login(AccesoDTO dto);
+        Task<UsuarioDTO> Login(AccesoDTO dto, UsuarioDTO usu);
         Task<bool> Existe(AccesoDTO dto);
         Task<bool> InsertarUsuario(UsuarioRegistro usuario);
         Task<List<UsuarioGrafica>> ObtenerCotizacionesUsuarios();
@@ -60,15 +60,15 @@ namespace SistemaVentasBatia.Services
             return existe;
         }
 
-        public async Task<UsuarioDTO> Login(AccesoDTO dto)
+        public async Task<UsuarioDTO> Login(AccesoDTO dto, UsuarioDTO usu)
         {
-            dto.Contrasena = Encriptar(dto.Contrasena);
-            UsuarioDTO usu;
+            //dto.Contrasena = Encriptar(dto.Contrasena);
+            string ip = usu.DireccionIP;
             try
             {
                 Acceso acc = _mapper.Map<Acceso>(dto);
                 usu = _mapper.Map<UsuarioDTO>(await _repo.Login(acc));
-
+                usu.DireccionIP = ip;
                 if (usu == null)
                 {
                     throw new CustomException("Usuario no Existe");

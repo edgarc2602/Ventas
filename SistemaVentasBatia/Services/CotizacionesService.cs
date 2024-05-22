@@ -55,6 +55,8 @@ namespace SistemaVentasBatia.Services
         Task<ImmsJornadaDTO> ObtenerImssJornada();
         Task<bool> ActualizarImssJornada(ImmsJornadaDTO imssJormada);
         Task<CotizacionVendedorDetalleDTO> ObtenerCotizacionVendedorDetallePorIdVendedor(int idVendedor);
+        Task<int> ObtenerTotalSucursalesCotizacion(int idCotizacion);
+        Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion);
     }
 
     public class CotizacionesService : ICotizacionesService
@@ -909,6 +911,16 @@ namespace SistemaVentasBatia.Services
             }
 
             return vendedorCotizaciones;
+        }
+
+        public async Task<int> ObtenerTotalSucursalesCotizacion(int idCotizacion)
+        {
+            return await cotizacionesRepo.ContarDireccionesCotizacion(idCotizacion);
+        }
+
+        public async Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion)
+        {
+            return await cotizacionesRepo.ObtenerTotalEmpleadosCotizacion(idCotizacion);
         }
     }
 }

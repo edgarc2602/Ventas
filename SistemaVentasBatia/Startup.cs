@@ -58,6 +58,7 @@ namespace SistemaVentasBatia
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddHttpContextAccessor();
 
             // Services
             services.AddScoped<ICotizacionesService, CotizacionesService>();
@@ -70,6 +71,7 @@ namespace SistemaVentasBatia
             services.AddScoped<ISalarioService, SalarioService>();
             services.AddScoped<ICargaMasivaService, CargaMasivaService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IClienteService, ClienteService>();
 
             // Repositories
             services.AddScoped<ICotizacionesRepository, CotizacionesRepository>();
@@ -83,6 +85,7 @@ namespace SistemaVentasBatia
             services.AddScoped<IServicioRepository, ServicioRepository>();
             services.AddScoped<ICargaMasivaRepository, CargaMasivaRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<IClienteRepository, ClienteRepository>();
 
             //Excel
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

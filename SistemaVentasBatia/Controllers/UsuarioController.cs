@@ -13,16 +13,22 @@ namespace SistemaVentasBatia.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _logic;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsuarioController(IUsuarioService logic)
+        public UsuarioController(IUsuarioService logic, IHttpContextAccessor httpContextAccessor)
         {
             _logic = logic;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<UsuarioDTO>> Login(AccesoDTO dto)
         {
-            return await _logic.Login(dto);
+            var usu = new UsuarioDTO();
+            var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+            string usuarioIp = ipAddress.ToString();
+            usu.DireccionIP = usuarioIp;
+            return await _logic.Login(dto, usu);
         }
 
         [HttpPost("[action]")]

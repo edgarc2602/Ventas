@@ -76,6 +76,7 @@ namespace SistemaVentasBatia.Repositories
         Task<ResumenCotizacionLimpieza> ObtenerResumenCotizacionLimpieza2(int idCotizacion);
         Task<bool> GetPolizaCumplimiento(int idCotizacion);
         Task<bool> InsertarPolizaCumplimiento(decimal totalPoliza, int idCotizacion);
+        Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion);
 
         //CONFIGURACION
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
@@ -1953,6 +1954,27 @@ GETDATE(),
                 throw ex;
             }
             return vendedores;
+        }
+
+        public async Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion)
+        {
+            string query = @"
+                SELECT ISNULL(SUM(a.cantidad),0) TotalEmpleados FROM tb_puesto_direccion_cotizacion a 
+                INNER JOIN tb_direccion_cotizacion b ON b.id_direccion_cotizacion = a.id_direccion_cotizacion
+                WHERE b.id_cotizacion = @idCotizacion";
+            int rows;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    rows = await connection.QuerySingleAsync<int>(query, new { idCotizacion });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return rows;
         }
     }
 }

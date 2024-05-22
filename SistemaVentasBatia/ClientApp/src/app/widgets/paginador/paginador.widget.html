@@ -10,7 +10,7 @@
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
         </li>
-        <li *ngFor="let i of makePages(); let j = index" [ngClass]="{'active': pagina === (bloqueActual - 1) * 5 + j + 1}" class="page-item">
+        <li *ngFor="let i of makePages(); let j = index" [ngClass]="{'active no-click': pagina === (bloqueActual - 1) * 5 + j + 1}" class="page-item">
             <button type="button" class="btn btn-sm page-link" (click)="move((bloqueActual - 1) * 5 + j + 1)">
                 {{ (bloqueActual - 1) * 5 + j + 1 }}
             </button>
@@ -26,7 +26,7 @@
             </button>
         </li>
         <li class="page-item">
-            <button type="button" class="btn page-link border-0">{{ rows }} Registros</button>
+            <button type="button" class="btn page-link border-0" disabled>{{ rows }} Registros</button>
         </li>
     </ul>
 </nav>
@@ -42,7 +42,7 @@
                 <i class="fa-solid fa-chevron-left"></i>
             </a>
         </li>
-        <li *ngFor="let i of makePages(); let j = index" [ngClass]="{'active': pagina === (bloqueActual - 1) * 5 + j + 1}" class="page-item">
+        <li *ngFor="let i of makePages(); let j = index" [ngClass]="{'active no-click': pagina === (bloqueActual - 1) * 5 + j + 1}" class="page-item">
             <a class="page-link" (click)="move((bloqueActual - 1) * 5 + j + 1)">
                 {{ (bloqueActual - 1) * 5 + j + 1 }}
             </a>

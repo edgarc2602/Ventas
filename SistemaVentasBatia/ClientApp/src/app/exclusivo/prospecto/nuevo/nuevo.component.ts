@@ -9,7 +9,7 @@ import { DireccionWidget } from 'src/app/widgets/direccion/direccion.widget';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
-
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 @Component({
     selector: 'pros-nuevo',
@@ -20,6 +20,7 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 export class ProsNuevoComponent implements OnInit, OnDestroy {
     @ViewChild(DireccionWidget, { static: false }) dirAdd: DireccionWidget;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     direcs: ListaDireccion = {
         idProspecto: 0, idCotizacion: 0, idDireccion: 0, pagina: 0, direcciones: [], rows: 0, numPaginas: 0
     };
@@ -71,54 +72,65 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         this.pro.listaDocumentos = this.docs;
         this.lerr = {};
         if (this.valida()) {
-            if (this.pro.idProspecto == 0) {
-                this.http.post<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
-                    this.pro.idProspecto = response.idProspecto;
-                    console.log(response);
-                    this.okToast('Prospecto creado');
-                    setTimeout(() => {
-                        this.router.navigate(['/exclusivo/prospecto']);
-                    }, 1000);
-                }, err => {
-                    this.isLoading = false;
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
-                        } else if (err.error) {
-                            for (let key in err.error) {
-                                if (err.error.hasOwnProperty(key)) {
-                                    this.toastWidget.errMessage += key + ": " + err.error[key] + "\n";
+            this.iniciarCarga();
+            setTimeout(() => {
+                if (this.pro.idProspecto == 0) {
+                    this.http.post<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Prospecto creado');
+                        }, 300);
+                        this.pro.idProspecto = response.idProspecto;
+                        setTimeout(() => {
+                            this.router.navigate(['/exclusivo/prospecto']);
+                        }, 1000);
+                    }, err => {
+                        this.detenerCarga();
+                        console.log(err);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            } else if (err.error) {
+                                for (let key in err.error) {
+                                    if (err.error.hasOwnProperty(key)) {
+                                        this.toastWidget.errMessage += key + ": " + err.error[key] + "\n";
+                                    }
                                 }
+                                setTimeout(() => {
+                                    this.errorToast();
+                                }, 300);
                             }
-                            this.errorToast();
                         }
-                    }
-                });
-            } else {
-                this.http.put<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
-                    console.log(response);
-                    this.okToast('Prospecto actualizado');
-                    setTimeout(() => {
-                        this.router.navigate(['/exclusivo/prospecto']);
-                    }, 1000);
-                }, err => {
-                    this.isLoading = false;
-                    console.log(err);
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
-                        } else if (err.error) {
-                            for (let key in err.error) {
-                                if (err.error.hasOwnProperty(key)) {
-                                    this.toastWidget.errMessage += key + ": " + err.error[key] + "\n";
+                    });
+                } else {
+                    this.http.put<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Prospecto actualizado');
+                        }, 300);
+                        setTimeout(() => {
+                            this.router.navigate(['/exclusivo/prospecto']);
+                        }, 1000);
+                    }, err => {
+                        this.detenerCarga();
+                        console.log(err);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            } else if (err.error) {
+                                for (let key in err.error) {
+                                    if (err.error.hasOwnProperty(key)) {
+                                        this.toastWidget.errMessage += key + ": " + err.error[key] + "\n";
+                                    }
                                 }
+                                setTimeout(() => {
+                                    this.errorToast();
+                                }, 300);
                             }
-                            this.errorToast();
                         }
-                    }
-                });
-            }
+                    });
+                }
+            }, 300);
         }
     }
 
@@ -177,5 +189,15 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

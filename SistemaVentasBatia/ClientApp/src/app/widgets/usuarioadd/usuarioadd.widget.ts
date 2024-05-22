@@ -1,10 +1,11 @@
-import { Component, Inject, Output, EventEmitter,ViewChild } from '@angular/core';
+import { Component, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
 import { AgregarUsuario } from 'src/app/models/agregarusuario';
 import Swal from 'sweetalert2';
 import { ToastWidget } from '../toast/toast.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { ToastWidget } from '../toast/toast.widget';
 })
 export class UsuarioAddWidget {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @Output('actualizarUsuarios') returnUsuarioAdd = new EventEmitter();
     agregarusuario: AgregarUsuario = {
         idPersonal: 0, autorizaVentas: 0, estatusVentas: 0, cotizadorVentas: 0, revisaVentas: 0, nombres: '', apellidoPaterno: '', apellidoMaterno: '', puesto: '', telefono: '', telefonoExtension: '', telefonoMovil: '', email: '', firma: '',
@@ -21,6 +23,7 @@ export class UsuarioAddWidget {
     idPersonal: number = 0;
     edit: number = 0;
     validaciones: boolean = false;
+    isLoading: boolean = false;
     response: boolean = false;
     selectedImage: string | ArrayBuffer | null = null;
     lerr: any = {};
@@ -61,39 +64,55 @@ export class UsuarioAddWidget {
         }
         this.lerr = {};
         if (this.valida()) {
-            if (this.edit > 0) {
-                this.http.put<boolean>(`${this.url}api/usuario/actualizarusuario`, this.agregarusuario).subscribe(response => {
-                    this.okToast('Usuario actualizado');
-                    this.response = response;
-                    this.close();
-                    this.returnUsuarioAdd.emit();
-                }, err => {
-                    this.errorToast('Ocurri\u00F3 un error');
-                    console.log(err);
-
-                });
-            }
-            if (this.edit == 0) {
-                this.http.put<boolean>(`${this.url}api/usuario/agregarusuario`, this.agregarusuario).subscribe(response => {
-                    this.response = response;
-
-                    if (response == false) {
-                        this.errorToast('No se encuentra el usuario, porfavor verifique el nombre');
-                    }
-                    else {
-                        this.okToast('Usuario agregado');
+            this.iniciarCarga();
+            setTimeout(() => {
+                if (this.edit > 0) {
+                    this.http.put<boolean>(`${this.url}api/usuario/actualizarusuario`, this.agregarusuario).subscribe(response => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Usuario actualizado');
+                        }, 300);
+                        this.response = response;
                         this.close();
                         this.returnUsuarioAdd.emit();
-                    }
-                }, err => {
-                    this.errorToast('Ocurri\u00F3 un error');
-                    if (err.error) {
-                        if (err.error.errors) {
-                            this.lerr = err.error.errors;
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.log(err);
+
+                    });
+                }
+                if (this.edit == 0) {
+                    this.http.put<boolean>(`${this.url}api/usuario/agregarusuario`, this.agregarusuario).subscribe(response => {
+                        this.response = response;
+                        this.detenerCarga();
+                        if (response == false) {
+                            setTimeout(() => {
+                                this.errorToast('No se encuentra el usuario, porfavor verifique el nombre');
+                            }, 300);
                         }
-                    }
-                });
-            }
+                        else {
+                            setTimeout(() => {
+                                this.okToast('Usuario agregado');
+                            }, 300);
+                            this.close();
+                            this.returnUsuarioAdd.emit();
+                        }
+                    }, err => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        if (err.error) {
+                            if (err.error.errors) {
+                                this.lerr = err.error.errors;
+                            }
+                        }
+                    });
+                }
+            }, 300);
         }
     }
 
@@ -219,5 +238,15 @@ export class UsuarioAddWidget {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

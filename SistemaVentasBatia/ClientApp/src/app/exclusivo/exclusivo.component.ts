@@ -19,6 +19,7 @@ export class ExclusivoComponent {
             this.user.estatus = uST.estatus;
             this.user.idAutoriza = uST.idAutoriza;
             this.user.idSupervisa = uST.idSupervisa;
+            this.user.direccionIP = uST.direccionIP;
         }
     }
     goBack() {

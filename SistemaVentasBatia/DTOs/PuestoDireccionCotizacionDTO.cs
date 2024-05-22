@@ -16,7 +16,7 @@ namespace SistemaVentasBatia.DTOs
         public int IdDireccionCotizacion { get; set; }
 
         [Required(ErrorMessage = "Cantidad es obligatorio")]
-        public int? Cantidad { get; set; }
+        public int Cantidad { get; set; }
 
         [Required(ErrorMessage = "Jornada es obligatorio")]
         [Range(1, 50, ErrorMessage = "Jornada es obligatorio")]

@@ -65,7 +65,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" id="btnGuardarMaterial" (click)="guarda()" class="btn btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+                    <button type="button" id="btnGuardarMaterial" (click)="guarda()" class="btn btn-outline-success" [ngClass]="{'disabled': isLoading == true}"><i class="fa-solid fa-save"></i> Guardar</button>
                     <button type="button" class="btn btn-outline-secondary" (click)="close()" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -73,6 +73,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<carga-widget></carga-widget>
 <toast-widget></toast-widget>
 
 

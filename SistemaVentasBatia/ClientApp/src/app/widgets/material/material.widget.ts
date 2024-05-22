@@ -1,7 +1,9 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ListaMaterial } from 'src/app/models/listamaterial';
 declare var bootstrap: any;
+import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 @Component({
     selector: 'mate-widget',
@@ -9,6 +11,8 @@ declare var bootstrap: any;
 })
 export class MaterialWidget {
     @Output('smEvent') sendEvent = new EventEmitter<number>();
+    @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     model: ListaMaterial = {} as ListaMaterial;
     idD: number = 0;
     idC: number = 0;
@@ -18,6 +22,7 @@ export class MaterialWidget {
     nombreSucursal: string = '';
     puesto: string = '';
     tipo: string = '';
+    isLoading: boolean = false;
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) { }
 
     existe(id: number) {
@@ -45,12 +50,25 @@ export class MaterialWidget {
     }
 
     remove(id: number) {
-        this.http.delete<boolean>(`${this.url}api/${this.tipo}/${id}`).subscribe(response => {
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.delete<boolean>(`${this.url}api/${this.tipo}/${id}`).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast(this.tipo + ' eliminado')
+                }, 300);
             if (response) {
                 this.existe(this.idP);
             }
-        }, err => console.log(err));
-        this.total = 0;
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                this.errorToast('Ocurrió un error');
+                }, 300);
+                console.log(err);
+            });
+            this.total = 0;
+        }, 300);
     }
 
     open(cot: number, dir: number, pue: number, tp: string, edit: number, nombreSucursal?: string, puesto?: string) {
@@ -88,5 +106,27 @@ export class MaterialWidget {
         this.model.materialesCotizacion.forEach((total) => {
             this.total = this.total + total.total;
         });
+    }
+
+    okToast(message: string) {
+        this.toastWidget.errMessage = message;
+        this.toastWidget.isErr = false;
+        this.toastWidget.open();
+    }
+
+    errorToast(message: string) {
+        this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
+        this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

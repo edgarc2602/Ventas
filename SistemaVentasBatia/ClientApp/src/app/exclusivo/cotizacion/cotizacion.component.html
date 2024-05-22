@@ -39,19 +39,11 @@
             </div>
         </div>
     </div>
-    <!--<div *ngIf="isLoading || (lcots.cotizaciones && lcots.cotizaciones.length === 0)" class="row-12 text-center">
+    <div *ngIf="lcots.cotizaciones && lcots.cotizaciones.length == 0 && isLoading == false" class="text-center">
         <hr />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <h6 *ngIf="isLoading">Cargando...</h6>
-        <h6 *ngIf="!isLoading && lcots.cotizaciones && lcots.cotizaciones.length === 0">No se encontraron registros</h6>
+        <h6>No se encontraron registros</h6>
     </div>
-    <div *ngIf="isLoading" class="text-center ">
-        <i class="fas fa-spinner fa-spin fa-3x"></i>
-    </div>-->
+    
     <div *ngIf="lcots.cotizaciones && lcots.cotizaciones.length > 0" class="table-container box-shadow fade-in-container" #tbcotizaciones>
         <table class="table table-striped table-responsive">
             <thead class="sticky-top">

@@ -32,6 +32,8 @@ namespace SistemaVentasBatia.Repositories
         Task<IEnumerable<MaterialPuesto>> ObtenerUniformeDefaultPorPuesto(int idPuesto);
         Task<List<Catalogo>> ObtenerCatalogoFamiliasPorIdServicio(int idServicio);
         Task<List<Catalogo>> ObtenerCatalogoVendedores();
+        Task<List<Catalogo>> ObtenerCatalogoEjecutivos();
+        Task<List<Catalogo>> ObtenerCatalogoGerentesLimpieza();
     }
 
     public class CatalogosRepository : ICatalogosRepository
@@ -431,7 +433,7 @@ FROM tb_clase";
             var query = @"SELECT id_empresa Id,
                         nombre Descripcion
                         FROM tb_empresa
-                        WHERE id_estatus = 1
+                        WHERE id_estatus = 1 and tipo = 1
                         ORDER BY nombre";
 
             var empresas = new List<Catalogo>();
@@ -465,6 +467,46 @@ FROM tb_clase";
                 }
             }
             catch(Exception ex)
+            {
+                throw ex;
+            }
+            return vendedores;
+        }
+
+        public async Task<List<Catalogo>> ObtenerCatalogoEjecutivos()
+        {
+            string query = @"SELECT id_empleado Id, nombre + ' ' + paterno + ' ' + materno Descripcion FROM tb_empleado where id_status = 2 and esejecutivo = 1 ORDER BY nombre";
+
+            var vendedores = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    vendedores = (await connection.QueryAsync<Catalogo>(query)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return vendedores;
+        }
+
+        public async Task<List<Catalogo>> ObtenerCatalogoGerentesLimpieza()
+        {
+            string query = @"SELECT id_empleado Id, nombre + ' ' + paterno + ' ' + materno Descripcion FROM tb_empleado where id_status = 2 and esencargado = 1 ORDER BY nombre";
+
+            var vendedores = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    vendedores = (await connection.QueryAsync<Catalogo>(query)).ToList();
+                }
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }

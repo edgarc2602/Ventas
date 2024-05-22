@@ -8,8 +8,7 @@ import { numberFormat } from 'highcharts';
 declare var bootstrap: any;
 import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
-
-
+import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 
 @Component({
     selector: 'mateadd-widget',
@@ -17,6 +16,7 @@ import { ToastWidget } from '../toast/toast.widget';
 })
 export class MaterialAddWidget {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
     @Output('returnModal') returnModal = new EventEmitter<boolean>();
     @Output('smEvent') sendEvent = new EventEmitter<number>();
     dirs: Catalogo[] = [];
@@ -32,6 +32,7 @@ export class MaterialAddWidget {
     showSuc: boolean = false;
     isExtra: boolean = false;
     validaciones: boolean = false;
+    isLoading: boolean = false;
     edit: number = 0;
     hidedir: number = 0;
     nombreSucursal: string = '';
@@ -79,24 +80,31 @@ export class MaterialAddWidget {
         this.lerr = {};
         this.model.idPersonal = this.sinU.idPersonal;
         if (this.valida()) {
-            this.http.post<Material>(`${this.url}api/${this.tipo}`, this.model).subscribe(response => {
-                this.close();
-                this.okToast(this.model.claveProducto + ' guardado');
-                if (this.model.idPuestoDireccionCotizacion != 0) {
-                    this.returnModal.emit(true);
-                }
-                else {
-                    this.returnModal.emit(false);
-                }
-            }, err => {
-                console.log(err);
-                if (err.error) {
-                    if (err.error.errors) {
-                        this.lerr = err.error.errors;
+            this.iniciarCarga();
+            setTimeout(() => {
+                this.http.post<Material>(`${this.url}api/${this.tipo}`, this.model).subscribe(response => {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.okToast(this.model.claveProducto + ' guardado');
+                    }, 300);
+                    this.close();
+                    if (this.model.idPuestoDireccionCotizacion != 0) {
+                        this.returnModal.emit(true);
                     }
-                }
-                this.errorToast('Ocurri\u00F3 un error')
-            });
+                    else {
+                        this.returnModal.emit(false);
+                    }
+                }, err => {
+                    this.detenerCarga();
+                    this.errorToast('Ocurri\u00F3 un error');
+                    console.log(err);
+                    if (err.error) {
+                        if (err.error.errors) {
+                            this.lerr = err.error.errors;
+                        }
+                    }
+                });
+            }, 300);
         }
     }
 
@@ -198,5 +206,15 @@ export class MaterialAddWidget {
         this.toastWidget.isErr = true;
         this.toastWidget.errMessage = message;
         this.toastWidget.open();
+    }
+
+    iniciarCarga() {
+        this.isLoading = true;
+        this.cargaWidget.open(true);
+    }
+
+    detenerCarga() {
+        this.isLoading = false;
+        this.cargaWidget.open(false);
     }
 }

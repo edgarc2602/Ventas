@@ -20,58 +20,58 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                        <div class="row d-flex align-items-center">
-                            <div *ngIf="hidedir == 0" class="col-md-4 mb-3 col-12" id="dvSucursal">
-                                <div class="form-floating">
-                                    <select class="form-select" [(ngModel)]="model.idDireccionCotizacion" aria-label="IdDireccionCotizacion" id="txtSucursalMaterial" [disabled]="radiobutton == 1">
-                                        <option value="0">Selecciona una opción...</option>
-                                        <option *ngFor="let d of dirs" [ngValue]="d.id">{{ d.descripcion }}</option>
-                                    </select>
-                                    <label for="txtSucursalMaterial">Sucursal</label>
-                                </div>
-                                <span *ngIf="ferr('IdDireccionCotizacion')" class="text-danger">{{ terr('IdDireccionCotizacion') }}</span>
+                    <div class="row d-flex align-items-center">
+                        <div *ngIf="hidedir == 0" class="col-md-4 mb-3 col-12" id="dvSucursal">
+                            <div class="form-floating">
+                                <select class="form-select" [(ngModel)]="model.idDireccionCotizacion" aria-label="IdDireccionCotizacion" id="txtSucursalMaterial" [disabled]="radiobutton == 1">
+                                    <option value="0">Selecciona una opción...</option>
+                                    <option *ngFor="let d of dirs" [ngValue]="d.id">{{ d.descripcion }}</option>
+                                </select>
+                                <label for="txtSucursalMaterial">Sucursal</label>
                             </div>
-                            <div class="col-md-4 d-none mb-3 col-12" id="dvPuesto">
-                                <div class="form-floating">
-                                    <select class="form-select" [(ngModel)]="model.idPuestoDireccionCotizacion" aria-label="IdEstatusCotizacion" id="txtPuestoMaterial">
-                                        <option value="0">Selecciona una opción...</option>
-                                        <option *ngFor="let p of pues" [ngValue]="p.id">{{ p.descripcion }}</option>
-                                    </select>
-                                    <label for="txtPuestoMaterial">Puesto</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3 col-12">
-                                <div class="form-floating">
-                                    <select class="form-select" [(ngModel)]="model.claveProducto" id="ddlProductoMaterial">
-                                        <option value="0">Selecciona una opción...</option>
-                                        <option *ngFor="let m of mats" [ngValue]="m.clave">{{ m.descripcion }}</option>
-                                    </select>
-                                    <label for="ddlProductoMaterial">Producto</label>
-                                </div>
-                                <span *ngIf="ferr('ClaveProducto')" class="text-danger">{{ terr('ClaveProducto') }}</span>
-                            </div>
-                            <div class="col-6 col-md-4 col-sm-4 mb-3">
-                                <div class="form-floating">
-                                    <input type="number" class="form-control" [(ngModel)]="model.cantidad" id="txtCantidadMaterial">
-                                    <label for="txtCantidadMaterial">Cantidad</label>
-                                </div>
-                                <span *ngIf="ferr('Cantidad')" class="text-danger">{{ terr('Cantidad') }}</span>
-                            </div>
-                            <div class="col-6 col-md-4 col-sm-4 mb-3">
-                                <div class="form-floating">
-                                    <select class="form-select" aria-label="IdFrecuencia" [(ngModel)]="model.idFrecuencia" id="ddlFrecuenciaMaterial">
-                                        <option value="0">Selecciona una opción...</option>
-                                        <option *ngFor="let f of fres" [ngValue]="f.id">{{ f.nom }}</option>
-                                    </select>
-                                    <label for="ddlFrecuenciaMaterial">Frecuencia</label>
-                                </div>
-                                <span *ngIf="ferr('IdFrecuencia')" class="text-danger">{{ terr('IdFrecuencia') }}</span>
+                            <span *ngIf="ferr('IdDireccionCotizacion')" class="text-danger">{{ terr('IdDireccionCotizacion') }}</span>
+                        </div>
+                        <div class="col-md-4 d-none mb-3 col-12" id="dvPuesto">
+                            <div class="form-floating">
+                                <select class="form-select" [(ngModel)]="model.idPuestoDireccionCotizacion" aria-label="IdEstatusCotizacion" id="txtPuestoMaterial">
+                                    <option value="0">Selecciona una opción...</option>
+                                    <option *ngFor="let p of pues" [ngValue]="p.id">{{ p.descripcion }}</option>
+                                </select>
+                                <label for="txtPuestoMaterial">Puesto</label>
                             </div>
                         </div>
+                        <div class="col-md-4 mb-3 col-12">
+                            <div class="form-floating">
+                                <select class="form-select" [(ngModel)]="model.claveProducto" id="ddlProductoMaterial">
+                                    <option value="0">Selecciona una opción...</option>
+                                    <option *ngFor="let m of mats" [ngValue]="m.clave">{{ m.descripcion }}</option>
+                                </select>
+                                <label for="ddlProductoMaterial">Producto</label>
+                            </div>
+                            <span *ngIf="ferr('ClaveProducto')" class="text-danger">{{ terr('ClaveProducto') }}</span>
+                        </div>
+                        <div class="col-6 col-md-4 col-sm-4 mb-3">
+                            <div class="form-floating">
+                                <input type="number" class="form-control" [(ngModel)]="model.cantidad" id="txtCantidadMaterial">
+                                <label for="txtCantidadMaterial">Cantidad</label>
+                            </div>
+                            <span *ngIf="ferr('Cantidad')" class="text-danger">{{ terr('Cantidad') }}</span>
+                        </div>
+                        <div class="col-6 col-md-4 col-sm-4 mb-3">
+                            <div class="form-floating">
+                                <select class="form-select" aria-label="IdFrecuencia" [(ngModel)]="model.idFrecuencia" id="ddlFrecuenciaMaterial">
+                                    <option value="0">Selecciona una opción...</option>
+                                    <option *ngFor="let f of fres" [ngValue]="f.id">{{ f.nom }}</option>
+                                </select>
+                                <label for="ddlFrecuenciaMaterial">Frecuencia</label>
+                            </div>
+                            <span *ngIf="ferr('IdFrecuencia')" class="text-danger">{{ terr('IdFrecuencia') }}</span>
+                        </div>
+                    </div>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" id="btnGuardarMaterial" (click)="guarda()" class="btn btn-outline-success"><i class="fa-solid fa-save"></i> Guardar</button>
+                    <button type="button" id="btnGuardarMaterial" (click)="guarda()" class="btn btn-outline-success" [disabled]="isLoading"><i class="fa-solid fa-save"></i> Guardar</button>
                     <button type="button" class="btn btn-outline-secondary" (click)="close()" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -79,4 +79,5 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<carga-widget></carga-widget>
 <toast-widget></toast-widget>

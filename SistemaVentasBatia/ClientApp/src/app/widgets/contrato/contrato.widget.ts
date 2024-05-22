@@ -68,7 +68,7 @@ export class ContratoWidget {
             this.empresas = response;
         }, err => console.log(err));
 
-        this.http.get<ClienteContrato>(`${this.url}api/prospecto/ObtenerDatosExistentesClienteContrato/${this.idProspecto}`).subscribe(response => {
+        this.http.get<ClienteContrato>(`${this.url}api/cliente/ObtenerDatosExistentesClienteContrato/${this.idProspecto}`).subscribe(response => {
             this.contrato = response;
             this.http.get<Prospecto>(`${this.url}api/prospecto/ObtenerDatosExistentesProspecto/${this.idProspecto}`).subscribe(response => {
                 this.contrato.clienteRazonSocial = response.nombreComercial;
@@ -79,28 +79,23 @@ export class ContratoWidget {
     }
 
     guardarDatosContrato() {
-        this.http.post<boolean>(`${this.url}api/prospecto/InsertarDatosClienteContrato`, this.contrato).subscribe(response => {
+        this.http.post<boolean>(`${this.url}api/cliente/InsertarDatosClienteContrato`, this.contrato).subscribe(response => {
             this.isLoading = false;
         }, err => console.log(err));
     }
 
-    guardaryGenerarContratoBase() {
+    g
+
+    guardar() {
         this.lerr = {};
         if (this.valida()) {
             this.guardarDatosContrato();
-            this.generarContratoBase();
             this.isLoading = false;
+            this.sendEvent.emit(1);
+            this.close();
         }
     }
 
-    guardaryCargarContratoDeCliente() {
-        this.lerr = {};
-        if (this.valida()) {
-            this.guardarDatosContrato();
-            this.cargarContratoCliente();
-            this.isLoading = false;
-        }
-    }
 
     generarContratoBase() {
         this.isLoading = true;
@@ -122,9 +117,6 @@ export class ContratoWidget {
                         this.toastWidget.open();
                     }
                 });
-    }
-    cargarContratoCliente() {
-
     }
 
     valida() {

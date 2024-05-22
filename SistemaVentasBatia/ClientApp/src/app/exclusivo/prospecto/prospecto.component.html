@@ -30,7 +30,7 @@
         </div>
     </div>
     <div *ngIf="lspro.prospectos == null && lspro.prospectos.length == 0 && isLoading == false" class="row text-center">
-        <hr/>
+        <hr />
         <h6>No se encontraron registros</h6>
     </div>
     <div *ngIf="lspro.prospectos && lspro.prospectos.length > 0" class=" table-container box-shadow fade-in-container" #tbprospectos>
@@ -82,7 +82,7 @@
                         <a class="btn btn-sm btn-outline-success mb-1" [routerLink]="['/exclusivo/prospecto/' + prospecto.idProspecto]" data-bs-toggle="tooltip" title="Editar">
                             <i class="fa-solid fa-pencil fa-2x"></i>
                         </a>
-                        <button id="statusButton" (click)="prospecto.idEstatusProspecto === 1 ? elige(prospecto.idProspecto) : activar(prospecto.idProspecto)" class="toggle-btn {{ prospecto.idEstatusProspecto === 1 ? 'active' : '' }}">
+                        <button id="statusButton" (click)="prospecto.idEstatusProspecto === 1 ? confirmaDesactivarProspecto(prospecto.idProspecto) : confirmaActivarProspecto(prospecto.idProspecto)" class="toggle-btn {{ prospecto.idEstatusProspecto === 1 ? 'active' : '' }}">
                             {{ prospecto.idEstatusProspecto === 1 ? 'Activo' : 'Inactivo' }}
                         </button>
                     </td>
@@ -96,5 +96,5 @@
     </div>
 </div>
 <carga-widget></carga-widget>
-<elimina-widget [titulo]="" [mensaje]="" (ansEvent)="desactivar()"></elimina-widget>
+<confirmacion-widget (confirmaEvent)="confirmacionEvent($event)"></confirmacion-widget>
 <toast-widget></toast-widget>

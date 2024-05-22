@@ -1,0 +1,317 @@
+<body>
+    <div class="modal fade" id="modalCliente" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Generar cliente {{ model.nombreComercial }}</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-2 mb-3 d-none">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.idCliente" id="idCliente" disabled>
+                                    <label for="idCliente">ID</label>
+                                </div>
+                                <span *ngIf="ferr('IdCliente')" class="text-danger">{{ terr('IdCliente') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3 d-none">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.codigo" id="idCliente" disabled>
+                                    <label for="idCliente">Codigo</label>
+                                </div>
+                                <span *ngIf="ferr('Codigo')" class="text-danger">{{ terr('Codigo') }}</span>
+                            </div>
+                            <div class="col-md-2 mb-3 d-none">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.idTipo" id="idTipo" disabled>
+                                        <option value="0">Seleccione...</option>
+                                        <option value="1">Cliente</option>
+                                        <option value="2">Prospecto</option>
+                                    </select>
+                                    <label for="idTipo">Tipo</label>
+                                </div>
+                                <span *ngIf="ferr('IdTipo')" class="text-danger">{{ terr('IdTipo') }}</span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-5 mb-3 d-none">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control custom-input" [(ngModel)]="model.nombreComercial" id="NombreComercial" disabled>
+                                    <label for="NombreComercial">Nombre Comercial</label>
+                                </div>
+                                <span *ngIf="ferr('NombreComercial')" class="text-danger">{{ terr('NombreComercial') }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.contacto" value="prospecto.nombreContacto" id="Contacto">
+                                    <label for="Contacto">Nombre Contacto</label>
+                                </div>
+                                <span *ngIf="ferr('Contacto')" class="text-danger">{{ terr('Contacto') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.departamento" id="Departamento">
+                                    <label for="Departamento">Departamento Contacto</label>
+                                </div>
+                                <span *ngIf="ferr('Departamento')" class="text-danger">{{ terr('Departamento') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.puesto" id="Puesto">
+                                    <label for="Puesto">Puesto Contacto</label>
+                                </div>
+                                <span *ngIf="ferr('Puesto')" class="text-danger">{{ terr('Puesto') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.email" id="Email">
+                                    <label for="Email">Email Contacto</label>
+                                </div>
+                                <span *ngIf="ferr('Email')" class="text-danger">{{ terr('Email') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" [(ngModel)]="model.telefonos" id="Telefonos">
+                                    <label for="Telefonos">Telefonos Contacto</label>
+                                </div>
+                                <span *ngIf="ferr('Telefonos')" class="text-danger">{{ terr('Telefonos') }}</span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.idEjecutivo" id="IdEjecutivo">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let e of ejecutivos" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="IdEjecutivo">Ejecutivo de cuenta</label>
+                                </div>
+                                <span *ngIf="ferr('IdEjecutivo')" class="text-danger">{{ terr('IdEjecutivo') }}</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.idGerenteLimpieza" id="IdGerente">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let e of gerentes" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="IdGerente">Gerente limpieza</label>
+                                </div>
+                                <span *ngIf="ferr('IdGerenteLimpieza')" class="text-danger">{{ terr('IdGerenteLimpieza') }}</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.idEmpresaPagadora" id="IdEmpresaPagadora">
+                                        <option value="0">Seleccione...</option>
+                                        <option *ngFor="let e of empresas" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                    </select>
+                                    <label for="IdEmpresaPagadora">Empresa pagadora</label>
+                                </div>
+                                <span *ngIf="ferr('IdEmpresaPagadora')" class="text-danger">{{ terr('IdEmpresaPagadora') }}</span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.facturacion" id="idTipo">
+                                        <option value="0">Seleccione...</option>
+                                        <option value="Mes Corriente">Mes Corriente</option>
+                                        <option value="Mes Vencido">Mes Vencido</option>
+                                    </select>
+                                    <label for="idTipo">Facturación</label>
+                                </div>
+                                <span *ngIf="ferr('Facturacion')" class="text-danger">{{ terr('Facturacion') }}</span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.tipoFacturacion" id="idTipoFacturacion">
+                                        <option value="0">Seleccione...</option>
+                                        <option value="Por iguala">Por iguala</option>
+                                        <option value="Por Estimación">Por Estimación</option>
+                                    </select>
+                                    <label for="idTipoFacturacion">Tipo Facturación</label>
+                                </div>
+                                <span *ngIf="ferr('TipoFacturacion')" class="text-danger">{{ terr('TipoFacturacion') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.credito" id="Credito">
+                                    <label for="Credito">Credito</label>
+                                </div>
+                                <span *ngIf="ferr('Credito')" class="text-danger">{{ terr('Credito') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.diasFacturacion" id="DiasFacturacion">
+                                    <label for="DiasFacturacion">Días Facturación</label>
+                                </div>
+                                <span *ngIf="ferr('DiasFacturacion')" class="text-danger">{{ terr('DiasFacturacion') }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" [(ngModel)]="model.fechaInicio" id="FechaInicio" (change)="calcularFechaTermino()">
+                                    <label for="FechaInicio">Fecha Inicio</label>
+                                </div>
+                                <span *ngIf="ferr('FechaInicio')" class="text-danger">{{ terr('FechaInicio') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.vigencia" id="Vigencia" (input)="calcularFechaTermino()" min="1" max="999">
+                                    <label for="Vigencia">Vigencia (meses)</label>
+                                </div>
+                                <span *ngIf="ferr('Vigencia')" class="text-danger">{{ terr('Vigencia') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control custom-input" [value]="model.fechaTermino?.toISOString().substr(0, 10)" id="FechaTermino" disabled>
+                                    <label for="FechaTermino">Fecha Termino</label>
+                                </div>
+                                <span *ngIf="ferr('FechaTermino')" class="text-danger">{{ terr('FechaTermino') }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.porcentajeMateriales" id="PorcentajeMateriales">
+                                    <label for="PorcentajeMateriales">Porcentaje Materiales</label>
+                                </div>
+                                <span *ngIf="ferr('PorcentajeMateriales')" class="text-danger">{{ terr('PorcentajeMateriales') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.porcentajeIndirectos" id="PorcentajeIndirectos">
+                                    <label for="PorcentajeIndirectos">Porcentaje Indirectos</label>
+                                </div>
+                                <span *ngIf="ferr('PorcentajeIndirectos')" class="text-danger">{{ terr('PorcentajeIndirectos') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="model.diaLimiteFacturar" id="DiaLimiteFacturar">
+                                    <label for="DiaLimiteFacturar">Dia Limite Facturar</label>
+                                </div>
+                                <span *ngIf="ferr('DiaLimiteFacturar')" class="text-danger">{{ terr('DiaLimiteFacturar') }}</span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control custom-input" [(ngModel)]="model.totalSucursales" id="TotalSucursales" disabled>
+                                    <label for="TotalSucursales">Total Sucursales</label>
+                                </div>
+                                <span *ngIf="ferr('TotalSucursales')" class="text-danger">{{ terr('TotalSucursales') }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control custom-input" [(ngModel)]="model.totalEmpleados" id="TotalEmpleados" disabled>
+                                    <label for="TotalEmpleados">Total Empleados</label>
+                                </div>
+                                <span *ngIf="ferr('TotalEmpleados')" class="text-danger">{{ terr('TotalEmpleados') }}</span>
+                            </div>
+
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                Incluye:
+                            </div>
+                            <div class="col-sm-6 col-md-2 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="model.incluyeMaterial" /> Material
+                                    </label><br />
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-2 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="model.incluyeHerramienta" /> Herramienta
+                                    </label><br />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                Deductivas por:
+                            </div>
+                            <div class="col-sm-6 col-md-2 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="model.deductivaMaterial" /> Materiales
+                                    </label><br />
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-2 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="model.deductivaServicio" /> Servicios
+                                    </label><br />
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-2 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="model.deductivaPlantilla" /> Plantilla
+                                    </label><br />
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-2 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="model.deductivaPlazoEntrega" /> Plazo de entrega
+                                    </label><br />
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <h6><span class="small text-muted mb-2">Contrato</span></h6>
+                        <div class="row mb-3">
+                            <div class="col-sm-6 col-md-3 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="contrato" [value]="false" [(ngModel)]="tipoContrato" required /> Generar y cargar contrato base
+                                    </label><br />
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3 col-4">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="contrato" [value]="true" [(ngModel)]="tipoContrato" required /> Cargar contrato de cliente
+                                    </label><br />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="tipoContrato == true">
+                            <div class="col-md-3 col-4 mb-3 text-center">
+                                <input type="file" accept=".pdf,.docx" (change)="onContratoSeleccionado($event)" style="display: none;" #contratoInput>
+                                <button class="btn btn-outline-secondary" (click)="contratoInput.click()"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
+
+                            </div>
+                            <div class="col-md-3 col-4 mb-3">
+                                <div *ngIf="contratoSeleccionado" class="form-floating">
+                                    <input type="text" class="form-control custom-input" value="{{ contratoSeleccionado.name }}" placeholder="Contrato" disabled>
+                                    <label asp-for="Keywords">Seleccionado:</label>
+                                </div>
+                                <span *ngIf="ferr('ContratoSeleccionado')" class="text-danger">{{ terr('ContratoSeleccionado') }}</span>
+                            </div>
+                            <div class="col-md-1 col-2">
+                                <button *ngIf="contratoSeleccionado" class="btn btn-outline-danger" (click)="limpiarContrato()">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-5 col-2 mb-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" (click)="guarda()" class="btn btn-outline-success" [disabled]="isLoading"><i class="fa-solid fa-user-plus"></i> Crear cliente</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<carga-widget></carga-widget>
+<toast-widget></toast-widget>
