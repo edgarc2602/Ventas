@@ -43,6 +43,7 @@ namespace SistemaVentasBatia.Repositories
         int InsertarXMLAsuntoLegal(string asuntoLegalXML);
         Task<int> ObtenerIdAsuntoPasoContrato(int idAsuntoCreado);
         bool InsertarContratoClienteXML(string contratoClienteXML);
+        Task<bool> ActualizarEstatusAsuntoPaso(int idAsuntoPaso);
     }
 
     public class ClienteRepository : IClienteRepository
@@ -604,7 +605,7 @@ namespace SistemaVentasBatia.Repositories
                 connection.Open();
                 var parameters = new DynamicParameters();
                 parameters.Add("@Cabecero", new SqlXml(new System.Xml.XmlTextReader(asuntoLegalXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
-                parameters.Add("@Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@id", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 connection.Execute("sp_asunto", parameters, commandType: CommandType.StoredProcedure);
                 int idMov = parameters.Get<int>("@id");
                 idAsuntoLegal = idMov;
@@ -619,7 +620,7 @@ namespace SistemaVentasBatia.Repositories
         public async Task<int> ObtenerIdAsuntoPasoContrato(int idAsuntoCreado)
         {
             int idAsuntoPaso;
-            string query = @"SELECT a.id_asunto, b.id_asunto_paso, b.id_paso FROM tb_asunto a
+            string query = @"SELECT b.id_asunto_paso FROM tb_asunto a
                              INNER JOIN tb_asunto_pasos b on a.id_asunto = b.id_asunto
                              WHERE a.id_asunto = @idAsuntoCreado AND b.id_paso = 9";
             try
@@ -645,6 +646,29 @@ namespace SistemaVentasBatia.Repositories
                 result = true;
             }
             catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        public async Task<bool>  ActualizarEstatusAsuntoPaso(int idAsuntoPaso)
+        {
+            string query = @"UPDATE tb_asunto_pasos
+                            SET id_estatus = 2
+                            WHERE id_asunto_paso = @idAsuntoPaso";
+            bool result = false;
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                var rowsAffected = await connection.ExecuteAsync(query, new { idAsuntoPaso });
+                if (rowsAffected > 0)
+                {
+                    result = true;
+                }
+
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }

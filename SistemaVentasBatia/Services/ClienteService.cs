@@ -288,7 +288,9 @@ namespace SistemaVentasBatia.Services
         public async Task<bool> InsertarContratoCliente(byte[] contrato, int idClienteCreado, string nombreCliente)
         {
             bool result;
-            string pathContrato = "C:\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos\\";
+
+            //string pathContrato = "C:\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos\\"; //RUTA PROD
+            string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
 
             //INSERTAR ASUNTO
             string asuntoLegalXMLString = CrearXMLAsuntoLegal(idClienteCreado, nombreCliente);
@@ -323,6 +325,8 @@ namespace SistemaVentasBatia.Services
             int idAsuntoPaso = await clienteRepo.ObtenerIdAsuntoPasoContrato(idAsuntoCreado);
             string contratoAsuntoLegalXMLString = CrearXMLAsuntoLegalContrato(idAsuntoPaso, nombreArchivo);
             bool contratoInsertado = clienteRepo.InsertarContratoClienteXML(contratoAsuntoLegalXMLString);
+
+            bool actualizaPaso = await clienteRepo.ActualizarEstatusAsuntoPaso(idAsuntoPaso);
 
             return result;
         }
