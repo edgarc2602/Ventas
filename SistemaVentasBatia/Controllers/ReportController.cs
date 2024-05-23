@@ -185,7 +185,7 @@ namespace SistemaVentasBatia.Controllers
                 //GENERAR CONTRATO
                 byte[] contratoBytes = await _reportService.ObtenerContratoDOCX(idCotizacion, contrato);
                 //INSERTAR CONTRATO 
-                bool result = await _clienteService.InsertarContratoCliente(contratoBytes, idClienteGenerado, contrato.ClienteRazonSocial);
+                bool result = _clienteService.InsertarContratoCliente(contratoBytes, idClienteGenerado, contrato.ClienteRazonSocial);
                 //REGRESAR COPIA DE CONTRATO AL USUARIO
                 return File(contratoBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "LIMPIEZASERV.IND.BATIA_actualizado.docx");
             }

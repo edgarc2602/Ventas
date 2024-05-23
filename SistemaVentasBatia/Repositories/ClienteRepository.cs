@@ -34,13 +34,15 @@ namespace SistemaVentasBatia.Repositories
         bool InsertarHorarioPlantillaXML(string horarioPlantillaXML);
         bool InsertarPlantillaPXML(int idPlantillaCreada, int cantidad);
         bool InsertarVacantePlantillaXML(int idPlantillaCreada, int idPersonal);
-        Task <bool> InsertarMaterial(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
-        Task <bool> InsertarMaterialDireccion(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
+        Task<bool> InsertarMaterial(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
+        Task<bool> InsertarMaterialDireccion(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
         Task<int> ObtenerConceptoPresupuestoPorLineaNegocio(int idServicio);
         bool InsertarPresupuestoMaterialXML(string resupuestoPlantillaXML);
         bool InsertarPresupuestoEquipoHerramientaXML(string resupuestoPlantillaXML);
         bool InsertarEquipoHerramientaXML(string equipoHerramientaXML);
         int InsertarXMLAsuntoLegal(string asuntoLegalXML);
+        Task<int> ObtenerIdAsuntoPasoContrato(int idAsuntoCreado);
+        bool InsertarContratoClienteXML(string contratoClienteXML);
     }
 
     public class ClienteRepository : IClienteRepository
@@ -382,7 +384,7 @@ namespace SistemaVentasBatia.Repositories
                 parameters.Add("@Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 connection.Execute("sp_puntoatencion", parameters, commandType: CommandType.StoredProcedure);
                 int idMov = parameters.Get<int>("@Id");
-                result = idMov; 
+                result = idMov;
                 Console.WriteLine("Cliente ID: " + idMov);
 
             }
@@ -482,7 +484,7 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    var rowsAffected = await connection.ExecuteAsync(query, new { idClienteCreado, producto.ClaveProducto, producto.IdFrecuencia});
+                    var rowsAffected = await connection.ExecuteAsync(query, new { idClienteCreado, producto.ClaveProducto, producto.IdFrecuencia });
                     if (rowsAffected > 0)
                     {
                         result = true;
@@ -504,7 +506,7 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    var rowsAffected = await connection.ExecuteAsync(query, new { idPlantilla, producto.ClaveProducto, producto.IdFrecuencia, producto.Cantidad});
+                    var rowsAffected = await connection.ExecuteAsync(query, new { idPlantilla, producto.ClaveProducto, producto.IdFrecuencia, producto.Cantidad });
                     if (rowsAffected > 0)
                     {
                         result = true;
@@ -518,7 +520,7 @@ namespace SistemaVentasBatia.Repositories
             }
             return result;
         }
-        
+
         public async Task<int> ObtenerConceptoPresupuestoPorLineaNegocio(int idServicio)
         {
             string query = @"SELECT id_concepto FROM tb_conceptoptto WHERE id_lineanegocio = @idServicio";
@@ -530,7 +532,7 @@ namespace SistemaVentasBatia.Repositories
                     idConcepto = await connection.QueryFirstAsync<int>(query, new { idServicio });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -600,14 +602,12 @@ namespace SistemaVentasBatia.Repositories
             {
                 using var connection = ctx.CreateConnection();
                 connection.Open();
-
                 var parameters = new DynamicParameters();
                 parameters.Add("@Cabecero", new SqlXml(new System.Xml.XmlTextReader(asuntoLegalXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
                 parameters.Add("@Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                connection.Execute("sp_plantilla", parameters, commandType: CommandType.StoredProcedure);
-                int idMov = parameters.Get<int>("@Id");
+                connection.Execute("sp_asunto", parameters, commandType: CommandType.StoredProcedure);
+                int idMov = parameters.Get<int>("@id");
                 idAsuntoLegal = idMov;
-                Console.WriteLine("Cliente ID: " + idMov);
             }
             catch (Exception ex)
             {
@@ -615,5 +615,41 @@ namespace SistemaVentasBatia.Repositories
             }
             return idAsuntoLegal;
         }
+
+        public async Task<int> ObtenerIdAsuntoPasoContrato(int idAsuntoCreado)
+        {
+            int idAsuntoPaso;
+            string query = @"SELECT a.id_asunto, b.id_asunto_paso, b.id_paso FROM tb_asunto a
+                             INNER JOIN tb_asunto_pasos b on a.id_asunto = b.id_asunto
+                             WHERE a.id_asunto = @idAsuntoCreado AND b.id_paso = 9";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                idAsuntoPaso = await connection.ExecuteScalarAsync<int>(query, new { idAsuntoCreado });
+
+            }
+            catch (Exception ex) { throw ex; }
+            return idAsuntoPaso;
+        }
+
+        public bool InsertarContratoClienteXML(string contratoClienteXML)
+        {
+            bool result;
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("@Cabecero", new SqlXml(new System.Xml.XmlTextReader(contratoClienteXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
+                connection.Execute("sp_asuntopaso_documento", parameters, commandType: CommandType.StoredProcedure);
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
     }
+
 }

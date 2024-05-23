@@ -17,6 +17,7 @@ using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Asn1.Tsp;
 using Microsoft.AspNetCore.Routing;
 using System.IO;
+using System.Drawing;
 
 namespace SistemaVentasBatia.Services
 {
@@ -89,20 +90,20 @@ namespace SistemaVentasBatia.Services
             decimal totalMaterialesPuesto = 0;
             decimal totalHerramientaPuesto = 0;
             decimal totalEquipoPuesto = 0;
-            decimal totalUniformePuesto = 0;
+            //decimal totalUniformePuesto = 0;
             decimal totalHigienicosPuesto = 0;
 
             decimal totalMaterialesExtra = 0;
             decimal totalHerramientaExtra = 0;
             decimal totalEquipoExtra = 0;
-            decimal totalUniformeExtra = 0;
+            //decimal totalUniformeExtra = 0;
             decimal totalHigienicosExtra = 0;
-            decimal totalServicioExtra = 0;
+            //decimal totalServicioExtra = 0;
 
             decimal totalGeneralMateriales = 0;
-            decimal totalGeneralHerramienta = 0;
+            //decimal totalGeneralHerramienta = 0;
             decimal totalGeneralEquipoHerramienta = 0;
-            decimal totalGeneralUniforme = 0;
+            //decimal totalGeneralUniforme = 0;
 
             decimal totalGeneralHigienico = 0;
 
@@ -158,13 +159,13 @@ namespace SistemaVentasBatia.Services
                     {
                         string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herr.ClaveProducto, (int)herr.IdFrecuencia, herr.Cantidad, herr.Total);
                         clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
-                        totalHerramientaPuesto += (herr.Total/(int)herr.IdFrecuencia) * puesto.Cantidad;
+                        totalHerramientaPuesto += (herr.Total / (int)herr.IdFrecuencia) * puesto.Cantidad;
                     }
                     foreach (var equ in equipo)
                     {
                         string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equ.ClaveProducto, (int)equ.IdFrecuencia, equ.Cantidad, equ.Total);
                         clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
-                        totalEquipoPuesto += (equ.Total/(int)equ.IdFrecuencia) * puesto.Cantidad;
+                        totalEquipoPuesto += (equ.Total / (int)equ.IdFrecuencia) * puesto.Cantidad;
                     }
                     //foreach (var uni in uniforme)
                     //{
@@ -197,7 +198,7 @@ namespace SistemaVentasBatia.Services
                 {
                     string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herr.ClaveProducto, (int)herr.IdFrecuencia, herr.Cantidad, herr.Total);
                     clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
-                    totalHerramientaExtra += herr.Total /(int)herr.IdFrecuencia;
+                    totalHerramientaExtra += herr.Total / (int)herr.IdFrecuencia;
                 }
                 foreach (var equ in equipoExtraSuc)
                 {
@@ -268,20 +269,62 @@ namespace SistemaVentasBatia.Services
             // GENERAR 3 PRESUPUESTOS, SOLO MATERIAL, SOLO HIGIENICOS Y HERRAMIENTA/EQUIPO
             if (totalMaterialesPuesto > 0)
             {
-                string presupuestoMaterialesXMLString = CrearXMLPresupuestoMateriales(idClienteCreado, cliente.IdServicio, 4, 1 , totalGeneralMateriales, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
+                string presupuestoMaterialesXMLString = CrearXMLPresupuestoMateriales(idClienteCreado, cliente.IdServicio, 4, 1, totalGeneralMateriales, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
                 clienteRepo.InsertarPresupuestoMaterialXML(presupuestoMaterialesXMLString);
             }
-            if(totalGeneralHigienico > 0)
+            if (totalGeneralHigienico > 0)
             {
                 string presupuestoHigienicosXMLString = CrearXMLPresupuestoHigienicos(idClienteCreado, cliente.IdServicio, 4, 2, totalGeneralHigienico, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
                 clienteRepo.InsertarPresupuestoMaterialXML(presupuestoHigienicosXMLString);
             }
-            if(totalGeneralEquipoHerramienta > 0)
+            if (totalGeneralEquipoHerramienta > 0)
             {
                 string presupuestoEquipoHerramientaXMLString = CrearXMLPresupuestoEquipoHerramienta(idClienteCreado, cliente.IdServicio, 4, "LISTA DE HERRAMIENTAS Y EQUIPO", totalGeneralEquipoHerramienta, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
                 clienteRepo.InsertarPresupuestoEquipoHerramientaXML(presupuestoEquipoHerramientaXMLString);
             }
             return idClienteCreado;
+        }
+
+        public async Task<bool> InsertarContratoCliente(byte[] contrato, int idClienteCreado, string nombreCliente)
+        {
+            bool result;
+            string pathContrato = "C:\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos\\";
+
+            //INSERTAR ASUNTO
+            string asuntoLegalXMLString = CrearXMLAsuntoLegal(idClienteCreado, nombreCliente);
+            int idAsuntoCreado = clienteRepo.InsertarXMLAsuntoLegal(asuntoLegalXMLString);
+
+            //CREAR CARPETA SI NO EXISTE
+            Path.Combine(pathContrato, idAsuntoCreado.ToString());
+            if (!Directory.Exists(pathContrato))
+            {
+                Directory.CreateDirectory(pathContrato);
+            }
+
+            //CREAR RUTA DEL ARCHIVO
+            string nombreArchivo = "Contrato_" + nombreCliente + ".docx";
+            var filePath = Path.Combine(pathContrato, nombreArchivo);
+
+            //GENERAR ARCHIVO
+            try
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    stream.Write(contrato, 0, contrato.Length);
+                }
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al guardar el archivo: " + ex.Message);
+                result = false;
+            }
+            //GENERAR E INSERTAR REGISTRO DE ARCHIVO CARGADO
+            int idAsuntoPaso = await clienteRepo.ObtenerIdAsuntoPasoContrato(idAsuntoCreado);
+            string contratoAsuntoLegalXMLString = CrearXMLAsuntoLegalContrato(idAsuntoPaso, nombreArchivo);
+            bool contratoInsertado = clienteRepo.InsertarContratoClienteXML(contratoAsuntoLegalXMLString);
+
+            return result;
         }
 
         public string CrearXMLCliente(ClienteDTO cliente)
@@ -507,7 +550,7 @@ namespace SistemaVentasBatia.Services
             DateTime fechaAlta = DateTime.Now;
             var fechaCierre = fechaAlta.AddDays(12);
             var asuntoXML = new XmlDocument();
-            var asuntoLegalElement = asuntoXML.CreateElement("listaherramienta");
+            var asuntoLegalElement = asuntoXML.CreateElement("registro");
             asuntoLegalElement.SetAttribute("folio", "");
             asuntoLegalElement.SetAttribute("tipoasunto", "3");
             asuntoLegalElement.SetAttribute("fechaalta", fechaAlta.ToString("yyyy-MM-dd"));
@@ -522,27 +565,15 @@ namespace SistemaVentasBatia.Services
             return asuntoLegalXMLString;
         }
 
-        public async Task<bool> InsertarContratoCliente(byte[] contrato, int idClienteCreado, string nombreCliente)
+        public string CrearXMLAsuntoLegalContrato(int idAsuntoPaso, string nombreArchivo)
         {
-            string pathContrato = "C:\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos\\";
-
-            //INSERTAR ASUNTO
-            string asuntoLegalXMLString = CrearXMLAsuntoLegal(idClienteCreado, nombreCliente);
-            int idAsuntoCreado = clienteRepo.InsertarXMLAsuntoLegal(asuntoLegalXMLString);
-
-            //INSERTAR CARPETA CON ID ASUNTO
-            Path.Combine(pathContrato, idAsuntoCreado.ToString());
-                if (!Directory.Exists(pathContrato))
-            {
-                Directory.CreateDirectory(pathContrato);
-            }
-            
-
-           
-            //INSERTAR CONTRATO
-
-            bool result = false;
-            return result;
+            var asuntoContratoXML = new XmlDocument();
+            var asuntoLegalContratoElement = asuntoContratoXML.CreateElement("registro");
+            asuntoLegalContratoElement.SetAttribute("idasuntopaso", idAsuntoPaso.ToString());
+            asuntoLegalContratoElement.SetAttribute("descripcion", nombreArchivo);
+            asuntoContratoXML.AppendChild(asuntoLegalContratoElement);
+            string asuntoLegalContratoXMLString = asuntoContratoXML.OuterXml;
+            return asuntoLegalContratoXMLString;
         }
     }
 }
