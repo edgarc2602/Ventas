@@ -43,17 +43,18 @@ namespace SistemaVentasBatia.Controllers
             return await clienteSvc.ConvertirProspectoACliente(cliente, direccionIP);
         }
 
-        [HttpPost("[action]/{idClienteCreado}")]
-        public async Task<ActionResult<bool>> InsertarContratoCliente(FormFile contratoCliente, int idClienteCreado, string nombreCliente)
+        [HttpPost("[action]")]
+        public async Task<bool> InsertarContratoCliente([FromForm] int idClienteGenerado, [FromForm] string nombreComercial, [FromForm] IFormFile contratoSeleccionado)
         {
             byte[] contratoBytes;
             using (var memoryStream = new MemoryStream())
             {
-                await contratoCliente.CopyToAsync(memoryStream);
+                await contratoSeleccionado.CopyToAsync(memoryStream);
                 contratoBytes = memoryStream.ToArray();
             }
-            return await clienteSvc.InsertarContratoCliente(contratoBytes, idClienteCreado, nombreCliente);
+            return await clienteSvc.InsertarContratoCliente(contratoBytes, idClienteGenerado, nombreComercial);
         }
+
 
 
     }

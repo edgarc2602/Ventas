@@ -15,7 +15,8 @@ namespace SistemaVentasBatia.Enums
     public enum EstatusProspecto
     {
         Activo = 1,
-        Inactivo = 2
+        Inactivo = 2,
+        Contratado = 4
     }
 
     public enum EstatusDireccion
@@ -27,14 +28,20 @@ namespace SistemaVentasBatia.Enums
     public enum EstatusCotizacion
     {
         Activa = 1,
-        Inactivo = 3
+        Inactivo = 3,
+        Contratada = 4,
+        NoSeleccionada = 5
+        
+        
     }
 
     public enum Servicio
     {
         Mantenimiento = 1,
         Limpieza = 2,
-        Sanitización = 3
+        Sanitización = 3,
+        //Insumos = 4,
+        //Eventos = 5
     }
 
     public enum SalarioTipo

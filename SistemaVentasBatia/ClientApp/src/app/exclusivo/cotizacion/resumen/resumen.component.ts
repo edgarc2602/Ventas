@@ -60,7 +60,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
-        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0
+        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, idEstatus: 0
     };
     modelDir: DireccionCotizacion = {
         idCotizacion: 0, idDireccionCotizacion: 0, idDireccion: 0, nombreSucursal: ''
@@ -133,7 +133,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     nuevo() {
         this.model = {
             idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0, material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0, subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0,
-            idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0
+            idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, idEstatus: 0
         };
         let fec: Date = new Date();
         this.modelpros = {
@@ -420,7 +420,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.selPuesto = id;
         this.selDireccion = dir;
         this.selTipo = tp;
-        this.proPue.open(this.model.idCotizacion, dir, id, tp, this.edit, nombreSucursal, puesto);
+        this.proPue.open(this.model.idCotizacion, dir, id, tp, this.edit, nombreSucursal, puesto, this.model.idEstatus);
     }
 
     newMate(event) {
@@ -813,5 +813,8 @@ export class ResumenComponent implements OnInit, OnDestroy {
     detenerCarga() {
         this.isLoading = false;
         this.cargaWidget.open(false);
+    }
+    openCargaContratoWidget() {
+
     }
 }   

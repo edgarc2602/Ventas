@@ -36,5 +36,6 @@ namespace SistemaVentasBatia.DTOs
         public decimal ComisionExtPor { get; set; }
         public bool PolizaCumplimiento { get; set; }
         public decimal  TotalPolizaCumplimiento { get; set; }
+        public int IdEstatus { get; set; }
     }
 }

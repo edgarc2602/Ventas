@@ -25,6 +25,7 @@ export class ToastWidget {
         toastElement.classList.toggle('bg-success', !this.isErr);
         toastElement.classList.add('show');
         setTimeout(() => {
+            toastElement.classList.remove('show');
             toastElement.classList.add('hide');
             setTimeout(() => {
                 this.isErr = false;

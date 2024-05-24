@@ -17,7 +17,9 @@ export class CargaWidget {
         } else {
             this.isCarga = false;
             toastElement.classList.add('hide');
+            setTimeout(() => {
+                toastElement.classList.remove('show');
+            }, 300);
         }
     }
-
 }

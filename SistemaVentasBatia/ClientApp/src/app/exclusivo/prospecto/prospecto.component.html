@@ -76,13 +76,13 @@
                         </div>
                     </td>
                     <td class="mb-3 text-center">
-                        <button type="submit" class="btn btn-sm btn-outline-primary mb-1" [routerLink]="['/exclusivo/cotiza/' + prospecto.idProspecto]" data-bs-toggle="tooltip" title="Cotizaciones" [disabled]="prospecto.idEstatusProspecto !== 1">
+                        <button type="submit" class="btn btn-sm btn-outline-primary mb-1" [routerLink]="['/exclusivo/cotiza/' + prospecto.idProspecto]" data-bs-toggle="tooltip" title="Cotizaciones">
                             <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
                         </button>
-                        <a class="btn btn-sm btn-outline-success mb-1" [routerLink]="['/exclusivo/prospecto/' + prospecto.idProspecto]" data-bs-toggle="tooltip" title="Editar">
+                        <a *ngIf="prospecto.idEstatusProspecto == 1" class="btn btn-sm btn-outline-success mb-1" [routerLink]="['/exclusivo/prospecto/' + prospecto.idProspecto]" data-bs-toggle="tooltip" title="Editar">
                             <i class="fa-solid fa-pencil fa-2x"></i>
                         </a>
-                        <button id="statusButton" (click)="prospecto.idEstatusProspecto === 1 ? confirmaDesactivarProspecto(prospecto.idProspecto) : confirmaActivarProspecto(prospecto.idProspecto)" class="toggle-btn {{ prospecto.idEstatusProspecto === 1 ? 'active' : '' }}">
+                        <button *ngIf="prospecto.idEstatusProspecto == 1" id="statusButton" (click)="prospecto.idEstatusProspecto === 1 ? confirmaDesactivarProspecto(prospecto.idProspecto) : confirmaActivarProspecto(prospecto.idProspecto)" class="toggle-btn {{ prospecto.idEstatusProspecto === 1 ? 'active' : '' }}">
                             {{ prospecto.idEstatusProspecto === 1 ? 'Activo' : 'Inactivo' }}
                         </button>
                     </td>

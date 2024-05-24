@@ -34,8 +34,8 @@ export class ClienteWidget {
     prospecto: Prospecto = {} as Prospecto;
     model: Cliente = {} as Cliente;
     contrato: ClienteContrato = {} as ClienteContrato;
-    ejecutivos: Catalogo [] = [];
-    empresas: Catalogo [] = [];
+    ejecutivos: Catalogo[] = [];
+    empresas: Catalogo[] = [];
     gerentes: Catalogo[] = [];
 
     tipoContrato: boolean = false;
@@ -58,7 +58,7 @@ export class ClienteWidget {
         this.lerr = {};
         let fec: Date = new Date();
         this.model = {
-            idServicio: 0, idCotizacion: 0, idProspecto: 0, idPersonal: 0,  idCliente: 0, codigo: '', idTipo: 1, nombreComercial: '', contacto: '', departamento: '', puesto: '', email: '', telefonos: '', idEjecutivo: 0, idGerenteLimpieza: 0, idEmpresaPagadora: 0, facturacion: '0', tipoFacturacion: '0',
+            idServicio: 0, idCotizacion: 0, idProspecto: 0, idPersonal: 0, idCliente: 0, codigo: '', idTipo: 1, nombreComercial: '', contacto: '', departamento: '', puesto: '', email: '', telefonos: '', idEjecutivo: 0, idGerenteLimpieza: 0, idEmpresaPagadora: 0, facturacion: '0', tipoFacturacion: '0',
             credito: 0, diasFacturacion: 0, fechaInicio: null, vigencia: 0, fechaTermino: null, porcentajeMateriales: 0, porcentajeIndirectos: 0, diaLimiteFacturar: 0, totalSucursales: 0, totalEmpleados: 0, incluyeMaterial: false, incluyeHerramienta: false,
             deductivaMaterial: false, deductivaServicio: false, deductivaPlantilla: false, deductivaPlazoEntrega: false
         }
@@ -72,6 +72,7 @@ export class ClienteWidget {
     guarda() {
         this.lerr = {};
         if (this.valida()) {
+            this.iniciarCarga();
             this.model.idServicio = this.idServicio;
             this.model.fechaInicio = new Date(this.model.fechaInicio);
             this.model.idCotizacion = this.idCotizacion;
@@ -79,13 +80,14 @@ export class ClienteWidget {
             this.model.idPersonal = this.user.idPersonal;
             this.http.post<number>(`${this.url}api/cliente/ConvertirProspectoACliente/${this.user.direccionIP}`, this.model).subscribe(response => {
                 this.idClienteGenerado = response;
-                if (this.tipoContrato == true) { // cargar contrato cliente
+                if (this.tipoContrato == true) {
                     this.cargarContratoCliente();
                 }
                 else {
-                    this.generarContratoBaseCliente();//generar contrato base
+                    this.generarContratoBaseCliente();
                 }
             }, err => {
+                this.detenerCarga();
                 console.log(err);
             });
         }
@@ -98,34 +100,47 @@ export class ClienteWidget {
             this.http.get<Prospecto>(`${this.url}api/prospecto/ObtenerDatosExistentesProspecto/${this.idProspecto}`).subscribe(response => {
                 this.contrato.clienteRazonSocial = response.nombreComercial;
                 this.contrato.clienteRfc = response.rfc;
-            }, err => console.log(err));
-        }, err => console.log(err));
-        //enviar contrato y descargar copia
-        this.http.post(`${this.url}api/report/GenerarYDescargarContratoBaseCliente/${this.idCotizacion}/${this.idClienteGenerado}`, this.contrato, { responseType: 'arraybuffer' })
-            .subscribe(
-                (data: ArrayBuffer) => {
-                    const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-                    saveAs(blob, 'Contrato ' + this.model.nombreComercial + '.docx');
-                    this.isLoading = false;
-                    this.close();
-                    this.toastWidget.isErr = false;
-                    this.toastWidget.errMessage = 'Contrato descargado';
-                    this.toastWidget.open();
-                    error => {
-                        console.error('Error al obtener el archivo DOCX', error);
-                        this.isLoading = false;
-                        this.toastWidget.isErr = true;
-                        this.toastWidget.errMessage = 'Ocurri\u00F3 un error';
-                        this.toastWidget.open();
-                    }
-                });
+                //enviar contrato y descargar copia
+                this.http.post(`${this.url}api/report/GenerarYDescargarContratoBaseCliente/${this.idCotizacion}/${this.idClienteGenerado}`, this.contrato, { responseType: 'arraybuffer' })
+                    .subscribe(
+                        (data: ArrayBuffer) => {
+                            const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                            saveAs(blob, 'Contrato_' + this.model.nombreComercial + '.docx');
+                            this.okToast('Cliente generado correctamente');
+                            this.detenerCarga();
+                            this.close();
+                            error => {
+                                this.errorToast('Ocurri\u00F3 un error');
+                                this.detenerCarga();
+                                console.error('Error al obtener el archivo DOCX', error);
+                            }
+                        });
+            }, err => {
+                console.log(err);
+                this.errorToast('Ocurri\u00F3 un error');
+                this.detenerCarga();
+            });
+        }, err => {
+            console.log(err);
+            this.errorToast('Ocurri\u00F3 un error');
+            this.detenerCarga();
+        });
+
     }
     cargarContratoCliente() {
-        this.http.post<boolean>(`${this.url}api/cliente/InsertarContratoCliente/${this.idClienteGenerado}/${this.model.nombreComercial}`, this.contratoSeleccionado).subscribe(response => {
+        const formData = new FormData();
+        formData.append('contratoSeleccionado', this.contratoSeleccionado);
+        formData.append('idClienteGenerado', this.idClienteGenerado.toString());
+        formData.append('nombreComercial', this.model.nombreComercial);
 
+        this.http.post<boolean>(`${this.url}api/cliente/InsertarContratoCliente`, formData).subscribe(response => {
+            this.okToast('Cliente generado correctamente');
+            this.detenerCarga();
+            this.close();
         }, err => {
-
-        })
+            this.errorToast('Ocurri\u00F3 un error');
+            this.detenerCarga();
+        });
     }
 
     onContratoSeleccionado(event: any) {
@@ -153,7 +168,7 @@ export class ClienteWidget {
         if (this.model.idEmpresaPagadora == 0 || this.model.idEmpresaPagadora == null) {
             this.lerr['IdEmpresaPagadora'] = ['Empresa pagadora es obligatorio'];
             this.validacion = false;
-        }1
+        } 1
         if (this.model.facturacion == '0' || this.model.facturacion == null || this.model.facturacion == undefined) {
             this.lerr['Facturacion'] = ['Facturacion es obligatorio'];
             this.validacion = false;

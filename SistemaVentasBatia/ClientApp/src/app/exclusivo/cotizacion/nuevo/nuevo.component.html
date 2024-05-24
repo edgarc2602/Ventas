@@ -117,12 +117,11 @@
                                 <span *ngIf="ferr('Prospecto')" class="text-danger">{{ terr('Prospecto') }}</span>
                             </div>
                         </div>
-                        <hr />
                         <h5>Cotización</h5>
                         <br />
                         <h6><span class="small text-muted mb-2">Tipo de servicio</span></h6>
                         <div class="row">
-                            <div *ngFor="let s of sers" class="col-sm-6 col-md-3 col-4">
+                            <div *ngFor="let s of sers" class="col-sm-6 col-md-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="selectedServicio" [checked]="s.act" (change)="updateSelectedServicio(s)" required /> {{ s.nom }}
@@ -134,7 +133,7 @@
                         <br />
                         <h6><span class="small text-muted mb-2">Tipo de salario</span></h6>
                         <div class="row">
-                            <div *ngFor="let s of salt" class="col-sm-6 col-md-3 col-4">
+                            <div *ngFor="let s of salt" class="col-sm-6 col-md-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="selectedTipoSalario1" [checked]="s.act" (change)="updateSelectedSalario(s)" required /> {{ s.nom }}
@@ -146,14 +145,14 @@
                         <br />
                         <h6><span class="small text-muted mb-2">Póliza de cumplimiento</span></h6>
                         <div class="row">
-                            <div class="col-sm-6 col-md-3 col-4">
+                            <div class="col-sm-6 col-md-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="true" [(ngModel)]="model.polizaCumplimiento" required /> Si
                                     </label><br />
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-3 col-4">
+                            <div class="col-sm-6 col-md-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="false" [(ngModel)]="model.polizaCumplimiento" required /> No
@@ -164,7 +163,7 @@
                         <br />
 
                         <div class="row mb-3">
-                            <div class="col-sm-12 col-md-6 mb-3">
+                            <div class="col-sm-12 col-md-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" [(ngModel)]="idVendedor" name="IdVendedor" required [disabled]="user.idAutoriza != 1" id="IdNuevoVendedor">
                                         <option value="0">Seleccione</option>
@@ -174,7 +173,7 @@
                                 </div>
                                 <span *ngIf="ferr('IdVendedor')" class="text-danger">{{ terr('IdVendedor') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-4">
+                            <div class="col-sm-12 col-md-3">
                                 <div class="form-floating">
                                     <input type="number" class="form-control validacion-prospecto" [(ngModel)]="model.diasVigencia" data-campo="diasVigencia" id="txtdiasVigencia">
                                     <label for="txtdiasVigencia">Vigencia (dias)</label>

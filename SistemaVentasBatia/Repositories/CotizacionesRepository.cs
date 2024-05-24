@@ -13,6 +13,7 @@ using System.Reflection.Metadata.Ecma335;
 using SistemaVentasBatia.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -77,6 +78,11 @@ namespace SistemaVentasBatia.Repositories
         Task<bool> GetPolizaCumplimiento(int idCotizacion);
         Task<bool> InsertarPolizaCumplimiento(decimal totalPoliza, int idCotizacion);
         Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion);
+        Task CambiarEstatusProspectoContratado(int idProspecto);
+        Task CambiarEstatusCotizacionContratada(int idCotizacion);
+        Task CambiarEstatusCotizacionNoSeleccionada(int idCotizacion);
+        Task<List<Cotizacion>> ObtenerCotizacionesNoSeleccionadasPorIdProspecto(int idCotizacionSeleccionada, int idProspecto);
+        Task<int> ObtenerEstatusCotizacion(int idCotizacion);
 
         //CONFIGURACION
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
@@ -137,8 +143,8 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio
-                                    AND p.id_estatus_prospecto = 1 AND
-                                    c.id_estatus_cotizacion IN (1,2,3) ";
+                                    AND
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5) ";
             var queryadmin = @"SELECT count(*) Rows
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
@@ -146,8 +152,8 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio
-                                    AND p.id_estatus_prospecto = 1 AND
-                                    c.id_estatus_cotizacion IN (1,2,3) ";
+                                    AND
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5) ";
 
             var rows = 0;
 
@@ -187,8 +193,8 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio AND
-                                    p.id_estatus_prospecto = 1 AND
-                                    c.id_estatus_cotizacion IN (1,2,3)    
+                                    
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5)    
                                ) AS Cotizaciones
                           WHERE   RowNum >= ((@pagina - 1) * 10) + 1
                               AND RowNum <= (@pagina * 10)
@@ -205,8 +211,8 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio AND
                                     c.id_personal = @idPersonal AND
-                                    p.id_estatus_prospecto = 1 AND
-                                    c.id_estatus_cotizacion IN (1,2,3)
+                                    
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5)
 
                                ) AS Cotizaciones
                           WHERE   RowNum >= ((@pagina - 1) * 10) + 1
@@ -1975,6 +1981,98 @@ GETDATE(),
                 throw ex;
             }
             return rows;
+        }
+
+        public async Task CambiarEstatusProspectoContratado(int idProspecto)
+        {
+            string query = @"UPDATE tb_prospecto
+                            SET id_estatus_prospecto = 4
+                            WHERE id_prospecto = @idProspecto";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteAsync(query, new { idProspecto });
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task CambiarEstatusCotizacionContratada(int idCotizacion)
+        {
+            string query = @"UPDATE tb_cotizacion 
+                            SET id_estatus_cotizacion = 4
+                            WHERE id_cotizacion = @idCotizacion";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteAsync(query, new { idCotizacion });
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task CambiarEstatusCotizacionNoSeleccionada(int idCotizacion)
+        {
+            string query = @"UPDATE tb_cotizacion 
+                            SET id_estatus_cotizacion = 5
+                            WHERE id_cotizacion = @idCotizacion";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteAsync(query, new { idCotizacion });
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<Cotizacion>> ObtenerCotizacionesNoSeleccionadasPorIdProspecto(int idCotizacionSeleccionada, int idProspecto)
+        {
+            string query = @"SELECT ROW_NUMBER() OVER ( ORDER BY id_cotizacion desc ) AS RowNum, id_cotizacion IdCotizacion, id_servicio IdServicio, nombre_comercial NombreComercial, 
+                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta, ISNULL(c.poliza_cumplimiento, 0) AS PolizaCumplimiento, ISNULL(c.dias_vigencia, 0) AS DiasVigencia
+                                FROM tb_cotizacion c
+                                JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
+                                INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
+                                JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
+                                WHERE 
+                                    ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
+                                    --p.id_estatus_prospecto = 1 AND
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5)  AND c.id_cotizacion != @idCotizacionSeleccionada";
+
+            var cotizacionesNoSeleccionadas = new List<Cotizacion>();
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                cotizacionesNoSeleccionadas = (await connection.QueryAsync<Cotizacion>(query, new { idCotizacionSeleccionada, idProspecto })).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return cotizacionesNoSeleccionadas;
+
+        }
+
+        public async Task<int> ObtenerEstatusCotizacion(int idCotizacion)
+        {
+            string query = @"SELECT id_estatus_cotizacion FROM tb_cotizacion WHERE id_cotizacion = @idCotizacion";
+            int idEstatus;
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                idEstatus = await connection.ExecuteScalarAsync<int>(query, new { idCotizacion });
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return idEstatus;
         }
     }
 }

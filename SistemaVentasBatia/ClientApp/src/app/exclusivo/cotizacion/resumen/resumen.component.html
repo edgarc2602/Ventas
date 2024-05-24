@@ -305,39 +305,39 @@
                 </table>
             </div>
             <div>
-                <div class="row text-center">
+                <div *ngIf="model.idEstatus == 1" class="row text-center">
                     <div class="col-4">
 
                     </div>
                     <div *ngIf="autorizacion === 1" class="col-4">
-                        <button type="submit" class="btn btn-outline-primary" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent"></i> Actualizar porcentajes</button><br><br>
+                        <button type="submit" class="btn btn-outline-primary d-flex align-items-center" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent fa-xl me-2"></i> Actualizar porcentajes</button><br><br>
                     </div>
                 </div>
 
                 <br />
-                <div class="row text-center">
-                    <div class="col-3 col-md-3  col-3">
-                        <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf"></i> Propuesta Economica</button>
+                <div class="row">
+                    <div class="col-3 col-md-3 col-4">
+                        <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Economica</button>
                         <span style="margin-left: 10px;"></span>
                         <script src="../../cotizacion/resumen/"></script>
                     </div>
-                    <div class="col-3 float-end col-md-3">
-                        <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica</button>
+                    <div class="col-4 float-end col-md-3">
+                        <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
-                    <div class="col-3 float-end col-md-3">
-                        <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-user-check"></i> Convertir prospecto a cliente</button>
+                    <div *ngIf="model.idEstatus == 1" class="col-4 float-end col-md-3">
+                        <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
-                    <div class="col-3 float-end col-md-3 d-none">
-                        <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-database"></i> Descargar datos</button>
+                    <div class="col-4 float-end col-md-3 d-none">
+                        <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-database fa-xl me-2"></i> Descargar datos</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
-                    <div class="col-3 col-md-3">
-                        <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" class="btn btn-outline-danger "><i class="fa-solid fa-copy"></i> Duplicar Cotización</button>
+                    <div *ngIf="model.idEstatus == 1" class="col-4 col-md-3">
+                        <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" class="btn btn-outline-danger d-flex align-items-center"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
                     </div>
-                    <div class="col-3 float-end col-md-3">
-                        <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info "><i class="fa-solid fa-file-pdf"></i> Propuesta Técnica(Mano de obra)</button>
+                    <div class="col-4 float-end col-md-3">
+                        <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
                         <span style="margin-right: 10px;"></span>
                     </div>
                 </div>
@@ -438,10 +438,10 @@
                 </div>
             </div>-->
 
-            <div class="row mb-3">
+            <div *ngIf="model.idEstatus == 1" class="row mb-3">
                 <div>
                     <div class="btn-group float-end">
-                        <button type="button" (click)="guardaPros()" class="btn btn-outline-success" id="btnGuardarProspecto"><i class="fa-solid fa-save"></i> Guardar</button>
+                        <button type="button" (click)="guardaPros()" class="btn btn-outline-success d-flex align-items-center" id="btnGuardarProspecto"><i class="fa-solid fa-save fa-xl me-2"></i> Guardar</button>
                     </div>
                 </div>
             </div>
@@ -449,13 +449,13 @@
 
         </div>
         <div class="tab-pane fade" id="directorio" role="tabpanel" aria-labelledby="resumen-tab">
-            <div class="row">
+            <div *ngIf="model.idEstatus == 1" class="row">
                 <div class="col-12 col-sm-12 col-md-12">
                     Seleccionar una dirección existente
                 </div>
             </div>
             <br>
-            <div class="row d-flex align-items-center mb-3">
+            <div *ngIf="model.idEstatus == 1" class="row d-flex align-items-center mb-3">
                 <div class="col-4 col-sm-12 col-md-4">
                     <div class="form-floating">
                         <select class="form-select" [(ngModel)]="modelDir.idDireccion" aria-label="IdTIpoInmueble" id="IdDireccion">
@@ -498,7 +498,7 @@
                                             {{ dr.domicilioCompleto }}
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-4 text-center">
+                                    <div  *ngIf="model.idEstatus == 1" class="col-md-4 col-4 text-center">
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-sm btn-outline-primary" (click)="getExistDir(dr.idDireccion)" data-bs-toggle="tooltip" title="Editar">
                                                 <i class="fa-solid fa-pencil fa-2x"></i>
@@ -518,7 +518,7 @@
             <br />
             <pagina-widget [pagina]="lsdir.pagina" [numPaginas]="lsdir.numPaginas" [rows]="lsdir.rows" (chgEvent)="dirPagina($event)"></pagina-widget>
             <hr />
-            <div class="row text-end">
+            <div  *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
                     <div *ngIf="isLoadinglay" class="row-12 text-center">
                         <h6 *ngIf="isLoadinglay">Cargando Layout...</h6>
@@ -563,7 +563,7 @@
                                 </h6>
                                 <span class="badge plantilla text-white">{{ dir.ciudad }}, {{ dir.estado }}</span>
                             </a>
-                            <a (click)="addPlan(dir.idDireccionCotizacion, dir.idTabulador, dir.nombreSucursal)" class="btn btn-outline-primary col-md-2 col-3 agrega-puesto" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
+                            <a *ngIf="model.idEstatus == 1" (click)="addPlan(dir.idDireccionCotizacion, dir.idTabulador, dir.nombreSucursal)" class="btn btn-outline-primary col-md-2 col-3 agrega-puesto" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
                                 <i class="fa-solid fa-user-plus fa-3x" style="color: white;"></i>
                             </a>
                         </div>
@@ -648,7 +648,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="col-md-3">
+                                            <td  class="col-md-3">
                                                 <div class="text-center">
                                                     <a class="btn btn-sm btn-outline-secondary mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'material', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Material">
                                                         <i class="fa-solid fa-pump-soap fa-2x"></i>
@@ -662,10 +662,10 @@
                                                     <a class="btn btn-sm btn-outline-danger mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'herramienta', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Herramienta">
                                                         <i class="fa-solid fa-hammer fa-2x"></i>
                                                     </a>
-                                                    <a class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.idTabulador, dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Editar">
+                                                    <a  *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.idTabulador, dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Editar">
                                                         <i class="fa-solid fa-pencil fa-2x"></i>
                                                     </a>
-                                                    <a class="btn btn-sm btn-outline-danger mb-1" (click)="confirmaEliminarPuestoDireccionCotizacion(pt.idPuestoDireccionCotizacion)" title="Descartar">
+                                                    <a  *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-danger mb-1" (click)="confirmaEliminarPuestoDireccionCotizacion(pt.idPuestoDireccionCotizacion)" title="Descartar">
                                                         <i class="fa-solid fa-times fa-2x"></i>
                                                     </a>
                                                 </div>
@@ -680,7 +680,7 @@
             </div>
             <br />
             <hr />
-            <div class="row text-end">
+            <div  *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
                     <div *ngIf="isLoadinglay" class="row-12 text-center">
                         <i class="fas fa-spinner fa-spin fa-3x"></i>
@@ -720,7 +720,7 @@
                             <label for="ddlSucursal">Sucursal</label>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div *ngIf="model.idEstatus == 1" class="col-md-6 mb-3">
                         <button type="button" (click)="getNewMat(selTipo)" class="btn btn-outline-primary float-end mb-3" id="btnAgregarDireccion"><i class="fa-solid fa-plus"></i> Agregar {{ selTipo }}</button>
                     </div>
                 </div>
@@ -772,7 +772,7 @@
                                     </div>
                                 </div>
                             </th>
-                            <th></th>
+                            <th *ngIf="model.idEstatus == 1"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -810,7 +810,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="text-center">
+                            <td *ngIf="model.idEstatus == 1" class="text-center">
                                 <a class="btn btn-sm btn-outline-primary mb-1" (click)="selNewMat(mat.idMaterialCotizacion, selTipo, mat.edit = 1)" data-bs-toggle="tooltip" title="Editar">
                                     <i class="fa-solid fa-pencil fa-2x"></i>
                                 </a>
@@ -828,7 +828,7 @@
             </div>
         </div>
         <div class="tab-pane fade" id="servicio" role="tabpanel" aria-labelledby="plantilla-tab">
-            <div>
+            <div *ngIf="model.idEstatus == 1">
                 <div class="row">
                     <div class="col-md-12">
                         <button type="button" (click)="servicio(0)" class="btn btn-outline-primary float-end" id="btnAgregarDireccion"><i class="fa-solid fa-plus"></i> Agregar servicio</button>
@@ -854,7 +854,7 @@
                         <thead class="sticky-top">
                             <tr class="d-md-none">
                                 <th class="ps-2 text-start">Servicios</th>
-                                <th></th>
+                                <th *ngIf="model.idEstatus == 1"></th>
                             </tr>
                             <tr class="d-none d-md-table-row">
                                 <th>
@@ -879,7 +879,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th></th>
+                                <th *ngIf="model.idEstatus == 1"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -913,7 +913,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center">
+                                    <td *ngIf="model.idEstatus == 1" class="text-center">
                                         <a class="btn btn-sm btn-outline-primary" (click)="servicio(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Editar">
                                             <i class="fa-solid fa-pencil fa-2x"></i>
                                         </a>
@@ -936,7 +936,7 @@
                         <thead class="sticky-top">
                             <tr class="d-md-none">
                                 <th class="ps-2 text-start">Servicios</th>
-                                <th></th>
+                                <th *ngIf="model.idEstatus == 1"></th>
                             </tr>
                             <tr class="d-none d-md-table-row">
                                 <th>
@@ -961,7 +961,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th></th>
+                                <th *ngIf="model.idEstatus == 1"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -996,7 +996,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center">
+                                    <td *ngIf="model.idEstatus == 1" class="text-center">
                                         <a class="btn btn-sm btn-outline-primary mb-1" (click)="servicio(ser.idServicioExtraCotizacion)" data-bs-toggle="tooltip" title="Editar">
                                             <i class="fa-solid fa-pencil fa-2x"></i>
                                         </a>
@@ -1023,7 +1023,7 @@
 <marcaventa-widget (smEvent)="returnMarcaCotizacion($event)"></marcaventa-widget>
 <toast-widget></toast-widget>
 <contrato-widget (contratoEvent)="openFormularioCliente($event)"></contrato-widget>
-<cliente-widget (clienteEvent)="openCargaContratoWidget"></cliente-widget>
+<cliente-widget (clienteEvent)="openCargaContratoWidget();"></cliente-widget>
 <carga-widget></carga-widget>
 <confirmacion-widget (confirmaEvent)="confirmacionEvent($event)"></confirmacion-widget>
 <subircontratocliente-widget (subirContratoEvent)="subirContratoEvent($event)"></subircontratocliente-widget>

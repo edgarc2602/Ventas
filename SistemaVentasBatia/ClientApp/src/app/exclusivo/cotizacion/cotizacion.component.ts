@@ -28,7 +28,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     @ViewChild('tbcotizaciones', { static: false }) tablaContainer: ElementRef;
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, provisiones: 0, prestaciones: 0, material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0, subTotal: 0, indirecto: 0, utilidad: 0,
-        total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', indirectoPor: '', utilidadPor: '', csvPor: '', comisionSV: 0, comisionExtPor: '', comisionExt: 0, totalPolizaCumplimiento: 0, polizaCumplimiento: false
+        total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', indirectoPor: '', utilidadPor: '', csvPor: '', comisionSV: 0, comisionExtPor: '', comisionExt: 0, totalPolizaCumplimiento: 0, polizaCumplimiento: false, idEstatus: 0
     };
     lcots: ListaCotizacion = {
         idProspecto: 0, idServicio: 0, pagina: 1, numPaginas: 0,

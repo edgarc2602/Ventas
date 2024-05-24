@@ -282,6 +282,12 @@ namespace SistemaVentasBatia.Services
                 string presupuestoEquipoHerramientaXMLString = CrearXMLPresupuestoEquipoHerramienta(idClienteCreado, cliente.IdServicio, 4, "LISTA DE HERRAMIENTAS Y EQUIPO", totalGeneralEquipoHerramienta, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
                 clienteRepo.InsertarPresupuestoEquipoHerramientaXML(presupuestoEquipoHerramientaXMLString);
             }
+
+            //ACTUALIZAR ESTATUS DE PROSPECTO Y COTIZACIONES
+            await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
+            await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
+            await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
+
             return idClienteCreado;
         }
 

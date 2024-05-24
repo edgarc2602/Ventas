@@ -18,7 +18,7 @@
                             <thead class="sticky-top">
                                 <tr class="d-md-none">
                                     <th class="ps-2 text-start">Lista de {{ tipo }} </th>
-                                    <th></th>
+                                    <th *ngIf="idEstatus == 1"></th>
                                 </tr>
                                 <tr class="d-none d-md-table-row">
                                     <th>
@@ -43,7 +43,7 @@
                                             </div>
                                         </div>
                                     </th>
-                                    <th></th>
+                                    <th *ngIf="idEstatus == 1"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,7 +76,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center">
+                                    <td *ngIf="idEstatus == 1" class="text-center">
                                         <div class="float-end">
                                             <button type="button" (click)="select(mat.idMaterialCotizacion)" class="btn btn-sm btn-outline-primary mb-1" data-bs-toggle="tooltip" title="Editar">
                                                 <i class="fa-solid fa-pencil fa-2x"></i>
@@ -97,7 +97,7 @@
                         <div class="col-4 text-start">
                             <h4>Total: ${{total | number:'1.2-2'}}</h4>
                         </div>
-                        <div class="col-8 text-end">
+                        <div *ngIf="idEstatus == 1" class="col-8 text-end">
                             <a id="btnAgregarMaterial" (click)="agregarMaterial()" class="btn btn-outline-primary">
                                 <i class="fa-solid fa-plus"></i> Agregar {{ tipo }}
                             </a>

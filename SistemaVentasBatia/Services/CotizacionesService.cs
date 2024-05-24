@@ -57,6 +57,9 @@ namespace SistemaVentasBatia.Services
         Task<CotizacionVendedorDetalleDTO> ObtenerCotizacionVendedorDetallePorIdVendedor(int idVendedor);
         Task<int> ObtenerTotalSucursalesCotizacion(int idCotizacion);
         Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion);
+        Task CambiarEstatusProspectoContratado(int idProspecto);
+        Task CambiarEstatusCotizacionContratada(int idCotizacionSeleccionada);
+        Task CambiarEstatusCotizacionesNoSeleccionadas(int idCotizacionSeleccionada, int idProspecto);
     }
 
     public class CotizacionesService : ICotizacionesService
@@ -480,6 +483,7 @@ namespace SistemaVentasBatia.Services
             var resumenCotizacion = mapper.Map<ResumenCotizacionLimpiezaDTO>(await cotizacionesRepo.ObtenerResumenCotizacionLimpieza(id));
             var obtenercot = mapper.Map<Cotizacion>(await cotizacionesRepo.ObtenerCotizacion(id));
             var obtenernombre = mapper.Map<Cotizacion>(await cotizacionesRepo.ObtenerNombreComercialCotizacion(id));
+            resumenCotizacion.IdEstatus = await cotizacionesRepo.ObtenerEstatusCotizacion(id);
             try
             {
                 resumenCotizacion.SubTotal = resumenCotizacion.Salario + resumenCotizacion.Provisiones + resumenCotizacion.CargaSocial + resumenCotizacion.Prestaciones + resumenCotizacion.Material + resumenCotizacion.Uniforme + resumenCotizacion.Equipo + resumenCotizacion.Herramienta + resumenCotizacion.Servicio;
@@ -921,6 +925,25 @@ namespace SistemaVentasBatia.Services
         public async Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion)
         {
             return await cotizacionesRepo.ObtenerTotalEmpleadosCotizacion(idCotizacion);
+        }
+
+        public async Task CambiarEstatusProspectoContratado(int idProspecto)
+        {
+            await cotizacionesRepo.CambiarEstatusProspectoContratado(idProspecto);
+        }
+
+        public async Task CambiarEstatusCotizacionContratada(int idCotizacion)
+        {
+            await cotizacionesRepo.CambiarEstatusCotizacionContratada(idCotizacion);
+        }
+
+        public async Task CambiarEstatusCotizacionesNoSeleccionadas(int idCotizacionSeleccionada, int idProspecto)
+        {
+            var cotizaciones = await cotizacionesRepo.ObtenerCotizacionesNoSeleccionadasPorIdProspecto(idCotizacionSeleccionada, idProspecto);
+            foreach(var cot in cotizaciones)
+            {
+                await cotizacionesRepo.CambiarEstatusCotizacionNoSeleccionada(cot.IdCotizacion);
+            }
         }
     }
 }

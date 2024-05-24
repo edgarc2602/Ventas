@@ -180,7 +180,7 @@
                                 </div>
                                 <span *ngIf="ferr('constitutivaNumeroNotario')" class="text-danger">{{ terr('constitutivaNumeroNotario') }}</span>
                             </div>
-                            <div class="col-md-2 col-7 mb-3">
+                            <div class="col-md-2 col-6 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdEstado" [(ngModel)]="contrato.constitutivaIdEstado" id="ddlconstitutivaIdEstado">
                                         <option value="0">Seleccione...</option>
@@ -221,14 +221,14 @@
                                 </div>
                                 <span *ngIf="ferr('poderFecha')" class="text-danger">{{ terr('poderFecha') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-2 col-12 mb-3">
+                            <div class="col-sm-12 col-md-2 col-6 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="contrato.poderNumeroNotario" id="txtpoderNumeroNotario">
                                     <label for="txtpoderNumeroNotario">No. Notario público</label>
                                 </div>
                                 <span *ngIf="ferr('poderNumeroNotario')" class="text-danger">{{ terr('poderNumeroNotario') }}</span>
                             </div>
-                            <div class="col-md-2 col-7 mb-3">
+                            <div class="col-md-2 col-6 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdEstado" [(ngModel)]="contrato.poderIdEstado" id="ddlpoderIdEstado">
                                         <option value="0">Seleccione...</option>

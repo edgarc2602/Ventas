@@ -62,7 +62,7 @@ namespace SistemaVentasBatia.Services
 
         public async Task<UsuarioDTO> Login(AccesoDTO dto, UsuarioDTO usu)
         {
-            //dto.Contrasena = Encriptar(dto.Contrasena);
+            dto.Contrasena = Encriptar(dto.Contrasena);
             string ip = usu.DireccionIP;
             try
             {

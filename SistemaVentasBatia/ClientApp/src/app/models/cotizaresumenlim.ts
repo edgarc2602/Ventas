@@ -26,4 +26,5 @@ export interface CotizaResumenLim {
     comisionExtPor: string;
     polizaCumplimiento: boolean;
     totalPolizaCumplimiento: number;
+    idEstatus: number;
 }
