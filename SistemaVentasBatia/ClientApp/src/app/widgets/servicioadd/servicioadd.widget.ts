@@ -28,6 +28,7 @@ export class ServicioAddWidget {
     idP: number = 0;
     idS: number = 0;
     edit: number = 0;
+    idServicio: number = 0;
     validaciones: boolean = false;
     isLoading: boolean = false;
     showSuc: boolean = false;
@@ -69,6 +70,9 @@ export class ServicioAddWidget {
     guarda() {
         this.quitarFocoDeElementos();
         this.lerr = {};
+        if (this.idServicio == 5) {
+            this.model.idFrecuencia = 1;
+        }
         if (this.valida()) {
             this.iniciarCarga();
             setTimeout(() => {
@@ -119,7 +123,8 @@ export class ServicioAddWidget {
         }
     }
 
-    open(id: number, idCotizacion) {
+    open(id: number, idCotizacion, idServicio: number) {
+        this.idServicio = idServicio;
         this.lerr = {};
         this.idC = idCotizacion;
         this.lista();

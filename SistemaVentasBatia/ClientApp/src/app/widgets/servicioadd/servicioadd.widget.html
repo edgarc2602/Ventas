@@ -36,7 +36,7 @@
                                 <span *ngIf="ferr('IdServicioExtra')" class="text-danger">{{ terr('IdServicioExtra') }}</span>
 
                             </div>
-                            <div class="col-12 col-md-4 mb-3">
+                            <div *ngIf="idServicio != 5" class="col-12 col-md-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdFrecuencia" [(ngModel)]="model.idFrecuencia" id="ddlFrecuenciaServicio">
                                         <option value="0">Selecciona una opción...</option>

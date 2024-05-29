@@ -38,6 +38,9 @@ export class MaterialAddWidget {
     nombreSucursal: string = '';
     puesto: string = '';
     tipo: string = 'material';
+    idServicioCotizacion: number = 0;
+    diasEvento: number = 0;
+    idProducto: number = 0;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
 
@@ -62,7 +65,7 @@ export class MaterialAddWidget {
         this.model = {
             idMaterialCotizacion: 0, claveProducto: '', idCotizacion: this.idC,
             idPuestoDireccionCotizacion: id, precioUnitario: 0, cantidad: 0, idFrecuencia: 0,
-            total: 0, fechaAlta: fec.toISOString(), idDireccionCotizacion: this.idD, idPersonal: this.sinU.idPersonal, edit: this.edit
+            total: 0, fechaAlta: fec.toISOString(), idDireccionCotizacion: this.idD, idPersonal: this.sinU.idPersonal, edit: this.edit, diasEvento: 0
         };
         this.lerr = {};
     }
@@ -76,9 +79,13 @@ export class MaterialAddWidget {
         }, err => console.log(err));
     }
     guarda() {
+        if (this.idServicioCotizacion == 4 || this.idServicioCotizacion == 5) {
+            this.model.idFrecuencia = 1
+        }
         this.quitarFocoDeElementos();
         this.lerr = {};
         this.model.idPersonal = this.sinU.idPersonal;
+        this.model.diasEvento = this.diasEvento;
         if (this.valida()) {
             this.iniciarCarga();
             setTimeout(() => {
@@ -108,9 +115,11 @@ export class MaterialAddWidget {
         }
     }
 
-    open(cot: number, dir: number, pue: number, id: number, ser: number, tp: string, showS: boolean = false, edit: number, nombreSucursal?: string, puesto?: string) {
+    open(cot: number, dir: number, pue: number, id: number, ser: number, tp: string, showS: boolean = false, edit: number, nombreSucursal?: string, puesto?: string, idServicioCotizacion?: number, diasEvento?: number) {
+        this.diasEvento = diasEvento;
+        this.idServicioCotizacion = idServicioCotizacion;
         this.isExtra = false;
-        if (puesto != undefined) {
+        if (puesto != undefined && puesto != "") {
             this.puesto = puesto.charAt(0).toUpperCase() + puesto.slice(1).toLowerCase();
         }
         else {
@@ -122,6 +131,7 @@ export class MaterialAddWidget {
         this.idC = cot;
         this.idD = dir;
         this.idP = pue;
+        this.idProducto = id;
         if (this.idP != 0) {
             this.hidedir = 1;
         }

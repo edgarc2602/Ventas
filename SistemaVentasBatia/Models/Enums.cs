@@ -31,8 +31,6 @@ namespace SistemaVentasBatia.Enums
         Inactivo = 3,
         Contratada = 4,
         NoSeleccionada = 5
-        
-        
     }
 
     public enum Servicio
@@ -40,8 +38,8 @@ namespace SistemaVentasBatia.Enums
         Mantenimiento = 1,
         Limpieza = 2,
         Sanitización = 3,
-        //Insumos = 4,
-        //Eventos = 5
+        Insumos = 4,
+        Evento = 5
     }
 
     public enum SalarioTipo

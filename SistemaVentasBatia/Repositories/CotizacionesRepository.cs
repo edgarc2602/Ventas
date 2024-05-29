@@ -118,8 +118,8 @@ namespace SistemaVentasBatia.Repositories
                         where fechaaplica <= @FechaAlta
                         order by id_porcentaje desc;
 
-                        insert into tb_cotizacion(id_prospecto, id_servicio, costo_indirecto, utilidad, total, id_estatus_cotizacion, fecha_alta, id_personal, id_porcentaje, comision_venta, comision_externa, id_tiposalario, poliza_cumplimiento, dias_vigencia)
-                        values(@IdProspecto, @IdServicio, @pci, @pu, @Total, @IdEstatusCotizacion, @FechaAlta, @IdPersonal, @idp, @cv, @ce, @SalTipo, @PolizaCumplimiento, @DiasVigencia)
+                        insert into tb_cotizacion(id_prospecto, id_servicio, costo_indirecto, utilidad, total, id_estatus_cotizacion, fecha_alta, id_personal, id_porcentaje, comision_venta, comision_externa, id_tiposalario, poliza_cumplimiento, dias_vigencia, cotizacion_evento_dias)
+                        values(@IdProspecto, @IdServicio, @pci, @pu, @Total, @IdEstatusCotizacion, @FechaAlta, @IdPersonal, @idp, @cv, @ce, @SalTipo, @PolizaCumplimiento, @DiasVigencia, @DiasEvento)
                         select scope_identity()";
             try
             {

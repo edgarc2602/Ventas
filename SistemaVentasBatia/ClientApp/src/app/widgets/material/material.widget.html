@@ -26,7 +26,7 @@
                                             <div class="col-md-2 col-sm-2 col-2">
                                                 <span class="ms-2">Clave</span>
                                             </div>
-                                            <div class="col-md-4 col-sm-2 col-8">
+                                            <div  [ngClass]="idTipoServicio == 5? 'col-md-6 col-sm-2 col-8': 'col-md-4 col-sm-2 col-8'">
                                                 <span class="ms-2">Descripción</span>
                                             </div>
                                             <div class="col-md-1 col-sm-6 col-8">
@@ -35,7 +35,7 @@
                                             <div class="col-md-1 col-sm-6 col-2">
                                                 <span class="ms-2">Cant.</span>
                                             </div>
-                                            <div class="col-md-2 col-sm-6 col-3">
+                                            <div *ngIf="idTipoServicio != 5" class="col-md-2 col-sm-6 col-3">
                                                 <span class="ms-2">Frecuencia</span>
                                             </div>
                                             <div class="col-md-2 col-sm-6 col-3">
@@ -54,7 +54,7 @@
                                                 <span class="badge d-md-none">Clave:</span>
                                                 <div class="ms-2">{{ mat.claveProducto }}</div>
                                             </div>
-                                            <div class="col-8 col-sm-4 col-md-4">
+                                            <div [ngClass]="idTipoServicio == 5?'col-8 col-sm-4 col-md-6':'col-8 col-sm-4 col-md-4'">
                                                 <span class="badge d-md-none">Descripción:</span>
                                                 <div class="ms-2">{{ mat.descripcionMaterial }}</div>
                                             </div>
@@ -64,9 +64,9 @@
                                             </div>
                                             <div class="col-8 col-sm-1 col-md-1">
                                                 <span class="badge d-md-none">Cantidad:</span>
-                                                <div class="ms-2">{{ mat.cantidad | number: '0.2' }}</div>
+                                                <div class="ms-2">{{ mat.cantidad }}</div>
                                             </div>
-                                            <div class="col-4 col-sm-2 col-md-2">
+                                            <div *ngIf="idTipoServicio != 5" class="col-4 col-sm-2 col-md-2">
                                                 <span class="badge d-md-none">Frecuencia:</span>
                                                 <div class="ms-2">{{ mat.idFrecuencia }}</div>
                                             </div>

@@ -4,24 +4,29 @@
 </head>
 <body>
     <div class="modal fade" id="modalLimpiezaAgregarMaterialCotizacion" data-bs-backdrop="static">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div  [ngClass]="idServicioCotizacion == 5 && isExtra == false ? 'modal-dialog modal-dialog-centered':'modal-dialog modal-lg modal-dialog-centered'">
             <div class="modal-content">
                 <!-- Modal Header -->
-                <div *ngIf="nombreSucursal != undefined" class="modal-header">
+                <div *ngIf="nombreSucursal != '' && puesto != '' " class="modal-header">
                     <h4 *ngIf="model.idMaterialCotizacion == 0" class="modal-title">Agregar {{ tipo }} - <small class="text-muted">{{ puesto }} ({{ nombreSucursal }})</small></h4>
                     <h4 *ngIf="model.idMaterialCotizacion > 0" class="modal-title">Editar {{ tipo }} - <small class="text-muted">{{ puesto }} ({{ nombreSucursal }})</small></h4>
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div *ngIf="isExtra" class="modal-header">
+                <div *ngIf="isExtra == true && idProducto == 0" class="modal-header">
                     <h4 class="modal-title">Agregar {{ tipo }}</h4>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div *ngIf="isExtra == true && idProducto != 0" class="modal-header">
+                    <h4 class="modal-title">Editar {{ tipo }}</h4>
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="row d-flex align-items-center">
-                        <div *ngIf="hidedir == 0" class="col-md-4 mb-3 col-12" id="dvSucursal">
+                        <div *ngIf="hidedir == 0" id="dvSucursal" [ngClass]="idServicioCotizacion == 5 && isExtra == false? 'col-md-6 mb-3 col-12': 'col-md-4 mb-3 col-12'">
                             <div class="form-floating">
                                 <select class="form-select" [(ngModel)]="model.idDireccionCotizacion" aria-label="IdDireccionCotizacion" id="txtSucursalMaterial" [disabled]="radiobutton == 1">
                                     <option value="0">Selecciona una opción...</option>
@@ -40,7 +45,7 @@
                                 <label for="txtPuestoMaterial">Puesto</label>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3 col-12">
+                        <div [ngClass]="idServicioCotizacion == 5 && isExtra == false? 'col-md-6 mb-3 col-12': 'col-md-4 mb-3 col-12'">
                             <div class="form-floating">
                                 <select class="form-select" [(ngModel)]="model.claveProducto" id="ddlProductoMaterial">
                                     <option value="0">Selecciona una opción...</option>
@@ -50,14 +55,14 @@
                             </div>
                             <span *ngIf="ferr('ClaveProducto')" class="text-danger">{{ terr('ClaveProducto') }}</span>
                         </div>
-                        <div class="col-6 col-md-4 col-sm-4 mb-3">
+                        <div class="col-6 col-md-4 col-sm-4 mb-3" [ngClass]="idServicioCotizacion == 5 && isExtra == false? 'col-6 col-md-6 col-sm-4 mb-3': 'col-6 col-md-4 col-sm-4 mb-3'">
                             <div class="form-floating">
                                 <input type="number" class="form-control" [(ngModel)]="model.cantidad" id="txtCantidadMaterial">
                                 <label for="txtCantidadMaterial">Cantidad</label>
                             </div>
                             <span *ngIf="ferr('Cantidad')" class="text-danger">{{ terr('Cantidad') }}</span>
                         </div>
-                        <div class="col-6 col-md-4 col-sm-4 mb-3">
+                        <div *ngIf="idServicioCotizacion != 4 && idServicioCotizacion != 5" class="col-6 col-md-4 col-sm-4 mb-3">
                             <div class="form-floating">
                                 <select class="form-select" aria-label="IdFrecuencia" [(ngModel)]="model.idFrecuencia" id="ddlFrecuenciaMaterial">
                                     <option value="0">Selecciona una opción...</option>

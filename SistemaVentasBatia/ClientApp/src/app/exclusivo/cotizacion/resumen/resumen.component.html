@@ -3,7 +3,14 @@
     <div class="pt-1 mb-1">
         <div class="row d-flex align-items-center">
             <div class="col-12 col-md-9">
-                <h2 class="text-black-90">Cotización {{model.nombreComercial}}</h2>
+                <h2 class="text-black-90">
+                    Cotización {{model.nombreComercial}}
+                    <span *ngIf="model.idServicio == 1" class="text-muted h5">(Mantenimiento)</span>
+                    <span *ngIf="model.idServicio == 2" class="text-muted h5">(Limpieza)</span>
+                    <span *ngIf="model.idServicio == 3" class="text-muted h5">(Sanitización)</span>
+                    <span *ngIf="model.idServicio == 4" class="text-muted h5">(Insumos)</span>
+                    <span *ngIf="model.idServicio == 5" class="text-muted h5">(Evento, {{ model.diasEvento }} dias )</span>
+                </h2>
             </div>
             <div class="col-4 col-md-3 text-end d-none">
                 <button type="button" class="btn btn-outline-primary" (click)="marcarVenta()"><i class="fa-solid fa-clipboard-check"></i> Marcar Venta</button>
@@ -38,7 +45,7 @@
                 Directorio
             </button>
         </li>
-        <li class="nav-item">
+        <li *ngIf="model.idServicio != 4" class="nav-item">
             <button type="button" class="nav-link" (click)="getPlan()" data-bs-toggle="tab"
                     data-bs-target="#plantilla" role="tab" aria-controls="plantilla"
                     aria-selected="false">
@@ -52,7 +59,7 @@
                 Material
             </button>
         </li>
-        <li class="nav-item">
+        <li *ngIf="model.idServicio != 4" class="nav-item">
             <button type="button" class="nav-link" data-bs-toggle="tab" (click)="getMat('uniforme')"
                     data-bs-target="#material" role="tab" aria-controls="uniforme"
                     aria-selected="false">
@@ -73,7 +80,7 @@
                 Herramienta
             </button>
         </li>
-        <li class="nav-item">
+        <li *ngIf="model.idServicio != 4" class="nav-item">
             <button type="button" class="nav-link" (click)="getServ()" data-bs-toggle="tab"
                     data-bs-target="#servicio" role="tab" aria-controls="servicio"
                     aria-selected="false">
@@ -93,7 +100,7 @@
                         </tr>
                     </thead>
                     <tbody class="align-items-center">
-                        <tr>
+                        <tr *ngIf="model.idServicio != 4">
                             <td class="border-bottom">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -103,7 +110,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="model.idServicio != 4">
                             <td class="border-bottom">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -113,7 +120,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="model.idServicio != 4">
                             <td class="border-bottom">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -123,7 +130,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="model.idServicio != 4">
                             <td class="border-bottom">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -143,7 +150,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="model.idServicio != 4">
                             <td class="border-bottom">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -164,7 +171,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="border-bottom">
+                            <td class="border-bottom" [ngClass]="{'border-success': model.idServicio == 4}">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-6 col-md-3 text-start"><h5>Herramientas</h5></div>
@@ -173,7 +180,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="model.idServicio != 4">
                             <td class="border-bottom border-success">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -241,7 +248,8 @@
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-4 col-md-3 text-start"><h5>Comisión Sobre Venta (%)</h5></div>
                                     <div class="col-2 col-md-1 ">
-                                        <input type="number" class="form-control" [(ngModel)]="model.csvPor" placeholder="{{model.csvPor}}" autocomplete="off" required></div>
+                                        <input type="number" class="form-control" [(ngModel)]="model.csvPor" placeholder="{{model.csvPor}}" autocomplete="off" required>
+                                    </div>
                                     <div class="col-4 col-md-2 text-end"><h5>${{ model.comisionSV | number:'1.2-2' }}</h5></div>
                                     <div class="col-1 col-md-2"></div>
                                 </div>
@@ -301,48 +309,59 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td *ngIf="model.idServicio == 5" class="border-bottom">
+                                <div class="row">
+                                    <div class="col-3 col-md-3 offset-3 text-start"><h4>Costo diario</h4></div>
+                                    <div class="col-3 col-md-3 text-end"><h4>${{ totalDia | number:'1.2-2' }}</h4></div>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <div>
-                <div *ngIf="model.idEstatus == 1" class="row text-center">
-                    <div class="col-4">
-
-                    </div>
-                    <div *ngIf="autorizacion === 1" class="col-4">
-                        <button type="submit" class="btn btn-outline-primary d-flex align-items-center" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent fa-xl me-2"></i> Actualizar porcentajes</button><br><br>
-                    </div>
+            <div *ngIf="model.idEstatus == 1" class="row justify-content-center">
+                <div *ngIf="autorizacion === 1" class="col-12 col-md-4">
+                    <button type="submit" class="btn btn-outline-primary d-flex align-items-center" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent fa-xl me-2"></i> Actualizar porcentajes</button><br><br>
                 </div>
-
-                <br />
-                <div class="row">
-                    <div class="col-3 col-md-3 col-4">
-                        <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Economica</button>
-                        <span style="margin-left: 10px;"></span>
-                        <script src="../../cotizacion/resumen/"></script>
-                    </div>
-                    <div class="col-4 float-end col-md-3">
-                        <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica</button>
-                        <span style="margin-right: 10px;"></span>
-                    </div>
-                    <div *ngIf="model.idEstatus == 1" class="col-4 float-end col-md-3">
-                        <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
-                        <span style="margin-right: 10px;"></span>
-                    </div>
-                    <div class="col-4 float-end col-md-3 d-none">
-                        <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-database fa-xl me-2"></i> Descargar datos</button>
-                        <span style="margin-right: 10px;"></span>
-                    </div>
-                    <div *ngIf="model.idEstatus == 1" class="col-4 col-md-3">
-                        <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" class="btn btn-outline-danger d-flex align-items-center"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
-                    </div>
-                    <div class="col-4 float-end col-md-3">
-                        <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
-                        <span style="margin-right: 10px;"></span>
-                    </div>
-                </div>
-                <script src="script.js"></script>
             </div>
+
+            <br />
+            <div class="row justify-content-center">
+                <div *ngIf="model.idServicio == 5" class="col-3 col-md-6 col-4 text-center">
+                    <button type="button" (click)="propuestaEvento()" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
+                    <span style="margin-left: 10px;"></span>
+                </div>
+                <div *ngIf="model.idServicio == 4" class="col-3 col-md-6 col-4">
+                    <button type="button" (click)="propuestaSuministroInsumos()" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
+                    <span style="margin-left: 10px;"></span>
+                </div>
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-3 col-4">
+                    <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Economica</button>
+                    <span style="margin-left: 10px;"></span>
+                    <script src="../../cotizacion/resumen/"></script>
+                </div>
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 float-end col-md-3">
+                    <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica</button>
+                    <span style="margin-right: 10px;"></span>
+                </div>
+                <div *ngIf="model.idEstatus == 1 && model.idServicio != 4 && model.idServicio != 5" class="col-4 float-end col-md-3">
+                    <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
+                    <span style="margin-right: 10px;"></span>
+                </div>
+                <div class="col-4 float-end col-md-3 d-none">
+                    <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-database fa-xl me-2"></i> Descargar datos</button>
+                    <span style="margin-right: 10px;"></span>
+                </div>
+                <div *ngIf="model.idEstatus == 1" class="col-4 col-md-3">
+                    <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" class="btn btn-outline-danger d-flex align-items-center"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
+                </div>
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 float-end col-md-3">
+                    <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
+                    <span style="margin-right: 10px;"></span>
+                </div>
+            </div>
+            <script src="script.js"></script>
         </div>
         <div class="tab-pane fade" id="prospecto" role="tabpanel" aria-labelledby="resumen-tab">
             <div class="row">
@@ -498,7 +517,7 @@
                                             {{ dr.domicilioCompleto }}
                                         </div>
                                     </div>
-                                    <div  *ngIf="model.idEstatus == 1" class="col-md-4 col-4 text-center">
+                                    <div *ngIf="model.idEstatus == 1" class="col-md-4 col-4 text-center">
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-sm btn-outline-primary" (click)="getExistDir(dr.idDireccion)" data-bs-toggle="tooltip" title="Editar">
                                                 <i class="fa-solid fa-pencil fa-2x"></i>
@@ -518,7 +537,7 @@
             <br />
             <pagina-widget [pagina]="lsdir.pagina" [numPaginas]="lsdir.numPaginas" [rows]="lsdir.rows" (chgEvent)="dirPagina($event)"></pagina-widget>
             <hr />
-            <div  *ngIf="model.idEstatus == 1" class="row text-end">
+            <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
                     <div *ngIf="isLoadinglay" class="row-12 text-center">
                         <h6 *ngIf="isLoadinglay">Cargando Layout...</h6>
@@ -541,7 +560,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade " id="plantilla" role="tabpanel" aria-labelledby="plantilla-tab">
+        <div *ngIf="model.idServicio != 4" class="tab-pane fade " id="plantilla" role="tabpanel" aria-labelledby="plantilla-tab">
             <div class="row">
                 <div class="col-12 col-md-4 text-start mb-1">
                     <button class="btn btn-outline-primary" (click)="toggleAllTabs()"><i class="fa-solid {{ allTabsOpen ? 'fa-chevron-up' : 'fa-chevron-down' }}"></i> {{ allTabsOpen ? 'Cerrar todo' : 'Abrir todo' }}</button>
@@ -648,7 +667,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td  class="col-md-3">
+                                            <td class="col-md-3">
                                                 <div class="text-center">
                                                     <a class="btn btn-sm btn-outline-secondary mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'material', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Material">
                                                         <i class="fa-solid fa-pump-soap fa-2x"></i>
@@ -662,10 +681,10 @@
                                                     <a class="btn btn-sm btn-outline-danger mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'herramienta', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Herramienta">
                                                         <i class="fa-solid fa-hammer fa-2x"></i>
                                                     </a>
-                                                    <a  *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.idTabulador, dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Editar">
+                                                    <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.idTabulador, dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Editar">
                                                         <i class="fa-solid fa-pencil fa-2x"></i>
                                                     </a>
-                                                    <a  *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-danger mb-1" (click)="confirmaEliminarPuestoDireccionCotizacion(pt.idPuestoDireccionCotizacion)" title="Descartar">
+                                                    <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-danger mb-1" (click)="confirmaEliminarPuestoDireccionCotizacion(pt.idPuestoDireccionCotizacion)" title="Descartar">
                                                         <i class="fa-solid fa-times fa-2x"></i>
                                                     </a>
                                                 </div>
@@ -680,7 +699,7 @@
             </div>
             <br />
             <hr />
-            <div  *ngIf="model.idEstatus == 1" class="row text-end">
+            <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
                     <div *ngIf="isLoadinglay" class="row-12 text-center">
                         <i class="fas fa-spinner fa-spin fa-3x"></i>
@@ -752,7 +771,7 @@
                                     <div class="col-md-2 col-sm-6 col-1">
                                         <span class="ms-2">Clave</span>
                                     </div>
-                                    <div class="col-md-3 col-sm-6 col-5">
+                                    <div [ngClass]="model.idServicio != 4 && model.idServicio != 5? 'col-md-3 col-sm-6 col-3':'col-md-4 col-sm-8 col-9'">
                                         <span class="ms-2">Producto</span>
                                     </div>
                                     <div class="col-md-1 col-sm-6 col-3">
@@ -761,10 +780,10 @@
                                     <div class="col-md-1 col-sm-6 col-2 text-center">
                                         <span class="ms-2">Cant.</span>
                                     </div>
-                                    <div class="col-md-2 col-sm-6 col-2 align-middle">
+                                    <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-md-2 col-sm-6 col-2 align-middle">
                                         <span class="ms-2">Frecuencia</span>
                                     </div>
-                                    <div class="col-md-1 col-sm-6 col-2">
+                                    <div [ngClass]="model.idServicio != 4? 'col-md-1 col-sm-4 col-3':'col-md-2 col-sm-4 col-4'">
                                         <span class="ms-2">Total</span>
                                     </div>
                                     <div class="col-md-2 col-sm-6 col-6">
@@ -783,7 +802,7 @@
                                         <span class="badge d-md-none">Clave:</span>
                                         <div>{{ mat.claveProducto }}</div>
                                     </div>
-                                    <div class="col-md-3 col-sm-8 col-9">
+                                    <div [ngClass]="model.idServicio != 4 && model.idServicio != 5? 'col-md-3 col-sm-6 col-3':'col-md-4 col-sm-8 col-9'">
                                         <span class="badge d-md-none">Producto:</span>
                                         <div class="ms-2">{{ mat.descripcionMaterial }}</div>
                                         <small class="ms-2 text-muted">{{ mat.nombreSucursal }}</small>
@@ -796,13 +815,13 @@
                                         <span class="badge d-md-none">Cantidad:</span>
                                         <div class="ms-2">{{ mat.cantidad | number: '0.0' }}</div>
                                     </div>
-                                    <div class="col-md-2 col-sm-6 col-3">
+                                    <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-md-2 col-sm-6 col-3">
                                         <span class="badge d-md-none">Frecuencia:</span>
                                         <div class="ms-2">{{ mat.idFrecuencia }}</div>
                                     </div>
-                                    <div class="col-md-1 col-sm-4 col-3">
+                                    <div [ngClass]="model.idServicio != 4? 'col-md-1 col-sm-4 col-3':'col-md-2 col-sm-4 col-4'">
                                         <span class="badge d-md-none">Total:</span>
-                                        <div class="ms-2">${{ mat.cantidad * mat.precioUnitario | number: '0.2' }}</div>
+                                        <div class="ms-2">${{ mat.total | number: '0.2' }}</div>
                                     </div>
                                     <div class="col-md-2 col-sm-4 col-3">
                                         <span class="badge d-md-none">Fecha Alta:</span>
@@ -827,7 +846,7 @@
                 <pagina-widget [pagina]="lsmat.pagina" [numPaginas]="lsmat.numPaginas" [rows]="lsmat.rows" (chgEvent)="matPagina($event)"></pagina-widget>
             </div>
         </div>
-        <div class="tab-pane fade" id="servicio" role="tabpanel" aria-labelledby="plantilla-tab">
+        <div *ngIf="model.idServicio != 4" class="tab-pane fade" id="servicio" role="tabpanel" aria-labelledby="plantilla-tab">
             <div *ngIf="model.idEstatus == 1">
                 <div class="row">
                     <div class="col-md-12">

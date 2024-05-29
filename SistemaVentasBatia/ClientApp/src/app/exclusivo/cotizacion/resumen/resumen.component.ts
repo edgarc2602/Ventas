@@ -60,7 +60,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
-        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, idEstatus: 0
+        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, idEstatus: 0, diasEvento: 0
     };
     modelDir: DireccionCotizacion = {
         idCotizacion: 0, idDireccionCotizacion: 0, idDireccion: 0, nombreSucursal: ''
@@ -93,6 +93,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     isLoadinglay: boolean = false;
     isLoading: boolean = false;
     validaciones: boolean = false;
+    totalDia: number = 0;
     allTabsOpen = true;
     selTipo: string = 'material';
     txtMatKey: string = '';
@@ -133,7 +134,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     nuevo() {
         this.model = {
             idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0, material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0, subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0,
-            idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, idEstatus: 0
+            idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, idEstatus: 0, diasEvento: 0
         };
         let fec: Date = new Date();
         this.modelpros = {
@@ -146,6 +147,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     existe(id: number) {
         this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${id}`).subscribe(response => {
             this.model = response;
+            this.totalDia = (response.subTotal + response.indirecto + response.utilidad + response.comisionSV + response.comisionExt + response.totalPolizaCumplimiento) / this.model.diasEvento;
             this.http.get<Prospecto>(`${this.url}api/prospecto/${this.model.idProspecto}`).subscribe(response => {
                 this.modelpros = response;
                 this.docs = this.modelpros.listaDocumentos;
@@ -225,6 +227,74 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 this.errorToast('Ocurri\u00F3 un error')
             }
         );
+    }
+
+    propuestaSuministroInsumos() {
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.get(`${this.url}api/report/DescargarPropuestaInsumos/${this.model.idCotizacion}`, { responseType: 'arraybuffer' })
+                .subscribe(
+                    (data: ArrayBuffer) => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Propuesta descargada');
+                        }, 300);
+                        const file = new Blob([data], { type: 'application/pdf' });
+                        const fileURL = URL.createObjectURL(file);
+                        const width = 800;
+                        const height = 550;
+                        const left = window.innerWidth / 2 - width / 2;
+                        const top = window.innerHeight / 2 - height / 2;
+                        const newWindow = window.open(fileURL, '_blank', `width=${width}, height=${height}, top=${top}, left=${left}`);
+                        if (newWindow) {
+                            newWindow.focus();
+                        } else {
+                            alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
+                        }
+                    },
+                    error => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.error('Error al obtener el archivo PDF', error);
+                    }
+                );
+        }, 300);
+    }
+
+    propuestaEvento() {
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.get(`${this.url}api/report/DescargarPropuestaEvento/${this.model.idCotizacion}`, { responseType: 'arraybuffer' })
+                .subscribe(
+                    (data: ArrayBuffer) => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.okToast('Propuesta descargada');
+                        }, 300);
+                        const file = new Blob([data], { type: 'application/pdf' });
+                        const fileURL = URL.createObjectURL(file);
+                        const width = 800;
+                        const height = 550;
+                        const left = window.innerWidth / 2 - width / 2;
+                        const top = window.innerHeight / 2 - height / 2;
+                        const newWindow = window.open(fileURL, '_blank', `width=${width}, height=${height}, top=${top}, left=${left}`);
+                        if (newWindow) {
+                            newWindow.focus();
+                        } else {
+                            alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
+                        }
+                    },
+                    error => {
+                        this.detenerCarga();
+                        setTimeout(() => {
+                            this.errorToast('Ocurri\u00F3 un error');
+                        }, 300);
+                        console.error('Error al obtener el archivo PDF', error);
+                    }
+                );
+        }, 300);
     }
 
     savePros(event) {
@@ -361,11 +431,11 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     addPlan(id: number, tb: number, nombreSucursal: string) {
         this.selDireccion = id;
-        this.pueAdd.open(this.model.idCotizacion, id, tb, 0, nombreSucursal);
+        this.pueAdd.open(this.model.idCotizacion, id, tb, 0, nombreSucursal,"", this.model.diasEvento);
     }
 
     updPlan(id: number, tb: number, nombreSucursal: string, puesto: string) {
-        this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id, nombreSucursal, puesto);
+        this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id, nombreSucursal, puesto, this.model.diasEvento);
     }
 
     removePlan(id: number) {
@@ -420,13 +490,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.selPuesto = id;
         this.selDireccion = dir;
         this.selTipo = tp;
-        this.proPue.open(this.model.idCotizacion, dir, id, tp, this.edit, nombreSucursal, puesto, this.model.idEstatus);
+        this.proPue.open(this.model.idCotizacion, dir, id, tp, this.edit, nombreSucursal, puesto, this.model.idEstatus, this.model.idServicio);
     }
 
     newMate(event) {
         this.cloMate();
         this.sDir = false;
-        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, event, this.model.idServicio, this.selTipo, false, this.edit, this.nombreSucursal, this.puesto);
+        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, event, this.model.idServicio, this.selTipo, false, this.edit, this.nombreSucursal, this.puesto, this.model.idServicio, this.model.diasEvento);
     }
 
     saveMate(event) {
@@ -438,14 +508,14 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.selDireccion = 0;
         this.sDir = true;
         this.selTipo = tp;
-        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, 0, this.model.idServicio, tp, true, this.edit);
+        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, 0, this.model.idServicio, tp, true, this.edit, "", "", this.model.idServicio, this.model.diasEvento);
     }
 
     selNewMat(id: number, tp: string, edit: number) {
         this.edit = 1;
         this.sDir = true;
         this.selTipo = tp;
-        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, id, this.model.idServicio, tp, true, this.edit);
+        this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, id, this.model.idServicio, tp, true, this.edit, "", "", this.model.idServicio, this.model.diasEvento);
     }
 
     removeMat(id: number) {
@@ -516,7 +586,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     servicio(id: number) {
-        this.serAdd.open(id, this.model.idCotizacion);
+        this.serAdd.open(id, this.model.idCotizacion, this.model.idServicio);
     }
 
     return($event) {

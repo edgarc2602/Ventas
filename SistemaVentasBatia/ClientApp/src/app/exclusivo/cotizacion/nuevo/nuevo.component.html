@@ -120,7 +120,7 @@
                         <h5>Cotización</h5>
                         <br />
                         <h6><span class="small text-muted mb-2">Tipo de servicio</span></h6>
-                        <div class="row">
+                        <div class="row mb-3">
                             <div *ngFor="let s of sers" class="col-sm-6 col-md-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
@@ -130,9 +130,19 @@
                             </div>
                             <span *ngIf="ferr('ListaServicio')" class="text-danger">{{ terr('ListaServicio') }}</span>
                         </div>
-                        <br />
-                        <h6><span class="small text-muted mb-2">Tipo de salario</span></h6>
-                        <div class="row">
+                        <h6 *ngIf="isEvento == true"><span class="small text-muted mb-2">Duración del evento(días)</span></h6>
+                        <div *ngIf="isEvento == true" class="row">
+                            <div class="col-sm-4 col-md-4">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control validacion-prospecto" [(ngModel)]="model.diasEvento" data-campo="DiasEvento" id="txtDiasEvento">
+                                    <label for="txtDiasEvento">Dias</label>
+                                </div>
+                                <span *ngIf="ferr('DiasEvento')" class="text-danger">{{ terr('DiasEvento') }}</span>
+                            </div>
+                        </div>
+                        <br *ngIf="isInsumo != true" />
+                        <h6 *ngIf="isInsumo != true"><span class="small text-muted mb-2">Tipo de salario</span></h6>
+                        <div *ngIf="isInsumo != true" class="row">
                             <div *ngFor="let s of salt" class="col-sm-6 col-md-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
@@ -142,7 +152,7 @@
                             </div>
                             <span *ngIf="ferr('ListaTipoSalario')" class="text-danger">{{ terr('ListaTipoSalario') }}</span>
                         </div>
-                        <br />
+                        <br *ngIf="isInsumo != true" />
                         <h6><span class="small text-muted mb-2">Póliza de cumplimiento</span></h6>
                         <div class="row">
                             <div class="col-sm-6 col-md-2 col-4">

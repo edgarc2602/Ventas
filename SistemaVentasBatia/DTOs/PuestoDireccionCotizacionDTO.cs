@@ -68,5 +68,6 @@ namespace SistemaVentasBatia.DTOs
         public DiaSemana? DiaInicioFin { get; set; }
         public DiaSemana? DiaFinFin { get; set; }
         public DiaSemana? DiaDescanso { get; set; }
+        public int DiasEvento { get; set; }
     }
 }

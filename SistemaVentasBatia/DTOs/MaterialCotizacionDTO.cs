@@ -35,5 +35,6 @@ namespace SistemaVentasBatia.DTOs
         [Range(1, int.MaxValue, ErrorMessage = "Usuario es necesario")]
         public int IdPersonal { get; set; }
         public int edit { get; set; }
+        public int DiasEvento { get; set; }
     }
 }

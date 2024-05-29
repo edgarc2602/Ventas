@@ -32,7 +32,7 @@ namespace SistemaVentasBatia.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PuestoDireccionCotizacionDTO>> AgregarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM)
+        public async Task<ActionResult<PuestoDireccionCotizacionDTO>> AgregarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, int? idServicio)
         {
             await _logic.CrearPuestoDireccionCotizacion(operarioVM);
 

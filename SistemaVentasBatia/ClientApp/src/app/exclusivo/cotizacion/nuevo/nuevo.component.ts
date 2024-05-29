@@ -37,7 +37,8 @@ export class CotizaComponent {
     agregarTipo: number = 0;
     idVendedor: number = 0;
     salTipo: number = 0;
-
+    isEvento: boolean = false;
+    isInsumo: boolean = false;
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe, private rtr: Router, public user: StoreUser) {
         this.nuevo();
         http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo`, this.user.idPersonal).subscribe(response => {
@@ -58,14 +59,15 @@ export class CotizaComponent {
     }
 
     nuevo() {
+        this.isEvento = false;
         let fec: Date = new Date();
         this.model = {
             idCotizacion: 0, idProspecto: 0, idServicio: 0, total: 0,
             fechaAlta: fec.toISOString(), idCotizacionOriginal: 0,
-            idPersonal: this.user.idPersonal, listaServicios: [], salTipo: 0, listaTipoSalarios: [], polizaCumplimiento: false, diasVigencia: 0
+            idPersonal: this.user.idPersonal, listaServicios: [], salTipo: 0, listaTipoSalarios: [], polizaCumplimiento: false, diasVigencia: 0, diasEvento: 0
         };
         this.sers.forEach(s => s.act = false);
-        this.salt.forEach(s => s.act = false);
+        //this.salt.forEach(s => s.act = false);
         this.modelp = {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
             representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
@@ -98,12 +100,15 @@ export class CotizaComponent {
         this.model.listaServicios = this.sers;
         this.model.listaTipoSalarios = this.salt;
         this.model.idPersonal = this.idVendedor;
+        //if (this.isInsumo == true) {
+        //    this.model.salTipo = 1
+        //}
         if (this.model.idCotizacion == 0) {
             this.http.post<boolean>(`${this.url}api/cotizacion`, this.model).subscribe(response => {
                 console.log(response);
-                this.okToast('Cotizaci\u00F3n creada');
                 this.closeNew(0);
                 this.rtr.navigate(['/exclusivo/cotiza/' + this.model.idProspecto]);
+                this.okToast('Cotizaci\u00F3n creada');
 
             }, err => {
                 console.log(err);
@@ -157,6 +162,7 @@ export class CotizaComponent {
     }
 
     valida() {
+        this.lerr = {};
         this.validaciones = true;
         let val: ItemN = this.sers.filter(x => x.act)[0];
         if (this.agregarTipo == 2) {
@@ -180,11 +186,23 @@ export class CotizaComponent {
                 this.lerr['NumeroContacto'] = ['Tel. Contacto es requerido'];
                 this.validaciones = false;
             }
+            if (this.isEvento == true) {
+                if (this.model.diasEvento == 0 || this.model.diasEvento == null) {
+                    this.lerr['DiasEvento'] = ['Duraci\u00F3n del evento es requerido'];
+                    this.validaciones = false;
+                }
+            }
         }
         else {
             if (this.model.idProspecto == 0 || this.model.idProspecto == null) {
                 this.lerr['Prospecto'] = ['Prospecto es requerido'];
                 this.validaciones = false;
+            }
+            if (this.isEvento == true) {
+                if (this.model.diasEvento == 0 || this.model.diasEvento == null) {
+                    this.lerr['DiasEvento'] = ['Duraci\u00F3n del evento es requerido'];
+                    this.validaciones = false;
+                }
             }
         }
         if (!val) {
@@ -250,6 +268,18 @@ export class CotizaComponent {
     }
 
     updateSelectedServicio(selectedServicio: any): void {
+        if (selectedServicio.id == 5) {
+            this.isEvento = true;
+        }
+        else {
+            this.isEvento = false;
+        }
+        if (selectedServicio.id == 4) {
+            this.isInsumo = true;
+        }
+        else {
+            this.isInsumo = false;
+        }
         this.sers.forEach(s => s.act = false);
         selectedServicio.act = true;
     }

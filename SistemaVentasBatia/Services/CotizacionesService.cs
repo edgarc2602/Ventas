@@ -50,7 +50,7 @@ namespace SistemaVentasBatia.Services
         Task<bool> ActualizarImssBase(decimal imss);
         Task<bool> ActivarCotizacion(int idCotizacion);
         Task<bool> DesactivarCotizacion(int idCotizacion);
-        Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre,int idCotizacion);
+        Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre, int idCotizacion);
         Task DesactivarCotizaciones(int idProspecto);
         Task<ImmsJornadaDTO> ObtenerImssJornada();
         Task<bool> ActualizarImssJornada(ImmsJornadaDTO imssJormada);
@@ -249,11 +249,15 @@ namespace SistemaVentasBatia.Services
                 await CalcularPreciosMaterial(herraPuesto, operariosModel);
             }
 
-            await InsertarMaterialesDefaultOperarios(materialPuesto, uniformePuesto, equipoPuesto, herraPuesto, idOperario, operariosModel.IdCotizacion, operariosModel.IdDireccionCotizacion, operariosVM.IdTurno, operariosModel.IdPersonal);
+            await InsertarMaterialesDefaultOperarios(materialPuesto, uniformePuesto, equipoPuesto, herraPuesto, idOperario, operariosModel.IdCotizacion, operariosModel.IdDireccionCotizacion, operariosVM.IdTurno, operariosModel.IdPersonal, operariosVM.DiasEvento);
         }
 
         private async Task<PuestoDireccionCotizacion> CalcularCostosOperario(PuestoDireccionCotizacion operariosModel)
         {
+            if (operariosModel.DiasEvento != 0)
+            {
+                operariosModel.Sueldo = (operariosModel.Sueldo / 30.4167M) * operariosModel.DiasEvento;
+            }
             int idCotizacion = await cotizacionesRepo.ObtenerIdCotizacionPorDireccion(operariosModel.IdDireccionCotizacion);
             //decimal imss = await cotizacionesRepo.ObtenerImssBase();
 
@@ -361,18 +365,42 @@ namespace SistemaVentasBatia.Services
             return operariosModel;
         }
 
-        private async Task InsertarMaterialesDefaultOperarios(List<MaterialPuesto> materialPuesto, List<MaterialPuesto> uniformePuesto, List<MaterialPuesto> equipoPuesto, List<MaterialPuesto> herramientaPuesto, int idOperario, int idCotizacion, int idDireccionCotizacion, Enums.Turno idTurno, int idPersonal)
+        private async Task InsertarMaterialesDefaultOperarios(List<MaterialPuesto> materialPuesto, List<MaterialPuesto> uniformePuesto, List<MaterialPuesto> equipoPuesto, List<MaterialPuesto> herramientaPuesto, int idOperario, int idCotizacion, int idDireccionCotizacion, Enums.Turno idTurno, int idPersonal, int DiasEvento)
         {
-            var materialCotizacion = new List<MaterialCotizacion>();
-
-            foreach (var materialP in materialPuesto)
+            if (DiasEvento == 0)
             {
-                var idFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia);
+                var materialCotizacion = new List<MaterialCotizacion>();
 
-                var total = (materialP.Precio * materialP.Cantidad);
-                decimal impMensual = total / (int)idFrecuencia;
+                foreach (var materialP in materialPuesto)
+                {
+                    var idFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia);
+                    var total = (materialP.Precio * materialP.Cantidad);
+                    decimal impMensual = total / (int)idFrecuencia;
 
-                materialCotizacion.Add(new MaterialCotizacion
+
+                    materialCotizacion.Add(new MaterialCotizacion
+                    {
+                        ClaveProducto = materialP.ClaveProducto,
+                        IdCotizacion = idCotizacion,
+                        IdDireccionCotizacion = idDireccionCotizacion,
+                        IdPuestoDireccionCotizacion = idOperario,
+                        Cantidad = materialP.Cantidad,
+                        PrecioUnitario = materialP.Precio,
+                        IdFrecuencia = idFrecuencia,
+                        FechaAlta = DateTime.Now,
+                        Total = total,
+                        ImporteMensual = impMensual,
+                        IdPersonal = idPersonal
+                    });
+
+                }
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarMaterialesCotizacion(materialCotizacion);
+                }
+
+                materialCotizacion = uniformePuesto.Select(materialP =>
+                new MaterialCotizacion
                 {
                     ClaveProducto = materialP.ClaveProducto,
                     IdCotizacion = idCotizacion,
@@ -380,77 +408,149 @@ namespace SistemaVentasBatia.Services
                     IdPuestoDireccionCotizacion = idOperario,
                     Cantidad = materialP.Cantidad,
                     PrecioUnitario = materialP.Precio,
-                    IdFrecuencia = idFrecuencia,
+                    IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
                     FechaAlta = DateTime.Now,
-                    Total = total,
-                    ImporteMensual = impMensual,
+                    Total = (materialP.Precio * materialP.Cantidad),
+                    ImporteMensual = (materialP.Precio * materialP.Cantidad) / (int)CalcFrecuencia(idTurno, materialP.IdFrecuencia),
                     IdPersonal = idPersonal
-                });
+                }).ToList();
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarUniformeCotizacion(materialCotizacion);
+                }
+
+                materialCotizacion = herramientaPuesto.Select(materialP =>
+                new MaterialCotizacion
+                {
+                    ClaveProducto = materialP.ClaveProducto,
+                    IdCotizacion = idCotizacion,
+                    IdDireccionCotizacion = idDireccionCotizacion,
+                    IdPuestoDireccionCotizacion = idOperario,
+                    Cantidad = materialP.Cantidad,
+                    PrecioUnitario = materialP.Precio,
+                    IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
+                    FechaAlta = DateTime.Now,
+                    Total = (materialP.Precio * materialP.Cantidad),
+                    ImporteMensual = (materialP.Precio * materialP.Cantidad) / (int)CalcFrecuencia(idTurno, materialP.IdFrecuencia),
+                    IdPersonal = idPersonal
+                }).ToList();
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarHerramientaCotizacion(materialCotizacion);
+                }
+
+                materialCotizacion = equipoPuesto.Select(materialP =>
+                new MaterialCotizacion
+                {
+                    ClaveProducto = materialP.ClaveProducto,
+                    IdCotizacion = idCotizacion,
+                    IdDireccionCotizacion = idDireccionCotizacion,
+                    IdPuestoDireccionCotizacion = idOperario,
+                    Cantidad = materialP.Cantidad,
+                    PrecioUnitario = materialP.Precio,
+                    IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
+                    FechaAlta = DateTime.Now,
+                    Total = (materialP.Precio * materialP.Cantidad),
+                    ImporteMensual = (materialP.Precio * materialP.Cantidad) / (int)CalcFrecuencia(idTurno, materialP.IdFrecuencia),
+                    IdPersonal = idPersonal
+                }).ToList();
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarEquipoCotizacion(materialCotizacion);
+                }
             }
-            if (materialCotizacion.Count > 0)
+            else
             {
-                await materialRepo.InsertarMaterialesCotizacion(materialCotizacion);
+                var materialCotizacion = new List<MaterialCotizacion>();
+
+                foreach (var materialP in materialPuesto)
+                {
+                    var idFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia);
+                    var total = ((materialP.Precio * materialP.Cantidad) / 30.4167M) * DiasEvento;
+                    decimal impMensual = total;
+
+                    materialCotizacion.Add(new MaterialCotizacion
+                    {
+                        ClaveProducto = materialP.ClaveProducto,
+                        IdCotizacion = idCotizacion,
+                        IdDireccionCotizacion = idDireccionCotizacion,
+                        IdPuestoDireccionCotizacion = idOperario,
+                        Cantidad = materialP.Cantidad,
+                        PrecioUnitario = materialP.Precio,
+                        IdFrecuencia = idFrecuencia,
+                        FechaAlta = DateTime.Now,
+                        Total = total,
+                        ImporteMensual = impMensual,
+                        IdPersonal = idPersonal
+                    });
+
+                }
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarMaterialesCotizacion(materialCotizacion);
+                }
+
+                materialCotizacion = uniformePuesto.Select(materialP =>
+                new MaterialCotizacion
+                {
+                    ClaveProducto = materialP.ClaveProducto,
+                    IdCotizacion = idCotizacion,
+                    IdDireccionCotizacion = idDireccionCotizacion,
+                    IdPuestoDireccionCotizacion = idOperario,
+                    Cantidad = materialP.Cantidad,
+                    PrecioUnitario = materialP.Precio,
+                    IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
+                    FechaAlta = DateTime.Now,
+                    Total = ((materialP.Precio * materialP.Cantidad) / 30.4167M) * DiasEvento,
+                    ImporteMensual = ((materialP.Precio * materialP.Cantidad) / 30.4167M) * DiasEvento,
+                    IdPersonal = idPersonal
+                }).ToList();
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarUniformeCotizacion(materialCotizacion);
+                }
+
+                materialCotizacion = herramientaPuesto.Select(materialP =>
+                new MaterialCotizacion
+                {
+                    ClaveProducto = materialP.ClaveProducto,
+                    IdCotizacion = idCotizacion,
+                    IdDireccionCotizacion = idDireccionCotizacion,
+                    IdPuestoDireccionCotizacion = idOperario,
+                    Cantidad = materialP.Cantidad,
+                    PrecioUnitario = materialP.Precio,
+                    IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
+                    FechaAlta = DateTime.Now,
+                    Total = ((materialP.Precio * materialP.Cantidad) / 30.4167M) * DiasEvento,
+                    ImporteMensual = ((materialP.Precio * materialP.Cantidad) / 30.4167M) * DiasEvento,
+                    IdPersonal = idPersonal
+                }).ToList();
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarHerramientaCotizacion(materialCotizacion);
+                }
+
+                materialCotizacion = equipoPuesto.Select(materialP =>
+                new MaterialCotizacion
+                {
+                    ClaveProducto = materialP.ClaveProducto,
+                    IdCotizacion = idCotizacion,
+                    IdDireccionCotizacion = idDireccionCotizacion,
+                    IdPuestoDireccionCotizacion = idOperario,
+                    Cantidad = materialP.Cantidad,
+                    PrecioUnitario = materialP.Precio,
+                    IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
+                    FechaAlta = DateTime.Now,
+                    Total = (((materialP.Precio * 1.15M) * materialP.Cantidad) / 30.4167M) * DiasEvento,
+                    ImporteMensual = (((materialP.Precio * 1.15M) * materialP.Cantidad) / 30.4167M) * DiasEvento,
+                    IdPersonal = idPersonal
+                }).ToList();
+                if (materialCotizacion.Count > 0)
+                {
+                    await materialRepo.InsertarEquipoCotizacion(materialCotizacion);
+                }
             }
 
-            materialCotizacion = uniformePuesto.Select(materialP =>
-            new MaterialCotizacion
-            {
-                ClaveProducto = materialP.ClaveProducto,
-                IdCotizacion = idCotizacion,
-                IdDireccionCotizacion = idDireccionCotizacion,
-                IdPuestoDireccionCotizacion = idOperario,
-                Cantidad = materialP.Cantidad,
-                PrecioUnitario = materialP.Precio,
-                IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
-                FechaAlta = DateTime.Now,
-                Total = (materialP.Precio * materialP.Cantidad),
-                ImporteMensual = (materialP.Precio * materialP.Cantidad) / (int)CalcFrecuencia(idTurno, materialP.IdFrecuencia),
-                IdPersonal = idPersonal
-            }).ToList();
-            if (materialCotizacion.Count > 0)
-            {
-                await materialRepo.InsertarUniformeCotizacion(materialCotizacion);
-            }
-
-            materialCotizacion = herramientaPuesto.Select(materialP =>
-            new MaterialCotizacion
-            {
-                ClaveProducto = materialP.ClaveProducto,
-                IdCotizacion = idCotizacion,
-                IdDireccionCotizacion = idDireccionCotizacion,
-                IdPuestoDireccionCotizacion = idOperario,
-                Cantidad = materialP.Cantidad,
-                PrecioUnitario = materialP.Precio,
-                IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
-                FechaAlta = DateTime.Now,
-                Total = (materialP.Precio * materialP.Cantidad),
-                ImporteMensual = (materialP.Precio * materialP.Cantidad) / (int)CalcFrecuencia(idTurno, materialP.IdFrecuencia),
-                IdPersonal = idPersonal
-            }).ToList();
-            if (materialCotizacion.Count > 0)
-            {
-                await materialRepo.InsertarHerramientaCotizacion(materialCotizacion);
-            }
-
-            materialCotizacion = equipoPuesto.Select(materialP =>
-            new MaterialCotizacion
-            {
-                ClaveProducto = materialP.ClaveProducto,
-                IdCotizacion = idCotizacion,
-                IdDireccionCotizacion = idDireccionCotizacion,
-                IdPuestoDireccionCotizacion = idOperario,
-                Cantidad = materialP.Cantidad,
-                PrecioUnitario = materialP.Precio,
-                IdFrecuencia = CalcFrecuencia(idTurno, materialP.IdFrecuencia),
-                FechaAlta = DateTime.Now,
-                Total = (materialP.Precio * materialP.Cantidad),
-                ImporteMensual = (materialP.Precio * materialP.Cantidad) / (int)CalcFrecuencia(idTurno, materialP.IdFrecuencia),
-                IdPersonal = idPersonal
-            }).ToList();
-            if (materialCotizacion.Count > 0)
-            {
-                await materialRepo.InsertarEquipoCotizacion(materialCotizacion);
-            }
         }
 
         public async Task CalcularPreciosMaterial(List<MaterialPuesto> materialPuesto, PuestoDireccionCotizacion operario)
@@ -940,7 +1040,7 @@ namespace SistemaVentasBatia.Services
         public async Task CambiarEstatusCotizacionesNoSeleccionadas(int idCotizacionSeleccionada, int idProspecto)
         {
             var cotizaciones = await cotizacionesRepo.ObtenerCotizacionesNoSeleccionadasPorIdProspecto(idCotizacionSeleccionada, idProspecto);
-            foreach(var cot in cotizaciones)
+            foreach (var cot in cotizaciones)
             {
                 await cotizacionesRepo.CambiarEstatusCotizacionNoSeleccionada(cot.IdCotizacion);
             }

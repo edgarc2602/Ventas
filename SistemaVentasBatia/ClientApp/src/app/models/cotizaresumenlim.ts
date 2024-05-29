@@ -27,4 +27,5 @@ export interface CotizaResumenLim {
     polizaCumplimiento: boolean;
     totalPolizaCumplimiento: number;
     idEstatus: number;
+    diasEvento: number;
 }

@@ -24,6 +24,7 @@ export class MaterialWidget {
     tipo: string = '';
     isLoading: boolean = false;
     idEstatus: number = 0;
+    idTipoServicio: number = 0;
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) { }
 
     existe(id: number) {
@@ -72,8 +73,9 @@ export class MaterialWidget {
         }, 300);
     }
 
-    open(cot: number, dir: number, pue: number, tp: string, edit: number, nombreSucursal?: string, puesto?: string, idEstatus?: number) {
+    open(cot: number, dir: number, pue: number, tp: string, edit: number, nombreSucursal?: string, puesto?: string, idEstatus?: number, idTipoServicio?: number) {
         this.idEstatus = idEstatus;
+        this.idTipoServicio = idTipoServicio;
         if (nombreSucursal == undefined || nombreSucursal == '') {
         }
         else {

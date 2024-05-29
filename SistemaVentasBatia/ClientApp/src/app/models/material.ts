@@ -11,4 +11,5 @@ export interface Material {
     fechaAlta: string;
     idPersonal: number;
     edit: number;
+    diasEvento: number;
 }

@@ -39,5 +39,6 @@
     diaInicioFin: number;
     diaFinFin: number;
     diaDescanso: number;
+    diasEvento: number;
 
 }

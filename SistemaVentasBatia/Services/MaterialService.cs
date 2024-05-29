@@ -66,33 +66,41 @@ namespace SistemaVentasBatia.Services
             {
                 precionew = await _materialRepo.ObtenerPrecioProductoBase(materialVM.ClaveProducto);
             }
-            if (materialVM.edit == 1)
-            {
                 var material = _mapper.Map<MaterialCotizacion>(materialVM);
                 material.PrecioUnitario = precionew;
                 material.Cantidad = materialVM.Cantidad;
-                material.Total = material.PrecioUnitario * material.Cantidad;
-                material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
+                if (materialVM.DiasEvento == 0)
+                {
+                    material.Total = material.PrecioUnitario * material.Cantidad;
+                    material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
+                }
+                else
+                {
+                    material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * materialVM.DiasEvento;
+                    material.ImporteMensual = material.Total;
+                }
+                if (materialVM.edit == 1)
+                {
+                    await _materialRepo.ActualizarMaterialCotizacion(material);
+                }
+                else
+                {
+                    await _materialRepo.AgregarMaterialCotizacion(material);
+                }
 
-                await _materialRepo.ActualizarMaterialCotizacion(material);
-            }
-            else
-            {
-                var material = _mapper.Map<MaterialCotizacion>(materialVM);
-                material.PrecioUnitario = precionew;
-                material.Cantidad = materialVM.Cantidad;
-                material.Total = material.PrecioUnitario * material.Cantidad;
-                material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
-
-                await _materialRepo.AgregarMaterialCotizacion(material);
-            }
         }
 
         public async Task ActualizarMaterialCotizacion(MaterialCotizacionDTO materialVM)
         {
             var material = _mapper.Map<MaterialCotizacion>(materialVM);
-
-            material.Total = (material.PrecioUnitario * material.Cantidad) / (int)material.IdFrecuencia;
+            if (materialVM.DiasEvento == 0)
+            {
+                material.Total = (material.PrecioUnitario * material.Cantidad) / (int)material.IdFrecuencia;
+            }
+            else
+            {
+                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * materialVM.DiasEvento;
+            }
 
             await _materialRepo.ActualizarMaterialCotizacion(material);
         }
@@ -288,24 +296,25 @@ namespace SistemaVentasBatia.Services
                 precionew = await _materialRepo.ObtenerPrecioProductoBase(dto.ClaveProducto);
 
             }
-            if (dto.edit == 1)
+            var material = _mapper.Map<MaterialCotizacion>(dto);
+            material.PrecioUnitario = precionew;
+            material.Cantidad = dto.Cantidad;
+            if (dto.DiasEvento == 0)
             {
-                var material = _mapper.Map<MaterialCotizacion>(dto);
-                material.PrecioUnitario = precionew;
-                material.Cantidad = dto.Cantidad;
                 material.Total = material.PrecioUnitario * material.Cantidad;
                 material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
-
+            }
+            else
+            {
+                material.Total = ((((material.PrecioUnitario / 12M) * 1.15M) * material.Cantidad) / 30.4167M) * dto.DiasEvento;
+                material.ImporteMensual = material.Total;
+            }
+            if (dto.edit == 1)
+            {
                 await _materialRepo.ActualizarEquipoCotizacion(material);
             }
             else
             {
-                var material = _mapper.Map<MaterialCotizacion>(dto);
-                material.PrecioUnitario = precionew;
-                material.Cantidad = dto.Cantidad;
-                material.Total = material.PrecioUnitario * material.Cantidad;
-                material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
-
                 await _materialRepo.AgregarEquipoCotizacion(material);
             }
         }
@@ -313,10 +322,16 @@ namespace SistemaVentasBatia.Services
         public async Task ActualizarEquipoCotizacion(MaterialCotizacionDTO dto)
         {
             var equipo = _mapper.Map<MaterialCotizacion>(dto);
-
-            equipo.Total = (equipo.PrecioUnitario * equipo.Cantidad);
-            equipo.ImporteMensual = equipo.Total / (int)equipo.IdFrecuencia;
-
+            if (dto.DiasEvento == 0)
+            {
+                equipo.Total = (equipo.PrecioUnitario * equipo.Cantidad);
+                equipo.ImporteMensual = equipo.Total / (int)equipo.IdFrecuencia;
+            }
+            else
+            {
+                equipo.Total = ((((equipo.PrecioUnitario / 12M) * 1.15M) * equipo.Cantidad) / 30.4167M) * dto.DiasEvento;
+                equipo.ImporteMensual = equipo.Total;
+            }
             await _materialRepo.ActualizarEquipoCotizacion(equipo);
         }
 
@@ -334,26 +349,30 @@ namespace SistemaVentasBatia.Services
             {
                 precionew = await _materialRepo.ObtenerPrecioProductoBase(dto.ClaveProducto);
             }
-            if (dto.edit == 1)
+
+            var material = _mapper.Map<MaterialCotizacion>(dto);
+            material.PrecioUnitario = precionew;
+            material.Cantidad = dto.Cantidad;
+            if (dto.DiasEvento == 0)
             {
-                var material = _mapper.Map<MaterialCotizacion>(dto);
-                material.PrecioUnitario = precionew;
-                material.Cantidad = dto.Cantidad;
                 material.Total = material.PrecioUnitario * material.Cantidad;
                 material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
-
+            }
+            else
+            {
+                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * dto.DiasEvento;
+                material.ImporteMensual = material.Total;
+            }
+            if (dto.edit == 1)
+            {
                 await _materialRepo.ActualizarUniformeCotizacion(material);
             }
             else
             {
-                var material = _mapper.Map<MaterialCotizacion>(dto);
-                material.PrecioUnitario = precionew;
-                material.Cantidad = dto.Cantidad;
-                material.Total = material.PrecioUnitario * material.Cantidad;
-                material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
-
                 await _materialRepo.AgregarUniformeCotizacion(material);
             }
+
+
         }
 
         public async Task InsertarServicioCotizacion(ServicioCotizacion servicio)
@@ -380,10 +399,16 @@ namespace SistemaVentasBatia.Services
         public async Task ActualizarUniformeCotizacion(MaterialCotizacionDTO dto)
         {
             var uniforme = _mapper.Map<MaterialCotizacion>(dto);
-
-            uniforme.Total = (uniforme.PrecioUnitario * uniforme.Cantidad);
-            uniforme.ImporteMensual = uniforme.Total / (int)uniforme.IdFrecuencia;
-
+            if (dto.DiasEvento == 0)
+            {
+                uniforme.Total = (uniforme.PrecioUnitario * uniforme.Cantidad);
+                uniforme.ImporteMensual = uniforme.Total / (int)uniforme.IdFrecuencia;
+            }
+            else
+            {
+                uniforme.Total = ((uniforme.PrecioUnitario * uniforme.Cantidad) / 30.4167M) * dto.DiasEvento;
+                uniforme.ImporteMensual = uniforme.Total;
+            }
             await _materialRepo.ActualizarUniformeCotizacion(uniforme);
         }
 
@@ -402,35 +427,44 @@ namespace SistemaVentasBatia.Services
                 precionew = await _materialRepo.ObtenerPrecioProductoBase(dto.ClaveProducto);
 
             }
-            if (dto.edit == 1)
+            var material = _mapper.Map<MaterialCotizacion>(dto);
+            material.PrecioUnitario = precionew;
+            material.Cantidad = dto.Cantidad;
+            if (dto.DiasEvento == 0)
             {
-                var material = _mapper.Map<MaterialCotizacion>(dto);
-                material.PrecioUnitario = precionew;
-                material.Cantidad = dto.Cantidad;
                 material.Total = material.PrecioUnitario * material.Cantidad;
                 material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
+            }
+            else
+            {
+                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * dto.DiasEvento;
+                material.ImporteMensual = material.Total;
+            }
 
+            if (dto.edit == 1)
+            {
                 await _materialRepo.ActualizarHerramientaCotizacion(material);
             }
             else
             {
-                var material = _mapper.Map<MaterialCotizacion>(dto);
-                material.PrecioUnitario = precionew;
-                material.Cantidad = dto.Cantidad;
-                material.Total = material.PrecioUnitario * material.Cantidad;
-                material.ImporteMensual = material.Total / (int)material.IdFrecuencia;
-
                 await _materialRepo.AgregarHerramientaCotizacion(material);
             }
+
         }
 
         public async Task ActualizarHerramientaOperario(MaterialCotizacionDTO dto)
         {
             var herramienta = _mapper.Map<MaterialCotizacion>(dto);
-
-            herramienta.Total = (herramienta.PrecioUnitario * herramienta.Cantidad);
-            herramienta.ImporteMensual = herramienta.Total / (int)herramienta.IdFrecuencia;
-
+            if (dto.DiasEvento == 0)
+            {
+                herramienta.Total = (herramienta.PrecioUnitario * herramienta.Cantidad);
+                herramienta.ImporteMensual = herramienta.Total / (int)herramienta.IdFrecuencia;
+            }
+            else
+            {
+                herramienta.Total = ((herramienta.PrecioUnitario * herramienta.Cantidad) / 30.4167M) * dto.DiasEvento;
+                herramienta.ImporteMensual = herramienta.Total;
+            }
             await _materialRepo.ActualizarHerramientaCotizacion(herramienta);
         }
 

@@ -37,6 +37,8 @@ export class PuestoWidget {
     isLoading: boolean = false;
     nombreSucursal: string = '';
     puesto: string = '';
+    diasEvento: number = 0;
+    sueldoDiario: number = 0;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
@@ -67,7 +69,7 @@ export class PuestoWidget {
         this.model = {
             idPuestoDireccionCotizacion: 0, idPuesto: 0, idDireccionCotizacion: this.idD, jornada: 0, idTurno: 0, hrInicio: '', hrFin: '', diaInicio: 0, diaFin: 0, fechaAlta: dt.toISOString(), sueldo: 0, vacaciones: 0, primaVacacional: 0,
             imss: 0, isn: 0, aguinaldo: 0, total: 0, idCotizacion: this.idC, idPersonal: this.sinU.idPersonal, idSalario: 0, idClase: 0, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0,
-            diaDomingo: false, domingo: 0, diaCubreDescanso: false, cubreDescanso: 0, hrInicioFin: '', hrFinFin: '', diaInicioFin: 0, diaFinFin: 0, diaDescanso: 0
+            diaDomingo: false, domingo: 0, diaCubreDescanso: false, cubreDescanso: 0, hrInicioFin: '', hrFinFin: '', diaInicioFin: 0, diaFinFin: 0, diaDescanso: 0, diasEvento: 0
         };
     }
 
@@ -78,6 +80,8 @@ export class PuestoWidget {
             this.model.hrFin = this.model.hrFin.substring(0, 5);
             this.model.hrInicioFin = this.model.hrInicioFin.substring(0, 5);
             this.model.hrFinFin = this.model.hrFinFin.substring(0, 5);
+            this.chgSalariodos();
+            //this.sueldoDiario = this.model.sueldo / 30.4167;
         }, err => {
             console.log(err);
             if (err.error) {
@@ -102,6 +106,7 @@ export class PuestoWidget {
         if (this.model.diaInicioFin == 0) {
             this.model.diaInicioFin = 0;
         }
+        this.model.diasEvento = this.diasEvento;
         if (this.valida()) {
             this.iniciarCarga();
             setTimeout(() => {
@@ -160,6 +165,8 @@ export class PuestoWidget {
                 this.suel = response;
                 this.model.idSalario = response.idSalario;
                 this.model.sueldo = response.salarioI;
+                this.sueldoDiario = response.salarioI / 30.4167;
+
             }, err => {
                 this.detenerCarga();
                 console.log(err);
@@ -173,6 +180,7 @@ export class PuestoWidget {
             this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}`).subscribe(response => {
                 this.detenerCarga();
                 this.model.sueldo = response;
+                
                 this.jornada = 0;
                 switch (this.model.jornada) {
                     case 1:
@@ -194,6 +202,8 @@ export class PuestoWidget {
                     default:
                         break;
                 }
+                this.sueldoDiario = parseFloat((this.model.sueldo / 30.4167).toFixed(2));
+                
             }, err => {
                 this.detenerCarga();
                 console.log(err);
@@ -265,7 +275,9 @@ export class PuestoWidget {
         return msg;
     }
 
-    open(cot: number, dir: number, tab: number, pue: number, nombreSucursal?: string, puesto?: string) {
+    open(cot: number, dir: number, tab: number, pue: number, nombreSucursal?: string, puesto?: string, diasEvento?: number) {
+        if (diasEvento != 0) { this.diasEvento = diasEvento; }
+        else { this.diasEvento == 0 }
         this.nombreSucursal = nombreSucursal;
         this.puesto = puesto;
         this.lerr = {};

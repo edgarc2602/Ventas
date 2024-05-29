@@ -321,6 +321,10 @@ FROM tb_clase";
         }
         public async Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByFamilia(Servicio idServicio, int[] familia)
         {
+            if((int)idServicio == 4 || (int)idServicio == 5)
+            {
+                idServicio = Servicio.Limpieza;
+            }
             var query = @"SELECT clave Clave, descripcion Descripcion
                           FROM tb_producto                          
                           WHERE id_servicio = @idServicio and id_familia in @familias and id_status = 1 ORDER BY Descripcion;";

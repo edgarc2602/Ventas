@@ -26,5 +26,6 @@ namespace SistemaVentasBatia.Models
         public int IdProspecto { get; set; }
         public Servicio IdServicio { get; set; }
         public int IdCotizacionOriginal { get; set; }
+        public int DiasEvento { get; set; }
     }
 }

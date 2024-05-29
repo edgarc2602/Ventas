@@ -4,8 +4,8 @@
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 *ngIf="puesto == undefined" class="modal-title">Agregar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
-                    <h4 *ngIf="puesto != undefined" class="modal-title">Editar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
+                    <h4 *ngIf="puesto == ''" class="modal-title">Agregar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
+                    <h4 *ngIf="puesto != ''" class="modal-title">Editar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <!-- Modal body -->
@@ -164,6 +164,12 @@
                                 <div class="form-floating">
                                     <input type="number" class="form-control" [(ngModel)]="model.sueldo" disabled id="txtSueldoPuesto">
                                     <label for="txtSueldoPuesto">Sueldo</label>
+                                </div>
+                            </div>
+                            <div *ngIf="diasEvento != 0" class="col-sm-12 col-md-2 col-4">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="sueldoDiario" disabled id="txtSueldoDiario">
+                                    <label for="txtSueldoDiario">Sueldo diario</label>
                                 </div>
                             </div>
                             <br />

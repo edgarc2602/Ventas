@@ -37,5 +37,6 @@ namespace SistemaVentasBatia.DTOs
         public bool PolizaCumplimiento { get; set; }
         public decimal  TotalPolizaCumplimiento { get; set; }
         public int IdEstatus { get; set; }
+        public int DiasEvento { get; set; }
     }
 }

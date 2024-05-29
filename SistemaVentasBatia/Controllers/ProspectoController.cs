@@ -177,6 +177,7 @@ namespace SistemaVentasBatia.Controllers
                     Nom = s.ToString(),
                     Act = false
                 }).ToList();
+            ls[0].Act = true;
 
             return ls;
         }
