@@ -14,6 +14,7 @@ using SistemaVentasBatia.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using System.Data;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -616,8 +617,9 @@ DELETE FROM tb_cotiza_herramienta WHERE id_puesto_direccioncotizacion = @registr
         }
         public async Task<int> CopiarCotizacion(int idCotizacion)
         {
-            var query = @"INSERT INTO tb_cotizacion(id_prospecto, id_servicio, costo_indirecto,utilidad,total, id_estatus_cotizacion, fecha_alta, id_personal, id_cotizacion_original, id_porcentaje,comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza)
-                          SELECT  id_prospecto, id_servicio,costo_indirecto,utilidad, total, id_estatus_cotizacion, getdate(), id_personal, id_cotizacion, id_porcentaje, comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza
+            var query = @"INSERT INTO tb_cotizacion(
+                                  id_prospecto, id_servicio, costo_indirecto,utilidad,total, id_estatus_cotizacion, fecha_alta, id_personal, id_cotizacion_original, id_porcentaje, comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza, poliza_cumplimiento, dias_vigencia, cierre_motivo, cotizacion_evento_dias)
+                          SELECT  id_prospecto, id_servicio,costo_indirecto,utilidad, total, id_estatus_cotizacion, getdate(),  id_personal, id_cotizacion,          id_porcentaje, comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza, poliza_cumplimiento, dias_vigencia, cierre_motivo, cotizacion_evento_dias
                           FROM tb_cotizacion
                           WHERE id_cotizacion = @idCotizacion;
                         
@@ -716,7 +718,11 @@ where id_cotizacion = @idCotizacion";
         }
         public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
         {
-            var query = @"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento where id_cotizacion = @idCotizacion";
+            var query =  @"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento where id_cotizacion = @idCotizacion ";
+            if (polizaCumplimiento == false)
+            {
+                query += @"UPDATE tb_cotizacion SET total_poliza = 0 WHERE id_cotizacion = @idCotizacion ";
+            }
             try
             {
                 using (var connection = ctx.CreateConnection())

@@ -205,7 +205,7 @@
                                 <div class="row  text-muted">
                                     <div class="col-1 col-md-3"></div>
                                     <div class="col-4 col-md-3 text-start"><h5>Costo Indirecto (%)</h5></div>
-                                    <div class="col-2 col-md-1"><input type="number" class="form-control" [(ngModel)]="indirectoValue" value="{{model.indirectoPor}}" placeholder="{{model.indirectoPor}}" autocomplete="off" required></div>
+                                    <div class="col-2 col-md-1"><input type="number" class="form-control" [(ngModel)]="model.indirectoPor" value="{{model.indirectoPor}}" placeholder="{{model.indirectoPor}}" autocomplete="off" required></div>
                                     <div class="col-4 col-md-2 text-end"><h5>${{ model.indirecto | number:'1.2-2'}}</h5></div>
                                     <div class="col-1 col-md-2"></div>
                                 </div>
@@ -1042,7 +1042,7 @@
 <marcaventa-widget (smEvent)="returnMarcaCotizacion($event)"></marcaventa-widget>
 <toast-widget></toast-widget>
 <contrato-widget (contratoEvent)="openFormularioCliente($event)"></contrato-widget>
-<cliente-widget (clienteEvent)="openCargaContratoWidget();"></cliente-widget>
+<cliente-widget (clienteEvent)="openCargaContratoWidget($event);"></cliente-widget>
 <carga-widget></carga-widget>
 <confirmacion-widget (confirmaEvent)="confirmacionEvent($event)"></confirmacion-widget>
 <subircontratocliente-widget (subirContratoEvent)="subirContratoEvent($event)"></subircontratocliente-widget>

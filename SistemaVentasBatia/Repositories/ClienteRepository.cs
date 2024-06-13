@@ -13,6 +13,8 @@ using System.Data.SqlTypes;
 using System.Data;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Mvc;
+using SistemaVentasBatia.DTOs;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -34,7 +36,7 @@ namespace SistemaVentasBatia.Repositories
         bool InsertarHorarioPlantillaXML(string horarioPlantillaXML);
         bool InsertarPlantillaPXML(int idPlantillaCreada, int cantidad);
         bool InsertarVacantePlantillaXML(int idPlantillaCreada, int idPersonal);
-        Task<bool> InsertarMaterial(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
+        Task<bool> InsertarMaterialAutorizado(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
         Task<bool> InsertarMaterialDireccion(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
         Task<int> ObtenerConceptoPresupuestoPorLineaNegocio(int idServicio);
         bool InsertarPresupuestoMaterialXML(string resupuestoPlantillaXML);
@@ -44,6 +46,14 @@ namespace SistemaVentasBatia.Repositories
         Task<int> ObtenerIdAsuntoPasoContrato(int idAsuntoCreado);
         bool InsertarContratoClienteXML(string contratoClienteXML);
         Task<bool> ActualizarEstatusAsuntoPaso(int idAsuntoPaso);
+        Task<decimal> ObtenerTotalDireccion(int idCotizacion, int idDireccionCotizacion);
+        void InsertarIgualasXML(string IgualasXML);
+        Task ActualizarPresupuestosSucursal(int idPuntoAtencion, decimal totalMateriales, decimal  totalHigienicos);
+        Task<CotizaPorcentajes> ObtenerPorcentajesCotizacion(int idCotizacion);
+        Task InsertarSubcontrato(int idClienteCreado, int idServicio, int idFrecuencia, int idServicioExtra, decimal total);
+        Task<string> ObtenerDescripcionServicio(int idServicioExtra);
+        Task InsertarCargaSocialPuesto(int idPlantillaCreada, decimal cargaSocial, decimal uniforme, decimal bonos, decimal primaDominical, decimal otrasComp);
+        Task<bool> ConsultarPoliza(int idCotizacion);
     }
 
     public class ClienteRepository : IClienteRepository
@@ -477,15 +487,41 @@ namespace SistemaVentasBatia.Repositories
             }
             return result;
         }
-        public async Task<bool> InsertarMaterial(MaterialCotizacion producto, int idPlantilla, int idClienteCreado)
+        public async Task<bool> InsertarMaterialAutorizado(MaterialCotizacion producto, int idPlantilla, int idClienteCreado)
         {
-            string query = @"insert into tb_cliente_listaautorizada (id_cliente, clave, id_frecuencia) values (@idClienteCreado, @ClaveProducto, @IdFrecuencia)";
+            int idFrecuencia = 1;
+            switch ((int)producto.IdFrecuencia)
+            {
+                case 1: idFrecuencia = 1; break;
+                case 2: idFrecuencia = 2; break;
+                case 3: idFrecuencia = 3; break;
+                case 4: idFrecuencia = 4; break;
+                case 6: idFrecuencia = 5; break;
+                case 12: idFrecuencia = 6; break;
+                case 18: idFrecuencia = 6; break;
+                case 24: idFrecuencia = 6; break;
+            }
+            string query = @"DECLARE @Existe INT
+                            SET @Existe = (
+                                SELECT CASE 
+                                    WHEN EXISTS (
+                                        SELECT 1 
+                                        FROM tb_cliente_listaautorizada 
+                                        WHERE id_cliente = @idClienteCreado AND clave = @ClaveProducto AND id_frecuencia = @IdFrecuencia
+                                    ) THEN 1
+                                    ELSE 0
+                                END
+                            )
+                            IF @Existe = 0
+	                            BEGIN
+		                            insert into tb_cliente_listaautorizada (id_cliente, clave, id_frecuencia) values (@idClienteCreado, @ClaveProducto, @IdFrecuencia)
+	                            END";
             bool result = false;
             try
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    var rowsAffected = await connection.ExecuteAsync(query, new { idClienteCreado, producto.ClaveProducto, producto.IdFrecuencia });
+                    var rowsAffected = await connection.ExecuteAsync(query, new { idClienteCreado, producto.ClaveProducto, idFrecuencia });
                     if (rowsAffected > 0)
                     {
                         result = true;
@@ -501,7 +537,25 @@ namespace SistemaVentasBatia.Repositories
         }
         public async Task<bool> InsertarMaterialDireccion(MaterialCotizacion producto, int idPlantilla, int idClienteCreado)
         {
-            string query = @"insert into tb_cliente_listatipo (id_inmueble, clave, id_frecuencia, cantidad) values (@idPlantilla, @ClaveProducto, @IdFrecuencia, @Cantidad)";
+            string query = @"DECLARE @Existe INT
+                            SET @Existe = (
+		                            SELECT CASE 
+			                            WHEN EXISTS (
+				                            SELECT 1 
+				                            FROM tb_cliente_listatipo
+				                            WHERE id_inmueble = @idPlantilla AND clave = @ClaveProducto AND id_frecuencia = @IdFrecuencia
+			                            ) THEN 1
+			                            ELSE 0
+		                            END
+	                            )
+	                            IF @Existe = 1
+		                            BEGIN
+			                            UPDATE tb_cliente_listatipo SET Cantidad = Cantidad + @Cantidad WHERE id_inmueble = @IdPlantilla AND clave = @ClaveProducto AND id_frecuencia = @IdFrecuencia
+		                            END
+	                            ELSE
+		                            BEGIN 
+			                            insert into tb_cliente_listatipo (id_inmueble, clave, id_frecuencia, cantidad) values (@idPlantilla, @ClaveProducto, @IdFrecuencia, @Cantidad)
+		                            END";
             bool result = false;
             try
             {
@@ -652,7 +706,7 @@ namespace SistemaVentasBatia.Repositories
             return result;
         }
 
-        public async Task<bool>  ActualizarEstatusAsuntoPaso(int idAsuntoPaso)
+        public async Task<bool> ActualizarEstatusAsuntoPaso(int idAsuntoPaso)
         {
             string query = @"UPDATE tb_asunto_pasos
                             SET id_estatus = 2
@@ -668,12 +722,181 @@ namespace SistemaVentasBatia.Repositories
                 }
 
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        public async Task<decimal> ObtenerTotalDireccion(int idCotizacion, int idDireccionCotizacion)
+        {
+            decimal totalPuestosDireccion;
+            decimal totalExtrasDireccion;
+            decimal result;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@idCotizacion", idCotizacion, DbType.Int32);
+                    parameters.Add("@idDireccionCotizacion", idDireccionCotizacion, DbType.Int32);
+                    totalPuestosDireccion = await connection.QuerySingleAsync<decimal>("sp_obtenerigualapuestosdireccion", parameters, commandType: CommandType.StoredProcedure);
+                    totalExtrasDireccion = await connection.QuerySingleAsync<decimal>("sp_obtenerigualadireccionextras", parameters, commandType: CommandType.StoredProcedure);
+                    result = totalPuestosDireccion + totalExtrasDireccion;
+                }
+            }
             catch(Exception ex)
             {
                 throw ex;
             }
             return result;
         }
+
+        public void InsertarIgualasXML(string IgualasXML)
+        {
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("@Cabecero", IgualasXML, DbType.String, ParameterDirection.Input);
+                connection.Execute("sp_clienteiguala", parameters, commandType: CommandType.StoredProcedure);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task ActualizarPresupuestosSucursal(int idPuntoAtencion, decimal totalMaterial, decimal totalHigienicos)
+        {
+            string query = @"UPDATE tb_cliente_inmueble SET presupuestol = @totalMaterial,presupuestoh = @totalHigienicos WHERE id_inmueble = @idPuntoAtencion";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteAsync(query, new { idPuntoAtencion, totalMaterial, totalHigienicos });
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<CotizaPorcentajes> ObtenerPorcentajesCotizacion(int idCotizacion)
+        {
+            string query = @"SELECT costo_indirecto CostoIndirecto, utilidad Utilidad, comision_venta ComisionSobreVenta, comision_externa ComisionExterna FROM tb_cotizacion WHERE id_cotizacion = @idCotizacion";
+            var porcentajes = new CotizaPorcentajes();
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                porcentajes = await connection.QueryFirstAsync<CotizaPorcentajes>(query, new { idCotizacion });
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return porcentajes;
+        }
+        public async Task<string> ObtenerDescripcionServicio(int idServicioExtra)
+        {
+            string query = @"SELECT descripcion FROM tb_servicioextra WHERE id_servicioextra = @idServicioExtra";
+            string concepto;
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                concepto = await connection.QueryFirstAsync<string>(query, new { idServicioExtra });
+
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return concepto;
+        }
+
+        public async Task InsertarSubcontrato(int idClienteCreado, int idServicio, int idFrecuencia, int idServicioExtra, decimal total)
+        {
+
+            switch (idFrecuencia){
+                case 1: idFrecuencia = 4; break;
+                case 2: idFrecuencia = 5; break;
+                case 3: idFrecuencia = 6; break;
+                case 4: idFrecuencia = 7; break;
+                case 6: idFrecuencia = 8; break;
+                case 12: idFrecuencia = 9; break;
+                case 18: idFrecuencia = 11; break;
+                case 24: idFrecuencia = 10; break;
+            }
+            string concepto = await ObtenerDescripcionServicio(idServicioExtra);
+            string query = @"INSERT INTO tb_cliente_subcontrato
+                            (
+                                id_subcontrato,
+                                id_cliente,
+                                id_lineanegocio,
+                                id_periodo,
+                                concepto,
+                                importe,
+                                fechaaplica,
+                                id_status
+                            )
+                            VALUES
+                            (
+                                (Select MAX(id_subcontrato)+1 FROM tb_cliente_subcontrato),
+                                @idClienteCreado,
+                                @idServicio,
+                                @idFrecuencia,
+                                @concepto,
+                                @total,
+                                GETDATE(),
+                                1
+                            )";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteAsync(query, new { idClienteCreado, idServicio, idFrecuencia, concepto, total });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task InsertarCargaSocialPuesto(int idPlantillaCreada, decimal cargaSocial, decimal uniforme, decimal bonos, decimal primaDominical, decimal otrasComp)
+        {
+            string query = @"UPDATE tb_cliente_plantilla 
+                            SET 
+                            cargasocial = @cargaSocial,
+                            uniforme = @uniforme,
+                            bonoasist = @bonos,
+                            primadominical = @primaDominical,
+                            otrascomp = @otrasComp
+                            WHERE id_plantilla = @idPlantillaCreada";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteAsync(query, new { idPlantillaCreada, cargaSocial, uniforme,bonos, primaDominical, otrasComp });
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<bool> ConsultarPoliza(int idCotizacion)
+        {
+            string query = @"SELECT poliza_cumplimiento FROM tb_cotizacion WHERE id_cotizacion = @idCotizacion";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                bool? polizaCumplimiento = await connection.QuerySingleOrDefaultAsync<bool?>(query, new { idCotizacion });
+                return polizaCumplimiento ?? false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al consultar la póliza de cumplimiento", ex);
+            }
+        }
+
     }
 
 }

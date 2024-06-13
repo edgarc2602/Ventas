@@ -884,7 +884,9 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.cargaWidget.open(false);
     }
-    openCargaContratoWidget() {
-
+    openCargaContratoWidget($event) {
+        if ($event) {
+        location.reload();
+        }
     }
 }   

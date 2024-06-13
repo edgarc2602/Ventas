@@ -83,7 +83,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         if (fil.length > 0) fil = '?' + fil;
         this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`).subscribe(response => {
             this.lcots = response;
-        }, err => {
+            }, err => {
             console.log(err);
         });
         this.http.post<Prospecto[]>(`${this.url}api/prospecto/getcatalogo`, this.user.idPersonal).subscribe(response => {
@@ -217,18 +217,21 @@ export class CotizacionComponent implements OnInit, OnDestroy {
                 }, 300);
                 this.init();
             }, err => {
-                    this.detenerCarga();
-                    setTimeout(() => {
-                        this.errorToast('Ocurri\u00F3 un error');
-                    }, 300);
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
                 console.log(err);
-                
+
             });
         }, 300);
     }
 
     editReturn($event) {
-        this.init();
+        this.nuevo();
+        this.lista();
+        this.lista();
+
     }
 
     okToast(message: string) {

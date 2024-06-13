@@ -22,7 +22,7 @@ import { ClienteContrato } from '../../models/clientecontrato';
 export class ClienteWidget {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
-    @Output('clienteEvent') sendEvent = new EventEmitter<any>();
+    @Output('clienteEvent') sendEvent = new EventEmitter<boolean>();
     @ViewChild('contratoInput', { static: false }) contratoInput!: ElementRef;
 
     idCotizacion: number = 0;
@@ -82,13 +82,18 @@ export class ClienteWidget {
                 this.idClienteGenerado = response;
                 if (this.tipoContrato == true) {
                     this.cargarContratoCliente();
+                    this.detenerCarga();
+                    this.sendEvent.emit(true);
                 }
                 else {
                     this.generarContratoBaseCliente();
+                    this.detenerCarga();
+                    this.sendEvent.emit(true);
                 }
             }, err => {
                 this.detenerCarga();
                 console.log(err);
+                this.sendEvent.emit(false);
             });
         }
     }
@@ -125,7 +130,6 @@ export class ClienteWidget {
             this.errorToast('Ocurri\u00F3 un error');
             this.detenerCarga();
         });
-
     }
     cargarContratoCliente() {
         const formData = new FormData();
@@ -141,6 +145,7 @@ export class ClienteWidget {
             this.errorToast('Ocurri\u00F3 un error');
             this.detenerCarga();
         });
+        this.detenerCarga();
     }
 
     onContratoSeleccionado(event: any) {

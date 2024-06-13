@@ -1781,7 +1781,7 @@ WHERE cse.id_servicioextra_cotizacion = @id";
                         WHERE mc.id_cotizacion = @idCotizacion AND
                         mc.id_direccion_cotizacion = @idDireccionCotizacion AND
 						mc.id_puesto_direccioncotizacion = 0
-                        order by p.descripcion";
+                        order by mc.clave_producto";
 
             var materialesCotizacion = new List<MaterialCotizacion>();
 
@@ -1818,7 +1818,7 @@ WHERE cse.id_servicioextra_cotizacion = @id";
                         WHERE mc.id_cotizacion = @idCotizacion AND
                         mc.id_direccion_cotizacion = @idDireccionCotizacion AND
                         mc.id_puesto_direccioncotizacion = 0
-                        order by p.descripcion";
+                        order by mc.clave_producto";
 
             var herramientaCotizacion = new List<MaterialCotizacion>();
 
@@ -1855,7 +1855,7 @@ WHERE cse.id_servicioextra_cotizacion = @id";
                         WHERE mc.id_cotizacion = @idCotizacion AND
                         mc.id_direccion_cotizacion = @idDireccionCotizacion AND
                         mc.id_puesto_direccioncotizacion = 0
-                        order by p.descripcion";
+                        order by mc.clave_producto";
 
             var equipoCotizacion = new List<MaterialCotizacion>();
 
@@ -1892,7 +1892,7 @@ WHERE cse.id_servicioextra_cotizacion = @id";
                         WHERE mc.id_cotizacion = @idCotizacion AND
                         mc.id_direccion_cotizacion = @idDireccionCotizacion AND
                         mc.id_puesto_direccioncotizacion = 0
-                        order by p.descripcion";
+                        order by mc.clave_producto";
 
             var uniformeCotizacion = new List<MaterialCotizacion>();
 
