@@ -52,7 +52,6 @@ namespace SistemaVentasBatia.Services
             var contrato = mapper.Map<ClienteContratoDTO>(await clienteRepo.ObtenerDatosClienteContrato(idProspecto));
             return contrato;
         }
-
         public async Task<bool> InsetarDatosClienteContrato(ClienteContratoDTO contrato)
         {
             var coincidencia = await clienteRepo.ConsultarContratoExistente(contrato.IdProspecto);
@@ -66,7 +65,6 @@ namespace SistemaVentasBatia.Services
                 return await clienteRepo.InsertarDatosClienteContrato(contratoData);
             }
         }
-
         public async Task<int> ConvertirProspectoACliente(ClienteDTO cliente, string usuarioIP)
         {
             var porcentajes = await clienteRepo.ObtenerPorcentajesCotizacion(cliente.IdCotizacion);
@@ -333,16 +331,14 @@ namespace SistemaVentasBatia.Services
             }
 
             //ACTUALIZAR ESTATUS DE PROSPECTO Y COTIZACIONES
-            //await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
-            //await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
-            //await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
+            await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
+            await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
+            await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
 
             return idClienteCreado;
         }
-
         public string CrearXMLHorario(PuestoDireccionCotizacionDTO puesto, int idPlantillaCreada)
         {
-            //int horariocruzado = 0;
             var horarioXML = new XmlDocument();
             var horarioElement = horarioXML.CreateElement("horario");
             horarioElement.SetAttribute("idplantilla", idPlantillaCreada.ToString());
@@ -365,135 +361,66 @@ namespace SistemaVentasBatia.Services
                     horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
                     horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
                 }
-                //LLENAR DIAS VACIOS SI EL FIN DEL HORARIO NO LLEGA AL DOMINGO
-                if ((int)puesto.DiaFin <= 6)
+                
+                if((int)puesto.DiaInicioFin > (int)puesto.DiaFin)
                 {
-                    for (int i = (int)puesto.DiaFin + 1; i <= 7; i++)
+                    for (int i = (int)puesto.DiaInicioFin; i <= (int)puesto.DiaFinFin; i++)
                     {
-                        horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
-                        horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+                        horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicioFin.Hours.ToString());
+                        horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFinFin.Hours.ToString());
+                    }
+                    if ((int)puesto.DiaFinFin <= 6)
+                    {
+                        for (int i = (int)puesto.DiaFinFin + 1; i <= 7; i++)
+                        {
+                            horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
+                            horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+                        }
+                    }
+                }
+                else
+                {
+                    //LLENAR DIAS VACIOS SI EL FIN DEL HORARIO NO LLEGA AL DOMINGO Y NO EXISTE UN SEGUNDO HORARIO
+                    if ((int)puesto.DiaFin <= 6)
+                    {
+                        for (int i = (int)puesto.DiaFin + 1; i <= 7; i++)
+                        {
+                            horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
+                            horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+                        }
                     }
                 }
             }
             else
             {
-                //for (int i = (int)puesto.DiaInicio; i >= 7; i++)
-                //{
-                //    horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
-                //    horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
-                //}
-                //for (int i = (int)puesto.DiaFin; i >= 1; i--)
-                //{
-                //    horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
-                //    horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
-                //}
-                //horariocruzado = 1;
+                //EJ: viernes a miercoles
+                //LLENAR DE VIERNES A FIN =>
+                for (int i = (int)puesto.DiaInicio; i <= 7; i++)
+                {
+                    horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
+                    horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
+                }
+
+                //LLENAR DE MIERCOLES A LUNES <=
+                for (int i = (int)puesto.DiaFin; i >= 1; i--)
+                {
+                    horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
+                    horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
+                }
+
+                //LENAR VACIOS SI EXISTE
+                for(int i = (int)puesto.DiaFin + 1; i < (int)puesto.DiaInicio; i++)
+                {
+                    horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
+                    horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+                }
             }
-            //if (horariocruzado == 0)
-            //{
-            //    if ((int)puesto.DiaInicioFin != 0)
-            //    {
-            //        for (int i = (int)puesto.DiaInicioFin; i <= (int)puesto.DiaFinFin; i++)
-            //        {
-            //            horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicioFin.Hours.ToString());
-            //            horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFinFin.Hours.ToString());
-            //        }
-            //        if ((int)puesto.DiaFinFin < 7)
-            //        {
-            //            for (int i = (int)puesto.DiaFinFin + 1; i <= 7; i++)
-            //            {
-            //                horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
-            //                horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        for (int i = (int)puesto.DiaFin + 1; i <= 7; i++)
-            //        {
-            //            horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
-            //            horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
-            //        }
-            //    }
-            //}
+
 
             horarioXML.AppendChild(horarioElement);
             string horarioXMLString = horarioXML.OuterXml;
             return horarioXMLString;
         }
-
-        public async Task<bool> InsertarContratoCliente(byte[] contrato, int idClienteCreado, string nombreCliente)
-        {
-            bool result;
-
-            //string pathContrato = "C:\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
-            string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
-
-            //INSERTAR ASUNTO
-            string asuntoLegalXMLString = CrearXMLAsuntoLegal(idClienteCreado, nombreCliente);
-            int idAsuntoCreado = clienteRepo.InsertarXMLAsuntoLegal(asuntoLegalXMLString);
-
-            //CREAR CARPETA SI NO EXISTE
-            string carpeta = Path.Combine(pathContrato, idAsuntoCreado.ToString());
-            if (!Directory.Exists(carpeta))
-            {
-                Directory.CreateDirectory(carpeta);
-            }
-
-            string extension = DetectFileExtension(contrato);
-            if (extension == null)
-            {
-                throw new InvalidOperationException("Formato de archivo no soportado.");
-            }
-
-            //CREAR RUTA DEL ARCHIVO
-            string nombreArchivo = "Contrato_" + nombreCliente + extension;
-            var filePath = Path.Combine(carpeta, nombreArchivo);
-
-            //GENERAR ARCHIVO
-            try
-            {
-                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                {
-                    stream.Write(contrato, 0, contrato.Length);
-                }
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error al guardar el archivo: " + ex.Message);
-                result = false;
-            }
-            //GENERAR E INSERTAR REGISTRO DE ARCHIVO CARGADO
-            int idAsuntoPaso = await clienteRepo.ObtenerIdAsuntoPasoContrato(idAsuntoCreado);
-            string contratoAsuntoLegalXMLString = CrearXMLAsuntoLegalContrato(idAsuntoPaso, nombreArchivo);
-            bool contratoInsertado = clienteRepo.InsertarContratoClienteXML(contratoAsuntoLegalXMLString);
-
-            bool actualizaPaso = await clienteRepo.ActualizarEstatusAsuntoPaso(idAsuntoPaso);
-
-            return result;
-        }
-        private string DetectFileExtension(byte[] fileContent)
-        {
-            // Verificar las firmas de archivos conocidos
-            if (fileContent.Length >= 4)
-            {
-                // DOCX: PK\x03\x04
-                if (fileContent[0] == 0x50 && fileContent[1] == 0x4B && fileContent[2] == 0x03 && fileContent[3] == 0x04)
-                {
-                    return ".docx";
-                }
-                // PDF: %PDF-
-                if (fileContent[0] == 0x25 && fileContent[1] == 0x50 && fileContent[2] == 0x44 && fileContent[3] == 0x46)
-                {
-                    return ".pdf";
-                }
-            }
-
-            // Devolver null si no se detecta el formato
-            return null;
-        }
-
         public string CrearXMLCliente(ClienteDTO cliente)
         {
             var clienteXML = new XmlDocument();
@@ -723,7 +650,6 @@ namespace SistemaVentasBatia.Services
             string PptoMatXMLString = equMatXML.OuterXml;
             return PptoMatXMLString;
         }
-
         public string CrearXMLAsuntoLegal(int idClienteCreado, string nombreCliente)
         {
             DateTime fechaAlta = DateTime.Now;
@@ -743,7 +669,6 @@ namespace SistemaVentasBatia.Services
             string asuntoLegalXMLString = asuntoXML.OuterXml;
             return asuntoLegalXMLString;
         }
-
         public string CrearXMLAsuntoLegalContrato(int idAsuntoPaso, string nombreArchivo)
         {
             var asuntoContratoXML = new XmlDocument();
@@ -754,7 +679,6 @@ namespace SistemaVentasBatia.Services
             string asuntoLegalContratoXMLString = asuntoContratoXML.OuterXml;
             return asuntoLegalContratoXMLString;
         }
-
         public string CrearXMLIgualaPuntoAtencion(int idClienteCreado, int idPuntoAtencionCreado, int idServicio, decimal totalPuntoAtencion, string igualaXML)
         {
             var igualaDireccionXML = new XmlDocument();
@@ -768,7 +692,6 @@ namespace SistemaVentasBatia.Services
             igualaXML += asuntoLegalContratoXMLString;
             return igualaXML;
         }
-
         public static int ParseNumberFromString(string input)
         {
             // Usar una expresión regular para encontrar el primer número en la cadena
@@ -784,6 +707,77 @@ namespace SistemaVentasBatia.Services
                 // Manejar el caso donde no se encuentra ningún número
                 throw new FormatException("No se encontró ningún número en la cadena de entrada.");
             }
+        }
+        public async Task<bool> InsertarContratoCliente(byte[] contrato, int idClienteCreado, string nombreCliente)
+        {
+            bool result;
+
+            string pathContrato = "\\\\192.168.2.4\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
+            //string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
+
+            //INSERTAR ASUNTO
+            string asuntoLegalXMLString = CrearXMLAsuntoLegal(idClienteCreado, nombreCliente);
+            int idAsuntoCreado = clienteRepo.InsertarXMLAsuntoLegal(asuntoLegalXMLString);
+
+            //CREAR CARPETA SI NO EXISTE
+            string carpeta = Path.Combine(pathContrato, idAsuntoCreado.ToString());
+            if (!Directory.Exists(carpeta))
+            {
+                Directory.CreateDirectory(carpeta);
+            }
+
+            string extension = DetectFileExtension(contrato);
+            if (extension == null)
+            {
+                throw new InvalidOperationException("Formato de archivo no soportado.");
+            }
+
+            //CREAR RUTA DEL ARCHIVO
+            string nombreArchivo = "Contrato_" + nombreCliente + extension;
+            var filePath = Path.Combine(carpeta, nombreArchivo);
+
+            //GENERAR ARCHIVO
+            try
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    stream.Write(contrato, 0, contrato.Length);
+                }
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al guardar el archivo: " + ex.Message);
+                result = false;
+            }
+            //GENERAR E INSERTAR REGISTRO DE ARCHIVO CARGADO
+            int idAsuntoPaso = await clienteRepo.ObtenerIdAsuntoPasoContrato(idAsuntoCreado);
+            string contratoAsuntoLegalXMLString = CrearXMLAsuntoLegalContrato(idAsuntoPaso, nombreArchivo);
+            bool contratoInsertado = clienteRepo.InsertarContratoClienteXML(contratoAsuntoLegalXMLString);
+
+            bool actualizaPaso = await clienteRepo.ActualizarEstatusAsuntoPaso(idAsuntoPaso);
+
+            return result;
+        }
+        private string DetectFileExtension(byte[] fileContent)
+        {
+            // Verificar las firmas de archivos conocidos
+            if (fileContent.Length >= 4)
+            {
+                // DOCX: PK\x03\x04
+                if (fileContent[0] == 0x50 && fileContent[1] == 0x4B && fileContent[2] == 0x03 && fileContent[3] == 0x04)
+                {
+                    return ".docx";
+                }
+                // PDF: %PDF-
+                if (fileContent[0] == 0x25 && fileContent[1] == 0x50 && fileContent[2] == 0x44 && fileContent[3] == 0x46)
+                {
+                    return ".pdf";
+                }
+            }
+
+            // Devolver null si no se detecta el formato
+            return null;
         }
     }
 }
