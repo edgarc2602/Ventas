@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Routing;
 using System.IO;
 using System.Drawing;
 using System.Text.RegularExpressions;
-
+using System.Diagnostics.Eventing.Reader;
 namespace SistemaVentasBatia.Services
 {
     public interface IClienteService
@@ -122,7 +122,7 @@ namespace SistemaVentasBatia.Services
 
                 //OBTENER IGUALA POR PUNTO DE ATENCION Y CREAR XML
                 decimal totalPuntoAtencion = await clienteRepo.ObtenerTotalDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
-                
+
                 if (isPoliza)
                 {
                     totalPuntoAtencion = totalPuntoAtencion * 1.10M;
@@ -197,6 +197,10 @@ namespace SistemaVentasBatia.Services
                     cargaSocial = puesto.ISN + puesto.IMSS;
                     decimal otrasComp = puesto.Vales + puesto.Festivo + puesto.CubreDescanso;
                     await clienteRepo.InsertarCargaSocialPuesto(idPlantillaCreada, cargaSocial, totalUniforme, puesto.Bonos, puesto.Domingo, otrasComp);
+
+                    //CREAR E INSERTAR HORARIO
+                    string horarioActualizadoXML = CrearXMLHorario(puesto, idPlantillaCreada);
+                    clienteRepo.InsertarHorarioActualizadoPlantillaXML(horarioActualizadoXML);
                 }
 
                 //OBTENER LISTAS DE PRODUCTOS EXTRA POR SUCURSAL
@@ -329,11 +333,93 @@ namespace SistemaVentasBatia.Services
             }
 
             //ACTUALIZAR ESTATUS DE PROSPECTO Y COTIZACIONES
-            await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
-            await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
-            await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
+            //await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
+            //await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
+            //await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
 
             return idClienteCreado;
+        }
+
+        public string CrearXMLHorario(PuestoDireccionCotizacionDTO puesto, int idPlantillaCreada)
+        {
+            //int horariocruzado = 0;
+            var horarioXML = new XmlDocument();
+            var horarioElement = horarioXML.CreateElement("horario");
+            horarioElement.SetAttribute("idplantilla", idPlantillaCreada.ToString());
+            //VALIDAR SI ES UN HORARIO CRUZADO
+            if ((int)puesto.DiaInicio < (int)puesto.DiaFin)
+            {
+                //SI EL DIA DE INICIO NO COMIENZA EN LUNES
+                if ((int)puesto.DiaInicio > 1)
+                {
+                    //LLENAR EN REVERSA DIAS VACIOS
+                    for (int i = (int)puesto.DiaInicio - 1; i >= 1; i--)
+                    {
+                        horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
+                        horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+                    }
+                }
+                //LLENAR HASTA EL DIAFIN
+                for (int i = (int)puesto.DiaInicio; i <= (int)puesto.DiaFin; i++)
+                {
+                    horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
+                    horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
+                }
+                //LLENAR DIAS VACIOS SI EL FIN DEL HORARIO NO LLEGA AL DOMINGO
+                if ((int)puesto.DiaFin <= 6)
+                {
+                    for (int i = (int)puesto.DiaFin + 1; i <= 7; i++)
+                    {
+                        horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
+                        horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+                    }
+                }
+            }
+            else
+            {
+                //for (int i = (int)puesto.DiaInicio; i >= 7; i++)
+                //{
+                //    horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
+                //    horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
+                //}
+                //for (int i = (int)puesto.DiaFin; i >= 1; i--)
+                //{
+                //    horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
+                //    horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
+                //}
+                //horariocruzado = 1;
+            }
+            //if (horariocruzado == 0)
+            //{
+            //    if ((int)puesto.DiaInicioFin != 0)
+            //    {
+            //        for (int i = (int)puesto.DiaInicioFin; i <= (int)puesto.DiaFinFin; i++)
+            //        {
+            //            horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicioFin.Hours.ToString());
+            //            horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFinFin.Hours.ToString());
+            //        }
+            //        if ((int)puesto.DiaFinFin < 7)
+            //        {
+            //            for (int i = (int)puesto.DiaFinFin + 1; i <= 7; i++)
+            //            {
+            //                horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
+            //                horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        for (int i = (int)puesto.DiaFin + 1; i <= 7; i++)
+            //        {
+            //            horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
+            //            horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
+            //        }
+            //    }
+            //}
+
+            horarioXML.AppendChild(horarioElement);
+            string horarioXMLString = horarioXML.OuterXml;
+            return horarioXMLString;
         }
 
         public async Task<bool> InsertarContratoCliente(byte[] contrato, int idClienteCreado, string nombreCliente)
@@ -616,14 +702,14 @@ namespace SistemaVentasBatia.Services
         {
             switch (idFrecuencia)
             {
-                case 1: idFrecuencia = 1;  break;
-                case 2: idFrecuencia = 2;  break;
-                case 3: idFrecuencia = 3;  break;
-                case 4: idFrecuencia = 4;  break;
-                case 6: idFrecuencia = 5;  break;
-                case 12: idFrecuencia = 6;  break;
-                case 18: idFrecuencia = 6;  break;
-                case 24: idFrecuencia = 7;  break;
+                case 1: idFrecuencia = 1; break;
+                case 2: idFrecuencia = 2; break;
+                case 3: idFrecuencia = 3; break;
+                case 4: idFrecuencia = 4; break;
+                case 6: idFrecuencia = 5; break;
+                case 12: idFrecuencia = 6; break;
+                case 18: idFrecuencia = 6; break;
+                case 24: idFrecuencia = 7; break;
             }
 
             var equMatXML = new XmlDocument();

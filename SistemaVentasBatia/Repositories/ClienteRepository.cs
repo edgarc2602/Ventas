@@ -54,6 +54,7 @@ namespace SistemaVentasBatia.Repositories
         Task<string> ObtenerDescripcionServicio(int idServicioExtra);
         Task InsertarCargaSocialPuesto(int idPlantillaCreada, decimal cargaSocial, decimal uniforme, decimal bonos, decimal primaDominical, decimal otrasComp);
         Task<bool> ConsultarPoliza(int idCotizacion);
+        void InsertarHorarioActualizadoPlantillaXML(string horarioActualizadoXML);
     }
 
     public class ClienteRepository : IClienteRepository
@@ -894,6 +895,24 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 throw new Exception("Error al consultar la póliza de cumplimiento", ex);
+            }
+        }
+
+        public void InsertarHorarioActualizadoPlantillaXML(string horarioActualizadoXML)
+        {
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("@Cabecero", new SqlXml(new System.Xml.XmlTextReader(horarioActualizadoXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
+                connection.Execute("sp_guardahorarioactualizado", parameters, commandType: CommandType.StoredProcedure);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
             }
         }
 
