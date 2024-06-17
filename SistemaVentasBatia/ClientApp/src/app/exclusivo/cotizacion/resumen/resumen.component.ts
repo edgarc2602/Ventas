@@ -57,6 +57,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild('pdfCanvas', { static: true }) pdfCanvas: ElementRef;
     @ViewChild('fileInputDir', { static: false }) fileInputDir: ElementRef<HTMLInputElement>;
     @ViewChild('fileInputPlan', { static: false }) fileInputPlan: ElementRef<HTMLInputElement>;
+    @ViewChild('fileInputProductoExtra', { static: false }) fileInputProductoExtra: ElementRef<HTMLInputElement>;
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
@@ -166,7 +167,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         const formData = new FormData();
         formData.append('file', file);
         this.http.post<boolean>(`${this.url}api/cargamasiva/CargarDirecciones/${this.model.idCotizacion}/${this.model.idProspecto}`, formData).subscribe((response) => {
-            this.okToast('Direcciones cargadas');
+            this.okToast('Direcciones cargadas correctamente');
             this.getAllDirs();
             this.getDirs();
             this.isLoadinglay = false;
@@ -186,25 +187,63 @@ export class ResumenComponent implements OnInit, OnDestroy {
             setTimeout(() => {
                 this.getPlan();
                 this.isLoadinglay = false;
-                Swal.fire({
-                    icon: 'success',
-                    timer: 500,
-                    showConfirmButton: false,
-                });
+                this.detenerCarga();
+                this.okToast('Plantillas cargadas correctamente');
+                //Swal.fire({
+                //    icon: 'success',
+                //    timer: 500,
+                //    showConfirmButton: false,
+                //});
             }, 300);
         }, err => {
             setTimeout(() => {
                 this.isLoadinglay = false;
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n',
-                    icon: 'error',
-                    timer: 2000,
-                    showConfirmButton: false,
-                });
+                this.detenerCarga();
+                this.errorToast('Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n');
+                //Swal.fire({
+                //    title: 'Error',
+                //    text: 'Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n',
+                //    icon: 'error',
+                //    timer: 2000,
+                //    showConfirmButton: false,
+                //});
             }, 300);
         });
         this.fileInputPlan.nativeElement.value = '';
+    }
+
+    onFileChangeProductoExtra(event: any): void {
+        this.isLoadinglay = true;
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        this.http.post<boolean>(`${this.url}api/cargamasiva/CargaLayoutProductoExtra/${this.model.idCotizacion}/${this.selTipo}/${this.user.idPersonal}`, formData).subscribe((response) => {
+            setTimeout(() => {
+                this.getMat(this.selTipo);
+                this.isLoadinglay = false;
+                this.detenerCarga();
+                this.okToast('Productos cargados correctamente');
+                //Swal.fire({
+                //    icon: 'success',
+                //    timer: 500,
+                //    showConfirmButton: false,
+                //});
+            }, 300);
+        }, err => {
+            setTimeout(() => {
+                this.isLoadinglay = false;
+                this.detenerCarga();
+                this.errorToast(err.error.message);
+                //Swal.fire({
+                //    title: 'Error',
+                //    text: 'Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n',
+                //    icon: 'error',
+                //    timer: 2000,
+                //    showConfirmButton: false,
+                //});
+            }, 300);
+        });
+        this.fileInputProductoExtra.nativeElement.value = '';
     }
 
     descargarLayoutDirectorio() {
@@ -221,6 +260,17 @@ export class ResumenComponent implements OnInit, OnDestroy {
     descargarLayoutPlantilla() {
         this.http.post(`${this.url}api/cargamasiva/DescargarLayoutPlantilla/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
             saveAs(response, 'LayoutPlantilla.xlsx');
+            this.okToast('Layout descargado');
+        },
+            error => {
+                this.errorToast('Ocurri\u00F3 un error')
+            }
+        );
+    }
+
+    descargarLayoutProductoExtra() {
+        this.http.post(`${this.url}api/cargamasiva/DescargarLayoutProductoExtra/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+            saveAs(response, 'Layout' + this.selTipo +'_Extra.xlsx');
             this.okToast('Layout descargado');
         },
             error => {

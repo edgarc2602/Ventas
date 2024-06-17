@@ -21,7 +21,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td class="col-md-9">Puesto</td>
-                                                <td class="col-md-3">Id Puesto</td>
+                                                <td class="col-md-3">Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -47,7 +47,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td class="col-md-8">Jornada</td>
-                                                <td class="col-md-4">Id Jornada</td>
+                                                <td class="col-md-4">Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -73,7 +73,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td>Turno</td>
-                                                <td>Id Turno</td>
+                                                <td>Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -100,7 +100,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td class="col-md-6">Zona</td>
-                                                <td class="col-md-6">Id Zona</td>
+                                                <td class="col-md-6">Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -126,7 +126,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td class="col-md-8">Clase</td>
-                                                <td class="col-md-4">Id Clase</td>
+                                                <td class="col-md-4">Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -152,7 +152,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td class="col-md-8">Hora</td>
-                                                <td class="col-md-4">Id Hora</td>
+                                                <td class="col-md-4">Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -178,7 +178,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td class="col-md-8">Dia</td>
-                                                <td class="col-md-4">Id Dia</td>
+                                                <td class="col-md-4">Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -204,7 +204,7 @@
                                         <thead class="sticky-top">
                                             <tr>
                                                 <td class="col-md-8">Tipo Inmueble</td>
-                                                <td class="col-md-4">Id Tipo</td>
+                                                <td class="col-md-4">Id</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -217,6 +217,32 @@
                                                 <td>
                                                     <div class="col-md-4">
                                                         <div>{{t.id}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3 col-6">
+                                <div style="border-radius: 10px; overflow-x: hidden;max-height: 250px; overflow-y: auto; overflow-x: hidden">
+                                    <table class="table-striped table">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <td class="col-md-8">Frecuencia</td>
+                                                <td class="col-md-4">Id</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let f of fres">
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <div>{{f.nom}}</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-4">
+                                                        <div>{{f.id}}</div>
                                                     </div>
                                                 </td>
                                             </tr>

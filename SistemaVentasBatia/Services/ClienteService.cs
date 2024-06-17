@@ -712,8 +712,8 @@ namespace SistemaVentasBatia.Services
         {
             bool result;
 
-            string pathContrato = "\\\\192.168.2.4\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
-            //string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
+            //string pathContrato = "\\\\192.168.2.4\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
+            string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
 
             //INSERTAR ASUNTO
             string asuntoLegalXMLString = CrearXMLAsuntoLegal(idClienteCreado, nombreCliente);

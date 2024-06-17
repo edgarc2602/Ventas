@@ -845,6 +845,29 @@
             <div *ngIf="lsmat.materialesCotizacion && lsmat.materialesCotizacion.length > 0">
                 <pagina-widget [pagina]="lsmat.pagina" [numPaginas]="lsmat.numPaginas" [rows]="lsmat.rows" (chgEvent)="matPagina($event)"></pagina-widget>
             </div>
+            <br />
+            <hr />
+            <div *ngIf="model.idEstatus == 1" class="row text-end">
+                <div class="col-12 col-sm-12 col-md-12">
+                    <div *ngIf="isLoadinglay" class="row-12 text-center">
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                        <h6 *ngIf="isLoadinglay">Subiendo Layout...</h6>
+                    </div>
+                    <button type="button" class="btn btn-outline-info" (click)="descargarLayoutProductoExtra(); quitarFocoDeElementos2()">
+                        <i class="fa-solid fa-download"></i>
+                        Descargar layout para {{ selTipo}}
+                    </button>
+                    <input type="file" (change)="onFileChangeProductoExtra($event)" #fileInputProductoExtra style="display:none" accept=".xlsx,.xls" id="loutProductoExtra">
+                    <button type="button" class="btn btn-outline-secondary" (click)="fileInputProductoExtra.click(); quitarFocoDeElementos2()">
+                        <i class="fa-solid fa-upload"></i>
+                        Cargar layout
+                    </button>
+
+                    <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                </div>
+            </div>
         </div>
         <div *ngIf="model.idServicio != 4" class="tab-pane fade" id="servicio" role="tabpanel" aria-labelledby="plantilla-tab">
             <div *ngIf="model.idEstatus == 1">

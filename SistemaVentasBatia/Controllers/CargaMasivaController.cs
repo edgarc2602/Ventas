@@ -29,29 +29,6 @@ namespace SistemaVentasBatia.Controllers
             _logic = logic;
         }
 
-        [HttpPost("[action]/{idCotizacion}/{idProspecto}")]
-        public async Task<bool> CargarDirecciones(int idCotizacion, int idProspecto, IFormFile file)
-        {
-
-            await _logic.CargarDirecciones(idCotizacion, idProspecto, file);
-            return true;
-        }
-
-        //[HttpPost("[action]/{folio}/{IdClaveCM}/{EntrevistaCliente}/{TrabajosGeneral}/{TecnicosUniforme}/{TratoTecnicos}/{TrabajosOrden}/{MaterialesAdecuados}/{Encuestado}")]
-        //public bool SaveTotales([FromForm] List<IFormFile> files, int folio, int IdClaveCM, string EntrevistaCliente, string TrabajosGeneral, string TecnicosUniforme, string TratoTecnicos, string TrabajosOrden, string MaterialesAdecuados, string Encuestado)
-        //{
-        //    var crm = new CorrectivosMRDTO();
-        //    crm.IdClaveCM = IdClaveCM;
-        //    crm.EntrevistaCliente = EntrevistaCliente;
-        //    crm.TrabajosGeneral = TrabajosGeneral;
-        //    crm.TecnicosUniforme = TecnicosUniforme;
-        //    crm.TratoTecnicos = TratoTecnicos;
-        //    crm.TrabajosOrden = TrabajosOrden;
-        //    crm.Encuestado = Encuestado;
-        //    return true;
-        //}
-
-
         [HttpPost("[action]")]
         public IActionResult DescargarLayoutDirectorio()
         {
@@ -62,6 +39,13 @@ namespace SistemaVentasBatia.Controllers
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
         }
 
+        [HttpPost("[action]/{idCotizacion}/{idProspecto}")]
+        public async Task<bool> CargarDirecciones(int idCotizacion, int idProspecto, IFormFile file)
+        {
+            await _logic.CargarDirecciones(idCotizacion, idProspecto, file);
+            return true;
+        }
+
         [HttpPost("[action]/{idCotizacion}")]
         public async Task <FileContentResult> DescargarLayoutPlantilla(int idCotizacion)
         {
@@ -69,11 +53,25 @@ namespace SistemaVentasBatia.Controllers
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
         }
-
+        
         [HttpPost("[action]/{idCotizacion}")]
         public async Task <bool> CargarPlantilla( IFormFile file, int idCotizacion)
         {
             return await _logic.CargarPlantilla(file, idCotizacion);
+        }
+
+        [HttpPost("[action]/{idCotizacion}")]
+        public async Task<FileContentResult> DescargarLayoutProductoExtra(int idCotizacion)
+        {
+            byte[] fileContents = await _logic.ObtenerSucursalesLayoutProductoExtra(idCotizacion);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
+        }
+
+        [HttpPost("[action]/{idCotizacion}/{tipo}/{idPersonal}")]
+        public async Task<bool> CargaLayoutProductoExtra(IFormFile file, int idCotizacion, string tipo, int idPersonal)
+        {
+            return await _logic.CargaProductoExtra(file, idCotizacion, tipo, idPersonal);
         }
 
         [HttpPost("[action]/{idCotizacion}")]

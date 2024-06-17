@@ -17,6 +17,8 @@ using OfficeOpenXml.Drawing.Chart;
 using SistemaVentasBatia.Enums;
 using Turno = SistemaVentasBatia.Enums.Turno;
 using System.Data.Common;
+using Microsoft.AspNetCore.WebUtilities;
+using OfficeOpenXml.Drawing.Slicer.Style;
 
 namespace SistemaVentasBatia.Services
 {
@@ -24,8 +26,10 @@ namespace SistemaVentasBatia.Services
     {
         Task<bool> CargarDirecciones(int idCotizacion, int idProspecto, IFormFile archivo);
         Task<byte[]> ObtenerSucursalesLayout(int idCotizacion);
+        Task<byte[]> ObtenerSucursalesLayoutProductoExtra(int idCotizacion);
         Task<byte[]> ObtenerDatosCotizacion(int idCotizacion);
         Task<bool> CargarPlantilla(IFormFile file, int idCotizacion);
+        Task<bool> CargaProductoExtra(IFormFile archivo, int idCotizacion, string tipo, int idPersonal);
 
     }
     public class CargaMasivaService : ICargaMasivaService
@@ -35,8 +39,9 @@ namespace SistemaVentasBatia.Services
         private readonly IProspectosService _prosService;
         private readonly ICargaMasivaRepository _repo;
         private readonly IMapper _mapper;
+        private readonly IMaterialService _materialService;
 
-        public CargaMasivaService(ICargaMasivaRepository repoCargaMasiva, IMapper mapper, IProspectosService prospectosService, ISalarioService logicSal, ICotizacionesService logicCot)
+        public CargaMasivaService(ICargaMasivaRepository repoCargaMasiva, IMapper mapper, IProspectosService prospectosService, ISalarioService logicSal, ICotizacionesService logicCot, IMaterialService materialService)
         {
             _logicCot = logicCot;
             _logicSal = logicSal;
@@ -44,6 +49,7 @@ namespace SistemaVentasBatia.Services
             _repo = repoCargaMasiva;
             _mapper = mapper;
             _logicSal = logicSal;
+            _materialService = materialService;
         }
 
         public async Task<bool> CargarDirecciones(int idCotizacion, int idProspecto, IFormFile archivo)
@@ -127,6 +133,31 @@ namespace SistemaVentasBatia.Services
             }
         }
 
+        public async Task<byte[]> ObtenerSucursalesLayoutProductoExtra(int idCotizacion)
+        {
+            var sucursales = await _repo.ObtenerSucursalesCotizacion(idCotizacion);
+
+            string rutaArchivo = Path.Combine("Layouts", "LayoutProductoExtra.xlsx");
+
+
+            using (var stream = new MemoryStream(File.ReadAllBytes(rutaArchivo)))
+            {
+                using (var package = new ExcelPackage(stream))
+                {
+                    var worksheet = package.Workbook.Worksheets[1];
+
+                    int rowNum = 2;
+                    foreach (var sucursal in sucursales)
+                    {
+                        worksheet.Cells[rowNum, 1].Value = sucursal.NombreSucursal;
+                        worksheet.Cells[rowNum, 2].Value = sucursal.IdDireccionCotizacion;
+                        rowNum++;
+                    }
+                    return package.GetAsByteArray();
+                }
+            }
+        }
+
         public async Task<bool> CargarPlantilla(IFormFile file, int idCotizacion)
         {
             var puestos = new List<PuestoDireccionCotizacionDTO>();
@@ -187,7 +218,7 @@ namespace SistemaVentasBatia.Services
                             }
                             int diaini2 = Convert.ToInt32(worksheet.Cells[row, 13].Value);
                             DiaSemana diaini2f;
-                            if( diaini2 == 0)
+                            if (diaini2 == 0)
                             {
                                 puesto.DiaInicioFin = 0;
                             }
@@ -203,7 +234,7 @@ namespace SistemaVentasBatia.Services
                                     return false;
                                 }
                             }
-                            
+
                             int diafin2 = Convert.ToInt32(worksheet.Cells[row, 14].Value);
                             DiaSemana diafin2f;
                             if (diafin2 == 0)
@@ -222,7 +253,7 @@ namespace SistemaVentasBatia.Services
                                     return false;
                                 }
                             }
-                            
+
                             int diadescanso = Convert.ToInt32(worksheet.Cells[row, 12].Value);
                             DiaSemana diadescansof;
                             if (Enum.IsDefined(typeof(DiaSemana), diadescanso))
@@ -435,6 +466,123 @@ namespace SistemaVentasBatia.Services
                     return package.GetAsByteArray();
                 }
             }
+        }
+
+        public async Task<bool> CargaProductoExtra(IFormFile archivo, int idCotizacion, string tipo, int idPersonal)
+        {
+            var productos = new List<MaterialCotizacionDTO>();
+            using (var stream = new MemoryStream())
+            {
+                await archivo.CopyToAsync(stream);
+                using (var package = new ExcelPackage(stream))
+                {
+                    var worksheet = package.Workbook.Worksheets[0];
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        if (worksheet.Cells[row, 1].Value == null || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value.ToString()))
+                        {
+                            break;
+                        }
+                        //Obtener informacion de Excel
+                        var producto = new MaterialCotizacionDTO
+                        {
+                            IdDireccionCotizacion = Convert.ToInt32(worksheet.Cells[row, 1].Value),
+                            ClaveProducto = worksheet.Cells[row, 2].Value.ToString().ToString(),
+                            Cantidad = Convert.ToInt32(worksheet.Cells[row, 3].Value),
+                            IdFrecuencia = (Frecuencia)Convert.ToInt64(worksheet.Cells[row, 4].Value),
+                            //LLenar con datos enduro
+                            IdMaterialCotizacion = 0,
+                            IdCotizacion = idCotizacion,
+                            IdPuestoDireccionCotizacion = 0,
+                            PrecioUnitario = 0,
+                            Total = 0,
+                            FechaAlta = DateTime.Now,
+                            IdPersonal = idPersonal
+                        };
+                        productos.Add(producto);
+                    }
+                    bool valida = ValidarProductos(productos, tipo);
+                    if (valida)
+                    {
+                        foreach (var producto in productos)
+                        {
+                            switch (tipo)
+                            {
+                                case "material":
+                                    {
+                                        await _materialService.AgregarMaterialOperario(producto);
+                                    }
+                                    break;
+                                case "equipo":
+                                    {
+                                        await _materialService.AgregarEquipoOperario(producto);
+                                    }
+                                    break;
+                                case "herramienta":
+                                    {
+                                        await _materialService.AgregarHerramientaOperario(producto);
+                                    }
+                                    break;
+                                case "uniforme":
+                                    {
+                                        await _materialService.AgregarUniformeOperario(producto);
+                                    }
+                                    break;
+                            }
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception("Uno o mas productos no pertenecen a la familia " + tipo);
+                    }
+                    
+                }
+            }
+        }
+        protected bool ValidarProductos(List<MaterialCotizacionDTO> productos, string tipo)
+        {
+            bool result = false;
+            string comparacion = "";
+
+            switch( tipo)
+            {
+                case "material":
+                    {
+                        comparacion = "M-";
+                        break;
+                    }
+                case "equipo":
+                    {
+                        comparacion = "H-";
+                        break;
+                    }
+                case "herramienta":
+                    {
+                        comparacion = "H-";
+                        break;
+                    }
+                case "uniforme":
+                    {
+                        comparacion = "H-UNI";
+                        break;
+                    }
+            }
+            foreach (var producto in productos)
+            {
+                if (producto.ClaveProducto.StartsWith(comparacion))
+                {
+                    result = true;
+                }
+                else
+                {
+                    result = false;
+                    return result;
+                }
+            }
+            return result;
         }
     }
 }

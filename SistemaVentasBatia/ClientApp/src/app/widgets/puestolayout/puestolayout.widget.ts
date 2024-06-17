@@ -22,6 +22,7 @@ export class PuestoLayoutWidget {
     ljor: Catalogo[] = [];
     hors: string[] = [];
     dias: ItemN[] = [];
+    fres: Catalogo[] = [];
     suel: SalarioMin = {} as SalarioMin;
     jornada: number = 0;
     idD: number = 0;
@@ -60,6 +61,9 @@ export class PuestoLayoutWidget {
         }, err => console.log(err));
         http.get<Catalogo[]>(`${url}api/catalogo/getinmuebletipo`).subscribe(response => {
             this.tips = response;
+        }, err => console.log(err));
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getfrecuencia`).subscribe(response => {
+            this.fres = response;
         }, err => console.log(err));
     }
 
