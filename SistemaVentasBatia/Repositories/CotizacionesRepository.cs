@@ -269,7 +269,7 @@ dc.id_direccion_cotizacion IdDireccionCotizacion, d.id_direccion IdDireccion, no
                                     d.id_estado IdEstado, d.id_tabulador IdTabulador, municipio Municipio, ciudad Ciudad, colonia Colonia, domicilio Domicilio, referencia Referencia, codigo_postal CodigoPostal,
                                     contacto Contacto, telefono_contacto TelefonoContacto, id_estatus_direccion IdEstatusDireccion, fecha_alta FechaAlta, e.descripcion Estado, ti.descripcion TipoInmueble
                                 FROM tb_direccion d
-                                JOIN tb_estado e on d.id_estado = e.id_estado
+                                LEFT OUTER JOIN tb_estado e on d.id_estado = e.id_estado
                                 JOIN tb_tipoinmueble ti on d.id_tipo_inmueble = ti.id_tipoinmueble
                                 JOIN tb_direccion_cotizacion dc on dc.Id_Direccion = d.Id_Direccion
                                 WHERE dc.id_cotizacion = @idCotizacion and id_estatus_direccion = 1
