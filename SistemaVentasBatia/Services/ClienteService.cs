@@ -20,6 +20,9 @@ using System.IO;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Diagnostics.Eventing.Reader;
+using System.Net.Mail;
+using System.Net;
+
 namespace SistemaVentasBatia.Services
 {
     public interface IClienteService
@@ -199,6 +202,8 @@ namespace SistemaVentasBatia.Services
                     //CREAR E INSERTAR HORARIO
                     string horarioActualizadoXML = CrearXMLHorario(puesto, idPlantillaCreada);
                     clienteRepo.InsertarHorarioActualizadoPlantillaXML(horarioActualizadoXML);
+                    DateTime fecha = DateTime.Now;
+                    EnviaCorreoVacantes(fecha, "Registro de Vacante", idPlantillaCreada);
                 }
 
                 //OBTENER LISTAS DE PRODUCTOS EXTRA POR SUCURSAL
@@ -361,7 +366,7 @@ namespace SistemaVentasBatia.Services
                     horarioElement.SetAttribute("dia" + i.ToString() + "de", puesto.HrInicio.Hours.ToString());
                     horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
                 }
-                
+
                 if((int)puesto.DiaInicioFin > (int)puesto.DiaFin)
                 {
                     for (int i = (int)puesto.DiaInicioFin; i <= (int)puesto.DiaFinFin; i++)
@@ -778,6 +783,333 @@ namespace SistemaVentasBatia.Services
 
             // Devolver null si no se detecta el formato
             return null;
+        }
+        private async void EnviaCorreoVacantes(DateTime fecha, string titulo, int idPlantilla)
+        {
+            Correo email = new Correo();
+            string fechastring = fecha.ToString("yyyyMMdd");
+            email = await clienteRepo.ObenerDetalleCorreo(idPlantilla, fechastring);
+            email.Gerente = "edgarc@grupobatia.com.mx";
+            
+            string body = @"<html style='width:100%;font-family:arial, 'helvetica neue', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;'>
+                <head>
+                <meta charset='UTF-8'>
+                <meta content='width=device-width, initial-scale=1' name='viewport'>
+                <meta name='x-apple-disable-message-reformatting'>
+                <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+                <meta content='telephone=no' name='format-detection'>
+                <title>Nuevo correo electrónico 2</title>
+                <!--[if (mso 16)]>
+                <style type='text/css'>
+                a {text-decoration: none;}
+                </style>
+                <![endif]-->
+                <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->
+                <!--[if !mso]><!-- -->
+                <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i' rel='stylesheet'>
+                <!--<![endif]-->
+                <style type='text/css'>
+                @media only screen and (max-width:600px) {p, ul li, ol li, a { font-size:16px!important; line-height:150%!important } h1 { font-size:30px!important; text-align:center; line-height:120%!important } h2 { font-size:26px!important; text-align:center; line-hei
+                #outlook a {
+                padding: 0;
+                }
+                .ExternalClass {
+                width: 100%;
+                }
+                .ExternalClass,
+                .ExternalClass p,
+                .ExternalClass span,
+                .ExternalClass font,
+                .ExternalClass td,
+                .ExternalClass div {
+                line-height:  100%;
+                }
+                .es-button {
+                mso-style-priority:100!important;
+                text-decoration: none!important;
+                }
+                a[x-apple-data-detectors] {
+                color:inherit!important;
+                text-decoration: none!important;
+                font-size:inherit!important;
+                font-family: inherit!important;
+                font-weight:inherit!important;
+                line-height: inherit!important;
+                }
+                .es-desk-hidden {
+                display:none;
+                float: Left;
+                overflow:hidden;
+                width:  0;
+                max-height:0;
+                line-height:  0;
+                mso-hide: all;
+                }
+                </style>
+                </head>
+                <body style='width:100%;font-family:arial, 'helvetica neue', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;'>
+                <div class='es-wrapper-color' style='background-color:#E4E5E7;'>
+                <table class='es-header' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'>
+                <table class='es-header-body' width='600' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#34265F;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;'>
+                <!--[if mso]><table width='560' cellpadding='0' cellspacing='0'><tr><td width='178' valign='top'><![endif]-->
+                <table class='es-left' cellspacing='0' cellpadding='0' align='left' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'>
+                <tr style='border-collapse:collapse;'>
+                <td class='es-m-p0r es-m-p20b' width='178' valign='top' align='center' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td class='es-m-txt-c' align='left' style='padding:0;Margin:0;'><img src='http://grupobatia.com.mx/images/gbblanco.png' alt='Logo Batia' title='Logo Batia' width='104' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;'></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table>
+                <!--[if mso]></td><td width='20'></td><td width='362' valign='top'><![endif]-->
+                <table cellspacing='0' cellpadding='0' align='right' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td width='362' align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td class='es-m-txt-c' align='right' style='padding:0;Margin:0;padding-top:15px;padding-bottom:20px;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#FFFFFF;'>Fecha:" + fechastring + @"</p><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#FFFFFF;' id='txfechaenvio'></p></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table>
+                <!--[if mso]></td></tr></table><![endif]--></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td width='600' valign='top' align='center' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'><img class='adapt-img' src='http://grupobatia.com.mx/images/47051523540803179.png' alt style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;' width='600'></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table>
+                <table class='es-content' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'>
+                <table class='es-content-body' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#EDEDED;' width='600' cellspacing='0' cellpadding='0' bgcolor='#ededed' align='center'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td width='600' valign='top' align='center' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;padding-top:20px;padding-left:40px;padding-right:40px;'><h1 style='Margin:0;line-height:36px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:30px;font-style:normal;font-weight:normal;color:#333333;'>Mensaje generado por SINGA</h1></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'><img class='adapt-img' src='http://grupobatia.com.mx/images/92931515066045884.jpg' alt width='600' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;'></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;padding-bottom:10px;padding-left:40px;padding-right:40px;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:24px;color:#333333;' id='txconcepto'></p></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td width='600' valign='top' align='center' style='padding:0;Margin:0;'>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table>
+                <table class='es-content' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'>
+                <table class='es-content-body' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#EDEDED;' width='600' cellspacing='0' cellpadding='0' bgcolor='#ededed' align='center'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='Margin:0;padding-top:20px;padding-bottom:20px;padding-left:40px;padding-right:40px;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td width='520' align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'><h3 style='Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#333333;'>" + titulo + @"</h3></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;padding-top:10px;padding-bottom:10px;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;'>Estimado usuario, se ha realizado una modificación de plantillas, lo cual a generado vacantes de forma automática, favor de ingresar a SINGA para seguir con el proceso de reclutamiento, a continuación un resumen de los datos de la solicitud.<br></p></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;padding-bottom:10px;padding-top:15px;'><h3 style='Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#333333;'> Cliente:" + email.Cliente + @"</h3></td>
+                </tr>
+                </table></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td class='es-m-p20b' width='580' align='center' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td style='padding:0;Margin:0;'>
+                <table class='es-table-not-adapt' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td valign='top' align='left' style='padding:0;Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;'><img src='http://grupobatia.com.mx/images/Check_Mark_Black5.png' alt=alt width='16' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;' /></td>
+                <td align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;'>Puesto:" + email.Puesto + @".</p></td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td valign='top' align='left' style='padding:0;Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;'><img src='http://grupobatia.com.mx/images/Check_Mark_Black5.png' alt=alt width='16' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;' /></td>
+                <td align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>        
+                <td align='left' style='padding:0;Margin:0;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;'>Punto de Atención:" + email.Sucursal + @".</p></td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td valign='top' align='left' style='padding:0;Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;'><img src='http://grupobatia.com.mx/images/Check_Mark_Black5.png' alt=alt width='16' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;' /></td>        
+                <td align='left' style='padding:0;Margin:0;'>        
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;'>Ubicación:" + email.Ubicacion + @".</p></td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td valign='top' align='left' style='padding:0;Margin:0;padding-top:10px;padding-bottom:10px;padding-right:10px;'><img src='http://grupobatia.com.mx/images/Check_Mark_Black5.png' alt=alt width='16' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;' /></td>
+                <td align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;'>Resumen de horario:" + email.Horario + @".</p></td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table>
+                <table class='es-content' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'>
+                <table class='es-content-body' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#EDEDED;' width='600' cellspacing='0' cellpadding='0' bgcolor='#ededed' align='center'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td width='600' valign='top' align='center' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>        
+                <td align='center' style='padding:0;Margin:0;'><img class='adapt-img' src='http://grupobatia.com.mx/images/94931515066951223.png' alt width='600' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;'></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td style='Margin:0;padding-top:10px;padding-bottom:20px;padding-left:20px;padding-right:20px;background-color:#34265F;' bgcolor='#34265f' align='left'>
+                <!--[if mso]><table width='560' cellpadding='0' cellspacing='0'><tr><td width='194'><![endif]-->
+                <table class='es-left' cellspacing='0' cellpadding='0' align='left' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;'>
+                <tr style='border-collapse:collapse;'>
+                <td class='es-m-p0r es-m-p20b' width='174' align='center' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td esdev-links-color='#ffffff' align='right' style='padding:0;Margin:0;padding-top:5px;'><h3 style='Margin:0;line-height:48px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:32px;font-style:normal;font-weight:normal;color:#FFFFFF;'><strong><a target='_blank' style='-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:32px;text-decoration:none;color:#FFFFFF;line-height:48px;' href='https://viewstripo.email/'>SINGA</a></strong><br></h3></td>
+                </tr>
+                </table></td>
+                <td class='es-hidden' width='20' style='padding:0;Margin:0;'></td>
+                </tr>
+                </table>
+                <table class='es-right' cellspacing='0' cellpadding='0' align='right' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right;'>
+                <tr style='border-collapse:collapse;'>
+                <td class='es-m-p20b' width='173' align='left' style='padding:0;Margin:0;'>
+                </tr>
+                </table>
+                <!--[if mso]></td></tr></table><![endif]--></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table>
+                <table class='es-footer' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'>
+                <table class='es-footer-body' width='600' cellspacing='0' cellpadding='0' align='center' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='left' style='padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td width='560' valign='top' align='center' style='padding:0;Margin:0;'>
+                <table width='100%' cellspacing='0' cellpadding='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:0;Margin:0;'><img src='http://grupobatia.com.mx/images/logo%20batia.png' alt='Logo Batia' title='Logo Batia' width='104' style='display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;'></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:10px;Margin:0;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:12px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#333333;'>Usted esta recibiendo este correo de forma automática, favor de NO responder al remitente, si usted no es el destinatario correcto favor de hacer caso omiso del mismo.</p><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:12px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#333333;'><a target='_blank' href='' style='-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:12px;text-decoration:none;color:#34265F;'>quiero saber mas</a> | <a target='_blank' href='http://singa.com.mx:8083/login.aspx' style='-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:12px;text-decoration:none;color:#34265F;'>sistema integral de gestión administrativa</a></p></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='Margin:0;padding-top:5px;padding-bottom:5px;padding-left:20px;padding-right:20px;'>
+                <table width='100%' height='100%' cellspacing='0' cellpadding='0' border='0' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;'>
+                <tr style='border-collapse:collapse;'>
+                <td style='padding:0;Margin:0px 0px 0px 0px;border-bottom:1px solid #CCCCCC;background:none;height:1px;width:100%;margin:0px;'></td>
+                </tr>
+                </table></td>
+                </tr>
+                <tr style='border-collapse:collapse;'>
+                <td align='center' style='padding:10px;Margin:0;'><p style='Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:12px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:18px;color:#333333;'>Grupo Batia, Av. Coyoacán 1704,&nbsp;Acacias 03100 Ciudad de México</p></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table></td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+                </table>
+                </div>
+                </body>
+                </html>";
+
+            string notificacion = "NOTIFICACION DE SINGA";
+            var mail = new MailMessage
+            {
+                From = new MailAddress("adminsinga@grupobatia.com.mx"),
+                Subject = notificacion,
+                Body = body,
+                IsBodyHtml = true
+            };
+
+            var destinatarios = email.Gerente.Split(';');
+            foreach (var destinatario in destinatarios)
+            {
+                if (!string.IsNullOrEmpty(destinatario))
+                {
+                    mail.To.Add(destinatario);
+                }
+            }
+            using (var smtp = new SmtpClient("smtp.office365.com", 587))
+            {
+                smtp.Credentials = new NetworkCredential("adminsinga@grupobatia.com.mx", "Ad*Gb6584");
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+            }
         }
     }
 }
