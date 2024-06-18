@@ -197,8 +197,8 @@ namespace SistemaVentasBatia.Repositories
                                     
                                     c.id_estatus_cotizacion IN (1,2,3,4,5)    
                                ) AS Cotizaciones
-                          WHERE   RowNum >= ((@pagina - 1) * 10) + 1
-                              AND RowNum <= (@pagina * 10)
+                          WHERE   RowNum >= ((@pagina - 1) * 40) + 1
+                              AND RowNum <= (@pagina * 40)
                           ORDER BY RowNum";
             var queryuser = @"SELECT  *
                           FROM (SELECT ROW_NUMBER() OVER ( ORDER BY id_cotizacion desc ) AS RowNum, id_cotizacion IdCotizacion, id_servicio IdServicio, nombre_comercial NombreComercial, 
@@ -216,8 +216,8 @@ namespace SistemaVentasBatia.Repositories
                                     c.id_estatus_cotizacion IN (1,2,3,4,5)
 
                                ) AS Cotizaciones
-                          WHERE   RowNum >= ((@pagina - 1) * 10) + 1
-                              AND RowNum <= (@pagina * 10)
+                          WHERE   RowNum >= ((@pagina - 1) * 40) + 1
+                              AND RowNum <= (@pagina * 40)
                           ORDER BY RowNum";
 
 

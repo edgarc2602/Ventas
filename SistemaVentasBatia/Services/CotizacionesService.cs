@@ -95,9 +95,9 @@ namespace SistemaVentasBatia.Services
 
             if (listaCotizacionesVM.Rows > 0)
             {
-                listaCotizacionesVM.NumPaginas = (listaCotizacionesVM.Rows / 10);
+                listaCotizacionesVM.NumPaginas = (listaCotizacionesVM.Rows / 40);
 
-                if (listaCotizacionesVM.Rows % 10 > 0)
+                if (listaCotizacionesVM.Rows % 40 > 0)
                 {
                     listaCotizacionesVM.NumPaginas++;
                 }

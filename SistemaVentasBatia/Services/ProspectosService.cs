@@ -69,9 +69,9 @@ namespace SistemaVentasBatia.Services
 
             if (listaProspectosVM.Rows > 0)
             {
-                listaProspectosVM.NumPaginas = (listaProspectosVM.Rows / 10);
+                listaProspectosVM.NumPaginas = (listaProspectosVM.Rows / 40);
 
-                if (listaProspectosVM.Rows % 10 > 0)
+                if (listaProspectosVM.Rows % 40 > 0)
                 {
                     listaProspectosVM.NumPaginas++;
                 }

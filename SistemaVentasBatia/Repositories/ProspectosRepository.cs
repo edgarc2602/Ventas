@@ -121,8 +121,8 @@ namespace SistemaVentasBatia.Repositories
                             ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto AND
                             nombre_comercial like '%' + @keywords + '%' 
                         ORDER BY nombre_comercial
-                        OFFSET ((@pagina - 1) * 10) ROWS
-                        FETCH NEXT 10 ROWS ONLY;";
+                        OFFSET ((@pagina - 1) * 40) ROWS
+                        FETCH NEXT 40 ROWS ONLY;";
             var queryuser = @"SELECT ROW_NUMBER() OVER ( ORDER BY id_prospecto desc ) AS RowNum, id_prospecto IdProspecto, nombre_comercial NombreComercial , razon_social RazonSocial, rfc Rfc, 
 				                domicilio_fiscal DomicilioFiscal, telefono Telefono,numero_contacto NumeroContacto, p.Per_Nombre + ' ' + p.Per_Paterno +' ' + p.Per_Materno RepresentanteLegal , documentacion Documentacion, 
 				                id_estatus_prospecto IdEstatusProspecto, tb_prospecto.fecha_alta FechaAlta, id_personal IdPersonal
@@ -133,8 +133,8 @@ namespace SistemaVentasBatia.Repositories
                             nombre_comercial like '%' + @keywords + '%'  AND
                             tb_prospecto.id_personal = @idPersonal
                         ORDER BY nombre_comercial
-                        OFFSET ((@pagina - 1) * 10) ROWS
-                        FETCH NEXT 10 ROWS ONLY;";
+                        OFFSET ((@pagina - 1) * 40) ROWS
+                        FETCH NEXT 40 ROWS ONLY;";
             var prospectos = new List<Prospecto>();
 
             try
