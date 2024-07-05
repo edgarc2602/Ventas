@@ -226,31 +226,34 @@ namespace SistemaVentasBatia.Services
 
             int idOperario = await cotizacionesRepo.InsertaPuestoDireccionCotizacion(operariosModel);
 
-            var materialPuesto = await catalogosRepo.ObtenerMaterialDefaultPorPuesto(operariosModel.IdPuesto);
-            if (materialPuesto.Count > 0)
+            if (operariosModel.IncluyeMaterial == true)
             {
-                await CalcularPreciosMaterial(materialPuesto, operariosModel);
-            }
+                var materialPuesto = await catalogosRepo.ObtenerMaterialDefaultPorPuesto(operariosModel.IdPuesto);
+                if (materialPuesto.Count > 0)
+                {
+                    await CalcularPreciosMaterial(materialPuesto, operariosModel);
+                }
 
-            var uniformePuesto = (await catalogosRepo.ObtenerUniformeDefaultPorPuesto(operariosModel.IdPuesto)).ToList();
-            if (uniformePuesto.Count > 0)
-            {
-                await CalcularPreciosMaterial(uniformePuesto, operariosModel);
-            }
+                var uniformePuesto = (await catalogosRepo.ObtenerUniformeDefaultPorPuesto(operariosModel.IdPuesto)).ToList();
+                if (uniformePuesto.Count > 0)
+                {
+                    await CalcularPreciosMaterial(uniformePuesto, operariosModel);
+                }
 
-            var equipoPuesto = (await catalogosRepo.ObtenerEquipoDefaultPorPuesto(operariosModel.IdPuesto)).ToList();
-            if (equipoPuesto.Count > 0)
-            {
-                await CalcularPreciosMaterial(equipoPuesto, operariosModel);
-            }
+                var equipoPuesto = (await catalogosRepo.ObtenerEquipoDefaultPorPuesto(operariosModel.IdPuesto)).ToList();
+                if (equipoPuesto.Count > 0)
+                {
+                    await CalcularPreciosMaterial(equipoPuesto, operariosModel);
+                }
 
-            var herraPuesto = (await catalogosRepo.ObtenerHerramientaDefaultPorPuesto(operariosModel.IdPuesto)).ToList();
-            if (herraPuesto.Count > 0)
-            {
-                await CalcularPreciosMaterial(herraPuesto, operariosModel);
-            }
+                var herraPuesto = (await catalogosRepo.ObtenerHerramientaDefaultPorPuesto(operariosModel.IdPuesto)).ToList();
+                if (herraPuesto.Count > 0)
+                {
+                    await CalcularPreciosMaterial(herraPuesto, operariosModel);
+                }
 
-            await InsertarMaterialesDefaultOperarios(materialPuesto, uniformePuesto, equipoPuesto, herraPuesto, idOperario, operariosModel.IdCotizacion, operariosModel.IdDireccionCotizacion, operariosVM.IdTurno, operariosModel.IdPersonal, operariosVM.DiasEvento);
+                await InsertarMaterialesDefaultOperarios(materialPuesto, uniformePuesto, equipoPuesto, herraPuesto, idOperario, operariosModel.IdCotizacion, operariosModel.IdDireccionCotizacion, operariosVM.IdTurno, operariosModel.IdPersonal, operariosVM.DiasEvento);
+            }
         }
 
         private async Task<PuestoDireccionCotizacion> CalcularCostosOperario(PuestoDireccionCotizacion operariosModel)

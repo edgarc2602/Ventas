@@ -51,5 +51,6 @@ namespace SistemaVentasBatia.Models
         public DiaSemana? DiaDescanso { get; set; }
         public string HorarioStr {  get; set; }
         public int DiasEvento { get; set; }
+        public bool IncluyeMaterial { get; set; }
     }
 }

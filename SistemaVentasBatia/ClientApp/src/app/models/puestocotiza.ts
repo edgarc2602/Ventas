@@ -40,5 +40,6 @@
     diaFinFin: number;
     diaDescanso: number;
     diasEvento: number;
+    incluyeMaterial: boolean;
 
 }

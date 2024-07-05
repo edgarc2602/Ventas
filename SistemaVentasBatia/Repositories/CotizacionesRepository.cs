@@ -391,10 +391,10 @@ ORDER BY RowNum";
             int ids = 0;
             string query = @$"INSERT INTO tb_puesto_direccion_cotizacion (id_puesto, id_direccion_cotizacion, jornada, id_turno, id_salario, cantidad, hr_inicio, hr_fin,
                             dia_inicio, dia_fin, fecha_alta, sueldo, aguinaldo, vacaciones, prima_vacacional, isn, imss, total, id_tabulador, id_clase, festivo, dia_festivo, bonos, vales, dia_domingo,domingo, 
-                            dia_cubredescanso, cubredescanso, hr_inicio_fin, hr_fin_fin, dia_inicio_fin, dia_fin_fin, dia_descanso, horario_letra)
+                            dia_cubredescanso, cubredescanso, hr_inicio_fin, hr_fin_fin, dia_inicio_fin, dia_fin_fin, dia_descanso, horario_letra, incluyematerial)
                         VALUES(@IdPuesto, @IdDireccionCotizacion, @Jornada, @IdTurno, @IdSalario, @Cantidad, @HrInicio, @HrFin,
                             @DiaInicio, @DiaFin, getdate(), @Sueldo, @Aguinaldo, @Vacaciones, @PrimaVacacional, @ISN, @IMSS, @Total, @IdTabulador, @IdClase, @Festivo, @DiaFestivo, @Bonos, @Vales, @DiaDomingo, @Domingo,
-                            @DiaCubreDescanso, @CubreDescanso, @HrInicioFin, @HrFinFin, @DiaInicioFin, @DiaFinFin, @DiaDescanso, @HorarioStr);
+                            @DiaCubreDescanso, @CubreDescanso, @HrInicioFin, @HrFinFin, @DiaInicioFin, @DiaFinFin, @DiaDescanso, @HorarioStr, @IncluyeMaterial);
                         select SCOPE_IDENTITY() as ID;";
 
             try
