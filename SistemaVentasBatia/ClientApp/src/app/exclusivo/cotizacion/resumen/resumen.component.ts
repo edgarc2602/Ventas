@@ -58,6 +58,8 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild('fileInputDir', { static: false }) fileInputDir: ElementRef<HTMLInputElement>;
     @ViewChild('fileInputPlan', { static: false }) fileInputPlan: ElementRef<HTMLInputElement>;
     @ViewChild('fileInputProductoExtra', { static: false }) fileInputProductoExtra: ElementRef<HTMLInputElement>;
+    @ViewChild('resumenCot', { static: false }) resumenContainer: ElementRef;
+
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
@@ -761,7 +763,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     modalContrato() {
-        this.contrato.open(this.model.idCotizacion, this.model.idProspecto);
+        if (this.model.idEstatus == 6) {
+            this.contrato.open(this.model.idCotizacion, this.model.idProspecto);
+        }
+        else {
+        this.errorToast("Esta cotizaci\u00F3n a\u00FAn no est\u00E1 validada por direcci\u00F3n")
+        }
     }
 
     descargarDatosCotizacion() {
@@ -814,6 +821,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
         const mensaje = 'Se eliminar\u00E1n los registros relacionados';
         this.confirma.open(tipo, titulo, mensaje);
     }
+    confirmaAutorizarCotizacion() {
+        const tipo = 'autorizarCotizacion'
+        const titulo = 'Autorizar cotizaci\u00F3n';
+        const mensaje = 'Al autorizar la cotizaci\u00F3n el vendedor podr\u00E1 convertir el prospecto a cliente';
+        this.confirma.open(tipo, titulo, mensaje);
+    }
 
 
     //Respuesta de confirmacion
@@ -827,6 +840,9 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if ($event == 'eliminarPuestoDireccionCotizacion') {
             this.eliminarPuestoDireccionCotizacion();
         }
+        if ($event == 'autorizarCotizacion') {
+            this.autorizarCotizacion();
+        }
     }
 
 
@@ -838,11 +854,16 @@ export class ResumenComponent implements OnInit, OnDestroy {
             setTimeout(() => {
                 this.http.post<number>(`${this.url}api/cotizacion/DuplicarCotizacion`, this.model.idCotizacion).subscribe(response => {
                     this.idCotN = response;
+                    if (this.resumenContainer) {
+                        const container = this.resumenContainer.nativeElement;
+                        container.scrollTop = 0;
+                    }
                     this.router.navigate(['/exclusivo/resumen/', this.idCotN]);
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Ahora se encuentra en la nueva cotizaci\u00F3n');
                     }, 300);
+                    
                 }, err => {
                     this.detenerCarga();
                     setTimeout(() => {
@@ -895,6 +916,25 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     }
 
+    autorizarCotizacion() {
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.post<boolean>(`${this.url}api/cotizacion/AutorizarCotizacion`, this.model.idCotizacion).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast('Cotizaci\u00F3n ' + this.model.idCotizacion.toString() + ' autorizada');
+                    location.reload();
+                }, 300);
+                this.getDirs();
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+                console.log(err);
+            });
+        }, 300);
+    }
 
     //errors
     ferr(nm: string) {

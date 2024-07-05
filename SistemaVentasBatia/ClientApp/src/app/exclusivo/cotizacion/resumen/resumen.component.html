@@ -1,8 +1,8 @@
-<div [@fadeInOut]>
+<div [@fadeInOut] #resumenCot>
     <br />
     <div class="pt-1 mb-1">
         <div class="row d-flex align-items-center">
-            <div class="col-12 col-md-9">
+            <div class="col-7 col-md-8">
                 <h2 class="text-black-90">
                     Cotización {{model.nombreComercial}}
                     <span *ngIf="model.idServicio == 1" class="text-muted h5">(Mantenimiento)</span>
@@ -12,14 +12,8 @@
                     <span *ngIf="model.idServicio == 5" class="text-muted h5">(Evento, {{ model.diasEvento }} dias )</span>
                 </h2>
             </div>
-            <div class="col-4 col-md-3 text-end d-none">
-                <button type="button" class="btn btn-outline-primary" (click)="marcarVenta()"><i class="fa-solid fa-clipboard-check"></i> Marcar Venta</button>
-            </div>
-            <div class="col-4 col-md-6">
-                <h6>Id: {{model.idCotizacion}}</h6>
-            </div>
-            <div class="col-4 col-md-6 float-end">
-                <h6 class="float-end">Id original: {{model.idCotizacionOriginal}}</h6>
+            <div class="col-5 col-md-4 text-end">
+                <h6><span>Id: {{model.idCotizacion}}</span> <span *ngIf="model.idCotizacionOriginal != 0" class="ms-3">Id original: {{model.idCotizacionOriginal}}</span></h6>
             </div>
         </div>
     </div>
@@ -317,48 +311,51 @@
                                 </div>
                             </td>
                         </tr>
+
                     </tbody>
                 </table>
-            </div>
-            <div *ngIf="model.idEstatus == 1" class="row justify-content-center">
-                <div *ngIf="autorizacion === 1" class="col-12 col-md-4">
-                    <button type="submit" class="btn btn-outline-primary d-flex align-items-center" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent fa-xl me-2"></i> Actualizar porcentajes</button><br><br>
+                <div *ngIf="model.idEstatus == 1 && autorizacion === 1" class="row">
+                    <div class="col-3 col-md-3 offset-3 text-start">
+                        <button type="submit" class="btn btn-outline-primary d-flex align-items-center" (click)="actualizarIndirectoUtilidad()"><i class="fa-solid fa-percent fa-xl me-2"></i> Actualizar porcentajes</button><br><br>
+                    </div>
                 </div>
             </div>
-
             <br />
-            <div class="row justify-content-center">
-                <div *ngIf="model.idServicio == 5" class="col-3 col-md-6 col-4 text-center">
-                    <button type="button" (click)="propuestaEvento()" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
-                    <span style="margin-left: 10px;"></span>
+            <h4>Descargar</h4>
+            <hr />
+            <div class="row">
+                <div *ngIf="model.idServicio == 5" class="col-4 col-md-4 col-4">
+                    <button type="button" (click)="propuestaEvento()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
                 </div>
-                <div *ngIf="model.idServicio == 4" class="col-3 col-md-6 col-4">
-                    <button type="button" (click)="propuestaSuministroInsumos()" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
-                    <span style="margin-left: 10px;"></span>
+                <div *ngIf="model.idServicio == 4" class="col-4 col-md-4 col-4">
+                    <button type="button" (click)="propuestaSuministroInsumos()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
                 </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-3 col-4">
-                    <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Economica</button>
-                    <span style="margin-left: 10px;"></span>
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-4 col-4">
+                    <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Económica</button>
                     <script src="../../cotizacion/resumen/"></script>
                 </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 float-end col-md-3">
-                    <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica</button>
-                    <span style="margin-right: 10px;"></span>
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4">
+                    <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica</button>
                 </div>
-                <div *ngIf="model.idEstatus == 1 && model.idServicio != 4 && model.idServicio != 5" class="col-4 float-end col-md-3">
-                    <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
-                    <span style="margin-right: 10px;"></span>
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4">
+                    <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
                 </div>
-                <div class="col-4 float-end col-md-3 d-none">
-                    <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary d-flex align-items-center"><i class="fa-solid fa-database fa-xl me-2"></i> Descargar datos</button>
-                    <span style="margin-right: 10px;"></span>
+            </div>
+            <br />
+            <h4>Acciones</h4>
+            <hr />
+            <div class="row">
+                <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4">
+                    <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary "><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
                 </div>
-                <div *ngIf="model.idEstatus == 1" class="col-4 col-md-3">
-                    <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" class="btn btn-outline-danger d-flex align-items-center"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
+                <!--<div class="col-4 float-end col-md-4 d-none">
+                    <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-database fa-xl"></i> Descargar datos</button>
+                </div>-->
+                <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4">
+                    <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" [disabled]="isLoading" class="btn btn-outline-danger"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
                 </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 float-end col-md-3">
-                    <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-info d-flex align-items-center"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
-                    <span style="margin-right: 10px;"></span>
+                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655" class="col-4 col-md-4">
+                    <button *ngIf="model.idEstatus != 6 && model.idEstatus != 4" type="button" (click)="confirmaAutorizarCotizacion()" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-check fa-xl me-2"></i> Autorizar Cotización</button>
                 </div>
             </div>
             <script src="script.js"></script>
@@ -456,7 +453,7 @@
                     </div>
                 </div>
             </div>-->
-
+            <hr />
             <div *ngIf="model.idEstatus == 1" class="row mb-3">
                 <div>
                     <div class="btn-group float-end">
@@ -464,16 +461,14 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
         <div class="tab-pane fade" id="directorio" role="tabpanel" aria-labelledby="resumen-tab">
-            <div *ngIf="model.idEstatus == 1" class="row">
+            <!--<div *ngIf="model.idEstatus == 1" class="row">
                 <div class="col-12 col-sm-12 col-md-12">
                     Seleccionar una dirección existente
                 </div>
             </div>
-            <br>
+            <br>-->
             <div *ngIf="model.idEstatus == 1" class="row d-flex align-items-center mb-3">
                 <div class="col-4 col-sm-12 col-md-4">
                     <div class="form-floating">
@@ -481,7 +476,7 @@
                             <option value="0">Seleccione...</option>
                             <option *ngFor="let d of dirs" [ngValue]="d.id">{{ d.nom }}</option>
                         </select>
-                        <label for="IdDireccion">Sucursal</label>
+                        <label for="IdDireccion">Agregar una sucursal existente</label>
                     </div>
                     <span *ngIf="ferr('SLidDireccion')" class="text-danger">{{ terr('SLidDireccion') }}</span>
                 </div>
@@ -509,7 +504,7 @@
                 <div class="row">
                     <div *ngFor="let dr of lsdir.direcciones" class="col-sm-12 col-md-6 mb-3">
                         <div class="card shadow-sm">
-                            <div class="card-header text-center"><h6>{{ dr.nombreSucursal }} ({{ dr.tipoInmueble }})</h6></div>
+                            <div class="card-header text-center plantilla text-white d-flex align-items-center justify-content-center"><h6 class="d-flex align-items-center justify-content-center">{{ dr.nombreSucursal }} ({{ dr.tipoInmueble }})</h6></div>
                             <div class="card-body">
                                 <div class="row d-flex align-items-center">
                                     <div class="col-md-8 col-8">
@@ -532,9 +527,7 @@
                         </div>
                     </div>
                 </div>
-                <br />
             </div>
-            <br />
             <pagina-widget [pagina]="lsdir.pagina" [numPaginas]="lsdir.numPaginas" [rows]="lsdir.rows" (chgEvent)="dirPagina($event)"></pagina-widget>
             <hr />
             <div *ngIf="model.idEstatus == 1" class="row text-end">
@@ -562,38 +555,36 @@
         </div>
         <div *ngIf="model.idServicio != 4" class="tab-pane fade " id="plantilla" role="tabpanel" aria-labelledby="plantilla-tab">
             <div class="row">
-                <div class="col-12 col-md-4 text-start mb-1">
-                    <button class="btn btn-outline-primary" (click)="toggleAllTabs()"><i class="fa-solid {{ allTabsOpen ? 'fa-chevron-up' : 'fa-chevron-down' }}"></i> {{ allTabsOpen ? 'Cerrar todo' : 'Abrir todo' }}</button>
+                <div class="col-12 col-md-8 text-start">
+                    <h5><span class="badge plantilla text-white"> <i class="fa fa-money-bill"></i> Importe mensual: $ {{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt | number: '1.2' }}</span> <span class="badge plantilla text-white ms-1"><i class="fa fa-users"></i> No. Empleados: {{lspue.empleados}}</span></h5>
                 </div>
-                <div class="col-6 col-md-6 text-end">
-                    <h5 class="me-1"><span class="badge plantilla text-white">Importe mensual: $ {{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt | number: '1.2' }}</span></h5>
-                </div>
-                <div class="col-4 col-md-2 text-end">
-                    <h5><i class="bi bi-people-fill"></i><span class="badge plantilla text-white">No. Empleados: {{lspue.empleados}}  </span></h5>
+                <div class="col-12 col-md-4 text-end">
+                    <button class="btn btn-outline-primary btn-sm mb-1" (click)="toggleAllTabs()"><i class="fa-solid {{ allTabsOpen ? 'fa-chevron-up' : 'fa-chevron-down' }}"></i> {{ allTabsOpen ? 'Cerrar todo' : 'Abrir todo' }}</button>
                 </div>
             </div>
-            <div class="table-container box-shadow">
-                <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" [ngClass]="{'open': allTabsOpen}" (click)="quitarFocoDeElementos2()">
-                    <div class="plantilla shadow-sm">
-                        <div class="row col-md-12 col-sm-12 col-12 shadow-sm">
-                            <a id="aListaOperarios{{ dir.idDireccionCotizacion }}" class="btn text-white  text-start col-md-10 col-9" data-bs-toggle="collapse" href="#dvPuestosDireccion{{ dir.idDireccionCotizacion }}">
-                                <h6 style="margin-bottom:0;">
-                                    {{ dir.nombreSucursal }}
-                                </h6>
-                                <span class="badge plantilla text-white">{{ dir.ciudad }}, {{ dir.estado }}</span>
-                            </a>
-                            <a *ngIf="model.idEstatus == 1" (click)="addPlan(dir.idDireccionCotizacion, dir.idTabulador, dir.nombreSucursal)" class="btn btn-outline-primary col-md-2 col-3 agrega-puesto" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
-                                <i class="fa-solid fa-user-plus fa-3x" style="color: white;"></i>
-                            </a>
-                        </div>
+            <div class="table-container row col-md-12 box-shadow">
+                <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" [ngClass]="{'open': allTabsOpen}"  (click)="quitarFocoDeElementos2()" style=" margin-bottom: 1px;">
+                    <div class="plantilla row">
+                        <a id="aListaOperarios{{ dir.idDireccionCotizacion }}" class="btn text-white col-md-1 col-1 d-flex align-items-center justify-content-center" style="box-shadow:none;" data-bs-toggle="collapse" href="#dvPuestosDireccion{{ dir.idDireccionCotizacion }}">
+                            <i class="fa-solid fa-location-dot fa-2x"></i>
+                        </a>
+                        <a id="aListaOperarios{{ dir.idDireccionCotizacion }}" class="btn text-white text-start col-md-9 col-8" style="box-shadow:none;" data-bs-toggle="collapse" href="#dvPuestosDireccion{{ dir.idDireccionCotizacion }}">
+                            <h6 style="margin-bottom:0;">
+                                {{ dir.nombreSucursal }}
+                            </h6>
+                            <span class="badge plantilla text-white">{{ dir.ciudad }}, {{ dir.estado }}</span>
+                        </a>
+                        <a *ngIf="model.idEstatus == 1" (click)="addPlan(dir.idDireccionCotizacion, dir.idTabulador, dir.nombreSucursal)" class="btn btn-outline-primary col-md-2 col-2 agrega-puesto d-flex align-items-center justify-content-center" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
+                            <i class="fa-solid fa-user-plus fa-2x" style="color: white;"></i>
+                        </a>
                     </div>
-                    <div id="dvPuestosDireccion{{ dir.idDireccionCotizacion }}" class="collapse" [ngClass]="{'show': allTabsOpen}">
+                    <div id="dvPuestosDireccion{{ dir.idDireccionCotizacion }}" class="collapse row" [ngClass]="{'show': allTabsOpen}">
                         <div class="card-body">
                             <div style="overflow-x: hidden;">
                                 <table class="table table-borderless table-responsive table-striped" id="tbOperarios">
                                     <tbody>
                                         <tr *ngFor="let pt of filtroPlan(dir.idDireccionCotizacion)" id="tr{{ pt.idPuestoDireccionCotizacion }}">
-                                            <td class="col-md-9">
+                                            <td class="col-md-10">
                                                 <div class="row pb-3 ">
                                                     <div class="col-8 col-sm-4">
                                                         <span class="badge ">Puesto:</span>
@@ -603,11 +594,11 @@
                                                         <span class="badge ">Cantidad:</span>
                                                         <div class="ms-4">{{ pt.cantidad }}</div>
                                                     </div>
-                                                    <div class="col-8 col-sm-4 small">
-                                                        <span class="badge ">Horario:</span>
-                                                        <div class="ms-1">{{ pt.diaInicio }} a {{ pt.diaFin }} de {{ pt.hrInicio.substring(0, 5) }} a {{ pt.hrFin.substring(0, 5) }}</div>
-                                                        <div *ngIf="pt.diaInicioFin == pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1">{{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
-                                                        <div *ngIf="pt.diaInicioFin !== pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1">{{ pt.diaInicioFin}} a {{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
+                                                    <div class="col-8 col-sm-4">
+                                                        <span class="badge">Horario:</span>
+                                                        <div class="ms-1 small">{{ pt.diaInicio }} a {{ pt.diaFin }} de {{ pt.hrInicio.substring(0, 5) }} a {{ pt.hrFin.substring(0, 5) }}</div>
+                                                        <div *ngIf="pt.diaInicioFin == pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1 small">{{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
+                                                        <div *ngIf="pt.diaInicioFin !== pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1 small">{{ pt.diaInicioFin}} a {{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
                                                     </div>
                                                     <div class="col-3 col-sm-2">
                                                         <span class="badge ">Jornada:</span>
@@ -667,7 +658,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="col-md-3">
+                                            <td class="col-md-2">
                                                 <div class="text-center">
                                                     <a class="btn btn-sm btn-outline-secondary mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'material', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Material">
                                                         <i class="fa-solid fa-pump-soap fa-2x"></i>
@@ -697,7 +688,6 @@
                     </div>
                 </div>
             </div>
-            <br />
             <hr />
             <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
@@ -724,8 +714,8 @@
         <div class="tab-pane fade" id="material" role="tabpanel" aria-labelledby="plantilla-tab">
             <div>
                 <div class="row">
-                    <div class="col-md-3  col-6">
-                        <div class="form-floating  mb-3">
+                    <div class="col-md-3 col-12">
+                        <div class="form-floating mb-3">
                             <input type="text" class="form-control" [(ngModel)]="txtMatKey" asp-for="Keywords" (input)="getMat(selTipo)" id="txtProducto">
                             <label for="txtProducto">Producto</label>
                         </div>
@@ -739,7 +729,7 @@
                             <label for="ddlSucursal">Sucursal</label>
                         </div>
                     </div>
-                    <div *ngIf="model.idEstatus == 1" class="col-md-6 mb-3">
+                    <div *ngIf="model.idEstatus == 1" class="col-md-6 col-6">
                         <button type="button" (click)="getNewMat(selTipo)" class="btn btn-outline-primary float-end mb-3" id="btnAgregarDireccion"><i class="fa-solid fa-plus"></i> Agregar {{ selTipo }}</button>
                     </div>
                 </div>
@@ -756,6 +746,7 @@
             </div>-->
             <div *ngIf="lsmat.materialesCotizacion && lsmat.materialesCotizacion.length == 0 && isLoading == false" class="text-center">
                 <hr />
+                <br />
                 <h6>No se encontraron registros</h6>
             </div>
             <div *ngIf="lsmat.materialesCotizacion && lsmat.materialesCotizacion.length > 0" class="table-container box-shadow fade-in-container">
@@ -798,32 +789,32 @@
                         <tr *ngFor="let mat of lsmat.materialesCotizacion">
                             <td class="align-middle">
                                 <div class="row d-flex align-items-center">
-                                    <div class="col-md-2 col-sm-4 col-3">
+                                    <div class="col-md-2 col-sm-4 col-4">
                                         <span class="badge d-md-none">Clave:</span>
                                         <div>{{ mat.claveProducto }}</div>
                                     </div>
-                                    <div [ngClass]="model.idServicio != 4 && model.idServicio != 5? 'col-md-3 col-sm-6 col-3':'col-md-4 col-sm-8 col-9'">
+                                    <div [ngClass]="model.idServicio != 4 && model.idServicio != 5? 'col-md-3 col-sm-6 col-8':'col-md-4 col-sm-8 col-9'">
                                         <span class="badge d-md-none">Producto:</span>
                                         <div class="ms-2">{{ mat.descripcionMaterial }}</div>
                                         <small class="ms-2 text-muted">{{ mat.nombreSucursal }}</small>
                                     </div>
-                                    <div class="col-md-1 col-sm-4 col-3">
+                                    <div class="col-md-1 col-sm-4 col-4">
                                         <span class="badge d-md-none">Precio:</span>
                                         <div class="ms-2">${{ mat.precioUnitario | number: '0.2' }}</div>
                                     </div>
-                                    <div class="col-md-1 col-sm-4 col-3  text-center">
+                                    <div class="col-md-1 col-sm-4 col-4  text-center">
                                         <span class="badge d-md-none">Cantidad:</span>
                                         <div class="ms-2">{{ mat.cantidad | number: '0.0' }}</div>
                                     </div>
-                                    <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-md-2 col-sm-6 col-3">
+                                    <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-md-2 col-sm-6 col-4">
                                         <span class="badge d-md-none">Frecuencia:</span>
                                         <div class="ms-2">{{ mat.idFrecuencia }}</div>
                                     </div>
-                                    <div [ngClass]="model.idServicio != 4? 'col-md-1 col-sm-4 col-3':'col-md-2 col-sm-4 col-4'">
+                                    <div [ngClass]="model.idServicio != 4? 'col-md-1 col-sm-4 col-4':'col-md-2 col-sm-4 col-4'">
                                         <span class="badge d-md-none">Total:</span>
                                         <div class="ms-2">${{ mat.total | number: '0.2' }}</div>
                                     </div>
-                                    <div class="col-md-2 col-sm-4 col-3">
+                                    <div class="col-md-2 col-sm-4 col-4">
                                         <span class="badge d-md-none">Fecha Alta:</span>
                                         <div class="ms-2">{{ mat.fechaAlta | date: 'dd/MM/yyyy' }}</div>
                                     </div>
@@ -845,7 +836,6 @@
             <div *ngIf="lsmat.materialesCotizacion && lsmat.materialesCotizacion.length > 0">
                 <pagina-widget [pagina]="lsmat.pagina" [numPaginas]="lsmat.numPaginas" [rows]="lsmat.rows" (chgEvent)="matPagina($event)"></pagina-widget>
             </div>
-            <br />
             <hr />
             <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">

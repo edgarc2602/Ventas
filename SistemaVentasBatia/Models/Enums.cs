@@ -29,8 +29,10 @@ namespace SistemaVentasBatia.Enums
     {
         Activa = 1,
         Inactivo = 3,
+        Autorizada = 6,
         Contratada = 4,
         NoSeleccionada = 5
+        
     }
 
     public enum Servicio

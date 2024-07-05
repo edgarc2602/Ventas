@@ -670,6 +670,7 @@ namespace SistemaVentasBatia.Services
             asuntoLegalElement.SetAttribute("nombre_abogado", "CARLOS ROBERTO VARGAS RIOS");
             asuntoLegalElement.SetAttribute("descripcion", "Contrato " + nombreCliente);
             asuntoLegalElement.SetAttribute("empleado", "0");
+            asuntoLegalElement.SetAttribute("cliente", idClienteCreado.ToString());
             asuntoXML.AppendChild(asuntoLegalElement);
             string asuntoLegalXMLString = asuntoXML.OuterXml;
             return asuntoLegalXMLString;
@@ -717,8 +718,8 @@ namespace SistemaVentasBatia.Services
         {
             bool result;
 
-            string pathContrato = "\\\\192.168.2.4\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
-            //string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
+            //string pathContrato = "\\\\192.168.2.4\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
+            string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
 
             //INSERTAR ASUNTO
             string asuntoLegalXMLString = CrearXMLAsuntoLegal(idClienteCreado, nombreCliente);
@@ -789,7 +790,7 @@ namespace SistemaVentasBatia.Services
             Correo email = new Correo();
             string fechastring = fecha.ToString("yyyyMMdd");
             email = await clienteRepo.ObenerDetalleCorreo(idPlantilla, fechastring);
-            //email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
+            email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
             
             string body = @"<html style='width:100%;font-family:arial, 'helvetica neue', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;'>
                 <head>

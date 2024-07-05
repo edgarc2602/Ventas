@@ -68,7 +68,10 @@ namespace SistemaVentasBatia.Services
             {
                 Acceso acc = _mapper.Map<Acceso>(dto);
                 usu = _mapper.Map<UsuarioDTO>(await _repo.Login(acc));
-                usu.DireccionIP = ip;
+                if(usu != null)
+                {
+                    usu.DireccionIP = ip;
+                }
                 if (usu == null)
                 {
                     throw new CustomException("Usuario no Existe");

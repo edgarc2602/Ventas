@@ -44,7 +44,7 @@ namespace SistemaVentasBatia.Repositories
         Task<int> ObtieneIdDireccionCotizacionPorOperario(int idPuestoDireccionCotizacion);
         Task<int> ContarDireccionesCotizacion(int idCotizacion);
         Task<List<Direccion>> ObtenerDireccionesPorCotizacion(int idCotizacion, int pagina);
-        
+
         Task<List<Direccion>> ObtenerCatalogoDirecciones(int idProspecto);
         Task<List<Direccion>> ObtenerCatalogoDireccionesCotizacion(int idCotizacion);
         Task<List<DireccionCotizacion>> ObtieneDireccionesCotizacion(int idCotizacion);
@@ -84,6 +84,7 @@ namespace SistemaVentasBatia.Repositories
         Task CambiarEstatusCotizacionNoSeleccionada(int idCotizacion);
         Task<List<Cotizacion>> ObtenerCotizacionesNoSeleccionadasPorIdProspecto(int idCotizacionSeleccionada, int idProspecto);
         Task<int> ObtenerEstatusCotizacion(int idCotizacion);
+        Task<bool> AutorizarCotizacion(int idCotizacion);
 
         //CONFIGURACION
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
@@ -145,7 +146,7 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio
                                     AND
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5) ";
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6) ";
             var queryadmin = @"SELECT count(*) Rows
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
@@ -154,7 +155,7 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio
                                     AND
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5) ";
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6) ";
 
             var rows = 0;
 
@@ -170,7 +171,7 @@ namespace SistemaVentasBatia.Repositories
                     {
                         rows = await connection.QuerySingleAsync<int>(queryadmin, new { idProspecto, idEstatusCotizacion, idServicio });
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -195,7 +196,7 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio AND
                                     
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5)    
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6)    
                                ) AS Cotizaciones
                           WHERE   RowNum >= ((@pagina - 1) * 40) + 1
                               AND RowNum <= (@pagina * 40)
@@ -213,7 +214,7 @@ namespace SistemaVentasBatia.Repositories
                                     ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio AND
                                     c.id_personal = @idPersonal AND
                                     
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5)
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6)
 
                                ) AS Cotizaciones
                           WHERE   RowNum >= ((@pagina - 1) * 40) + 1
@@ -382,8 +383,8 @@ ORDER BY RowNum";
             catch (Exception ex)
             {
                 throw ex;
-            } 
-                          return direcciones;
+            }
+            return direcciones;
         }
         public async Task<int> InsertaPuestoDireccionCotizacion(PuestoDireccionCotizacion operario)
         {
@@ -718,7 +719,7 @@ where id_cotizacion = @idCotizacion";
         }
         public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
         {
-            var query =  @"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento where id_cotizacion = @idCotizacion ";
+            var query =@"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento where id_cotizacion = @idCotizacion ";
             if (polizaCumplimiento == false)
             {
                 query += @"UPDATE tb_cotizacion SET total_poliza = 0 WHERE id_cotizacion = @idCotizacion ";
@@ -1223,7 +1224,7 @@ VALUES(
                 using (var connection = ctx.CreateConnection())
                 {
                     await connection.ExecuteAsync(query, operario);
-                    }
+                }
             }
             catch (Exception ex)
             {
@@ -1630,7 +1631,7 @@ WHERE id_puesto = @idPuesto AND id_clase = @idClase AND id_zona = @idZona
             }
             return result;
         }
-        public async Task <int> ObtenerIdZona(int idPuestoDireccion)
+        public async Task<int> ObtenerIdZona(int idPuestoDireccion)
         {
             var query = @"
 SELECT e.id_zona FROM tb_direccion_cotizacion dc
@@ -1676,9 +1677,9 @@ WHERE dc.id_direccion_cotizacion = @idPuestoDireccion
             try
             {
                 using var connection = ctx.CreateConnection();
-                result = await connection.ExecuteScalarAsync<bool>(query, new {imss});
+                result = await connection.ExecuteScalarAsync<bool>(query, new { imss });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1696,7 +1697,7 @@ WHERE dc.id_direccion_cotizacion = @idPuestoDireccion
                 using var connection = ctx.CreateConnection();
                 result = await connection.QueryFirstOrDefaultAsync<int>(query, new { idCotizacion });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1717,7 +1718,7 @@ WHERE id_cotizacion = @idCotizacion
                     result = await connection.ExecuteScalarAsync<bool>(query, new { idCotizacion });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1834,7 +1835,7 @@ ORDER BY id_immsjornadacotizador DESC
                     immsJornada = await connection.QueryFirstAsync<ImmsJornada>(query);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1877,7 +1878,7 @@ GETDATE(),
                     result = await connection.ExecuteScalarAsync<bool>(query, imssJormada);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1895,10 +1896,10 @@ GETDATE(),
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    result = await connection.QueryFirstAsync<bool>(query, new { idCotizacion});
+                    result = await connection.QueryFirstAsync<bool>(query, new { idCotizacion });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1936,12 +1937,12 @@ GETDATE(),
             int rows;
             try
             {
-                using(var connection = ctx.CreateConnection())
+                using (var connection = ctx.CreateConnection())
                 {
                     rows = await connection.QuerySingleAsync<int>(query, new { idCotizacion });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1996,12 +1997,15 @@ GETDATE(),
                             WHERE id_prospecto = @idProspecto";
             try
             {
-                using var connection = ctx.CreateConnection();
-                await connection.ExecuteAsync(query, new { idProspecto });
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteAsync(query, new { idProspecto });
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine("Error: " + ex.Message);
+                throw; // Opcional: relanzar la excepción para manejarla en capas superiores
             }
         }
 
@@ -2012,12 +2016,15 @@ GETDATE(),
                             WHERE id_cotizacion = @idCotizacion";
             try
             {
-                using var connection = ctx.CreateConnection();
-                await connection.ExecuteAsync(query, new { idCotizacion });
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteAsync(query, new { idCotizacion });
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine("Error: " + ex.Message);
+                throw; // Opcional: relanzar la excepción para manejarla en capas superiores
             }
         }
 
@@ -2028,13 +2035,15 @@ GETDATE(),
                             WHERE id_cotizacion = @idCotizacion";
             try
             {
-                using var connection = ctx.CreateConnection();
-                await connection.ExecuteAsync(query, new { idCotizacion });
-
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteAsync(query, new { idCotizacion });
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                Console.WriteLine("Error: " + ex.Message);
+                throw; // Opcional: relanzar la excepción para manejarla en capas superiores
             }
         }
 
@@ -2074,11 +2083,32 @@ GETDATE(),
                 using var connection = ctx.CreateConnection();
                 idEstatus = await connection.ExecuteScalarAsync<int>(query, new { idCotizacion });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
             return idEstatus;
+        }
+
+        public async Task<bool> AutorizarCotizacion(int idCotizacion)
+        {
+            bool result;
+            string query = @"UPDATE tb_cotizacion SET id_estatus_cotizacion = 6 WHERE id_cotizacion = @idCotizacion";
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteAsync(query, new { idCotizacion });
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                Console.WriteLine("Error: " + ex.Message);
+                throw; // Opcional: relanzar la excepción para manejarla en capas superiores
+            }
+            return result;
         }
     }
 }

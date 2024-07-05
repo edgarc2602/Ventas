@@ -337,5 +337,10 @@ namespace SistemaVentasBatia.Controllers
         {
             return await cotizacionesSvc.ObtenerTotalEmpleadosCotizacion(idCotizacion);
         }
+        [HttpPost("[action]")]
+        public async Task<bool> AutorizarCotizacion([FromBody ]int idCotizacion = 0)
+        {
+            return await cotizacionesSvc.AutorizarCotizacion(idCotizacion);
+        }
     }
 }

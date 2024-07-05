@@ -1,13 +1,13 @@
 <div [@fadeInOut]>
     <br />
-    <div class="row pt-1 mb-3">
-        <div>
-            <h1 class="h2">Prospectos</h1>
+    <div class="pt-1 mb-1">
+        <div class="row d-flex align-items-center">
+            <h2>Prospectos</h2>
         </div>
     </div>
     <div>
         <div class="row d-flex align-items-center">
-            <div class="col-md-3 col-4 mb-3">
+            <div class="col-md-3 col-12 mb-3">
                 <div class="form-floating">
                     <input type="text" class="form-control" [(ngModel)]="lspro.keywords" id="Keywords" (keyup)="onKeywordsInput()">
                     <label for="Keywords">Nombre Comercial</label>
@@ -15,7 +15,7 @@
             </div>
 
 
-            <div class="col-md-3 col-3 mb-3">
+            <div class="col-md-3 col-6 mb-3">
                 <div class="form-floating">
                     <select class="form-select" [(ngModel)]="lspro.idEstatusProspecto" aria-label="IdEstatusProspecto" (change)="lista()" id="ddlEstatusProspecto">
                         <option value="0">Seleccione ...</option>
@@ -24,7 +24,7 @@
                     <label for="ddlEstatusProspecto">Estatus:</label>
                 </div>
             </div>
-            <div class="col-md-6 col-5 mb-3 text-end">
+            <div class="col-md-6 col-6 mb-3 text-end">
                 <a (click)="nuevo()" class="btn btn-outline-primary"><i class="fa-solid fa-plus"></i> Nuevo Prospecto</a>
             </div>
         </div>
@@ -43,7 +43,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let prospecto of lspro.prospectos">
-                    <td>
+                    <td class="col-10 col-md-10">
                         <div class="row mb-2">
                             <div class="col-sm-3 col-6 col-md-4">
                                 <span class="badge">Nombre Comercial:</span>
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </td>
-                    <td class="mb-3 text-center">
+                    <td class="mb-3 text-center col-2 col-md-2">
                         <button type="submit" class="btn btn-sm btn-outline-primary mb-1" [routerLink]="['/exclusivo/cotiza/' + prospecto.idProspecto]" data-bs-toggle="tooltip" title="Cotizaciones">
                             <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
                         </button>

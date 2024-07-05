@@ -60,6 +60,7 @@ namespace SistemaVentasBatia.Services
         Task CambiarEstatusProspectoContratado(int idProspecto);
         Task CambiarEstatusCotizacionContratada(int idCotizacionSeleccionada);
         Task CambiarEstatusCotizacionesNoSeleccionadas(int idCotizacionSeleccionada, int idProspecto);
+        Task<bool> AutorizarCotizacion(int idCotizacion);
     }
 
     public class CotizacionesService : ICotizacionesService
@@ -1044,6 +1045,11 @@ namespace SistemaVentasBatia.Services
             {
                 await cotizacionesRepo.CambiarEstatusCotizacionNoSeleccionada(cot.IdCotizacion);
             }
+        }
+
+        public async Task<bool> AutorizarCotizacion(int idCotizacion)
+        {
+            return await cotizacionesRepo.AutorizarCotizacion(idCotizacion);
         }
     }
 }
