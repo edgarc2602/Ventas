@@ -34,6 +34,8 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> ObtenerCatalogoVendedores();
         Task<List<Catalogo>> ObtenerCatalogoEjecutivos();
         Task<List<Catalogo>> ObtenerCatalogoGerentesLimpieza();
+        Task<List<Catalogo>> ObtenerCatalogoTiposdeIndustria();
+
     }
 
     public class CatalogosRepository : ICatalogosRepository
@@ -515,6 +517,26 @@ FROM tb_clase";
                 throw ex;
             }
             return vendedores;
+        }
+
+        public async Task<List<Catalogo>> ObtenerCatalogoTiposdeIndustria()
+        {
+            string query = @"SELECT id_tipoindustria Id, descripcion Descripcion FROM tb_industria_tipo WHERE id_estatus = 1 ORDER BY descripcion";
+
+            var industrias = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    industrias = (await connection.QueryAsync<Catalogo>(query)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return industrias;
         }
     }
 }

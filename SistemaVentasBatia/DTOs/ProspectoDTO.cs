@@ -55,5 +55,7 @@ namespace SistemaVentasBatia.DTOs
 
         public int IdCotizacion { get; set; }
         public EstatusProspecto IdEstatusProspecto { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Tipo de industria es obligatorio.")]
+        public int IdTipoIndustria { get; set; }
     }
 }

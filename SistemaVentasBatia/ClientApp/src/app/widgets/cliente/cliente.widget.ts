@@ -64,7 +64,7 @@ export class ClienteWidget {
         }
         this.prospecto = {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '', representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
-            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.user.idPersonal, idEstatusProspecto: 0
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.user.idPersonal, idEstatusProspecto: 0, idTipoIndustria: 0
         };
         this.contratoSeleccionado = null;
     }

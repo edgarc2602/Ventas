@@ -48,14 +48,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 col-sm-12 mb-3">
+                <div class="col-md-3 col-sm-12 mb-3">
                     <div class="form-floating">
                         <input type="text" class="form-control" [(ngModel)]="pro.emailContacto" id="txtProspectoEmailContacto">
                         <label for="txtProspectoEmailContacto">Email Contacto</label>
                     </div>
                     <span *ngIf="ferr('EmailContacto')" class="text-danger">{{ terr('EmailContacto') }}</span>
                 </div>
-                <div class="col-md-4 col-sm-12 mb-3">
+                <div class="col-md-2 col-sm-12 mb-3">
                     <div class="form-floating">
                         <input type="text" class="form-control" [(ngModel)]="pro.numeroContacto" id="txtProspectoTelefonoContacto">
                         <label for="txtProspectoTelefonoContacto">Tel. Contacto</label>
@@ -67,6 +67,16 @@
                         <input type="text" class="form-control" [(ngModel)]="pro.extContacto" id="txtProspectoContactoExt">
                         <label for="txtProspectoContactoExt">Extensión</label>
                     </div>
+                </div>
+                <div class="col-sm-12 col-md-5 col-12 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" aria-label="IdPuesto" [(ngModel)]="pro.idTipoIndustria" id="slTipoIndustria">
+                            <option value=0>Seleccione...</option>
+                            <option *ngFor="let p of indust" [ngValue]="p.id">{{ p.descripcion }}</option>
+                        </select>
+                        <label for="slTipoIndustria">Tipo de industria</label>
+                    </div>
+                    <span *ngIf="ferr('IdTipoIndustria')" class="text-danger">{{ terr('IdTipoIndustria') }}</span>
                 </div>
             </div>
             <br />

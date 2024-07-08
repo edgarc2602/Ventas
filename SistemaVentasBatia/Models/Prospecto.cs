@@ -25,5 +25,6 @@ namespace SistemaVentasBatia.Models
         public string NumeroContacto { get; set; }
         public string  ExtContacto { get; set; }
         public List<Cotizacion> Cotizaciones { get; set; }
+        public int IdTipoIndustria { get; set; }
     }
 }

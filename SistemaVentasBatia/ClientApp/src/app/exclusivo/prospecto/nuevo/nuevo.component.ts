@@ -10,6 +10,7 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Catalogo } from '../../../models/catalogo';
 
 @Component({
     selector: 'pros-nuevo',
@@ -30,6 +31,9 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     docs: ItemN[] = [];
     lerr: any = {};
     sub: any;
+    indust: Catalogo[] = [];
+    validacion: boolean = false;
+
 
     constructor(
         @Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe,
@@ -38,13 +42,16 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         http.get<ItemN[]>(`${url}api/prospecto/getdocumento`).subscribe(response => {
             this.docs = response;
         }, err => console.log(err));
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+            this.indust = response;
+        }, err => console.log(err));
     }
 
     nuevo() {
         let fec: Date = new Date();
         this.pro = {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '', representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
-            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, idTipoIndustria : 0
         };
     }
 
@@ -146,7 +153,33 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     }
 
     valida() {
-        return true;
+        this.validacion = true;
+        if (this.pro.nombreComercial == '') {
+            this.lerr['NombreComercial'] = ['Nombre comercial es obligatorio.'];
+            this.validacion = false;
+        }
+        if (this.pro.domicilioFiscal == '') {
+            this.lerr['DomicilioFiscal'] = ['Domicilio Fiscal es obligatorio.'];
+            this.validacion = false;
+        }
+        if (this.pro.nombreContacto == '') {
+            this.lerr['NombreContacto'] = ['Contacto es obligatorio.'];
+            this.validacion = false;
+        }
+        if (this.pro.emailContacto == '') {
+            this.lerr['EmailContacto'] = ['Email es obligatorio.'];
+            this.validacion = false;
+        }
+        if (this.pro.numeroContacto == '') {
+            this.lerr['NumeroContacto'] = ['Numero de contacto es obligatorio.'];
+            this.validacion = false;
+        }
+        if (this.pro.idTipoIndustria == 0) {
+            this.lerr['IdTipoIndustria'] = ['Tipo de industria es obligatorio.'];
+            this.validacion = false;
+        }
+
+        return this.validacion;
     }
 
     ferr(nm: string) {

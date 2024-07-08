@@ -9,6 +9,7 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { AgregarUsuario } from 'src/app/models/agregarusuario';
 import { DatePipe } from '@angular/common';
 import { fadeInOut } from 'src/app/fade-in-out';
+import { Catalogo } from '../../../models/catalogo';
 declare var bootstrap: any;
 
 
@@ -39,6 +40,8 @@ export class CotizaComponent {
     salTipo: number = 0;
     isEvento: boolean = false;
     isInsumo: boolean = false;
+    indust: Catalogo[] = [];
+
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe, private rtr: Router, public user: StoreUser) {
         this.nuevo();
         http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo`, this.user.idPersonal).subscribe(response => {
@@ -56,6 +59,9 @@ export class CotizaComponent {
         http.get<ItemN[]>(`${url}api/prospecto/getdocumento`).subscribe(response => {
             this.docs = response;
         }, err => console.log(err));
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+            this.indust = response;
+        }, err => console.log(err));
     }
 
     nuevo() {
@@ -72,7 +78,7 @@ export class CotizaComponent {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '',
             representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
             emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.user.idPersonal,
-            idEstatusProspecto: 0
+            idEstatusProspecto: 0, idTipoIndustria: 0
         };
         this.docs.forEach(d => d.act = false);
         if (this.user.idAutoriza == 0) {
@@ -184,6 +190,10 @@ export class CotizaComponent {
             }
             if (this.modelp.numeroContacto == '' || this.modelp.numeroContacto == null) {
                 this.lerr['NumeroContacto'] = ['Tel. Contacto es requerido'];
+                this.validaciones = false;
+            }
+            if (this.modelp.idTipoIndustria == 0 || this.modelp.idTipoIndustria == null) {
+                this.lerr['IdTipoIndustria'] = ['Tipo de industria es requerido'];
                 this.validaciones = false;
             }
             if (this.isEvento == true) {

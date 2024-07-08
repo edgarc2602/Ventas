@@ -32,6 +32,7 @@ namespace SistemaVentasBatia.Services
         Task<List<CatalogoDTO>> ObtenerCatalogoVendedores();
         Task<List<CatalogoDTO>> ObtenerCatalogoEjecutivos();
         Task<List<CatalogoDTO>> ObtenerCatalogoGerentesLimpieza();
+        Task<List<CatalogoDTO>> ObtenerCatalogoTiposdeIndustria();
     }
 
     public class CatalogosService : ICatalogosService
@@ -204,6 +205,13 @@ namespace SistemaVentasBatia.Services
             var empresas = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoGerentesLimpieza());
 
             return empresas;
+        }
+        
+        public async Task<List<CatalogoDTO>> ObtenerCatalogoTiposdeIndustria()
+        {
+            var industrias = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoTiposdeIndustria());
+
+            return industrias;
         }
     }
 }
