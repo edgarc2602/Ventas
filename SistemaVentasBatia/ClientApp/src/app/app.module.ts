@@ -41,6 +41,7 @@ import { CerrarCotizacion } from './widgets/cerrarcotizacion/cerrarcotizacion.wi
 import { CargaWidget } from './widgets/carga/carga.widget';
 import { SubirContratoClienteWidget } from './widgets/subircontratocliente/subircontratocliente.widget';
 import { ClienteWidget } from './widgets/cliente/cliente.widget';
+import { AgregarIndustriaWidget } from './widgets/agregarindustria/agregarindustria.widget';
 
 @NgModule({
     declarations: [
@@ -77,7 +78,8 @@ import { ClienteWidget } from './widgets/cliente/cliente.widget';
         CerrarCotizacion,
         CargaWidget,
         SubirContratoClienteWidget,
-        ClienteWidget
+        ClienteWidget,
+        AgregarIndustriaWidget
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

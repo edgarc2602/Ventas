@@ -216,10 +216,10 @@ namespace SistemaVentasBatia.Controllers
             return RedirectToAction("LimpiezaInfoProspecto", new { id = prospectoVM.IdCotizacion });
         }
 
-        [HttpPost("[action]")]
-        public async Task<int> DuplicarCotizacion([FromBody] int idCotizacion)
+        [HttpGet("[action]/{incluyeProducto}/{idCotizacion}")]
+        public async Task<int> DuplicarCotizacion(bool incluyeProducto, int idCotizacion)
         {
-            var idNuevaCotizacion = await cotizacionesSvc.DuplicarCotizacion(idCotizacion);
+            var idNuevaCotizacion = await cotizacionesSvc.DuplicarCotizacion(idCotizacion, incluyeProducto);
 
             // TempData["DescripcionAlerta"] = "Se duplicó correctamente la cotización";
             // TempData["IdTipoAlerta"] = TipoAlerta.Exito;
@@ -341,6 +341,12 @@ namespace SistemaVentasBatia.Controllers
         public async Task<bool> AutorizarCotizacion([FromBody ]int idCotizacion = 0)
         {
             return await cotizacionesSvc.AutorizarCotizacion(idCotizacion);
+        }
+        
+        [HttpPost("[action]")]
+        public async Task<bool> RemoverAutorizacionCotizacion([FromBody ]int idCotizacion = 0)
+        {
+            return await cotizacionesSvc.RemoverAutorizacionCotizacion(idCotizacion);
         }
     }
 }

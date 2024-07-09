@@ -84,7 +84,9 @@ namespace SistemaVentasBatia.Repositories
         Task CambiarEstatusCotizacionNoSeleccionada(int idCotizacion);
         Task<List<Cotizacion>> ObtenerCotizacionesNoSeleccionadasPorIdProspecto(int idCotizacionSeleccionada, int idProspecto);
         Task<int> ObtenerEstatusCotizacion(int idCotizacion);
+        Task<int> ObtenerDiasEvento(int idCotizacion);
         Task<bool> AutorizarCotizacion(int idCotizacion);
+        Task<bool> RemoverAutorizacionCotizacion(int idCotizacion);
 
         //CONFIGURACION
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
@@ -806,10 +808,21 @@ imss,
 total,
 id_tabulador,
 id_clase,
+dia_festivo,
 festivo,
 bonos,
 vales,
-dia_festivo
+dia_domingo,
+domingo,
+dia_cubredescanso,
+cubredescanso,
+hr_inicio_fin,
+hr_fin_fin,
+dia_inicio_fin,
+dia_fin_fin,
+dia_descanso,
+horario_letra,
+incluyeMaterial
 )
 SELECT  
 id_puesto,
@@ -832,10 +845,21 @@ imss,
 total,
 id_tabulador,
 id_clase,
+dia_festivo,
 festivo,
 bonos,
 vales,
-dia_festivo
+dia_domingo,
+domingo,
+dia_cubredescanso,
+cubredescanso,
+hr_inicio_fin,
+hr_fin_fin,
+dia_inicio_fin,
+dia_fin_fin,
+dia_descanso,
+horario_letra,
+incluyeMaterial
 FROM tb_puesto_direccion_cotizacion
 WHERE id_direccion_cotizacion = @idDireccionCotizacion;
 select scope_identity()";
@@ -2089,11 +2113,48 @@ GETDATE(),
             }
             return idEstatus;
         }
+        
+        public async Task<int> ObtenerDiasEvento(int idCotizacion)
+        {
+            string query = @"SELECT cotizacion_evento_dias FROM tb_cotizacion WHERE id_cotizacion = @idCotizacion";
+            int diasEvento;
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                diasEvento = await connection.ExecuteScalarAsync<int>(query, new { idCotizacion });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return diasEvento;
+        }
 
         public async Task<bool> AutorizarCotizacion(int idCotizacion)
         {
             bool result;
             string query = @"UPDATE tb_cotizacion SET id_estatus_cotizacion = 6 WHERE id_cotizacion = @idCotizacion";
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteAsync(query, new { idCotizacion });
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                Console.WriteLine("Error: " + ex.Message);
+                throw; // Opcional: relanzar la excepción para manejarla en capas superiores
+            }
+            return result;
+        }
+        
+        public async Task<bool> RemoverAutorizacionCotizacion(int idCotizacion)
+        {
+            bool result;
+            string query = @"UPDATE tb_cotizacion SET id_estatus_cotizacion = 1 WHERE id_cotizacion = @idCotizacion";
             try
             {
                 using (var connection = ctx.CreateConnection())

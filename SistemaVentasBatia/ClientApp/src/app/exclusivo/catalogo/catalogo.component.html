@@ -154,7 +154,6 @@
             </h1>
             <div id="collapseCatalogo" class="accordion-collapse collapse" aria-labelledby="headingCatalogo">
                 <div class="accordion-body">
-
                     <div class="row mb-3">
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating">
@@ -166,18 +165,22 @@
                             </div>
                         </div>
                     </div>
-
-
                     <ul class="nav nav-tabs" id="tabconfig" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button type="button" class="nav-link active" id="catservicio-tab" data-bs-toggle="tab" data-bs-target="#catservicio"
+                            <button type="button" class="nav-link active" id="servicio-tab" data-bs-toggle="tab" data-bs-target="#servicio"
                                     role="tab" aria-controls="servicio" aria-selected="true">
                                 Servicio
                             </button>
                         </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" id="industria-tab" data-bs-toggle="tab" data-bs-target="#industria"
+                                    role="tab" aria-controls="industria" aria-selected="true">
+                                Industria
+                            </button>
+                        </li>
                     </ul>
                     <div class="tab-content pt-2" id="tabcontent">
-                        <div class="tab-pane fade show active text-center" id="servicio" role="tabpanel" aria-labelledby="material-tab">
+                        <div class="tab-pane fade show active text-center" id="servicio" role="tabpanel" aria-labelledby="servicio-tab">
                             <div *ngIf="sers && sers.length > 0" class="table-container fade-in-container">
                                 <table class="table table-striped table-responsive">
                                     <thead class="sticky-top">
@@ -203,6 +206,38 @@
                             <div class="row mt-3">
                                 <div class="col d-flex justify-content-end">
                                     <button type="button" (click)="openSer()" class="btn  btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar servicio</button>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="tab-content pt-2" id="tabcontent">
+                        <div class="tab-pane fade text-center" id="industria" role="tabpanel" aria-labelledby="industria-tab">
+                            <div *ngIf="industrias && industrias.length > 0" class="table-container fade-in-container">
+                                <table class="table table-striped table-responsive">
+                                    <thead class="sticky-top">
+                                        <tr>
+                                            <th>Clave</th>
+                                            <th>Descripción</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let s of industrias">
+                                            <td>{{ s.id }}</td>
+                                            <td>{{ s.descripcion }}</td>
+                                            <td>
+                                                <button type="button" (click)="deleteIndust(s.id)" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col d-flex justify-content-end">
+                                    <button type="button" (click)="openInd()" class="btn  btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar tipo de industria</button>
                                 </div>
                             </div>
                             <br>
@@ -648,6 +683,7 @@
 </div>
 <producto-widget [idP]="selPuesto" [grupo]="grupo" (saveEvent)="closeMat($event)"></producto-widget>
 <agregarservicio-widget (serEvent)="reloadServicios()"></agregarservicio-widget>
+<agregarindustria-widget (indEvent)="reloadIndustrias()"></agregarindustria-widget>
 <usuarioadd-widget (actualizarUsuarios)="obtenerUsuarios()"></usuarioadd-widget>
 <toast-widget></toast-widget>
 <carga-widget></carga-widget>

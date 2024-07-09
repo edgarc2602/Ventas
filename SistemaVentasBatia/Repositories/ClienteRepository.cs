@@ -743,8 +743,8 @@ namespace SistemaVentasBatia.Repositories
                     var parameters = new DynamicParameters();
                     parameters.Add("@idCotizacion", idCotizacion, DbType.Int32);
                     parameters.Add("@idDireccionCotizacion", idDireccionCotizacion, DbType.Int32);
-                    totalPuestosDireccion = await connection.QuerySingleAsync<decimal>("sp_obtenerigualapuestosdireccion", parameters, commandType: CommandType.StoredProcedure);
-                    totalExtrasDireccion = await connection.QuerySingleAsync<decimal>("sp_obtenerigualadireccionextras", parameters, commandType: CommandType.StoredProcedure);
+                    totalPuestosDireccion = await connection.QuerySingleOrDefaultAsync<decimal>("sp_obtenerigualapuestosdireccion", parameters, commandType: CommandType.StoredProcedure);
+                    totalExtrasDireccion = await connection.QuerySingleOrDefaultAsync<decimal>("sp_obtenerigualadireccionextras", parameters, commandType: CommandType.StoredProcedure);
                     result = totalPuestosDireccion + totalExtrasDireccion;
                 }
             }

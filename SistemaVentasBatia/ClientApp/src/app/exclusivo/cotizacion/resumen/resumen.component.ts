@@ -112,6 +112,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     reportData: Blob;
     lerr: any = {};
     sub: any;
+    incluyeProducto: boolean = false;
 
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, private router: Router, private reportService: ReportService, public user: StoreUser, private dtpipe: DatePipe, private sinU: StoreUser) {
@@ -761,14 +762,23 @@ export class ResumenComponent implements OnInit, OnDestroy {
     returnMarcaCotizacion($event) {
 
     }
+    actualizarDatos() {
+        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`).subscribe(response => {
+            this.model = response;
+        }, err => console.log(err));
+    }
 
     modalContrato() {
-        if (this.model.idEstatus == 6) {
-            this.contrato.open(this.model.idCotizacion, this.model.idProspecto);
-        }
-        else {
-        this.errorToast("Esta cotizaci\u00F3n a\u00FAn no est\u00E1 validada por direcci\u00F3n")
-        }
+        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`).subscribe(response => {
+            this.model = response;
+            if (response.idEstatus == 6) {
+                this.model.idEstatus == response.idEstatus;
+                this.contrato.open(this.model.idCotizacion, this.model.idProspecto);
+            }
+            else {
+                this.errorToast("Esta cotizaci\u00F3n a\u00FAn no est\u00E1 validada por direcci\u00F3n")
+            }
+        }, err => console.log(err));
     }
 
     descargarDatosCotizacion() {
@@ -801,9 +811,24 @@ export class ResumenComponent implements OnInit, OnDestroy {
     confirmaDuplicarCotizacion(idCotizacion: number) {
         this.idpro = idCotizacion;
         const tipo = 'duplicarCotizacion';
-        const titulo = 'Duplicar cotizaci\u00F3n';
-        const mensaje = 'Se crear\u00E1 un duplicado';
-        this.confirma.open(tipo, titulo, mensaje)
+        const titulo = 'Confirmaci\u00F3n';
+        const mensaje = 'Se crear\u00E1 un duplicado con las especificaciones se\u00F1aladas previamente';
+        Swal.fire({
+            title: "Productos de cotizaci\u00F3n",
+            text: "\u00BFDesea que la nueva cotizaci\u00F3n incluya todos los productos?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'S\u00ED',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.incluyeProducto = true;
+                this.confirma.open(tipo, titulo, mensaje)
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                this.incluyeProducto = false;
+                this.confirma.open(tipo, titulo, mensaje)
+            }
+        });
     }
 
     confirmaEliminarDireccionCotizacion(idDireccionCotizacion: number) {
@@ -827,6 +852,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
         const mensaje = 'Al autorizar la cotizaci\u00F3n el vendedor podr\u00E1 convertir el prospecto a cliente';
         this.confirma.open(tipo, titulo, mensaje);
     }
+    confirmaRemoverAutorizacionCotizacion() {
+        const tipo = 'removerAutorizacionCotizacion'
+        const titulo = 'Remover autorizaci\u00F3n';
+        const mensaje = 'El estatus de la cotizaci\u00F3n pasara a ser: "Activa"';
+        this.confirma.open(tipo, titulo, mensaje);
+    }
 
 
     //Respuesta de confirmacion
@@ -843,6 +874,9 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if ($event == 'autorizarCotizacion') {
             this.autorizarCotizacion();
         }
+        if ($event == 'removerAutorizacionCotizacion') {
+            this.removerAutorizacionCotizacion();
+        }
     }
 
 
@@ -852,7 +886,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if (this.model.idCotizacion != 0) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.post<number>(`${this.url}api/cotizacion/DuplicarCotizacion`, this.model.idCotizacion).subscribe(response => {
+                this.http.get<number>(`${this.url}api/cotizacion/DuplicarCotizacion/${this.incluyeProducto}/${this.model.idCotizacion}`).subscribe(response => {
                     this.idCotN = response;
                     if (this.resumenContainer) {
                         const container = this.resumenContainer.nativeElement;
@@ -923,7 +957,27 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Cotizaci\u00F3n ' + this.model.idCotizacion.toString() + ' autorizada');
-                    location.reload();
+                    this.actualizarDatos();
+                }, 300);
+                this.getDirs();
+            }, err => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.errorToast('Ocurri\u00F3 un error');
+                }, 300);
+                console.log(err);
+            });
+        }, 300);
+    }
+
+    removerAutorizacionCotizacion() {
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.post<boolean>(`${this.url}api/cotizacion/RemoverAutorizacionCotizacion`, this.model.idCotizacion).subscribe(response => {
+                this.detenerCarga();
+                setTimeout(() => {
+                    this.okToast('Cotizaci\u00F3n ' + this.model.idCotizacion.toString() + ' actualizada');
+                    this.actualizarDatos();
                 }, 300);
                 this.getDirs();
             }, err => {
@@ -976,7 +1030,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
     openCargaContratoWidget($event) {
         if ($event) {
-        location.reload();
+            this.actualizarDatos();
         }
     }
 }   

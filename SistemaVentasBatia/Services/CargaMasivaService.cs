@@ -304,6 +304,9 @@ namespace SistemaVentasBatia.Services
                             int cubreDescanso = Convert.ToInt32(worksheet.Cells[row, 21].Value);
                             bool escubreDescanso = (cubreDescanso != 0);
                             puesto.DiaCubreDescanso = escubreDescanso;
+                            int incluyeProducto = Convert.ToInt32(worksheet.Cells[row, 22].Value);
+                            bool incluyeProductos = (incluyeProducto != 0);
+                            puesto.IncluyeMaterial = incluyeProductos;
 
                             //LLenar con datos enduro
                             puesto.FechaAlta = DateTime.Now;

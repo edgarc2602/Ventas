@@ -1,0 +1,40 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="modal fade" id="modalLimpiezaAgregarIndustria" data-bs-backdrop="static">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Agregar tipo de industria</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div>
+                        <div class="row mb-3">
+                            <div>
+                                <div class="form-floating   ">
+                                    <input type="text" class="form-control" [(ngModel)]="industria" id="txtIndustriaAdd">
+                                    <label for="txtIndustriaAdd">Industria</label>
+                                </div>
+                                <span *ngIf="ferr('Industria')" class="text-danger">{{ terr('Industria') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" id="btnGuardaIndustria" (click)="guarda()" class="btn btn-outline-success" [disabled]="isLoading"><i class="fa-solid fa-save"></i> Guardar</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<toast-widget></toast-widget>
+<carga-widget></carga-widget>

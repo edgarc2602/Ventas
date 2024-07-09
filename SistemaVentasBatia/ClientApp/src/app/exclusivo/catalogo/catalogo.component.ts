@@ -17,6 +17,7 @@ import { ImmsJornada } from '../../models/immsjornada';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
+import { AgregarIndustriaWidget } from '../../widgets/agregarindustria/agregarindustria.widget';
 
 @Component({
     selector: 'catalogo-comp',
@@ -25,6 +26,7 @@ import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.wi
 })
 export class CatalogoComponent {
     @ViewChild(AgregarServicioWidget, { static: false }) addSer: AgregarServicioWidget;
+    @ViewChild(AgregarIndustriaWidget, { static: false }) addInd: AgregarIndustriaWidget;
     @ViewChild(ConfirmacionWidget, { static: false }) confirma: ConfirmacionWidget;
     @ViewChild(UsuarioAddWidget, { static: false }) addUsu: UsuarioAddWidget;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
@@ -63,6 +65,7 @@ export class CatalogoComponent {
     lclas: Catalogo[] = [];
     pues: Catalogo[] = [];
     sers: Catalogo[] = [];
+    industrias: Catalogo[] = [];
     tser: Catalogo[] = [];
     lusu: AgregarUsuario[];
     estados: Catalogo[];
@@ -97,6 +100,9 @@ export class CatalogoComponent {
         }, err => console.log(err));
         http.get<Catalogo[]>(`${url}api/catalogo/getservicio`).subscribe(response => {
             this.sers = response;
+        }, err => console.log(err));
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+            this.industrias = response;
         }, err => console.log(err));
         http.get<Catalogo[]>(`${url}api/catalogo/gettiposervicio`).subscribe(response => {
             this.tser = response;
@@ -164,6 +170,10 @@ export class CatalogoComponent {
         this.addSer.open();
     }
 
+    openInd() {
+        this.addInd.open();
+    }
+
     closeMat($event) {
         this.getMaterial();
     }
@@ -175,6 +185,15 @@ export class CatalogoComponent {
     getServicios() {
         this.http.get<Catalogo[]>(`${this.url}api/catalogo/getservicio`).subscribe(response => {
             this.sers = response;
+        }, err => console.log(err));
+    }
+
+    reloadIndustrias() {
+        this.getIndustrias();
+    }
+    getIndustrias() {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+            this.industrias = response;
         }, err => console.log(err));
     }
 
@@ -200,11 +219,48 @@ export class CatalogoComponent {
         this.iniciarCarga();
         setTimeout(() => {
             this.http.delete(`${this.url}api/producto/EliminarServicio/${id}`).subscribe(response => {
+                if (response == false) {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.errorToast('Este tipo de servicio ya fue agregado en una o mas cotizaciones, verifique');
+                    }, 300);
+                }
+                else {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.okToast('Servicio eliminado');
+                    }, 300);
+                    this.getServicios();
+                }
+                
+            }, err => {
                 this.detenerCarga();
                 setTimeout(() => {
-                    this.okToast('Servicio eliminado');
+                    this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
-                this.getServicios();
+                console.log(err);
+            });
+        }, 300);
+    }
+
+    deleteIndust(id) {
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.delete(`${this.url}api/producto/EliminarIndustria/${id}`).subscribe(response => {
+                if (response == false) {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.errorToast('Este tipo de industria ya esta regisrado en uno o mas prospectos, verifique');
+                    }, 300);
+                }
+                else {
+                    this.detenerCarga();
+                    setTimeout(() => {
+                        this.okToast('Industria eliminada');
+                    }, 300);
+                    this.getIndustrias();
+                }
+
             }, err => {
                 this.detenerCarga();
                 setTimeout(() => {

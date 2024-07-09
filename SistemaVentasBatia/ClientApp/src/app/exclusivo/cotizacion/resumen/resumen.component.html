@@ -354,8 +354,11 @@
                 <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4">
                     <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" [disabled]="isLoading" class="btn btn-outline-danger"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
                 </div>
-                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655" class="col-4 col-md-4">
+                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4">
                     <button *ngIf="model.idEstatus != 6 && model.idEstatus != 4" type="button" (click)="confirmaAutorizarCotizacion()" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-check fa-xl me-2"></i> Autorizar Cotización</button>
+                </div>
+                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4">
+                    <button *ngIf="model.idEstatus == 6 && model.idEstatus != 4" type="button" (click)="confirmaRemoverAutorizacionCotizacion()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-rotate-left fa-xl me-2"></i> Remover autorización</button>
                 </div>
             </div>
             <script src="script.js"></script>
@@ -504,7 +507,7 @@
                 <div class="row">
                     <div *ngFor="let dr of lsdir.direcciones" class="col-sm-12 col-md-6 mb-3">
                         <div class="card shadow-sm">
-                            <div class="card-header text-center plantilla text-white d-flex align-items-center justify-content-center"><h6 class="d-flex align-items-center justify-content-center">{{ dr.nombreSucursal }} ({{ dr.tipoInmueble }})</h6></div>
+                            <div class="card-header text-center plantilla text-white d-flex align-items-center justify-content-center h6">{{ dr.nombreSucursal }} ({{ dr.tipoInmueble }})</div>
                             <div class="card-body">
                                 <div class="row d-flex align-items-center">
                                     <div class="col-md-8 col-8">
@@ -691,10 +694,10 @@
             <hr />
             <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
-                    <div *ngIf="isLoadinglay" class="row-12 text-center">
-                        <i class="fas fa-spinner fa-spin fa-3x"></i>
-                        <h6 *ngIf="isLoadinglay">Subiendo Layout...</h6>
-                    </div>
+                    <button type="button" class="btn btn-outline-info text-start" style="display:none" (click)="openAgregarEliminarMaterialMasivo(); quitarFocoDeElementos2()">
+                        <i class="fa-solid fa-download"></i>
+                        Agregar o eliminar material de plantillas
+                    </button>
                     <button type="button" class="btn btn-outline-info" (click)="descargarLayoutPlantilla(); quitarFocoDeElementos2()">
                         <i class="fa-solid fa-download"></i>
                         Descargar layout

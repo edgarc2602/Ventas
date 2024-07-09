@@ -22,7 +22,9 @@ namespace SistemaVentasBatia.Services
         Task<bool> DeleteMaterial(int id);
         Task<bool> DeleteUniforme(int id);
         Task<bool> EliminarServicio(int id);
+        Task<bool> EliminarIndustria(int id);
         Task<bool> AgregarServicio(string servicio, int idPersonal);
+        Task<bool> AgregarIndustria(string industria, int idPersonal);
         Task<bool> DeleteHerramienta(int id);
         Task<bool> DeleteEquipo(int id);
         Task<IEnumerable<ProductoItemDTO>> GetMaterialPuesto(int idPuesto);
@@ -98,12 +100,32 @@ namespace SistemaVentasBatia.Services
 
         public async Task<bool> EliminarServicio(int id)
         {
+            bool result = await repo.VerificarServiciosExistentes(id);
+            if(result == true)
+            {
+                return false;
+            }
             return await repo.EliminarServicio(id);
+        }
+
+        public async Task<bool> EliminarIndustria(int id)
+        {
+            bool result = await repo.VerificarIndustriasExistentes(id);
+            if (result == true)
+            {
+                return false;
+            }
+            return await repo.EliminarIndustria(id);
         }
 
         public async Task<bool> AgregarServicio(string servicio, int idPersonal)
         {
             return await repo.AgregarServicio(servicio, idPersonal);
+        }
+        
+        public async Task<bool> AgregarIndustria(string industria, int idPersonal)
+        {
+            return await repo.AgregarIndustria(industria, idPersonal);
         }
 
         public async Task<IEnumerable<ProductoItemDTO>> GetEquipoPuesto(int idPuesto)

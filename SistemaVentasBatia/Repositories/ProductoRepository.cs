@@ -39,8 +39,14 @@ namespace SistemaVentasBatia.Repositories
         Task<IEnumerable<ProductoItem>> ObtenerHerramientaPuesto(int id);
 
         //SERVICIO
+        Task<bool> VerificarServiciosExistentes(int id);
         Task<bool> EliminarServicio(int id);
         Task<bool> AgregarServicio(string servicio, int idPersonal);
+
+        //INDUSTRIA
+        Task<bool> VerificarIndustriasExistentes(int id);
+        Task<bool> EliminarIndustria(int id);
+        Task<bool> AgregarIndustria(string industria, int idPersonal);
 
         //PRODUCTO
         Task<MaterialPuesto> ObtenerProductoDefault(int idProdcuto, int tipo, int idPuesto);
@@ -247,9 +253,77 @@ namespace SistemaVentasBatia.Repositories
             }
             return reg;
         }
+        public async Task<bool> VerificarServiciosExistentes(int id)
+        {
+            var query = @"SELECT COUNT (*)
+                        FROM (
+                        SELECT id_servicioextra_cotizacion
+                        FROM tb_cotiza_servicioextra a
+                        INNER JOIN tb_servicioextra b ON b.id_servicioextra = a.id_servicioextra
+                        WHERE a.id_servicioextra = @id
+                        ) AS CantidadServiciosExistentes";
+            bool result;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    int rows = await connection.ExecuteScalarAsync<int>(query, new { id });
+                    result = (rows > 0) ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
         public async Task<bool> EliminarServicio(int id)
         {
-            var query = @"DELETE FROM tb_servicioextra WHERE id_servicioextra = @id";
+            var query = @"UPDATE tb_servicioextra SET id_estatus = 2 WHERE id_servicioextra = @id";
+            bool reg;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteScalarAsync<int>(query, new { id });
+                }
+                reg = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return reg;
+        }
+        
+        public async Task<bool> VerificarIndustriasExistentes(int id)
+
+        {
+            var query = @"SELECT COUNT (*)
+                        FROM (
+                        SELECT a.id_prospecto
+                        FROM tb_prospecto a
+                        INNER JOIN tb_industria_tipo b ON b.id_tipoindustria = a.id_tipoindustria
+                        WHERE a.id_tipoindustria = @id
+                        ) AS CantidadIndustriasExistentes";
+            bool result;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    int rows = await connection.ExecuteScalarAsync<int>(query, new { id });
+                    result = (rows > 0) ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
+        }
+        public async Task<bool> EliminarIndustria(int id)
+        {
+            var query = @"UPDATE tb_industria_tipo SET id_estatus = 2 WHERE id_tipoindustria = @id";
             bool reg;
             try
             {
@@ -285,6 +359,25 @@ GETDATE(),
                 using (var connection = ctx.CreateConnection())
                 {
                     await connection.ExecuteScalarAsync<int>(query, new { servicio, idPersonal });
+                }
+                reg = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return reg;
+        }
+        
+        public async Task<bool> AgregarIndustria(string industria, int idPersonal)
+        {
+            var query = @"INSERT INTO tb_industria_tipo (descripcion,id_estatus,fecha_alta, id_personal) VALUES (@industria,1,GETDATE(), @idPersonal)";
+            bool reg;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteScalarAsync<int>(query, new { industria, idPersonal });
                 }
                 reg = true;
             }
