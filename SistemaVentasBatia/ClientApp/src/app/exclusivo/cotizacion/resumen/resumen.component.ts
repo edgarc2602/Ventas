@@ -73,6 +73,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     };
     dirs: ItemN[] = [];
     cotdirs: Catalogo[] = [];
+    indust: Catalogo[] = [];
     docs: ItemN[] = [];
     lsdir: ListaDireccion = {} as ListaDireccion;
     lspue: ListaPuesto = {} as ListaPuesto;
@@ -122,6 +123,9 @@ export class ResumenComponent implements OnInit, OnDestroy {
         };
         http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`).subscribe(response => {
             this.autorizacion = response;
+        }, err => console.log(err));
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+            this.indust = response;
         }, err => console.log(err));
     }
     ngOnInit(): void {

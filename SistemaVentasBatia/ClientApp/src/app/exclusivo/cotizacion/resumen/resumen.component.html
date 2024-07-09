@@ -405,14 +405,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 col-sm-12 mb-3">
+                <div class="col-md-3 col-sm-12 mb-3">
                     <div class="form-floating">
                         <input type="text" class="form-control" [(ngModel)]="modelpros.emailContacto" id="txtEmailContacto">
                         <label for="txtEmailContacto">Email Contacto</label>
                     </div>
                     <span *ngIf="ferr('EmailContacto')" class="text-danger">{{ terr('EmailContacto') }}</span>
                 </div>
-                <div class="col-md-4 col-sm-12 col-6 mb-3">
+                <div class="col-md-2 col-sm-12 col-6 mb-3">
                     <div class="form-floating">
                         <input type="text" class="form-control" [(ngModel)]="modelpros.numeroContacto" id="txtNumeroContacto">
                         <label for="txtNumeroContacto">Tel. Contacto</label>
@@ -425,6 +425,16 @@
                         <label for="txtExtension">Extensión</label>
                     </div>
                     <span *ngIf="ferr('ExtContacto')" class="text-danger">{{ terr('ExtContacto') }}</span>
+                </div>
+                <div class="col-sm-12 col-md-5 col-12 mb-3">
+                    <div class="form-floating">
+                        <select class="form-select" aria-label="IdPuesto" [(ngModel)]="modelpros.idTipoIndustria" id="slTipoIndustria">
+                            <option value=0>Seleccione...</option>
+                            <option *ngFor="let p of indust" [ngValue]="p.id">{{ p.descripcion }}</option>
+                        </select>
+                        <label for="slTipoIndustria">Tipo de industria</label>
+                    </div>
+                    <span *ngIf="ferr('IdTipoIndustria')" class="text-danger">{{ terr('IdTipoIndustria') }}</span>
                 </div>
             </div>
             <h6><span class="small text-muted mb-2">Documentación</span></h6>
