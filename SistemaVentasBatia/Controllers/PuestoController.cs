@@ -42,10 +42,10 @@ namespace SistemaVentasBatia.Controllers
             return operarioVM;
         }
 
-        [HttpPut]
-        public async Task<ActionResult<bool>> EditarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM)
+        [HttpPut("{incluyeMaterial}")]
+        public async Task<ActionResult<bool>> EditarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial)
         {
-            await _logic.ActualizarPuestoDireccionCotizacion(operarioVM);
+            await _logic.ActualizarPuestoDireccionCotizacion(operarioVM, incluyeMaterial);
 
             operarioVM.IdCotizacion = await _logic.ObtieneIdCotizacionPorOperario(operarioVM.IdPuestoDireccionCotizacion);
             // TempData["DescripcionAlerta"] = "Se guardó correctamente el operario.";

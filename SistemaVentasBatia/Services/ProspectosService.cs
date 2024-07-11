@@ -40,11 +40,13 @@ namespace SistemaVentasBatia.Services
     {
         private readonly IProspectosRepository prospectosRepo;
         private readonly IMapper mapper;
+        private readonly ICotizacionesRepository cotizacionRepo;
 
-        public ProspectosService(IProspectosRepository prospectosRepo, IMapper mapper)
+        public ProspectosService(IProspectosRepository prospectosRepo, IMapper mapper, ICotizacionesRepository cotizacionRepo)
         {
             this.prospectosRepo = prospectosRepo;
             this.mapper = mapper;
+            this.cotizacionRepo = cotizacionRepo;
         }
 
         public async Task CrearProspecto(ProspectoDTO prospectoVM)
@@ -233,6 +235,7 @@ namespace SistemaVentasBatia.Services
         {
             var puestoDireccionCotizacionViewModel = mapper.Map<PuestoDireccionCotizacionDTO>(await prospectosRepo.ObtenerPuestoDireccionCotizacionPorId(id));
 
+            puestoDireccionCotizacionViewModel.IncluyeMaterial = await cotizacionRepo.ValidarProductoExistentePuesto(id);
             return puestoDireccionCotizacionViewModel;
         }
 

@@ -51,6 +51,8 @@ namespace SistemaVentasBatia.Repositories
 
         //PUESTO
         Task EliminarOperario(int registroAEliminar);
+        Task EliminarProductosOperario(int registroAEliminar);
+        Task<bool> ValidarProductoExistentePuesto(int idPuestoDireccionCotizacion);
         Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacion operario);
         Task<int> InsertaPuestoDireccionCotizacion(PuestoDireccionCotizacion operario);
         Task<string> ObtenerDescripcionPuestoPorIdOperario(int id);
@@ -601,6 +603,26 @@ DELETE FROM tb_cotiza_servicioextra WHERE id_direccion_cotizacion = @idDireccion
         public async Task EliminarOperario(int registroAEliminar)
         {
             var query = @"DELETE FROM tb_puesto_direccion_cotizacion where id_puesto_direccioncotizacion = @registroAEliminar
+DELETE FROM tb_cotiza_material WHERE id_puesto_direccioncotizacion = @registroAEliminar
+DELETE FROM tb_cotiza_equipo WHERE id_puesto_direccioncotizacion = @registroAEliminar
+DELETE FROM tb_cotiza_uniforme WHERE id_puesto_direccioncotizacion = @registroAEliminar
+DELETE FROM tb_cotiza_herramienta WHERE id_puesto_direccioncotizacion = @registroAEliminar";
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    await connection.ExecuteAsync(query, new { registroAEliminar });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task EliminarProductosOperario(int registroAEliminar)
+        {
+            var query = @"
 DELETE FROM tb_cotiza_material WHERE id_puesto_direccioncotizacion = @registroAEliminar
 DELETE FROM tb_cotiza_equipo WHERE id_puesto_direccioncotizacion = @registroAEliminar
 DELETE FROM tb_cotiza_uniforme WHERE id_puesto_direccioncotizacion = @registroAEliminar
@@ -1240,7 +1262,7 @@ VALUES(
                             vacaciones = @Vacaciones, prima_vacacional = @PrimaVacacional, isn= @ISN, imss = @IMSS, total = @Total, id_tabulador = @IdTabulador, id_clase = @IdClase,
                             festivo = @Festivo, dia_festivo = @DiaFestivo, bonos = @Bonos, vales = @Vales, dia_domingo = @DiaDomingo, domingo = @Domingo,
                             dia_cubredescanso = @DiaCubreDescanso, cubredescanso = @CubreDescanso, hr_inicio_fin = @HrInicioFin, hr_fin_fin = @HrFinFin,
-                            dia_inicio_fin = @DiaInicioFin, dia_fin_fin = @DiaFinFin, dia_descanso = @DiaDescanso, horario_letra = @HorarioStr
+                            dia_inicio_fin = @DiaInicioFin, dia_fin_fin = @DiaFinFin, dia_descanso = @DiaDescanso, horario_letra = @HorarioStr,incluyeMaterial = @IncluyeMaterial
                         WHERE id_puesto_direccioncotizacion = @IdPuestoDireccionCotizacion";
 
             try
@@ -2171,5 +2193,30 @@ GETDATE(),
             }
             return result;
         }
+
+        public async Task<bool> ValidarProductoExistentePuesto(int idPuestoDireccionCotizacion)
+        {
+            var queryProductoExistente = @"
+        SELECT 
+            (SELECT COUNT(*) FROM tb_cotiza_material WHERE id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion) +
+            (SELECT COUNT(*) FROM tb_cotiza_uniforme WHERE id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion) +
+            (SELECT COUNT(*) FROM tb_cotiza_equipo WHERE id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion) +
+            (SELECT COUNT(*) FROM tb_cotiza_herramienta WHERE id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion) 
+            AS TotalCount;";
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    int rowCount = await connection.ExecuteScalarAsync<int>(queryProductoExistente, new { idPuestoDireccionCotizacion });
+
+                    return (rowCount > 0) ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al validar producto existente: " + ex.Message, ex);
+            }
+        }
+
     }
 }

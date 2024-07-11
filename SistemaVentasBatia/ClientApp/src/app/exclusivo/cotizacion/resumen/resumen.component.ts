@@ -419,6 +419,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     savePlan(event) {
         this.getPlan();
+        this.actualizarDatos();
     }
 
     getAllDirs() {

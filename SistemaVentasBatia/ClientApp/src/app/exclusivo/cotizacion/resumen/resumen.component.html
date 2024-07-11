@@ -704,9 +704,13 @@
             <hr />
             <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
-                    <button type="button" class="btn btn-outline-info text-start" style="display:none" (click)="openAgregarEliminarMaterialMasivo(); quitarFocoDeElementos2()">
+                    <button type="button" class="btn btn-outline-info text-start" style="display: none" (click)="openAgregarMaterialMasivo(); quitarFocoDeElementos2()">
                         <i class="fa-solid fa-download"></i>
-                        Agregar o eliminar material de plantillas
+                        Agregar material a plantillas
+                    </button>
+                    <button type="button" class="btn btn-outline-info text-start" style="display: none" (click)="openEliminarMaterialMasivo(); quitarFocoDeElementos2()">
+                        <i class="fa-solid fa-download"></i>
+                        Eliminar material de plantillas
                     </button>
                     <button type="button" class="btn btn-outline-info" (click)="descargarLayoutPlantilla(); quitarFocoDeElementos2()">
                         <i class="fa-solid fa-download"></i>

@@ -37,7 +37,7 @@ namespace SistemaVentasBatia.Services
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
         Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento);
         Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id);
-        Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM);
+        Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial);
         Task<Boolean> ActualizarSalarios(PuestoTabulador salarios);
         Task<int> ObtieneIdCotizacionPorOperario(int idPuestoDireccionCotizacion);
         Task<int> ObtieneIdDireccionCotizacionPorOperario(int idPuestoDireccionCotizacion);
@@ -878,7 +878,7 @@ namespace SistemaVentasBatia.Services
             return new ListaMaterialesCotizacionLimpiezaDTO();
         }
 
-        public async Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM)
+        public async Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial)
         {
             var operario = mapper.Map<PuestoDireccionCotizacion>(operarioVM);
 
@@ -887,6 +887,51 @@ namespace SistemaVentasBatia.Services
             operario.HorarioStr = await CrearHorarioLetra(operario);
 
             await cotizacionesRepo.ActualizarPuestoDireccionCotizacion(operario);
+            if (incluyeMaterial == false) //SI NO TENIA MATERIALES
+            {
+                if (operario.IncluyeMaterial == true)//PERO SE SELECCIONO ENTONCES AGREGAR NUEVOS
+                {
+                    var materialPuesto = await catalogosRepo.ObtenerMaterialDefaultPorPuesto(operario.IdPuesto);
+                    if (materialPuesto.Count > 0)
+                    {
+                        await CalcularPreciosMaterial(materialPuesto, operario);
+                    }
+
+                    var uniformePuesto = (await catalogosRepo.ObtenerUniformeDefaultPorPuesto(operario.IdPuesto)).ToList();
+                    if (uniformePuesto.Count > 0)
+                    {
+                        await CalcularPreciosMaterial(uniformePuesto, operario);
+                    }
+
+                    var equipoPuesto = (await catalogosRepo.ObtenerEquipoDefaultPorPuesto(operario.IdPuesto)).ToList();
+                    if (equipoPuesto.Count > 0)
+                    {
+                        await CalcularPreciosMaterial(equipoPuesto, operario);
+                    }
+
+                    var herraPuesto = (await catalogosRepo.ObtenerHerramientaDefaultPorPuesto(operario.IdPuesto)).ToList();
+                    if (herraPuesto.Count > 0)
+                    {
+                        await CalcularPreciosMaterial(herraPuesto, operario);
+                    }
+                    Enums.Turno turno = (Enums.Turno)operario.IdTurno;
+                    await InsertarMaterialesDefaultOperarios(materialPuesto, uniformePuesto, equipoPuesto, herraPuesto, operario.IdPuestoDireccionCotizacion, operario.IdCotizacion, operario.IdDireccionCotizacion, turno, operario.IdPersonal, operario.DiasEvento);
+                }
+                else
+                {
+                }
+            }
+            else 
+            {
+                if(incluyeMaterial == true) //Si TENIA MATERIALES
+                {
+                    if(operario.IncluyeMaterial == false) // PERO SE QUITARON ENTONCES ELIMINAR MATERIALES
+                    {
+                        await cotizacionesRepo.EliminarProductosOperario(operario.IdPuestoDireccionCotizacion);
+                    }
+                }
+
+            }
         }
 
         public async Task<int> ObtieneIdCotizacionPorOperario(int idPuestoDireccionCotizacion)

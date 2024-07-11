@@ -39,6 +39,7 @@ export class PuestoWidget {
     puesto: string = '';
     diasEvento: number = 0;
     sueldoDiario: number = 0;
+    existeProducto: boolean = false;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
@@ -75,6 +76,7 @@ export class PuestoWidget {
 
     existe(id: number) {
         this.http.get<PuestoCotiza>(`${this.url}api/puesto/${id}`).subscribe(response => {
+            this.existeProducto = response.incluyeMaterial;
             this.model = response;
             this.model.hrInicio = this.model.hrInicio.substring(0, 5);
             this.model.hrFin = this.model.hrFin.substring(0, 5);
@@ -133,7 +135,9 @@ export class PuestoWidget {
                         }
                     });
                 } else {
-                    this.http.put<boolean>(`${this.url}api/puesto`, this.model).subscribe(response => {
+                    this.model.idDireccionCotizacion = this.idD;
+                    this.model.idCotizacion = this.idC;
+                    this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}`, this.model).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Puesto actualizado');
