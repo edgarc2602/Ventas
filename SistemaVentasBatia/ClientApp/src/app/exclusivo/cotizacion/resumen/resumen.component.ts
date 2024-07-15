@@ -31,6 +31,8 @@ import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
 import { SubirContratoClienteWidget } from '../../../widgets/subircontratocliente/subircontratocliente.widget';
 import { ClienteWidget } from '../../../widgets/cliente/cliente.widget';
+import { ProductoGeneralWidget } from '../../../widgets/productogeneral/productogeneral.widget';
+import { MaterialPuesto } from '../../../models/materialpuesto';
 
 
 @Component({
@@ -53,6 +55,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild(ConfirmacionWidget, { static: false }) confirma: ConfirmacionWidget;
     @ViewChild(ClienteWidget, { static: false }) clienteWidget: ClienteWidget;
     @ViewChild(SubirContratoClienteWidget, { static: false }) subirCont: SubirContratoClienteWidget;
+    @ViewChild(ProductoGeneralWidget, { static: false }) productoG: ProductoGeneralWidget;
     @ViewChild('resumen', { static: false }) resumen: ElementRef;
     @ViewChild('pdfCanvas', { static: true }) pdfCanvas: ElementRef;
     @ViewChild('fileInputDir', { static: false }) fileInputDir: ElementRef<HTMLInputElement>;
@@ -487,13 +490,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         }, err => console.log(err));
     }
 
-    addPlan(id: number, tb: number, nombreSucursal: string) {
-        this.selDireccion = id;
-        this.pueAdd.open(this.model.idCotizacion, id, tb, 0, nombreSucursal,"", this.model.diasEvento);
+    addPlan(idDireccionCotizacion: number,nombreSucursal: string) {
+        this.selDireccion = idDireccionCotizacion;
+        this.pueAdd.openAdd(this.model.idCotizacion, idDireccionCotizacion, nombreSucursal, this.model.diasEvento);
     }
 
-    updPlan(id: number, tb: number, nombreSucursal: string, puesto: string) {
-        this.pueAdd.open(this.model.idCotizacion, this.selDireccion, tb, id, nombreSucursal, puesto, this.model.diasEvento);
+    updPlan(idPuesto: number, nombreSucursal: string) {
+        this.pueAdd.openEdit(this.model.idCotizacion, idPuesto,  nombreSucursal, this.model.diasEvento);
     }
 
     removePlan(id: number) {
@@ -1037,5 +1040,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if ($event) {
             this.actualizarDatos();
         }
+    }
+
+    openProductoMasivo(tipo: number) {
+        this.productoG.open(tipo, this.model.idServicio);
+    }
+
+    returnProductoGeneral($event) {
+        this.actualizarDatos();
     }
 }   

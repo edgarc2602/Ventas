@@ -587,7 +587,7 @@
                             </h6>
                             <span class="badge plantilla text-white">{{ dir.ciudad }}, {{ dir.estado }}</span>
                         </a>
-                        <a *ngIf="model.idEstatus == 1" (click)="addPlan(dir.idDireccionCotizacion, dir.idTabulador, dir.nombreSucursal)" class="btn btn-outline-primary col-md-2 col-2 agrega-puesto d-flex align-items-center justify-content-center" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
+                        <a *ngIf="model.idEstatus == 1" (click)="addPlan(dir.idDireccionCotizacion, dir.nombreSucursal)" class="btn btn-outline-primary col-md-2 col-2 agrega-puesto d-flex align-items-center justify-content-center" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
                             <i class="fa-solid fa-user-plus fa-2x" style="color: white;"></i>
                         </a>
                     </div>
@@ -685,7 +685,7 @@
                                                     <a class="btn btn-sm btn-outline-danger mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'herramienta', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Herramienta">
                                                         <i class="fa-solid fa-hammer fa-2x"></i>
                                                     </a>
-                                                    <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.idTabulador, dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Editar">
+                                                    <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.nombreSucursal)" data-bs-toggle="tooltip" title="Editar">
                                                         <i class="fa-solid fa-pencil fa-2x"></i>
                                                     </a>
                                                     <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-danger mb-1" (click)="confirmaEliminarPuestoDireccionCotizacion(pt.idPuestoDireccionCotizacion)" title="Descartar">
@@ -704,13 +704,13 @@
             <hr />
             <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
-                    <button type="button" class="btn btn-outline-info text-start" style="display: none" (click)="openAgregarMaterialMasivo(); quitarFocoDeElementos2()">
+                    <button type="button" class="btn btn-outline-info text-start" style="display:none" (click)="openProductoMasivo(0); quitarFocoDeElementos2()">
                         <i class="fa-solid fa-download"></i>
-                        Agregar material a plantillas
+                        Agregar producto a plantillas
                     </button>
-                    <button type="button" class="btn btn-outline-info text-start" style="display: none" (click)="openEliminarMaterialMasivo(); quitarFocoDeElementos2()">
+                    <button type="button" class="btn btn-outline-info text-start" style="display:none" (click)="openProductoMasivo(1); quitarFocoDeElementos2()">
                         <i class="fa-solid fa-download"></i>
-                        Eliminar material de plantillas
+                        Eliminar producto de plantillas
                     </button>
                     <button type="button" class="btn btn-outline-info" (click)="descargarLayoutPlantilla(); quitarFocoDeElementos2()">
                         <i class="fa-solid fa-download"></i>
@@ -1076,4 +1076,5 @@
 <carga-widget></carga-widget>
 <confirmacion-widget (confirmaEvent)="confirmacionEvent($event)"></confirmacion-widget>
 <subircontratocliente-widget (subirContratoEvent)="subirContratoEvent($event)"></subircontratocliente-widget>
+<productogeneral-widget> (prodgEvent)="returnProductoGeneral($event)"</productogeneral-widget>
 

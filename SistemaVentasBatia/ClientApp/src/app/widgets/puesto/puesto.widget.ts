@@ -36,7 +36,6 @@ export class PuestoWidget {
     validacion: boolean = false;
     isLoading: boolean = false;
     nombreSucursal: string = '';
-    puesto: string = '';
     diasEvento: number = 0;
     sueldoDiario: number = 0;
     existeProducto: boolean = false;
@@ -66,6 +65,7 @@ export class PuestoWidget {
     }
 
     nuevo() {
+        this.lerr = {};
         let dt: Date = new Date();
         this.model = {
             idPuestoDireccionCotizacion: 0, idPuesto: 0, idDireccionCotizacion: this.idD, jornada: 0, idTurno: 0, hrInicio: '', hrFin: '', diaInicio: 0, diaFin: 0, fechaAlta: dt.toISOString(), sueldo: 0, vacaciones: 0, primaVacacional: 0,
@@ -82,6 +82,7 @@ export class PuestoWidget {
             this.model.hrFin = this.model.hrFin.substring(0, 5);
             this.model.hrInicioFin = this.model.hrInicioFin.substring(0, 5);
             this.model.hrFinFin = this.model.hrFinFin.substring(0, 5);
+            this.model.idCotizacion = this.idC;
             this.chgSalariodos();
             //this.sueldoDiario = this.model.sueldo / 30.4167;
         }, err => {
@@ -113,8 +114,6 @@ export class PuestoWidget {
             this.iniciarCarga();
             setTimeout(() => {
                 if (this.model.idPuestoDireccionCotizacion == 0) {
-                    this.model.idDireccionCotizacion = this.idD;
-                    this.model.idCotizacion = this.idC;
                     this.http.post<PuestoCotiza>(`${this.url}api/puesto`, this.model).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
@@ -135,8 +134,6 @@ export class PuestoWidget {
                         }
                     });
                 } else {
-                    this.model.idDireccionCotizacion = this.idD;
-                    this.model.idCotizacion = this.idC;
                     this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}`, this.model).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
@@ -279,22 +276,27 @@ export class PuestoWidget {
         return msg;
     }
 
-    open(cot: number, dir: number, tab: number, pue: number, nombreSucursal?: string, puesto?: string, diasEvento?: number) {
-        if (diasEvento != 0) { this.diasEvento = diasEvento; }
-        else { this.diasEvento == 0 }
+    openAdd(idCotizacion: number, idDireccionCotizacion: number, nombreSucursal?: string, diasEvento?: number) {
+        this.diasEvento = diasEvento
         this.nombreSucursal = nombreSucursal;
-        this.puesto = puesto;
-        this.lerr = {};
-        this.idC = cot;
-        this.idD = dir;
-        this.idP = pue;
-        this.idT = tab;
-        if (pue == 0) {
-            this.nuevo();
-            this.getZonaDefault(this.idD);
-        } else {
-            this.existe(this.idP);
-        }
+        this.idC = idCotizacion;
+        this.idD = idDireccionCotizacion;
+        this.idP = 0;
+        this.nuevo();
+
+        this.getZonaDefault(this.idD);
+        let docModal = document.getElementById('modalAgregarOperario');
+        let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
+        myModal.show();
+    }
+
+    openEdit(idCotizacion: number, idPuesto: number, nombreSucursal: string, diasEvento: number) {
+        this.diasEvento = diasEvento
+        this.nombreSucursal = nombreSucursal;
+        this.idC = idCotizacion;
+        this.idP = idPuesto;
+        this.existe(this.idP);
+
         let docModal = document.getElementById('modalAgregarOperario');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();

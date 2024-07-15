@@ -44,7 +44,7 @@ export class ProductoWidget implements OnChanges {
         else {
             this.model = {
                 idMaterialPuesto: 0, claveProducto: '', idPuesto: this.idP,
-                precio: 0, cantidad: 0, idFrecuencia: 0, idPersonal: this.sinU.idPersonal
+                precio: 0, cantidad: 0, idFrecuencia: 0, idPersonal: this.sinU.idPersonal,descripcion: '', frecuencia: ''
             };
             this.idSer = 2;
             this.getProductos();

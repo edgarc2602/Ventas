@@ -42,6 +42,7 @@ import { CargaWidget } from './widgets/carga/carga.widget';
 import { SubirContratoClienteWidget } from './widgets/subircontratocliente/subircontratocliente.widget';
 import { ClienteWidget } from './widgets/cliente/cliente.widget';
 import { AgregarIndustriaWidget } from './widgets/agregarindustria/agregarindustria.widget';
+import { ProductoGeneralWidget } from './widgets/productogeneral/productogeneral.widget';
 
 @NgModule({
     declarations: [
@@ -79,7 +80,8 @@ import { AgregarIndustriaWidget } from './widgets/agregarindustria/agregarindust
         CargaWidget,
         SubirContratoClienteWidget,
         ClienteWidget,
-        AgregarIndustriaWidget
+        AgregarIndustriaWidget,
+        ProductoGeneralWidget
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

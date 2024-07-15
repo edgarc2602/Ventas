@@ -4,8 +4,8 @@
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 *ngIf="puesto == ''" class="modal-title">Agregar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
-                    <h4 *ngIf="puesto != ''" class="modal-title">Editar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
+                    <h4 *ngIf="idP == 0" class="modal-title">Agregar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
+                    <h4 *ngIf="idP != 0" class="modal-title">Editar puesto <small class="text-muted text-capitalize">{{ nombreSucursal }}</small></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <!-- Modal body -->
