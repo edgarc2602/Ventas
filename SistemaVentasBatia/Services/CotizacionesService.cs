@@ -342,6 +342,10 @@ namespace SistemaVentasBatia.Services
                         break;
                 }
             }
+            if (operariosModel.DiasEvento != 0)
+            {
+                imss = (imss / 30.4167M) * operariosModel.DiasEvento;
+            }
             operariosModel.IMSS = imss;
 
             operariosModel.ISN = (
@@ -921,11 +925,11 @@ namespace SistemaVentasBatia.Services
                 {
                 }
             }
-            else 
+            else
             {
-                if(incluyeMaterial == true) //Si TENIA MATERIALES
+                if (incluyeMaterial == true) //Si TENIA MATERIALES
                 {
-                    if(operario.IncluyeMaterial == false) // PERO SE QUITARON ENTONCES ELIMINAR MATERIALES
+                    if (operario.IncluyeMaterial == false) // PERO SE QUITARON ENTONCES ELIMINAR MATERIALES
                     {
                         await cotizacionesRepo.EliminarProductosOperario(operario.IdPuestoDireccionCotizacion);
                     }
@@ -1110,7 +1114,7 @@ namespace SistemaVentasBatia.Services
         {
             return await cotizacionesRepo.AutorizarCotizacion(idCotizacion);
         }
-        
+
         public async Task<bool> RemoverAutorizacionCotizacion(int idCotizacion)
         {
             return await cotizacionesRepo.RemoverAutorizacionCotizacion(idCotizacion);
