@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
 import { StoreUser } from 'src/app/stores/StoreUser';
+import * as Highcharts from 'highcharts';
+import HC_exporting from 'highcharts/modules/exporting';
+import HC_accessibility from 'highcharts/modules/accessibility';
+
+// Inicializa los módulos
+HC_exporting(Highcharts);
+HC_accessibility(Highcharts);
 
 @Component({
     selector: 'exclusivo',

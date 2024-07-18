@@ -163,5 +163,16 @@ namespace SistemaVentasBatia.Controllers
             return await logic.GetProductoProveedorByIdEstado(listaproducto, idEstado, idFamilia);
         }
 
+        [HttpPost("[action]")]
+        public async Task<ActionResult<bool>> AgregarProductosGeneral(ProductosGeneralDTO data)
+        {
+            return await logic.AgregarProductosGeneral(data);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<ActionResult<bool>> EliminarProductosGeneral(ProductosGeneralDTO data)
+        {
+            return await logic.EliminarProductosGeneral(data);
+        }
     }
 }

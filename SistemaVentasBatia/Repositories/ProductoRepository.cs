@@ -56,6 +56,8 @@ namespace SistemaVentasBatia.Repositories
         Task<string> GetProveedorByIdEstado(int idEstado);
         Task<int> GetIdProveedorByIdEstado(int idEstado);
         Task<List<ProductoFamilia>> GetFamiliasByIdEstado(int idEstado);
+
+        Task<List<PuestoDireccionCotizacion>> ObtenerPlantillasCotizacion(int idCotizacion);
     }
 
     public class ProductoRepository : IProductoRepository
@@ -673,6 +675,27 @@ ORDER BY
                 throw ex;
             }
             return familias;
+        }
+
+        public async Task<List<PuestoDireccionCotizacion>> ObtenerPlantillasCotizacion(int idCotizacion)
+        {
+            string query = @"SELECT 
+a.id_puesto_direccioncotizacion IdPuestoDireccionCotizacion,
+a.id_direccion_cotizacion IdDireccionCotizacion
+FROM tb_puesto_direccion_cotizacion a 
+INNER JOIN tb_direccion_cotizacion b ON b.id_direccion_cotizacion = a.id_direccion_cotizacion
+WHERE b.id_cotizacion = @idCotizacion";
+            var plantillas = new List<PuestoDireccionCotizacion>();
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                plantillas = (await connection.QueryAsync<PuestoDireccionCotizacion>(query, new { idCotizacion })).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return plantillas;
         }
     }
 }

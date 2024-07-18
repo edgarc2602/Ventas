@@ -552,12 +552,12 @@
                         <i class="fas fa-spinner fa-spin fa-2x"></i>
                     </div>
                     <button type="button" class="btn btn-outline-info" (click)="descargarLayoutDirectorio(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download"></i>
+                        <i class="fa-solid fa-download fa-xl me-2"></i>
                         Descargar layout
                     </button>
                     <input type="file" (change)="onFileChangeDir($event)" #fileInputDir style="display:none" accept=".xlsx,.xls" id="loutDir">
                     <button type="button" class="btn btn-outline-secondary" (click)="fileInputDir.click(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-upload"></i>
+                        <i class="fa-solid fa-upload fa-xl me-2"></i>
                         Cargar layout
                     </button>
                     <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
@@ -704,21 +704,21 @@
             <hr />
             <div *ngIf="model.idEstatus == 1" class="row text-end">
                 <div class="col-12 col-sm-12 col-md-12">
-                    <button type="button" class="btn btn-outline-info text-start" style="display:none" (click)="openProductoMasivo(0); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download"></i>
-                        Agregar producto a plantillas
+                    <button type="button" class="btn btn-outline-primary text-start" (click)="openProductoMasivo(0); quitarFocoDeElementos2()">
+                        <i class="fa-solid fa-plus fa-1x me-1"></i><i class="fa-solid fa-list fa-xl me-2"></i>
+                        Agregar productos
                     </button>
-                    <button type="button" class="btn btn-outline-info text-start" style="display:none" (click)="openProductoMasivo(1); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download"></i>
-                        Eliminar producto de plantillas
+                    <button type="button" class="btn btn-outline-danger text-start" (click)="openProductoMasivo(1); quitarFocoDeElementos2()">
+                        <i class="fa-solid fa-times fa-1x me-1"></i><i class="fa-solid fa-list fa-xl me-2"></i>
+                        Eliminar productos
                     </button>
                     <button type="button" class="btn btn-outline-info" (click)="descargarLayoutPlantilla(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download"></i>
+                        <i class="fa-solid fa-download fa-xl me-2"></i>
                         Descargar layout
                     </button>
                     <input type="file" (change)="onFileChangePlan($event)" #fileInputPlan style="display:none" accept=".xlsx,.xls" id="loutPlan">
                     <button type="button" class="btn btn-outline-secondary" (click)="fileInputPlan.click(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-upload"></i>
+                        <i class="fa-solid fa-upload fa-xl me-2"></i>
                         Cargar layout
                     </button>
 
@@ -861,12 +861,12 @@
                         <h6 *ngIf="isLoadinglay">Subiendo Layout...</h6>
                     </div>
                     <button type="button" class="btn btn-outline-info" (click)="descargarLayoutProductoExtra(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download"></i>
+                        <i class="fa-solid fa-download fa-xl me-2"></i>
                         Descargar layout para {{ selTipo}}
                     </button>
                     <input type="file" (change)="onFileChangeProductoExtra($event)" #fileInputProductoExtra style="display:none" accept=".xlsx,.xls" id="loutProductoExtra">
                     <button type="button" class="btn btn-outline-secondary" (click)="fileInputProductoExtra.click(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-upload"></i>
+                        <i class="fa-solid fa-upload fa-xl me-2"></i>
                         Cargar layout
                     </button>
 

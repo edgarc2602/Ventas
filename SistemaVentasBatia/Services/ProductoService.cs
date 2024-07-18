@@ -37,17 +37,21 @@ namespace SistemaVentasBatia.Services
         Task ActualizarEquipo(MaterialPuestoDTO producto);
         Task ActualizarUniforme(MaterialPuestoDTO producto);
         Task<ActionResult<ListaProductoDTO>> GetProductoProveedorByIdEstado(ListaProductoDTO listaProducto, int idEstado, int idFamilia);
+        Task<bool> AgregarProductosGeneral( ProductosGeneralDTO productos);
+        Task<bool> EliminarProductosGeneral( ProductosGeneralDTO productos);
     }
 
     public class ProductoService : IProductoService
     {
         private readonly IProductoRepository repo;
         private readonly IMapper mapper;
+        private readonly IMaterialService materialService;
 
-        public ProductoService(IProductoRepository repository, IMapper imapper)
+        public ProductoService(IProductoRepository repository, IMapper imapper, IMaterialService imaterialService)
         {
             repo = repository;
             mapper = imapper;
+            materialService = imaterialService;
         }
 
         public async Task CreateEquipo(MaterialPuestoDTO equi)
@@ -202,6 +206,60 @@ namespace SistemaVentasBatia.Services
                 listaProducto.Productos = new List<ProductoPrecioEstadoDTO>();
             }
             return listaProducto;
+        }
+
+        public async Task<bool> AgregarProductosGeneral(ProductosGeneralDTO productos)
+        {
+            var lista = await repo.ObtenerPlantillasCotizacion(productos.IdCotizacion);
+            foreach(var dir in lista)
+            {
+                foreach(var mat in productos.Material)
+                {
+                    mat.IdDireccionCotizacion = dir.IdDireccionCotizacion;
+                    mat.IdPuestoDireccionCotizacion = dir.IdPuestoDireccionCotizacion;
+                    await materialService.AgregarMaterialOperario(mat);
+                }
+                foreach (var uni in productos.Uniforme)
+                {
+                    uni.IdDireccionCotizacion = dir.IdDireccionCotizacion;
+                    uni.IdPuestoDireccionCotizacion = dir.IdPuestoDireccionCotizacion;
+                    await materialService.AgregarUniformeOperario(uni);
+                }
+                foreach (var equ in productos.Equipo)
+                {
+                    equ.IdDireccionCotizacion = dir.IdDireccionCotizacion;
+                    equ.IdPuestoDireccionCotizacion = dir.IdPuestoDireccionCotizacion;
+                    await materialService.AgregarEquipoOperario(equ);
+                }
+                foreach (var herr in productos.Herramienta)
+                {
+                    herr.IdDireccionCotizacion = dir.IdDireccionCotizacion;
+                    herr.IdPuestoDireccionCotizacion = dir.IdPuestoDireccionCotizacion;
+                    await materialService.AgregarHerramientaOperario(herr);
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> EliminarProductosGeneral(ProductosGeneralDTO productos)
+        {
+            foreach (var mat in productos.Material)
+            {
+                await materialService.EliminarProductoPlantillas(mat.ClaveProducto, productos.IdCotizacion, "material");
+            }
+            foreach (var uni in productos.Uniforme)
+            {
+                await materialService.EliminarProductoPlantillas(uni.ClaveProducto, productos.IdCotizacion, "uniforme");
+            }
+            foreach (var equ in productos.Equipo)
+            {
+                await materialService.EliminarProductoPlantillas(equ.ClaveProducto, productos.IdCotizacion, "equipo");
+            }
+            foreach (var herr in productos.Herramienta)
+            {
+                await materialService.EliminarProductoPlantillas(herr.ClaveProducto, productos.IdCotizacion, "herramienta");
+            }
+            return true;
         }
     }
 }

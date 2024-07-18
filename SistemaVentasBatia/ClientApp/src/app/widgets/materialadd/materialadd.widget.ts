@@ -65,7 +65,7 @@ export class MaterialAddWidget {
         this.model = {
             idMaterialCotizacion: 0, claveProducto: '', idCotizacion: this.idC,
             idPuestoDireccionCotizacion: id, precioUnitario: 0, cantidad: 0, idFrecuencia: 0,
-            total: 0, fechaAlta: fec.toISOString(), idDireccionCotizacion: this.idD, idPersonal: this.sinU.idPersonal, edit: this.edit, diasEvento: 0
+            total: 0, fechaAlta: fec.toISOString(), idDireccionCotizacion: this.idD, idPersonal: this.sinU.idPersonal, edit: this.edit, diasEvento: 0,descripcion: '', frecuencia: ''
         };
         this.lerr = {};
     }

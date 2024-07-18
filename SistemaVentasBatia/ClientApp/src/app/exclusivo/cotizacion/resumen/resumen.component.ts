@@ -824,10 +824,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         Swal.fire({
             title: "Productos de cotizaci\u00F3n",
             text: "\u00BFDesea que la nueva cotizaci\u00F3n incluya todos los productos?",
-            icon: 'warning',
+            icon: 'info',
             showCancelButton: true,
             confirmButtonText: 'S\u00ED',
-            cancelButtonText: 'No'
+            cancelButtonText: 'No',
+            customClass: {
+                popup: 'custom-swal-width'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 this.incluyeProducto = true;
@@ -1043,7 +1046,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     openProductoMasivo(tipo: number) {
-        this.productoG.open(tipo, this.model.idServicio);
+        this.productoG.open(tipo, this.model.idServicio, this.model.idCotizacion);
     }
 
     returnProductoGeneral($event) {

@@ -40,6 +40,7 @@ namespace SistemaVentasBatia.Services
         Task ActualizarServicioCotizacion(ServicioCotizacion servicio);
         Task EliminarServicioCotizacion(int id);
         Task<ListaServiciosCotizacionLimpiezaDTO> ObtenerListaServiciosCotizacion(int idCotizacion, int idDireccionCotizacion);
+        Task<bool> EliminarProductoPlantillas(string clave, int idCotizacion, string tipo);
     }
 
     public class MaterialService : IMaterialService
@@ -471,6 +472,11 @@ namespace SistemaVentasBatia.Services
         public async Task EliminarHerramientaCotizacion(int idHerramienta)
         {
             await _materialRepo.EliminarHerramientaCotizacion(idHerramienta);
+        }
+
+        public async Task<bool> EliminarProductoPlantillas(string clave, int idCotizacion, string tipo)
+        {
+            return await _materialRepo.EliminarProductoPlantillas(clave, idCotizacion, tipo);
         }
     }
 }

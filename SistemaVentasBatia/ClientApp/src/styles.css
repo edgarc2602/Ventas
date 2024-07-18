@@ -6,6 +6,40 @@
 a {
     color: #0366d6;
 }
+.custom-swal-width {
+    width: 600px; /* Ajusta este valor según tus necesidades */
+}
+
+.custom-swal-title {
+    font-family: 'Arial', sans-serif; /* Cambia la familia de fuentes */
+    font-size: 24px; /* Cambia el tamaño de la fuente */
+    font-weight: bold; /* Cambia el peso de la fuente */
+    color: #333; /* Cambia el color del texto */
+}
+
+.custom-swal-content {
+    font-family: 'Verdana', sans-serif; /* Cambia la familia de fuentes */
+    font-size: 18px; /* Cambia el tamaño de la fuente */
+    color: #666; /* Cambia el color del texto */
+}
+
+.custom-swal-confirm-button, .custom-swal-cancel-button {
+    font-family: 'Tahoma', sans-serif; /* Cambia la familia de fuentes */
+    font-size: 16px; /* Cambia el tamaño de la fuente */
+    padding: 10px 20px; /* Ajusta el relleno de los botones */
+}
+
+.custom-swal-confirm-button {
+    background-color: #3085d6; /* Cambia el color de fondo del botón de confirmación */
+    color: #fff; /* Cambia el color del texto del botón de confirmación */
+}
+
+.custom-swal-cancel-button {
+    background-color: #d33; /* Cambia el color de fondo del botón de cancelación */
+    color: #fff; /* Cambia el color del texto del botón de cancelación */
+}
+
+
 /* CAMBIO PARA QUE SE NOTE EL NUEVO HASH DE PROD ASDASDASDADWDDADADWDAWDAWDWADDAWD*/
 .btn-primary {
     color: #fff;
@@ -679,7 +713,6 @@ table {
     left: 0;
     backdrop-filter: blur(2px);
     animation: blurAnimation 0.8s;
-    z-index: -1;
 }
 
 @keyframes blurAnimation {

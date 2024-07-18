@@ -12,4 +12,6 @@ export interface Material {
     idPersonal: number;
     edit: number;
     diasEvento: number;
+    descripcion: string;
+    frecuencia: string;
 }

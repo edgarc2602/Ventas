@@ -27,6 +27,7 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> ObtenerCatalogoEmpresas();
         Task<List<MaterialPuesto>> ObtenerMaterialDefaultPorPuesto(int idPuesto);
         Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByFamilia(Servicio idServicio, int[] familia);
+        Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByGrupoElimina(string grupo, int idCotizacion);
         Task<IEnumerable<MaterialPuesto>> ObtenerHerramientaDefaultPorPuesto(int idPuesto);
         Task<IEnumerable<MaterialPuesto>> ObtenerEquipoDefaultPorPuesto(int idPuesto);
         Task<IEnumerable<MaterialPuesto>> ObtenerUniformeDefaultPorPuesto(int idPuesto);
@@ -68,7 +69,7 @@ namespace SistemaVentasBatia.Repositories
         public async Task<List<Catalogo>> ObtenerServicios()
         {
             var query = @"SELECT id_servicioextra Id, descripcion Descripcion  FROM tb_servicioextra";
-                          
+
 
             var servicios = new List<Catalogo>();
 
@@ -100,7 +101,7 @@ WHERE es.id_estado = @idEstado ORDER BY m.Municipio";
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    municipios = (await connection.QueryAsync<Catalogo>(query, new { idEstado})).ToList();
+                    municipios = (await connection.QueryAsync<Catalogo>(query, new { idEstado })).ToList();
                 }
             }
             catch (Exception ex)
@@ -135,7 +136,7 @@ WHERE es.id_estado = @idEstado ORDER BY m.Municipio";
                           WHERE id_status = 1 AND cotizador = 1 ORDER BY Descripcion";
 
             var puestos = new List<Catalogo>();
-                
+
             try
             {
                 using (var connection = ctx.CreateConnection())
@@ -323,7 +324,7 @@ FROM tb_clase";
         }
         public async Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByFamilia(Servicio idServicio, int[] familia)
         {
-            if((int)idServicio == 4 || (int)idServicio == 5)
+            if ((int)idServicio == 4 || (int)idServicio == 5)
             {
                 idServicio = Servicio.Limpieza;
             }
@@ -347,6 +348,47 @@ FROM tb_clase";
             }
             return puestosCotizacion;
         }
+
+        public async Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByGrupoElimina(string grupo, int idCotizacion)
+        {
+            string table = @"";
+            switch (grupo.ToLower())
+            {
+                case "material":
+                    table = "tb_cotiza_material";
+                    break;
+                case "uniforme":
+                    table = "tb_cotiza_uniforme";
+                    break;
+                case "equipo":
+                    table = "tb_cotiza_equipo";
+                    break;
+                case "herramienta":
+                    table = "tb_cotiza_herramienta";
+                    break;
+                default:
+                    break;
+            }
+            var query = @"SELECT DISTINCT a.clave_producto Clave, b.descripcion Descripcion
+                        FROM " + table + @" a
+                        INNER JOIN tb_producto b ON b.clave = a.clave_producto
+                        WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 
+                        ORDER BY b.descripcion";
+            var productos = new List<Catalogo>();
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    productos = (await connection.QueryAsync<Catalogo>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return productos;
+        }
+
         public async Task<IEnumerable<MaterialPuesto>> ObtenerHerramientaDefaultPorPuesto(int idPuesto)
         {
             var query = @"SELECT id_herramienta_puesto IdMaterialPuesto, clave ClaveProducto, id_puesto IdPuesto, cantidad Cantidad, id_frecuencia IdFrecuencia
@@ -424,10 +466,10 @@ FROM tb_clase";
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    familias = (await connection.QueryAsync<Catalogo>(query, new { idServicio})).ToList();
+                    familias = (await connection.QueryAsync<Catalogo>(query, new { idServicio })).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -467,12 +509,12 @@ FROM tb_clase";
 
             try
             {
-                 using ( var connection = ctx.CreateConnection())
+                using (var connection = ctx.CreateConnection())
                 {
                     vendedores = (await connection.QueryAsync<Catalogo>(query)).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

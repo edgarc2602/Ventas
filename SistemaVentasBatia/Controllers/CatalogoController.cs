@@ -87,6 +87,12 @@ namespace SistemaVentasBatia.Controllers
             return await logic.ObtenerCatalogoProductosGrupo(servicio, grupo);
         }
 
+        [HttpGet("[action]/{grupo}/{idCotizacion}")]
+        public async Task<IEnumerable<CatalogoDTO>> GetProductoByGrupoElimina(string grupo, int idCotizacion)
+        {
+            return await logic.ObtenerCatalogoProductosGrupoElimina(grupo, idCotizacion);
+        }
+
         [HttpGet("[action]")]
         public IEnumerable<Item<int>> GetDia()
         {
