@@ -497,15 +497,16 @@ namespace SistemaVentasBatia.Services
                         foreach (var m in mP)
                         {
                             wsMP.Cells[rowMP, 1].Value = m.IdMaterialCotizacion;
-                            wsMP.Cells[rowMP, 2].Value = m.ClaveProducto;
-                            wsMP.Cells[rowMP, 3].Value = m.IdDireccionCotizacion;
-                            wsMP.Cells[rowMP, 4].Value = m.IdPuestoDireccionCotizacion;
-                            wsMP.Cells[rowMP, 5].Value = m.PrecioUnitario;
-                            wsMP.Cells[rowMP, 6].Value = m.Cantidad;
-                            wsMP.Cells[rowMP, 7].Value = m.Total;
-                            wsMP.Cells[rowMP, 8].Value = m.ImporteMensual;
-                            wsMP.Cells[rowMP, 9].Value = m.IdFrecuencia;
-                            wsMP.Cells[rowMP, 10].Value = m.FechaAlta.ToString("dd-MM-yyyy");
+                            wsMP.Cells[rowMP, 2].Value = m.IdDireccionCotizacion;
+                            wsMP.Cells[rowMP, 3].Value = m.IdPuestoDireccionCotizacion;
+                            wsMP.Cells[rowMP, 4].Value = m.ClaveProducto;
+                            wsMP.Cells[rowMP, 5].Value = m.DescripcionMaterial;
+                            wsMP.Cells[rowMP, 6].Value = m.PrecioUnitario;
+                            wsMP.Cells[rowMP, 7].Value = m.Cantidad;
+                            wsMP.Cells[rowMP, 8].Value = m.Total;
+                            wsMP.Cells[rowMP, 9].Value = m.ImporteMensual;
+                            wsMP.Cells[rowMP, 10].Value = m.IdFrecuencia;
+                            wsMP.Cells[rowMP, 11].Value = m.FechaAlta.ToString("dd-MM-yyyy");
                             rowMP++;
                         }
                     }
@@ -519,15 +520,16 @@ namespace SistemaVentasBatia.Services
                         foreach (var u in uP)
                         {
                             wsUP.Cells[rowUP, 1].Value = u.IdMaterialCotizacion;
-                            wsUP.Cells[rowUP, 2].Value = u.ClaveProducto;
-                            wsUP.Cells[rowUP, 3].Value = u.IdDireccionCotizacion;
-                            wsUP.Cells[rowUP, 4].Value = u.IdPuestoDireccionCotizacion;
-                            wsUP.Cells[rowUP, 5].Value = u.PrecioUnitario;
-                            wsUP.Cells[rowUP, 6].Value = u.Cantidad;
-                            wsUP.Cells[rowUP, 7].Value = u.Total;
-                            wsUP.Cells[rowUP, 8].Value = u.ImporteMensual;
-                            wsUP.Cells[rowUP, 9].Value = u.IdFrecuencia;
-                            wsUP.Cells[rowUP, 10].Value = u.FechaAlta.ToString("dd-MM-yyyy");
+                            wsUP.Cells[rowUP, 2].Value = u.IdDireccionCotizacion;
+                            wsUP.Cells[rowUP, 3].Value = u.IdPuestoDireccionCotizacion;
+                            wsUP.Cells[rowUP, 4].Value = u.ClaveProducto;
+                            wsUP.Cells[rowUP, 5].Value = u.DescripcionMaterial;
+                            wsUP.Cells[rowUP, 6].Value = u.PrecioUnitario;
+                            wsUP.Cells[rowUP, 7].Value = u.Cantidad;
+                            wsUP.Cells[rowUP, 8].Value = u.Total;
+                            wsUP.Cells[rowUP, 9].Value = u.ImporteMensual;
+                            wsUP.Cells[rowUP, 10].Value = u.IdFrecuencia;
+                            wsUP.Cells[rowUP, 11].Value = u.FechaAlta.ToString("dd-MM-yyyy");
                             rowUP++;
                         }
                     }
@@ -542,14 +544,15 @@ namespace SistemaVentasBatia.Services
                         {
                             wsEP.Cells[rowEP, 1].Value = e.IdMaterialCotizacion;
                             wsEP.Cells[rowEP, 2].Value = e.ClaveProducto;
-                            wsEP.Cells[rowEP, 3].Value = e.IdDireccionCotizacion;
-                            wsEP.Cells[rowEP, 4].Value = e.IdPuestoDireccionCotizacion;
-                            wsEP.Cells[rowEP, 5].Value = e.PrecioUnitario;
-                            wsEP.Cells[rowEP, 6].Value = e.Cantidad;
-                            wsEP.Cells[rowEP, 7].Value = e.Total;
-                            wsEP.Cells[rowEP, 8].Value = e.ImporteMensual;
-                            wsEP.Cells[rowEP, 9].Value = e.IdFrecuencia;
-                            wsEP.Cells[rowEP, 10].Value = e.FechaAlta.ToString("dd-MM-yyyy");
+                            wsEP.Cells[rowEP, 3].Value = e.DescripcionMaterial;
+                            wsEP.Cells[rowEP, 4].Value = e.IdDireccionCotizacion;
+                            wsEP.Cells[rowEP, 5].Value = e.IdPuestoDireccionCotizacion;
+                            wsEP.Cells[rowEP, 6].Value = e.PrecioUnitario;
+                            wsEP.Cells[rowEP, 7].Value = e.Cantidad;
+                            wsEP.Cells[rowEP, 8].Value = e.Total;
+                            wsEP.Cells[rowEP, 9].Value = e.ImporteMensual;
+                            wsEP.Cells[rowEP, 10].Value = e.IdFrecuencia;
+                            wsEP.Cells[rowEP, 11].Value = e.FechaAlta.ToString("dd-MM-yyyy");
                             rowEP++;
                         }
                     }
@@ -564,14 +567,15 @@ namespace SistemaVentasBatia.Services
                         {
                             wsHP.Cells[rowHP, 1].Value = h.IdMaterialCotizacion;
                             wsHP.Cells[rowHP, 2].Value = h.ClaveProducto;
-                            wsHP.Cells[rowHP, 3].Value = h.IdDireccionCotizacion;
-                            wsHP.Cells[rowHP, 4].Value = h.IdPuestoDireccionCotizacion;
-                            wsHP.Cells[rowHP, 5].Value = h.PrecioUnitario;
-                            wsHP.Cells[rowHP, 6].Value = h.Cantidad;
-                            wsHP.Cells[rowHP, 7].Value = h.Total;
-                            wsHP.Cells[rowHP, 8].Value = h.ImporteMensual;
-                            wsHP.Cells[rowHP, 9].Value = h.IdFrecuencia;
-                            wsHP.Cells[rowHP, 10].Value = h.FechaAlta.ToString("dd-MM-yyyy");
+                            wsHP.Cells[rowHP, 3].Value = h.DescripcionMaterial;
+                            wsHP.Cells[rowHP, 4].Value = h.IdDireccionCotizacion;
+                            wsHP.Cells[rowHP, 5].Value = h.IdPuestoDireccionCotizacion;
+                            wsHP.Cells[rowHP, 6].Value = h.PrecioUnitario;
+                            wsHP.Cells[rowHP, 7].Value = h.Cantidad;
+                            wsHP.Cells[rowHP, 8].Value = h.Total;
+                            wsHP.Cells[rowHP, 9].Value = h.ImporteMensual;
+                            wsHP.Cells[rowHP, 10].Value = h.IdFrecuencia;
+                            wsHP.Cells[rowHP, 11].Value = h.FechaAlta.ToString("dd-MM-yyyy");
                             rowHP++;
                         }
                     }
@@ -585,14 +589,15 @@ namespace SistemaVentasBatia.Services
                         foreach (var m in mE)
                         {
                             wsME.Cells[rowME, 1].Value = m.IdMaterialCotizacion;
-                            wsME.Cells[rowME, 2].Value = m.ClaveProducto;
-                            wsME.Cells[rowME, 3].Value = m.IdDireccionCotizacion;
-                            wsME.Cells[rowME, 4].Value = m.PrecioUnitario;
-                            wsME.Cells[rowME, 5].Value = m.Cantidad;
-                            wsME.Cells[rowME, 6].Value = m.Total;
-                            wsME.Cells[rowME, 7].Value = m.ImporteMensual;
-                            wsME.Cells[rowME, 8].Value = m.IdFrecuencia;
-                            wsME.Cells[rowME, 9].Value = m.FechaAlta.ToString("dd-MM-yyyy");
+                            wsME.Cells[rowME, 2].Value = m.IdDireccionCotizacion;
+                            wsME.Cells[rowME, 3].Value = m.ClaveProducto;
+                            wsME.Cells[rowME, 4].Value = m.DescripcionMaterial;
+                            wsME.Cells[rowME, 5].Value = m.PrecioUnitario;
+                            wsME.Cells[rowME, 6].Value = m.Cantidad;
+                            wsME.Cells[rowME, 7].Value = m.Total;
+                            wsME.Cells[rowME, 8].Value = m.ImporteMensual;
+                            wsME.Cells[rowME, 9].Value = m.IdFrecuencia;
+                            wsME.Cells[rowME, 10].Value = m.FechaAlta.ToString("dd-MM-yyyy");
                             rowME++;
                         }
                     }
@@ -606,14 +611,15 @@ namespace SistemaVentasBatia.Services
                         foreach (var u in uE)
                         {
                             wsUE.Cells[rowUE, 1].Value = u.IdMaterialCotizacion;
-                            wsUE.Cells[rowUE, 2].Value = u.ClaveProducto;
-                            wsUE.Cells[rowUE, 3].Value = u.IdDireccionCotizacion;
-                            wsUE.Cells[rowUE, 4].Value = u.PrecioUnitario;
-                            wsUE.Cells[rowUE, 5].Value = u.Cantidad;
-                            wsUE.Cells[rowUE, 6].Value = u.Total;
-                            wsUE.Cells[rowUE, 7].Value = u.ImporteMensual;
-                            wsUE.Cells[rowUE, 8].Value = u.IdFrecuencia;
-                            wsUE.Cells[rowUE, 9].Value = u.FechaAlta.ToString("dd-MM-yyyy");
+                            wsUE.Cells[rowUE, 2].Value = u.IdDireccionCotizacion;
+                            wsUE.Cells[rowUE, 3].Value = u.ClaveProducto;
+                            wsUE.Cells[rowUE, 4].Value = u.DescripcionMaterial;
+                            wsUE.Cells[rowUE, 5].Value = u.PrecioUnitario;
+                            wsUE.Cells[rowUE, 6].Value = u.Cantidad;
+                            wsUE.Cells[rowUE, 7].Value = u.Total;
+                            wsUE.Cells[rowUE, 8].Value = u.ImporteMensual;
+                            wsUE.Cells[rowUE, 9].Value = u.IdFrecuencia;
+                            wsUE.Cells[rowUE, 10].Value = u.FechaAlta.ToString("dd-MM-yyyy");
                             rowUE++;
                         }
                     }
@@ -627,14 +633,15 @@ namespace SistemaVentasBatia.Services
                         foreach (var e in eE)
                         {
                             wsEE.Cells[rowEE, 1].Value = e.IdMaterialCotizacion;
-                            wsEE.Cells[rowEE, 2].Value = e.ClaveProducto;
-                            wsEE.Cells[rowEE, 3].Value = e.IdDireccionCotizacion;
-                            wsEE.Cells[rowEE, 4].Value = e.PrecioUnitario;
-                            wsEE.Cells[rowEE, 5].Value = e.Cantidad;
-                            wsEE.Cells[rowEE, 6].Value = e.Total;
-                            wsEE.Cells[rowEE, 7].Value = e.ImporteMensual;
-                            wsEE.Cells[rowEE, 8].Value = e.IdFrecuencia;
-                            wsEE.Cells[rowEE, 9].Value = e.FechaAlta.ToString("dd-MM-yyyy");
+                            wsEE.Cells[rowEE, 2].Value = e.IdDireccionCotizacion;
+                            wsEE.Cells[rowEE, 3].Value = e.ClaveProducto;
+                            wsEE.Cells[rowEE, 4].Value = e.DescripcionMaterial;
+                            wsEE.Cells[rowEE, 5].Value = e.PrecioUnitario;
+                            wsEE.Cells[rowEE, 6].Value = e.Cantidad;
+                            wsEE.Cells[rowEE, 7].Value = e.Total;
+                            wsEE.Cells[rowEE, 8].Value = e.ImporteMensual;
+                            wsEE.Cells[rowEE, 9].Value = e.IdFrecuencia;
+                            wsEE.Cells[rowEE, 10].Value = e.FechaAlta.ToString("dd-MM-yyyy");
                             rowEE++;
                         }
                     }
@@ -648,14 +655,15 @@ namespace SistemaVentasBatia.Services
                         foreach (var h in hE)
                         {
                             wsHE.Cells[rowHE, 1].Value = h.IdMaterialCotizacion;
-                            wsHE.Cells[rowHE, 2].Value = h.ClaveProducto;
-                            wsHE.Cells[rowHE, 3].Value = h.IdDireccionCotizacion;
-                            wsHE.Cells[rowHE, 4].Value = h.PrecioUnitario;
-                            wsHE.Cells[rowHE, 5].Value = h.Cantidad;
-                            wsHE.Cells[rowHE, 6].Value = h.Total;
-                            wsHE.Cells[rowHE, 7].Value = h.ImporteMensual;
-                            wsHE.Cells[rowHE, 8].Value = h.IdFrecuencia;
-                            wsHE.Cells[rowHE, 9].Value = h.FechaAlta.ToString("dd-MM-yyyy");
+                            wsHE.Cells[rowHE, 2].Value = h.IdDireccionCotizacion;
+                            wsHE.Cells[rowHE, 3].Value = h.ClaveProducto;
+                            wsHE.Cells[rowHE, 4].Value = h.DescripcionMaterial;
+                            wsHE.Cells[rowHE, 5].Value = h.PrecioUnitario;
+                            wsHE.Cells[rowHE, 6].Value = h.Cantidad;
+                            wsHE.Cells[rowHE, 7].Value = h.Total;
+                            wsHE.Cells[rowHE, 8].Value = h.ImporteMensual;
+                            wsHE.Cells[rowHE, 9].Value = h.IdFrecuencia;
+                            wsHE.Cells[rowHE, 10].Value = h.FechaAlta.ToString("dd-MM-yyyy");
                             rowHE++;
                         }
                     }
@@ -669,8 +677,8 @@ namespace SistemaVentasBatia.Services
                         foreach (var s in sE)
                         {
                             wsSE.Cells[rowSE, 1].Value = s.IdMaterialCotizacion;
-                            wsSE.Cells[rowSE, 2].Value = s.ClaveProducto;
-                            wsSE.Cells[rowSE, 3].Value = s.IdDireccionCotizacion;
+                            wsSE.Cells[rowSE, 2].Value = s.IdDireccionCotizacion;
+                            wsSE.Cells[rowSE, 3].Value = s.ClaveProducto;
                             wsSE.Cells[rowSE, 4].Value = s.PrecioUnitario;
                             wsSE.Cells[rowSE, 5].Value = s.Cantidad;
                             wsSE.Cells[rowSE, 6].Value = s.Total;

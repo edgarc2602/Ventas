@@ -417,6 +417,7 @@ WHERE b.id_cotizacion = @idCotizacion";
 SELECT 
 a.id_material_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -427,7 +428,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_material a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
@@ -449,6 +451,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
 SELECT 
 a.id_uniforme_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -459,7 +462,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_uniforme a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
@@ -481,6 +485,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
 SELECT 
 a.id_equipo_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -491,7 +496,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_equipo a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
@@ -513,6 +519,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
 SELECT 
 a.id_herramienta_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -523,7 +530,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_herramienta a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
@@ -545,6 +553,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
 SELECT 
 a.id_material_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -555,7 +564,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_material a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
@@ -577,6 +587,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 OR
 SELECT 
 a.id_uniforme_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -587,7 +598,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_uniforme a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
@@ -609,6 +621,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 OR
 SELECT 
 a.id_equipo_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -619,7 +632,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_equipo a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
@@ -641,6 +655,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 OR
 SELECT 
 a.id_herramienta_cotizacion IdMaterialCotizacion,
 a.clave_producto ClaveProducto,
+b.descripcion DescripcionMaterial,
 a.id_direccion_cotizacion IdDireccionCotizacion,
 a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
 a.precio_unitario PrecioUnitario,
@@ -651,7 +666,8 @@ a.id_frecuencia IdFrecuencia,
 a.fecha_alta FechaAlta,
 a.id_personal IdPersonal
 FROM tb_cotiza_herramienta a
-WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+INNER JOIN tb_producto b ON b.clave = a.clave_producto
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY b.descripcion";
             var material = new List<MaterialCotizacion>();
             try
             {
