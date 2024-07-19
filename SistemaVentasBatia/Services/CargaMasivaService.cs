@@ -543,10 +543,10 @@ namespace SistemaVentasBatia.Services
                         foreach (var e in eP)
                         {
                             wsEP.Cells[rowEP, 1].Value = e.IdMaterialCotizacion;
-                            wsEP.Cells[rowEP, 2].Value = e.ClaveProducto;
-                            wsEP.Cells[rowEP, 3].Value = e.DescripcionMaterial;
-                            wsEP.Cells[rowEP, 4].Value = e.IdDireccionCotizacion;
-                            wsEP.Cells[rowEP, 5].Value = e.IdPuestoDireccionCotizacion;
+                            wsEP.Cells[rowEP, 2].Value = e.IdDireccionCotizacion;
+                            wsEP.Cells[rowEP, 3].Value = e.IdPuestoDireccionCotizacion;
+                            wsEP.Cells[rowEP, 4].Value = e.ClaveProducto;
+                            wsEP.Cells[rowEP, 5].Value = e.DescripcionMaterial;
                             wsEP.Cells[rowEP, 6].Value = e.PrecioUnitario;
                             wsEP.Cells[rowEP, 7].Value = e.Cantidad;
                             wsEP.Cells[rowEP, 8].Value = e.Total;
@@ -566,10 +566,10 @@ namespace SistemaVentasBatia.Services
                         foreach (var h in hP)
                         {
                             wsHP.Cells[rowHP, 1].Value = h.IdMaterialCotizacion;
-                            wsHP.Cells[rowHP, 2].Value = h.ClaveProducto;
-                            wsHP.Cells[rowHP, 3].Value = h.DescripcionMaterial;
-                            wsHP.Cells[rowHP, 4].Value = h.IdDireccionCotizacion;
-                            wsHP.Cells[rowHP, 5].Value = h.IdPuestoDireccionCotizacion;
+                            wsHP.Cells[rowHP, 2].Value = h.IdDireccionCotizacion;
+                            wsHP.Cells[rowHP, 3].Value = h.IdPuestoDireccionCotizacion;
+                            wsHP.Cells[rowHP, 4].Value = h.ClaveProducto;
+                            wsHP.Cells[rowHP, 5].Value = h.DescripcionMaterial;
                             wsHP.Cells[rowHP, 6].Value = h.PrecioUnitario;
                             wsHP.Cells[rowHP, 7].Value = h.Cantidad;
                             wsHP.Cells[rowHP, 8].Value = h.Total;

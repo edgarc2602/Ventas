@@ -395,7 +395,7 @@ INNER JOIN tb_puesto d ON d.id_puesto = a.id_puesto
 INNER JOIN tb_clase e ON e.id_clase = a.id_clase
 INNER JOIN tb_jornada f ON f.id_jornada = a.jornada
 INNER JOIN tb_turno g ON g.id_turno = a.id_turno
-WHERE b.id_cotizacion = @idCotizacion";
+WHERE b.id_cotizacion = @idCotizacion ORDER BY a.id_direccion_cotizacion,d.descripcion";
             var plantillas = new List<Plantilla>();
             try
             {
