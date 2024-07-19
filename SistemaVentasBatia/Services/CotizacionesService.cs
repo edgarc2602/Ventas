@@ -275,7 +275,7 @@ namespace SistemaVentasBatia.Services
             operariosModel.Vacaciones = ((operariosModel.Sueldo / 30.4167m) * 12m) / 12m;
             if (operariosModel.DiaFestivo == true)
             {
-                operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 7) / 12m);
+                operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 8) / 12m);
             }
             else
             {

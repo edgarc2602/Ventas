@@ -356,115 +356,330 @@ namespace SistemaVentasBatia.Services
                 using (var package = new ExcelPackage(stream))
                 {
                     //Resumen
-                    var resumenCotizacion = _logicCot.ObtenerResumenCotizacionLimpieza(idCotizacion);
-                    var resumen = await _repo.ObtenerResumenCotizacionLimpieza(idCotizacion);
-                    var cotizacion = await _repo.ObtenerCotizacion(idCotizacion);
+                    var rC = await _logicCot.ObtenerResumenCotizacionLimpieza(idCotizacion);
                     decimal? poliza = await _repo.ObtenerPolizaCotizacion(idCotizacion);
-                    if (resumen != null)
+                    if (rC != null)
                     {
                         var wsRes = package.Workbook.Worksheets[0];
                         wsRes.Cells[1, 1].Value = "Salario";
-                        wsRes.Cells[1, 2].Value = "$" + resumen.Salario.ToString("0.00");
+                        wsRes.Cells[1, 2].Value = "$" + rC.Salario.ToString("N2");
                         wsRes.Cells[2, 1].Value = "Prestaciones";
-                        wsRes.Cells[2, 2].Value = "$" + resumen.Provisiones.ToString("0.00");
+                        wsRes.Cells[2, 2].Value = "$" + rC.Provisiones.ToString("N2");
                         wsRes.Cells[3, 1].Value = "Carga Social";
-                        wsRes.Cells[3, 2].Value = "$" + resumen.CargaSocial.ToString("0.00");
+                        wsRes.Cells[3, 2].Value = "$" + rC.CargaSocial.ToString("N2");
                         wsRes.Cells[4, 1].Value = "Provisiones";
-                        wsRes.Cells[4, 2].Value = "$" + resumen.Prestaciones.ToString("0.00");
+                        wsRes.Cells[4, 2].Value = "$" + rC.Prestaciones.ToString("N2");
                         wsRes.Cells[5, 1].Value = "Material";
-                        wsRes.Cells[5, 2].Value = "$" + resumen.Material.ToString("0.00");
+                        wsRes.Cells[5, 2].Value = "$" + rC.Material.ToString("N2");
                         wsRes.Cells[6, 1].Value = "Uniforme";
-                        wsRes.Cells[6, 2].Value = "$" + resumen.Uniforme.ToString("0.00");
+                        wsRes.Cells[6, 2].Value = "$" + rC.Uniforme.ToString("N2");
                         wsRes.Cells[7, 1].Value = "Equipo";
-                        wsRes.Cells[7, 2].Value = "$" + resumen.Equipo.ToString("0.00");
+                        wsRes.Cells[7, 2].Value = "$" + rC.Equipo.ToString("N2");
                         wsRes.Cells[8, 1].Value = "Herramienta";
-                        wsRes.Cells[8, 2].Value = "$" + resumen.Herramienta.ToString("0.00");
+                        wsRes.Cells[8, 2].Value = "$" + rC.Herramienta.ToString("N2");
                         wsRes.Cells[9, 1].Value = "Servicio";
-                        wsRes.Cells[9, 2].Value = "$" + resumen.Servicio.ToString("0.00");
-                        wsRes.Cells[10, 1].Value = "Total costo directo";
-                        wsRes.Cells[10, 2].Value = "$" + (resumen.Salario + resumen.Provisiones + resumen.CargaSocial + resumen.Prestaciones + resumen.Material + resumen.Uniforme + resumen.Equipo + resumen.Herramienta + resumen.Servicio).ToString("0.00");
-
-                        wsRes.Cells[11, 1].Value = "Costo Indirecto (%) ";
-                        wsRes.Cells[11, 2].Value = "$" + resumen.Indirecto.ToString("0.00");
-                        wsRes.Cells[11, 1].Value = "Total CI (%) ";
-                        wsRes.Cells[11, 2].Value = "$" + (resumen.Salario + resumen.Provisiones + resumen.CargaSocial + resumen.Prestaciones + resumen.Material + resumen.Uniforme + resumen.Equipo + resumen.Herramienta + resumen.Servicio + resumen.Indirecto).ToString("0.00");
-                        wsRes.Cells[10, 1].Value = "Póliza de Cumplimiento (%) ";
-                        wsRes.Cells[2, 4].Value = "Utilidad (%) ";
-                        wsRes.Cells[2, 5].Value = "$" + resumen.Utilidad.ToString("0.00");
-                        wsRes.Cells[2, 4].Value = "Total U(%) ";
-                        wsRes.Cells[2, 5].Value = "$" + (resumen.Salario + resumen.Provisiones + resumen.CargaSocial + resumen.Prestaciones + resumen.Material + resumen.Uniforme + resumen.Equipo + resumen.Herramienta + resumen.Servicio + resumen.Indirecto + resumen.Utilidad).ToString("0.00");
-                        wsRes.Cells[10, 2].Value = "$" + poliza.Value.ToString("0.00");
-                        wsRes.Cells[3, 4].Value = "Comisión Sobre Venta (%) ";
-                        wsRes.Cells[3, 5].Value = "$" + resumen.ComisionSV.ToString("0.00");
-                        wsRes.Cells[3, 4].Value = "Total CSV (%) ";
-                        wsRes.Cells[3, 5].Value = "$" + (resumen.Salario + resumen.Provisiones + resumen.CargaSocial + resumen.Prestaciones + resumen.Material + resumen.Uniforme + resumen.Equipo + resumen.Herramienta + resumen.Servicio + resumen.Indirecto + resumen.Utilidad + resumen.ComisionSV).ToString("0.00");
-                        wsRes.Cells[4, 4].Value = "Comisión Externa (%) ";
-                        wsRes.Cells[4, 5].Value = "$" + cotizacion.ComisionExt.ToString("0.00");
-                        wsRes.Cells[11, 1].Value = "Total";
-                        wsRes.Cells[11, 2].Value = "$" + resumen.Total.ToString("0.00");
+                        wsRes.Cells[9, 2].Value = "$" + rC.Servicio.ToString("N2");
+                        
+                        wsRes.Cells[10, 1].Value = "Total Costo Directo";
+                        wsRes.Cells[10, 2].Value = "$" + rC.SubTotal.ToString("N2");
+                        wsRes.Cells[11, 1].Value = "Costo Indirecto (" + rC.IndirectoPor + "%)";
+                        wsRes.Cells[11, 2].Value = "$" + rC.Indirecto.ToString("N2");
+                        wsRes.Cells[12, 1].Value = "Total CI ";
+                        wsRes.Cells[12, 2].Value = "$" + (rC.SubTotal + rC.Indirecto).ToString("N2");
+                        wsRes.Cells[13, 1].Value = "Utilidad (" + rC.UtilidadPor + "%)";
+                        wsRes.Cells[13, 2].Value = "$" + rC.Utilidad.ToString("N2");
+                        wsRes.Cells[14, 1].Value = "Total U";
+                        wsRes.Cells[14, 2].Value = "$" + (rC.SubTotal+ rC.Indirecto + rC.Utilidad).ToString("N2");
+                        wsRes.Cells[15, 1].Value = "Comisión Sobre Venta (" + rC.CsvPor + "%)";
+                        wsRes.Cells[15, 2].Value = "$" + rC.ComisionSV.ToString("N2");
+                        wsRes.Cells[16, 1].Value = "Total CSV";
+                        wsRes.Cells[16, 2].Value = "$" + (rC.SubTotal + rC.Indirecto + rC.Utilidad + rC.ComisionSV).ToString("N2");
+                        wsRes.Cells[17, 1].Value = "Comisión Externa (" + rC.ComisionExtPor + "%)";
+                        wsRes.Cells[17, 2].Value = "$" + rC.ComisionExt.ToString("N2");
+                        wsRes.Cells[18, 1].Value = "Total CE";
+                        wsRes.Cells[18, 2].Value = "$" + (rC.SubTotal + rC.Indirecto + rC.Utilidad + rC.ComisionSV + rC.ComisionExt).ToString("N2");
+                        wsRes.Cells[19, 1].Value = "Póliza de Cumplimiento";
+                        wsRes.Cells[19, 2].Value = "$" + poliza.Value.ToString("N2");
+                        wsRes.Cells[20, 1].Value = "Total";
+                        wsRes.Cells[20, 2].Value = "$" + (rC.SubTotal + rC.Indirecto + rC.Utilidad + rC.ComisionSV + rC.ComisionExt + poliza.Value).ToString("N2");
 
 
 
                     }
 
                     //Prospecto
-                    var prospecto = new Prospecto();
-                    prospecto = await _repo.ObtenerProspecto(idCotizacion);
-                    if (prospecto != null)
+                    var pro = await _repo.ObtenerProspecto(idCotizacion);
+                    if (pro != null)
                     {
-                        var wsPros = package.Workbook.Worksheets[1];
-                        wsPros.Cells[1, 1].Value = "Id Prospecto";
-                        wsPros.Cells[1, 2].Value = prospecto.IdProspecto;
-                        wsPros.Cells[2, 1].Value = "Nombre comercial";
-                        wsPros.Cells[2, 2].Value = prospecto.NombreComercial;
-                        wsPros.Cells[3, 1].Value = "Razón Social";
-                        wsPros.Cells[3, 2].Value = prospecto.RazonSocial;
-                        wsPros.Cells[4, 1].Value = "RFC";
-                        wsPros.Cells[4, 2].Value = prospecto.Rfc;
-                        wsPros.Cells[5, 1].Value = "Domicilio Fiscal";
-                        wsPros.Cells[5, 2].Value = prospecto.DomicilioFiscal;
-                        wsPros.Cells[6, 1].Value = "Nombre Contacto";
-                        wsPros.Cells[6, 2].Value = prospecto.NombreContacto;
-                        wsPros.Cells[7, 1].Value = "Email Contacto";
-                        wsPros.Cells[7, 2].Value = prospecto.EmailContacto;
-                        wsPros.Cells[8, 1].Value = "Numero Contacto";
-                        wsPros.Cells[8, 2].Value = prospecto.NumeroContacto;
-                        wsPros.Cells[9, 1].Value = "Ext Contacto";
-                        wsPros.Cells[9, 2].Value = prospecto.ExtContacto;
-
+                        var wsPro = package.Workbook.Worksheets[1];
+                        wsPro.Cells[1, 1].Value = "Id Prospecto";
+                        wsPro.Cells[1, 2].Value = pro.IdProspecto;
+                        wsPro.Cells[2, 1].Value = "Nombre comercial";
+                        wsPro.Cells[2, 2].Value = pro.NombreComercial;
+                        wsPro.Cells[3, 1].Value = "Razón Social";
+                        wsPro.Cells[3, 2].Value = pro.RazonSocial;
+                        wsPro.Cells[4, 1].Value = "RFC";
+                        wsPro.Cells[4, 2].Value = pro.Rfc;
+                        wsPro.Cells[5, 1].Value = "Domicilio Fiscal";
+                        wsPro.Cells[5, 2].Value = pro.DomicilioFiscal;
+                        wsPro.Cells[6, 1].Value = "Nombre Contacto";
+                        wsPro.Cells[6, 2].Value = pro.NombreContacto;
+                        wsPro.Cells[7, 1].Value = "Email Contacto";
+                        wsPro.Cells[7, 2].Value = pro.EmailContacto;
+                        wsPro.Cells[8, 1].Value = "Numero Contacto";
+                        wsPro.Cells[8, 2].Value = pro.NumeroContacto;
+                        wsPro.Cells[9, 1].Value = "Ext Contacto";
+                        wsPro.Cells[9, 2].Value = pro.ExtContacto;
                     }
+
                     //Directorio
-                    var directorios = new List<Direccion>();
-                    directorios = await _repo.ObtenerDirecciones(idCotizacion);
-                    if (directorios.Count != 0)
+                    var dir = await _repo.ObtenerDirecciones(idCotizacion);
+                    if (dir.Count != 0)
                     {
-                        var wsDir = package.Workbook.Worksheets[2];
+                        var wsD = package.Workbook.Worksheets[2];
                         int row = 2;
-                        foreach (var dir in directorios)
+                        foreach (var d in dir)
                         {
-                            wsDir.Cells[row, 1].Value = dir.IdDireccion;
-                            wsDir.Cells[row, 2].Value = dir.NombreSucursal;
-                            wsDir.Cells[row, 3].Value = dir.TipoInmueble;
-                            wsDir.Cells[row, 4].Value = dir.Estado;
-                            wsDir.Cells[row, 5].Value = dir.Municipio;
-                            wsDir.Cells[row, 6].Value = dir.Ciudad;
-                            wsDir.Cells[row, 7].Value = dir.Colonia;
-                            wsDir.Cells[row, 8].Value = dir.Domicilio;
-                            wsDir.Cells[row, 9].Value = dir.CodigoPostal;
+                            wsD.Cells[row, 1].Value = d.IdDireccionCotizacion;
+                            wsD.Cells[row, 2].Value = d.NombreSucursal;
+                            wsD.Cells[row, 3].Value = d.TipoInmueble;
+                            wsD.Cells[row, 4].Value = d.Estado;
+                            wsD.Cells[row, 5].Value = d.Municipio;
+                            wsD.Cells[row, 6].Value = d.Ciudad;
+                            wsD.Cells[row, 7].Value = d.Colonia;
+                            wsD.Cells[row, 8].Value = d.Domicilio;
+                            wsD.Cells[row, 9].Value = d.CodigoPostal;
                             row++;
                         }
                     }
+
                     //Plantilla
-                    var wsPlan = package.Workbook.Worksheets[3];
+                    var plan = await _repo.ObtenerPlantillas(idCotizacion);
+                    if(plan.Count != 0)
+                    {
+                        var wsP = package.Workbook.Worksheets[3];
+                        int rowp = 2;
+                        foreach(var p in plan)
+                        {
+                            wsP.Cells[rowp, 1].Value = p.IdPuestoDireccionCotizacion;
+                            wsP.Cells[rowp, 2].Value = p.Puesto;
+                            wsP.Cells[rowp, 3].Value = p.IdDireccionCotizacion;
+                            wsP.Cells[rowp, 4].Value = p.Cantidad;
+                            wsP.Cells[rowp, 5].Value = p.Clase;
+                            wsP.Cells[rowp, 6].Value = p.Sueldo;
+                            wsP.Cells[rowp, 7].Value = p.Aguinaldo;
+                            wsP.Cells[rowp, 8].Value = p.Vacaciones;
+                            wsP.Cells[rowp, 9].Value = p.PrimaVacacional;
+                            wsP.Cells[rowp, 10].Value = p.ISN;
+                            wsP.Cells[rowp, 11].Value = p.IMSS;
+                            wsP.Cells[rowp, 12].Value = p.Bonos;
+                            wsP.Cells[rowp, 13].Value = p.Vales;
+                            wsP.Cells[rowp, 14].Value = p.Festivos;
+                            wsP.Cells[rowp, 15].Value = p.Domingos;
+                            wsP.Cells[rowp, 16].Value = p.CubreDescansos;
+                            wsP.Cells[rowp, 17].Value = p.Total;
+                            wsP.Cells[rowp, 18].Value = p.Jornada;
+                            wsP.Cells[rowp, 19].Value = p.Turno;
+                            wsP.Cells[rowp, 20].Value = p.Horario;
+                            wsP.Cells[rowp, 21].Value = (DiaSemana)p.IdDiaDescanso;
+                            wsP.Cells[rowp, 22].Value = (p.IdTieneMaterial == true)? "Si" : "No";
+                            wsP.Cells[rowp, 23].Value = p.FechaAlta.ToString("dd-MM-yyyy");
+                            rowp++;
+                        }
+                    } 
+                    
+                    //MaterialPlantilla
+                    var mP = await _repo.ObtenerMaterialPlantillas(idCotizacion);
+                    if (mP.Count != 0)
+                    {
+                        var wsMP = package.Workbook.Worksheets[4];
+                        int rowMP = 2;
+                        foreach (var m in mP)
+                        {
+                            wsMP.Cells[rowMP, 1].Value = m.IdMaterialCotizacion;
+                            wsMP.Cells[rowMP, 2].Value = m.ClaveProducto;
+                            wsMP.Cells[rowMP, 3].Value = m.IdDireccionCotizacion;
+                            wsMP.Cells[rowMP, 4].Value = m.IdPuestoDireccionCotizacion;
+                            wsMP.Cells[rowMP, 5].Value = m.PrecioUnitario;
+                            wsMP.Cells[rowMP, 6].Value = m.Cantidad;
+                            wsMP.Cells[rowMP, 7].Value = m.Total;
+                            wsMP.Cells[rowMP, 8].Value = m.ImporteMensual;
+                            wsMP.Cells[rowMP, 9].Value = m.IdFrecuencia;
+                            wsMP.Cells[rowMP, 10].Value = m.FechaAlta.ToString("dd-MM-yyyy");
+                            rowMP++;
+                        }
+                    }
 
-                    //Producto
-                    var wsProd = package.Workbook.Worksheets[4];
+                    //UniformePlantilla
+                    var uP = await _repo.ObtenerUniformePlantillas(idCotizacion);
+                    if (uP.Count != 0)
+                    {
+                        var wsUP = package.Workbook.Worksheets[5];
+                        int rowUP = 2;
+                        foreach (var u in uP)
+                        {
+                            wsUP.Cells[rowUP, 1].Value = u.IdMaterialCotizacion;
+                            wsUP.Cells[rowUP, 2].Value = u.ClaveProducto;
+                            wsUP.Cells[rowUP, 3].Value = u.IdDireccionCotizacion;
+                            wsUP.Cells[rowUP, 4].Value = u.IdPuestoDireccionCotizacion;
+                            wsUP.Cells[rowUP, 5].Value = u.PrecioUnitario;
+                            wsUP.Cells[rowUP, 6].Value = u.Cantidad;
+                            wsUP.Cells[rowUP, 7].Value = u.Total;
+                            wsUP.Cells[rowUP, 8].Value = u.ImporteMensual;
+                            wsUP.Cells[rowUP, 9].Value = u.IdFrecuencia;
+                            wsUP.Cells[rowUP, 10].Value = u.FechaAlta.ToString("dd-MM-yyyy");
+                            rowUP++;
+                        }
+                    }
 
-                    //ProductoExtra
-                    var wsProdExt = package.Workbook.Worksheets[5];
+                    //EquipoPlantilla
+                    var eP = await _repo.ObtenerEquipoPlantillas(idCotizacion);
+                    if (eP.Count != 0)
+                    {
+                        var wsEP = package.Workbook.Worksheets[6];
+                        int rowEP = 2;
+                        foreach (var e in eP)
+                        {
+                            wsEP.Cells[rowEP, 1].Value = e.IdMaterialCotizacion;
+                            wsEP.Cells[rowEP, 2].Value = e.ClaveProducto;
+                            wsEP.Cells[rowEP, 3].Value = e.IdDireccionCotizacion;
+                            wsEP.Cells[rowEP, 4].Value = e.IdPuestoDireccionCotizacion;
+                            wsEP.Cells[rowEP, 5].Value = e.PrecioUnitario;
+                            wsEP.Cells[rowEP, 6].Value = e.Cantidad;
+                            wsEP.Cells[rowEP, 7].Value = e.Total;
+                            wsEP.Cells[rowEP, 8].Value = e.ImporteMensual;
+                            wsEP.Cells[rowEP, 9].Value = e.IdFrecuencia;
+                            wsEP.Cells[rowEP, 10].Value = e.FechaAlta.ToString("dd-MM-yyyy");
+                            rowEP++;
+                        }
+                    }
+
+                    //HerramientaPlantilla
+                    var hP = await _repo.ObtenerHerramientaPlantillas(idCotizacion);
+                    if (hP.Count != 0)
+                    {
+                        var wsHP = package.Workbook.Worksheets[7];
+                        int rowHP = 2;
+                        foreach (var h in hP)
+                        {
+                            wsHP.Cells[rowHP, 1].Value = h.IdMaterialCotizacion;
+                            wsHP.Cells[rowHP, 2].Value = h.ClaveProducto;
+                            wsHP.Cells[rowHP, 3].Value = h.IdDireccionCotizacion;
+                            wsHP.Cells[rowHP, 4].Value = h.IdPuestoDireccionCotizacion;
+                            wsHP.Cells[rowHP, 5].Value = h.PrecioUnitario;
+                            wsHP.Cells[rowHP, 6].Value = h.Cantidad;
+                            wsHP.Cells[rowHP, 7].Value = h.Total;
+                            wsHP.Cells[rowHP, 8].Value = h.ImporteMensual;
+                            wsHP.Cells[rowHP, 9].Value = h.IdFrecuencia;
+                            wsHP.Cells[rowHP, 10].Value = h.FechaAlta.ToString("dd-MM-yyyy");
+                            rowHP++;
+                        }
+                    }
+
+                    //MaterialExtra
+                    var mE = await _repo.ObtenerMaterialExtra(idCotizacion);
+                    if (mE.Count != 0)
+                    {
+                        var wsME = package.Workbook.Worksheets[8];
+                        int rowME = 2;
+                        foreach (var m in mE)
+                        {
+                            wsME.Cells[rowME, 1].Value = m.IdMaterialCotizacion;
+                            wsME.Cells[rowME, 2].Value = m.ClaveProducto;
+                            wsME.Cells[rowME, 3].Value = m.IdDireccionCotizacion;
+                            wsME.Cells[rowME, 4].Value = m.PrecioUnitario;
+                            wsME.Cells[rowME, 5].Value = m.Cantidad;
+                            wsME.Cells[rowME, 6].Value = m.Total;
+                            wsME.Cells[rowME, 7].Value = m.ImporteMensual;
+                            wsME.Cells[rowME, 8].Value = m.IdFrecuencia;
+                            wsME.Cells[rowME, 9].Value = m.FechaAlta.ToString("dd-MM-yyyy");
+                            rowME++;
+                        }
+                    }
+
+                    //UniformeExtra
+                    var uE = await _repo.ObtenerUniformeExtra(idCotizacion);
+                    if (uE.Count != 0)
+                    {
+                        var wsUE = package.Workbook.Worksheets[9];
+                        int rowUE = 2;
+                        foreach (var u in uE)
+                        {
+                            wsUE.Cells[rowUE, 1].Value = u.IdMaterialCotizacion;
+                            wsUE.Cells[rowUE, 2].Value = u.ClaveProducto;
+                            wsUE.Cells[rowUE, 3].Value = u.IdDireccionCotizacion;
+                            wsUE.Cells[rowUE, 4].Value = u.PrecioUnitario;
+                            wsUE.Cells[rowUE, 5].Value = u.Cantidad;
+                            wsUE.Cells[rowUE, 6].Value = u.Total;
+                            wsUE.Cells[rowUE, 7].Value = u.ImporteMensual;
+                            wsUE.Cells[rowUE, 8].Value = u.IdFrecuencia;
+                            wsUE.Cells[rowUE, 9].Value = u.FechaAlta.ToString("dd-MM-yyyy");
+                            rowUE++;
+                        }
+                    }
+
+                    //EquipoExtra
+                    var eE = await _repo.ObtenerEquipoExtra(idCotizacion);
+                    if (eE.Count != 0)
+                    {
+                        var wsEE = package.Workbook.Worksheets[10];
+                        int rowEE = 2;
+                        foreach (var e in eE)
+                        {
+                            wsEE.Cells[rowEE, 1].Value = e.IdMaterialCotizacion;
+                            wsEE.Cells[rowEE, 2].Value = e.ClaveProducto;
+                            wsEE.Cells[rowEE, 3].Value = e.IdDireccionCotizacion;
+                            wsEE.Cells[rowEE, 4].Value = e.PrecioUnitario;
+                            wsEE.Cells[rowEE, 5].Value = e.Cantidad;
+                            wsEE.Cells[rowEE, 6].Value = e.Total;
+                            wsEE.Cells[rowEE, 7].Value = e.ImporteMensual;
+                            wsEE.Cells[rowEE, 8].Value = e.IdFrecuencia;
+                            wsEE.Cells[rowEE, 9].Value = e.FechaAlta.ToString("dd-MM-yyyy");
+                            rowEE++;
+                        }
+                    }
+
+                    //HerramientaExtra
+                    var hE = await _repo.ObtenerHerramientaExtra(idCotizacion);
+                    if (hE.Count != 0)
+                    {
+                        var wsHE = package.Workbook.Worksheets[11];
+                        int rowHE = 2;
+                        foreach (var h in hE)
+                        {
+                            wsHE.Cells[rowHE, 1].Value = h.IdMaterialCotizacion;
+                            wsHE.Cells[rowHE, 2].Value = h.ClaveProducto;
+                            wsHE.Cells[rowHE, 3].Value = h.IdDireccionCotizacion;
+                            wsHE.Cells[rowHE, 4].Value = h.PrecioUnitario;
+                            wsHE.Cells[rowHE, 5].Value = h.Cantidad;
+                            wsHE.Cells[rowHE, 6].Value = h.Total;
+                            wsHE.Cells[rowHE, 7].Value = h.ImporteMensual;
+                            wsHE.Cells[rowHE, 8].Value = h.IdFrecuencia;
+                            wsHE.Cells[rowHE, 9].Value = h.FechaAlta.ToString("dd-MM-yyyy");
+                            rowHE++;
+                        }
+                    }
 
                     //Servicio
-                    var wsSer = package.Workbook.Worksheets[6];
+                    var sE = await _repo.ObtenerServicioExtra(idCotizacion);
+                    if (sE.Count != 0)
+                    {
+                        var wsSE = package.Workbook.Worksheets[12];
+                        int rowSE = 2;
+                        foreach (var s in sE)
+                        {
+                            wsSE.Cells[rowSE, 1].Value = s.IdMaterialCotizacion;
+                            wsSE.Cells[rowSE, 2].Value = s.ClaveProducto;
+                            wsSE.Cells[rowSE, 3].Value = s.IdDireccionCotizacion;
+                            wsSE.Cells[rowSE, 4].Value = s.PrecioUnitario;
+                            wsSE.Cells[rowSE, 5].Value = s.Cantidad;
+                            wsSE.Cells[rowSE, 6].Value = s.Total;
+                            wsSE.Cells[rowSE, 7].Value = s.ImporteMensual;
+                            wsSE.Cells[rowSE, 8].Value = s.IdFrecuencia;
+                            wsSE.Cells[rowSE, 9].Value = s.FechaAlta.ToString("dd-MM-yyyy");
+                            rowSE++;
+                        }
+                    }
 
                     return package.GetAsByteArray();
                 }

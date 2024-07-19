@@ -280,7 +280,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     descargarLayoutProductoExtra() {
         this.http.post(`${this.url}api/cargamasiva/DescargarLayoutProductoExtra/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
-            saveAs(response, 'Layout' + this.selTipo +'_Extra.xlsx');
+            saveAs(response, 'Layout' + this.selTipo + '_Extra.xlsx');
             this.okToast('Layout descargado');
         },
             error => {
@@ -490,13 +490,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         }, err => console.log(err));
     }
 
-    addPlan(idDireccionCotizacion: number,nombreSucursal: string) {
+    addPlan(idDireccionCotizacion: number, nombreSucursal: string) {
         this.selDireccion = idDireccionCotizacion;
         this.pueAdd.openAdd(this.model.idCotizacion, idDireccionCotizacion, nombreSucursal, this.model.diasEvento);
     }
 
     updPlan(idPuesto: number, nombreSucursal: string) {
-        this.pueAdd.openEdit(this.model.idCotizacion, idPuesto,  nombreSucursal, this.model.diasEvento);
+        this.pueAdd.openEdit(this.model.idCotizacion, idPuesto, nombreSucursal, this.model.diasEvento);
     }
 
     removePlan(id: number) {
@@ -807,7 +807,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     cargarContratoCliente($event) {
         this.subirCont.open(this.model.idCotizacion, this.model.idProspecto);
     }
-    subirContratoEvent($event){
+    subirContratoEvent($event) {
 
     }
 
@@ -908,7 +908,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                     setTimeout(() => {
                         this.okToast('Ahora se encuentra en la nueva cotizaci\u00F3n');
                     }, 300);
-                    
+
                 }, err => {
                     this.detenerCarga();
                     setTimeout(() => {
@@ -1050,6 +1050,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     returnProductoGeneral($event) {
+        this.getPlan();
         this.actualizarDatos();
     }
 }   

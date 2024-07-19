@@ -324,40 +324,43 @@
             <h4>Descargar</h4>
             <hr />
             <div class="row">
-                <div *ngIf="model.idServicio == 5" class="col-4 col-md-4 col-4">
+                <div *ngIf="model.idServicio == 5" class="col-4 col-md-4 col-4 mb-3">
                     <button type="button" (click)="propuestaEvento()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
                 </div>
-                <div *ngIf="model.idServicio == 4" class="col-4 col-md-4 col-4">
+                <div *ngIf="model.idServicio == 4" class="col-4 col-md-4 col-4 mb-3">
                     <button type="button" (click)="propuestaSuministroInsumos()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
                 </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-4 col-4">
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-4 col-4 mb-3">
                     <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Económica</button>
                     <script src="../../cotizacion/resumen/"></script>
                 </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4">
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
                     <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica</button>
                 </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4">
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
                     <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
+                </div>
+                <div class="col-4 col-md-4 mb-3">
+                    <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-excel fa-xl me-2"></i> Datos de cotización</button>
                 </div>
             </div>
             <br />
             <h4>Acciones</h4>
             <hr />
             <div class="row">
-                <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4">
+                <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
                     <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary "><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
                 </div>
                 <!--<div class="col-4 float-end col-md-4 d-none">
                     <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-database fa-xl"></i> Descargar datos</button>
                 </div>-->
-                <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4">
+                <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4 mb-3">
                     <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" [disabled]="isLoading" class="btn btn-outline-danger"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
                 </div>
-                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4">
+                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
                     <button *ngIf="model.idEstatus != 6 && model.idEstatus != 4" type="button" (click)="confirmaAutorizarCotizacion()" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-check fa-xl me-2"></i> Autorizar Cotización</button>
                 </div>
-                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4">
+                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
                     <button *ngIf="model.idEstatus == 6 && model.idEstatus != 4" type="button" (click)="confirmaRemoverAutorizacionCotizacion()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-rotate-left fa-xl me-2"></i> Remover autorización</button>
                 </div>
             </div>
@@ -569,7 +572,7 @@
         <div *ngIf="model.idServicio != 4" class="tab-pane fade " id="plantilla" role="tabpanel" aria-labelledby="plantilla-tab">
             <div class="row">
                 <div class="col-12 col-md-8 text-start">
-                    <h5><span class="badge plantilla text-white"> <i class="fa fa-money-bill"></i> Importe mensual: $ {{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt | number: '1.2' }}</span> <span class="badge plantilla text-white ms-1"><i class="fa fa-users"></i> No. Empleados: {{lspue.empleados}}</span></h5>
+                    <h5><span class="badge plantilla text-white"> <i class="fa fa-money-bill"></i> Importe mensual: $ {{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt + model.totalPolizaCumplimiento | number: '1.2' }}</span> <span class="badge plantilla text-white ms-1"><i class="fa fa-users"></i> No. Empleados: {{lspue.empleados}}</span></h5>
                 </div>
                 <div class="col-12 col-md-4 text-end">
                     <button class="btn btn-outline-primary btn-sm mb-1" (click)="toggleAllTabs()"><i class="fa-solid {{ allTabsOpen ? 'fa-chevron-up' : 'fa-chevron-down' }}"></i> {{ allTabsOpen ? 'Cerrar todo' : 'Abrir todo' }}</button>
@@ -1076,5 +1079,5 @@
 <carga-widget></carga-widget>
 <confirmacion-widget (confirmaEvent)="confirmacionEvent($event)"></confirmacion-widget>
 <subircontratocliente-widget (subirContratoEvent)="subirContratoEvent($event)"></subircontratocliente-widget>
-<productogeneral-widget> (prodgEvent)="returnProductoGeneral($event)"</productogeneral-widget>
+<productogeneral-widget (prodgEvent)="returnProductoGeneral($event)"></productogeneral-widget>
 

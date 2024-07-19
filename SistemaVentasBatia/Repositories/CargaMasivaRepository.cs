@@ -24,6 +24,17 @@ namespace SistemaVentasBatia.Repositories
         Task<Prospecto> ObtenerProspecto(int idCotizacion);
         Task<List<Direccion>> ObtenerDirecciones(int idCotizacion);
         Task<Cotizacion> ObtenerCotizacion(int id);
+        Task<List<Plantilla>> ObtenerPlantillas(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerMaterialPlantillas(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerUniformePlantillas(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerEquipoPlantillas(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerHerramientaPlantillas(int idCotizacion);
+        
+        Task<List<MaterialCotizacion>> ObtenerMaterialExtra(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerUniformeExtra(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerEquipoExtra(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerHerramientaExtra(int idCotizacion);
+        Task<List<MaterialCotizacion>> ObtenerServicioExtra(int idCotizacion);
     }
 
     public class CargaMasivaRepository : ICargaMasivaRepository
@@ -288,6 +299,7 @@ namespace SistemaVentasBatia.Repositories
             string query = @"
                 SELECT
                 a.id_direccion IdDireccion,
+                d.id_direccion_cotizacion IdDireccionCotizacion,
                 a.nombre_sucursal NombreSucursal,
                 a.id_tipo_inmueble IdTipoInmueble,
                 c.descripcion TipoInmueble,
@@ -341,6 +353,350 @@ namespace SistemaVentasBatia.Repositories
                 throw ex;
             }
             return cotizacion;
+        }
+        public async Task<List<Plantilla>> ObtenerPlantillas(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_puesto_direccioncotizacion IdPuestoDireccionCotizacion,
+a.id_puesto IdPuesto,
+d.descripcion Puesto,
+b.id_direccion_cotizacion IdDireccionCotizacion,
+c.id_direccion IdDireccion,
+c.nombre_sucursal Direccion,
+a.cantidad Cantidad,
+a.id_clase IdClase,
+e.descripcion Clase,
+a.sueldo Sueldo,
+a.aguinaldo Aguinaldo,
+a.vacaciones Vacaciones,
+a.prima_vacacional PrimaVacacional,
+a.isn ISN,
+a.imss IMSS,
+a.bonos Bonos,
+a.vales Vales,
+a.festivo Festivos,
+a.domingo Domingos,
+a.dia_cubredescanso IdCubreDescansos,
+a.cubredescanso CubreDescansos,
+a.total Total,
+a.jornada IdJornada,
+f.descripcion Jornada,
+a.id_turno IdTurno,
+g.descripcion Turno,
+a.horario_letra Horario,
+a.dia_descanso IdDiaDescanso,
+a.incluyeMaterial IdTieneMaterial,
+a.fecha_alta FechaAlta
+FROM tb_puesto_direccion_cotizacion a
+INNER JOIN tb_direccion_cotizacion b ON b.id_direccion_cotizacion = a.id_direccion_cotizacion
+INNER JOIN tb_direccion c ON c.id_direccion = b.id_direccion
+INNER JOIN tb_puesto d ON d.id_puesto = a.id_puesto
+INNER JOIN tb_clase e ON e.id_clase = a.id_clase
+INNER JOIN tb_jornada f ON f.id_jornada = a.jornada
+INNER JOIN tb_turno g ON g.id_turno = a.id_turno
+WHERE b.id_cotizacion = @idCotizacion";
+            var plantillas = new List<Plantilla>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    plantillas = (await connection.QueryAsync<Plantilla>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return plantillas;
+        }
+
+        public async Task<List<MaterialCotizacion>> ObtenerMaterialPlantillas(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_material_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_material a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+        
+        public async Task<List<MaterialCotizacion>> ObtenerUniformePlantillas(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_uniforme_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_uniforme a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+        
+        public async Task<List<MaterialCotizacion>> ObtenerEquipoPlantillas(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_equipo_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_equipo a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+        
+        public async Task<List<MaterialCotizacion>> ObtenerHerramientaPlantillas(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_herramienta_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_herramienta a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 ORDER BY a.id_puesto_direccioncotizacion, a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+        
+        public async Task<List<MaterialCotizacion>> ObtenerMaterialExtra(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_material_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_material a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+        
+        public async Task<List<MaterialCotizacion>> ObtenerUniformeExtra(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_uniforme_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_uniforme a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+        
+        public async Task<List<MaterialCotizacion>> ObtenerEquipoExtra(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_equipo_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_equipo a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+        
+        public async Task<List<MaterialCotizacion>> ObtenerHerramientaExtra(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_herramienta_cotizacion IdMaterialCotizacion,
+a.clave_producto ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.id_puesto_direccioncotizacion IdPuestoDireccioncotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_herramienta a
+WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 ORDER BY a.clave_producto";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
+        }
+
+        public async Task<List<MaterialCotizacion>> ObtenerServicioExtra(int idCotizacion)
+        {
+            string query = @"
+SELECT 
+a.id_servicioextra_cotizacion IdMaterialCotizacion,
+b.descripcion ClaveProducto,
+a.id_direccion_cotizacion IdDireccionCotizacion,
+a.precio_unitario PrecioUnitario,
+a.cantidad Cantidad,
+a.total Total,
+a.importemensual ImporteMensual,
+a.id_frecuencia IdFrecuencia,
+a.fecha_alta FechaAlta,
+a.id_personal IdPersonal
+FROM tb_cotiza_servicioextra a
+INNER JOIN tb_servicioextra b ON b.id_servicioextra = a.id_servicioextra
+WHERE a.id_cotizacion = @idCotizacion ORDER BY b.descripcion";
+            var material = new List<MaterialCotizacion>();
+            try
+            {
+                using (var connection = _ctx.CreateConnection())
+                {
+                    material = (await connection.QueryAsync<MaterialCotizacion>(query, new { idCotizacion })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return material;
         }
     }
 }
