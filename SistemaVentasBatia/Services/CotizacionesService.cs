@@ -261,7 +261,14 @@ namespace SistemaVentasBatia.Services
         {
             if (operariosModel.DiasEvento != 0)
             {
-                operariosModel.Sueldo = (operariosModel.Sueldo / 30.4167M) * operariosModel.DiasEvento;
+                if (operariosModel.IdPuesto != 77)
+                {
+                    operariosModel.Sueldo = (operariosModel.Sueldo / 30.4167M) * operariosModel.DiasEvento;
+                }
+                else
+                {
+                    operariosModel.Sueldo = operariosModel.Sueldo * operariosModel.DiasEvento;
+                }
             }
             int idCotizacion = await cotizacionesRepo.ObtenerIdCotizacionPorDireccion(operariosModel.IdDireccionCotizacion);
             //decimal imss = await cotizacionesRepo.ObtenerImssBase();
@@ -270,33 +277,68 @@ namespace SistemaVentasBatia.Services
             bool isfrontera = await cotizacionesRepo.ObtenerFronteraPorIdDireccion(operariosModel.IdDireccionCotizacion);
             var immsJornada = new ImmsJornadaDTO();
             immsJornada = mapper.Map<ImmsJornadaDTO>(await cotizacionesRepo.ObtenerImmsJornada());
-            operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 20m) / 12m);
-            operariosModel.PrimaVacacional = ((((operariosModel.Sueldo / 30.4167m) * 12m) * .25m) / 12m);
-            operariosModel.Vacaciones = ((operariosModel.Sueldo / 30.4167m) * 12m) / 12m;
+
+            if (operariosModel.DiasEvento == 0)
+            {
+                operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 20m) / 12m);
+                operariosModel.PrimaVacacional = ((((operariosModel.Sueldo / 30.4167m) * 12m) * .25m) / 12m);
+                operariosModel.Vacaciones = ((operariosModel.Sueldo / 30.4167m) * 12m) / 12m;
+            }
+            else
+            {
+                operariosModel.Aguinaldo = 0;
+                operariosModel.PrimaVacacional = 0;
+                operariosModel.Vacaciones = 0;
+            }
+
             if (operariosModel.DiaFestivo == true)
             {
-                operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 8) / 12m);
+                if (operariosModel.DiasEvento == 0)
+                {
+                    operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 8) / 12m);
+                }
+                else
+                {
+                    operariosModel.Festivo = 0;
+                }
             }
             else
             {
                 operariosModel.Festivo = 0;
             }
+
             if (operariosModel.DiaDomingo == true)
             {
-                operariosModel.Domingo = (((operariosModel.Sueldo / 30.4167m) * .25m) * 4.33m);
+                if (operariosModel.DiasEvento == 0)
+                {
+                    operariosModel.Domingo = (((operariosModel.Sueldo / 30.4167m) * .25m) * 4.33m);
+                }
+                else
+                {
+                    operariosModel.Domingo = 0;
+                }
             }
             else
             {
                 operariosModel.Domingo = 0;
             }
+
             if (operariosModel.DiaCubreDescanso == true)
             {
-                operariosModel.CubreDescanso = ((operariosModel.Sueldo / 30.4167m) * 4.33m);
+                if (operariosModel.DiasEvento == 0)
+                {
+                    operariosModel.CubreDescanso = ((operariosModel.Sueldo / 30.4167m) * 4.33m);
+                }
+                else
+                {
+                    operariosModel.CubreDescanso = 0;
+                }
             }
             else
             {
                 operariosModel.CubreDescanso = 0;
             }
+
             decimal imss;
             if (isfrontera)
             {
@@ -342,10 +384,6 @@ namespace SistemaVentasBatia.Services
                         break;
                 }
             }
-            if (operariosModel.DiasEvento != 0)
-            {
-                imss = (imss / 30.4167M) * operariosModel.DiasEvento;
-            }
             operariosModel.IMSS = imss;
 
             operariosModel.ISN = (
@@ -371,6 +409,11 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Festivo +
                 operariosModel.Domingo +
                 operariosModel.CubreDescanso, 2);
+
+            if(operariosModel.DiasEvento != 0)
+            {
+                operariosModel.IMSS = (operariosModel.IMSS / 30.4167M) * operariosModel.DiasEvento;
+            }
             return operariosModel;
         }
 

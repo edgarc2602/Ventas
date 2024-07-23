@@ -178,6 +178,17 @@ namespace SistemaVentasBatia.Controllers
         {
             return await logic.ObtenerCatalogoTiposdeIndustria();
         }
+        
+        [HttpGet("[action]/{idEstado}")]
+        public async Task<IEnumerable<CatalogoDTO>> GetCatalogoClientes(int idEstado)
+        {
+            return await logic.GetCatalogoClientes(idEstado);
+        }
+        [HttpGet("[action]/{idEstado}/{idCliente}")]
+        public async Task<IEnumerable<CatalogoDTO>> GetCatalogoSucursalesCliente(int idEstado, int idCliente)
+        {
+            return await logic.GetCatalogoSucursalesCliente(idEstado, idCliente);
+        }
 
     }
 }

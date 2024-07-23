@@ -36,6 +36,8 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> ObtenerCatalogoEjecutivos();
         Task<List<Catalogo>> ObtenerCatalogoGerentesLimpieza();
         Task<List<Catalogo>> ObtenerCatalogoTiposdeIndustria();
+        Task<List<Catalogo>> GetCatalogoClientes(int idEstado);
+        Task<List<Catalogo>> GetCatalogoSucursalesCliente(int idEstado, int idCliente);
 
     }
 
@@ -579,6 +581,52 @@ FROM tb_clase";
                 throw ex;
             }
             return industrias;
+        }
+        
+        public async Task<List<Catalogo>> GetCatalogoClientes(int idEstado)
+        {
+            string query = @"SELECT DISTINCT b.id_cliente Id, nombre Descripcion FROm tb_jornalero_importe a INNER JOIN tb_cliente b ON a.id_cliente = b.id_cliente WHERE a.id_estado = @idEstado ORDER BY b.nombre";
+
+            var clientes = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    clientes = (await connection.QueryAsync<Catalogo>(query, new { idEstado })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return clientes;
+        }
+        
+        public async Task<List<Catalogo>> GetCatalogoSucursalesCliente(int idEstado, int idCliente)
+        {
+            string query = @"SELECT 
+c.id_inmueble Id, 
+c.nombre Descripcion 
+FROm tb_jornalero_importe a 
+INNER JOIN tb_cliente b ON a.id_cliente = b.id_cliente 
+INNER JOIN tb_cliente_inmueble c ON c.id_inmueble = a.id_inmueble
+WHERE a.id_estado = @idEstado AND a.id_cliente = @idCliente  ORDER BY b.nombre";
+
+            var clientes = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    clientes = (await connection.QueryAsync<Catalogo>(query, new { idEstado, idCliente })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return clientes;
         }
     }
 }

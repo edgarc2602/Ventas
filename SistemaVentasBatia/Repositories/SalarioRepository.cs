@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using SistemaVentasBatia.Context;
+using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using System;
@@ -23,6 +24,9 @@ namespace SistemaVentasBatia.Repositories
         Task<SalarioMinimo> ObtenerMinimo(int year);
         Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno);
         Task<int> GetZonaDefault(int idDireccionCotizacion);
+        Task<int> ObtenerIdEstadoPorIdDireccionCotizaion(int idDireccionCotizacion);
+        Task<List<CatalogoSueldoJornalero>> ObtenerSueldoJornaleroPorIdEstado(int idEstado, int idCliente, int idSucursal);
+        Task<List<CatalogoSueldoJornalero>> ObtenerSueldoJornaleroPorIdClienteEstado(int idEstado, int idCliente);
     }
     public class SalarioRepository : ISalarioRepository
     {
@@ -205,6 +209,102 @@ WHERE dc.id_direccion_cotizacion = @idDireccionCotizacion
                 throw ex;
             }
             return result;
+        }
+
+        public async Task<int> ObtenerIdEstadoPorIdDireccionCotizaion(int idDireccionCotizacion)
+        {
+            var query = @"SELECT b.id_estado FROM tb_direccion_cotizacion a
+INNER JOIN tb_direccion b ON b.id_direccion = a.id_direccion
+WHERE a.id_direccion_cotizacion = @idDireccionCotizacion";
+            int result;
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    result = await connection.QueryFirstAsync<int>(query, new { idDireccionCotizacion });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        public async Task<List<CatalogoSueldoJornalero>> ObtenerSueldoJornaleroPorIdEstado(int idEstado,int idCliente, int idSucursal)
+        {
+            //string query = @"SELECT DISTINCT b.id_cliente Id, nombre Descripcion FROm tb_jornalero_importe a INNER JOIN tb_cliente b ON a.id_cliente = b.id_cliente ORDER BY b.nombre";
+            string query = @"SELECT
+                        id_importe IdImporte,
+                        a.id_cliente IdCliente,
+                        ISNULL(e.nombre, 'Sueldo base por estado') Cliente,
+                        a.id_estado IdEstado,
+                        d.descripcion Estado,
+                        a.id_municipio IdMunicipio,
+                        c.Municipio Municipio, 
+                        a.id_jornada IdJornada, 
+                        ISNULL(b.descripcion,'S/N') Jornada,
+                        importe Importe
+                        FROM tb_jornalero_importe a
+                        LEFT OUTER JOIN tb_jornada b ON b.id_jornada = a.id_jornada
+                        LEFT OUTER JOIN tb_municipio c ON c.Id_Municipio = a.id_municipio
+                        LEFT OUTER JOIN tb_estado d ON d.id_estado = a.id_estado
+                        LEFT OUTER JOIN tb_cliente e ON e.id_cliente = a.id_cliente
+                        WHERE 
+                        a.id_estado = @idEstado AND
+                        a.id_cliente = 0 AND
+                        ISNULL(NULLIF(@idSucursal,0), a.id_inmueble) = a.id_inmueble";
+
+            var sueldos = new List<CatalogoSueldoJornalero>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    sueldos = (await connection.QueryAsync<CatalogoSueldoJornalero>(query, new { idEstado, idCliente, idSucursal })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return sueldos;
+        }
+
+        public async Task<List<CatalogoSueldoJornalero>> ObtenerSueldoJornaleroPorIdClienteEstado(int idEstado, int idCliente)
+        {
+            string query = @"SELECT
+id_importe IdImporte,
+a.id_cliente IdCliente,
+e.nombre Cliente,
+a.id_estado IdEstado,
+d.descripcion Estado,
+a.id_municipio IdMunicipio,
+c.Municipio Municipio, 
+a.id_jornada IdJornada, 
+b.descripcion Jornada,
+importe Importe
+FROM tb_jornalero_importe a
+LEFT OUTER JOIN tb_jornada b ON b.id_jornada = a.id_jornada
+LEFT OUTER JOIN tb_municipio c ON c.Id_Municipio = a.id_municipio
+LEFT OUTER JOIN tb_estado d ON d.id_estado = a.id_estado
+LEFT OUTER JOIN tb_cliente e ON e.id_cliente = a.id_cliente
+WHERE a.id_estado = @idEstado";
+
+            var sueldos = new List<CatalogoSueldoJornalero>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    sueldos = (await connection.QueryAsync<CatalogoSueldoJornalero>(query, new { idEstado })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return sueldos;
         }
     }
 }

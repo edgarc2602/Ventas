@@ -1,9 +1,14 @@
-﻿    using Microsoft.AspNetCore.Http;
+﻿using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Services;
 using System.Threading.Tasks;
+using SistemaVentasBatia.Enums;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -39,5 +44,16 @@ namespace SistemaVentasBatia.Controllers
             return await _logic.GetZonaDefault(idDireccionCotizacion);
         }
 
+        [HttpGet("[action]/{idD}/{idCliente}/{idSucursal}")]
+        public async Task<IEnumerable<CatalogoSueldoJornaleroDTO>> ObtenerSueldoJornal(int idD, int idCliente, int idSucursal)
+        {
+            return await _logic.ObtenerSueldoJornal(idD,idCliente, idSucursal);
+        }
+
+        [HttpGet("[action]/{idD}")]
+        public async Task<int> GetEstadoDireccion(int idD)
+        {
+            return await _logic.GetEstadoDireccion(idD);
+        }
     }
 }

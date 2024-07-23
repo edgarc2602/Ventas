@@ -20,6 +20,8 @@ namespace SistemaVentasBatia.Services
         Task<int> GetZonaDefault(int idDireccionCotizacion);
         Task<bool> Update(SalarioDTO dto);
         Task<bool> Delete(int id);
+        Task<List<CatalogoSueldoJornaleroDTO>> ObtenerSueldoJornal(int idDireccionCotizacion, int idCliente, int idSucursal);
+        Task<int> GetEstadoDireccion(int idDireccionCotizacion);
     }
     public class SalarioService : ISalarioService
     {
@@ -93,6 +95,22 @@ namespace SistemaVentasBatia.Services
         public async Task<int> GetZonaDefault(int idDireccionCotizacion)
         {
             return await _repo.GetZonaDefault(idDireccionCotizacion);
+        }
+
+        public async Task<List<CatalogoSueldoJornaleroDTO>> ObtenerSueldoJornal(int idDireccionCotizacion, int idCliente, int idSucursal)
+        {
+
+            int idEstado = await _repo.ObtenerIdEstadoPorIdDireccionCotizaion(idDireccionCotizacion);
+            var sueldos = new List<CatalogoSueldoJornaleroDTO>();
+
+                sueldos = _mapper.Map<List<CatalogoSueldoJornaleroDTO>>(await _repo.ObtenerSueldoJornaleroPorIdEstado(idEstado, idCliente, idSucursal));
+
+            return sueldos;
+        }
+
+        public async Task<int> GetEstadoDireccion(int idDireccionCotizacion)
+        {
+            return await _repo.ObtenerIdEstadoPorIdDireccionCotizaion(idDireccionCotizacion);
         }
     }
 }

@@ -8,6 +8,7 @@ import { StoreUser } from '../../stores/StoreUser';
 import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { CatalogoSueldoJornalero } from '../../models/catalogosueldojornalero';
 declare var bootstrap: any;
 
 @Component({
@@ -24,6 +25,9 @@ export class PuestoWidget {
     turs: Catalogo[] = [];
     tabs: Catalogo[] = [];
     ljor: Catalogo[] = [];
+    lcli: Catalogo[] = [];
+    lsuc: Catalogo[] = [];
+    lsuel: CatalogoSueldoJornalero[] = [];
     hors: string[] = [];
     dias: ItemN[] = [];
     suel: SalarioMin = {} as SalarioMin;
@@ -39,7 +43,10 @@ export class PuestoWidget {
     diasEvento: number = 0;
     sueldoDiario: number = 0;
     existeProducto: boolean = false;
-
+    idEstado: number = 0;
+    idCliente: number = 0;
+    idSucursal: number = 0;
+    selectedSueldo: any;
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
             this.pues = response;
@@ -62,29 +69,42 @@ export class PuestoWidget {
         http.get<Catalogo[]>(`${url}api/catalogo/getclase`).subscribe(response => {
             this.lclas = response;
         }, err => console.log(err));
+        
     }
+
+    
 
     nuevo() {
         this.lerr = {};
         let dt: Date = new Date();
         this.model = {
             idPuestoDireccionCotizacion: 0, idPuesto: 0, idDireccionCotizacion: this.idD, jornada: 0, idTurno: 0, hrInicio: '', hrFin: '', diaInicio: 0, diaFin: 0, fechaAlta: dt.toISOString(), sueldo: 0, vacaciones: 0, primaVacacional: 0,
-            imss: 0, isn: 0, aguinaldo: 0, total: 0, idCotizacion: this.idC, idPersonal: this.sinU.idPersonal, idSalario: 0, idClase: 0, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0,
+            imss: 0, isn: 0, aguinaldo: 0, total: 0, idCotizacion: this.idC, idPersonal: this.sinU.idPersonal, idSalario: 0, idClase: 1, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0,
             diaDomingo: false, domingo: 0, diaCubreDescanso: false, cubreDescanso: 0, hrInicioFin: '', hrFinFin: '', diaInicioFin: 0, diaFinFin: 0, diaDescanso: 0, diasEvento: 0, incluyeMaterial: false
         };
+        this.idCliente = 0;
+        this.idEstado = 0;
+        this.lcli = null;
+        this.lsuc = null;
     }
 
     existe(id: number) {
         this.http.get<PuestoCotiza>(`${this.url}api/puesto/${id}`).subscribe(response => {
             this.existeProducto = response.incluyeMaterial;
+            this.idD = response.idDireccionCotizacion;
+                this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`).subscribe(response => {
+                    this.idEstado = response;
+                }, err => console.log(err));
             this.model = response;
             this.model.hrInicio = this.model.hrInicio.substring(0, 5);
             this.model.hrFin = this.model.hrFin.substring(0, 5);
             this.model.hrInicioFin = this.model.hrInicioFin.substring(0, 5);
             this.model.hrFinFin = this.model.hrFinFin.substring(0, 5);
             this.model.idCotizacion = this.idC;
+            if (this.model.idPuesto == 77) {
+                this.model.sueldo = this.model.sueldo / this.diasEvento;
+            }
             this.chgSalariodos();
-            //this.sueldoDiario = this.model.sueldo / 30.4167;
         }, err => {
             console.log(err);
             if (err.error) {
@@ -174,47 +194,82 @@ export class PuestoWidget {
             });
         }, 300);
     }
+    obtenerIdEstado() {
+        this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`).subscribe(response => {
+            this.idEstado = response;
+        }, err => console.log(err));
+    }
+
+    loadSucursalesCliente() {
+        this.chgSalariodos();
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/GetCatalogoSucursalesCliente/${this.idEstado}/${this.idCliente}`).subscribe(response => {
+            this.lsuc = response;
+        }, err => console.log(err));
+    }
+
+    salarioSelected(importe: number, jornada: string, idJornada: number) {
+        this.model.sueldo = importe;
+        this.model.jornadadesc = jornada;
+        this.model.jornada = idJornada;
+        this.okToast("Sueldo seleccionado correctamente");
+        this.quitarFocoDeElementos2(); 
+    }
 
     chgSalariodos() {
         this.iniciarCarga();
-        setTimeout(() => {
-            this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}`).subscribe(response => {
-                this.detenerCarga();
-                this.model.sueldo = response;
-                
-                this.jornada = 0;
-                switch (this.model.jornada) {
-                    case 1:
-                        this.jornada = 2
-                        this.model.sueldo = this.model.sueldo * 0.35;
-                        break;
-                    case 2:
-                        this.jornada = 4
-                        this.model.sueldo = this.model.sueldo * 0.60;
-                        break;
-                    case 3:
-                        this.jornada = 8
-                        this.model.sueldo = this.model.sueldo;
-                        break;
-                    case 4:
-                        this.jornada = 12
-                        this.model.sueldo = this.model.sueldo * 1.5;
-                        break;
-                    default:
-                        break;
-                }
-                this.sueldoDiario = parseFloat((this.model.sueldo / 30.4167).toFixed(2));
-                
-            }, err => {
-                this.detenerCarga();
-                console.log(err);
+        if (this.model.idPuesto == 77) {
+            this.http.get<Catalogo[]>(`${this.url}api/catalogo/getcatalogoclientes/${this.idEstado}`).subscribe(response => {
+                this.lcli = response;
+            }, err => console.log(err));
+            this.http.get<CatalogoSueldoJornalero[]>(`${this.url}api/salario/ObtenerSueldoJornal/${this.idD}/${this.idCliente}/${this.idSucursal}`).subscribe(response => {
+                this.lsuel = response;
+            })
+            this.detenerCarga();
 
-            });
-        }, 300);
+        }
+        else {
+            setTimeout(() => {
+                this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}`).subscribe(response => {
+                    this.detenerCarga();
+                    this.model.sueldo = response;
+
+                    this.jornada = 0;
+                    switch (this.model.jornada) {
+                        case 1:
+                            this.jornada = 2
+                            this.model.sueldo = this.model.sueldo * 0.35;
+                            break;
+                        case 2:
+                            this.jornada = 4
+                            this.model.sueldo = this.model.sueldo * 0.60;
+                            break;
+                        case 3:
+                            this.jornada = 8
+                            this.model.sueldo = this.model.sueldo;
+                            break;
+                        case 4:
+                            this.jornada = 12
+                            this.model.sueldo = this.model.sueldo * 1.5;
+                            break;
+                        default:
+                            break;
+                    }
+                    this.sueldoDiario = parseFloat((this.model.sueldo / 30.4167).toFixed(2));
+
+                }, err => {
+                    this.detenerCarga();
+                    console.log(err);
+                });
+            }, 300);
+        }
     }
 
     valida() {
         this.validacion = true;
+        if (this.model.sueldo == 0 || this.model.sueldo == null) {
+            this.lerr['Sueldo'] = ['Sueldo es obligatorio'];
+            this.validacion = false;
+        }
         if (this.model.idTurno == 0) {
             this.lerr['IdTurno'] = ['Turno es obligatorio'];
             this.validacion = false;
@@ -288,6 +343,7 @@ export class PuestoWidget {
         let docModal = document.getElementById('modalAgregarOperario');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
+        this.obtenerIdEstado();
     }
 
     openEdit(idCotizacion: number, idPuesto: number, nombreSucursal: string, diasEvento: number) {
@@ -296,10 +352,10 @@ export class PuestoWidget {
         this.idC = idCotizacion;
         this.idP = idPuesto;
         this.existe(this.idP);
-
         let docModal = document.getElementById('modalAgregarOperario');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
+        this.idD = this.model.idDireccionCotizacion;
     }
 
     close() {
@@ -334,5 +390,12 @@ export class PuestoWidget {
     detenerCarga() {
         this.isLoading = false;
         this.cargaWidget.open(false);
+    }
+    quitarFocoDeElementos2(): void {
+        const elementos = document.querySelectorAll('button, input[type="text"]');
+
+        elementos.forEach((elemento: HTMLElement) => {
+            elemento.blur();
+        });
     }
 }

@@ -84,6 +84,9 @@ namespace SistemaVentasBatia
             CreateMap<ClienteContratoDTO, ClienteContrato>();
             CreateMap<Empresa, EmpresaDTO>();
             CreateMap<EmpresaDTO, Empresa>();
+            CreateMap<CatalogoSueldoJornalero, CatalogoSueldoJornaleroDTO>();
+            CreateMap<CatalogoSueldoJornaleroDTO, CatalogoSueldoJornalero>();
+
         }
     }
 }

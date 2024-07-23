@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Options;
 using Microsoft.Extensions.Options;
+using iTextSharp.text.io;
 
 namespace SistemaVentasBatia.Services
 {
@@ -34,6 +35,8 @@ namespace SistemaVentasBatia.Services
         Task<List<CatalogoDTO>> ObtenerCatalogoEjecutivos();
         Task<List<CatalogoDTO>> ObtenerCatalogoGerentesLimpieza();
         Task<List<CatalogoDTO>> ObtenerCatalogoTiposdeIndustria();
+        Task<List<CatalogoDTO>> GetCatalogoClientes(int idEstado);
+        Task<List<CatalogoDTO>> GetCatalogoSucursalesCliente(int idEstado, int idCliente);
     }
 
     public class CatalogosService : ICatalogosService
@@ -219,6 +222,19 @@ namespace SistemaVentasBatia.Services
             var industrias = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoTiposdeIndustria());
 
             return industrias;
+        }
+        
+        public async Task<List<CatalogoDTO>> GetCatalogoClientes(int idEstado)
+        {
+            var industrias = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.GetCatalogoClientes(idEstado));
+
+            return industrias;
+        }
+
+        public async Task<List<CatalogoDTO>> GetCatalogoSucursalesCliente(int idEstado, int idCliente)
+        {
+            var sucursales = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.GetCatalogoSucursalesCliente(idEstado, idCliente));
+            return sucursales;
         }
     }
 }
