@@ -86,7 +86,7 @@
                             <div *ngIf="tipoProd == 'material' && material.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd }} seleccionado</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'material' && material && material.length > 0" class="table-container box-shadow fade-in-container">
@@ -124,7 +124,7 @@
                                                         <span class="badge d-md-none">Clave:</span>
                                                         <div>{{ mat.claveProducto }}</div>
                                                     </div>
-                                                    <div class="col-md-6 col-sm-4 col-4">
+                                                    <div class="col-md-6 col-sm-4 col-8">
                                                         <span class="badge d-md-none">Descripción:</span>
                                                         <div>{{ mat.descripcion }}</div>
                                                     </div>
@@ -132,7 +132,7 @@
                                                         <span class="badge d-md-none">Cantidad:</span>
                                                         <div class="ms-2">{{ mat.cantidad | number: '0.0' }}</div>
                                                     </div>
-                                                    <div class="col-md-2 col-sm-6 col-4">
+                                                    <div class="col-md-2 col-sm-6 col-8">
                                                         <span class="badge d-md-none">Frecuencia:</span>
                                                         <div class="ms-2">{{ mat.frecuencia }}</div>
                                                     </div>
@@ -150,7 +150,7 @@
                             <div *ngIf="tipoProd == 'uniforme' && uniforme.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd }} seleccionado</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'uniforme' && uniforme && uniforme.length > 0" class="table-container box-shadow fade-in-container">
@@ -188,7 +188,7 @@
                                                         <span class="badge d-md-none">Clave:</span>
                                                         <div>{{ uni.claveProducto }}</div>
                                                     </div>
-                                                    <div class="col-md-6 col-sm-4 col-4">
+                                                    <div class="col-md-6 col-sm-4 col-8">
                                                         <span class="badge d-md-none">Descripción:</span>
                                                         <div>{{ uni.descripcion }}</div>
                                                     </div>
@@ -196,7 +196,7 @@
                                                         <span class="badge d-md-none">Cantidad:</span>
                                                         <div class="ms-2">{{ uni.cantidad | number: '0.0' }}</div>
                                                     </div>
-                                                    <div class="col-md-2 col-sm-6 col-4">
+                                                    <div class="col-md-2 col-sm-6 col-8">
                                                         <span class="badge d-md-none">Frecuencia:</span>
                                                         <div class="ms-2">{{ uni.frecuencia }}</div>
                                                     </div>
@@ -215,7 +215,7 @@
                             <div *ngIf="tipoProd == 'equipo' && equipo.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd }} seleccionado</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'equipo' && equipo && equipo.length > 0" class="table-container box-shadow fade-in-container">
@@ -253,7 +253,7 @@
                                                         <span class="badge d-md-none">Clave:</span>
                                                         <div>{{ equ.claveProducto }}</div>
                                                     </div>
-                                                    <div class="col-md-6 col-sm-4 col-4">
+                                                    <div class="col-md-6 col-sm-4 col-8">
                                                         <span class="badge d-md-none">Descripción:</span>
                                                         <div>{{ equ.descripcion }}</div>
                                                     </div>
@@ -261,7 +261,7 @@
                                                         <span class="badge d-md-none">Cantidad:</span>
                                                         <div class="ms-2">{{ equ.cantidad | number: '0.0' }}</div>
                                                     </div>
-                                                    <div class="col-md-2 col-sm-6 col-4">
+                                                    <div class="col-md-2 col-sm-6 col-8">
                                                         <span class="badge d-md-none">Frecuencia:</span>
                                                         <div class="ms-2">{{ equ.frecuencia }}</div>
                                                     </div>
@@ -280,7 +280,7 @@
                             <div *ngIf="tipoProd == 'herramienta' && herramienta.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd }} seleccionada</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'herramienta' && herramienta && herramienta.length > 0" class="table-container box-shadow fade-in-container">
@@ -318,7 +318,7 @@
                                                         <span class="badge d-md-none">Clave:</span>
                                                         <div>{{ herr.claveProducto }}</div>
                                                     </div>
-                                                    <div class="col-md-6 col-sm-4 col-4">
+                                                    <div class="col-md-6 col-sm-4 col-8">
                                                         <span class="badge d-md-none">Descripción:</span>
                                                         <div>{{ herr.descripcion }}</div>
                                                     </div>
@@ -326,7 +326,7 @@
                                                         <span class="badge d-md-none">Cantidad:</span>
                                                         <div class="ms-2">{{ herr.cantidad | number: '0.0' }}</div>
                                                     </div>
-                                                    <div class="col-md-2 col-sm-6 col-4">
+                                                    <div class="col-md-2 col-sm-6 col-8">
                                                         <span class="badge d-md-none">Frecuencia:</span>
                                                         <div class="ms-2">{{ herr.frecuencia }}</div>
                                                     </div>
@@ -347,7 +347,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" id="btnGuardaIndustria" (click)="guarda()" class="btn btn-outline-success" [disabled]="isLoading"><i class="fa-solid fa-save"></i> Cargar productos</button>
+                    <button type="button" id="btnGuardaIndustria" (click)="guarda()" class="btn btn-outline-success" [disabled]="isLoading"><i class="fa-solid fa-save"></i> Agregar productos</button>
                     <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
                 </div>
 
@@ -424,7 +424,7 @@
                             <div *ngIf="tipoProd == 'material' && materialElimina.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd }} seleccionado</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'material' && materialElimina && materialElimina.length > 0" class="table-container box-shadow fade-in-container">
@@ -488,7 +488,7 @@
                             <div *ngIf="tipoProd == 'uniforme' && uniformeElimina.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd }} seleccionado</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'uniforme' && uniformeElimina && uniformeElimina.length > 0" class="table-container box-shadow fade-in-container">
@@ -553,7 +553,7 @@
                             <div *ngIf="tipoProd == 'equipo' && equipoElimina.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd }} seleccionado</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'equipo' && equipoElimina && equipoElimina.length > 0" class="table-container box-shadow fade-in-container">
@@ -618,7 +618,7 @@
                             <div *ngIf="tipoProd == 'herramienta' && herramientaElimina.length == 0" class="text-center">
                                 <hr />
                                 <br />
-                                <h6>No se encontraron registros</h6>
+                                <h6>No hay {{ tipoProd}} seleccionada</h6>
                                 <br />
                             </div>
                             <div *ngIf="tipoProd == 'herramienta' && herramientaElimina && herramientaElimina.length > 0" class="table-container box-shadow fade-in-container">

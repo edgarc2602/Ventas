@@ -35,7 +35,7 @@ namespace SistemaVentasBatia.Services
         Task EliminarOperario(int registroAEliminar);
         Task<int> DuplicarCotizacion(int idCotizacion, bool incluyeProducto);
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
-        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento);
+        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento);
         Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id);
         Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial);
         Task<Boolean> ActualizarSalarios(PuestoTabulador salarios);
@@ -118,7 +118,9 @@ namespace SistemaVentasBatia.Services
                         IdAlta = c.IdAlta,
                         IdEstatusCotizacion = c.IdEstatusCotizacion,
                         DiasVigencia = c.DiasVigencia,
-                        polizaCumplimiento = c.PolizaCumplimiento
+                        polizaCumplimiento = c.PolizaCumplimiento,
+                        DiasEvento = c.DiasEvento,
+                        IdServicio = (int)c.IdServicio
 
                     }).ToList();
             }
@@ -913,9 +915,9 @@ namespace SistemaVentasBatia.Services
             return await cotizacionesRepo.ActualizarIndirectoUtilidad(idCotizacion, indirecto, utilidad, comisionSV, comisionExt);
         }
 
-        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
+        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento)
         {
-            return await cotizacionesRepo.ActualizarCotizacion(idCotizacion, idServicio, polizaCumplimiento);
+            return await cotizacionesRepo.ActualizarCotizacion(idCotizacion, idServicio, polizaCumplimiento, diasEvento);
         }
 
         public async Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id)

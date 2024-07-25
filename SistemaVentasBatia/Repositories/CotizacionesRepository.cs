@@ -63,7 +63,7 @@ namespace SistemaVentasBatia.Repositories
         Task InsertaCotizacion(Cotizacion cotizacion);
         Task<bool> InactivarCotizacion(int idCotizacion);
         Task DesactivarCotizaciones(int idProspecto);
-        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento);
+        Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento);
         Task InsertarTotalCotizacion(decimal total, int idCotizacion, string numerotxt);
         Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio,int idPersonal, int autorizacion);
         Task<int> ObtenerAutorizacion(int idPersonal);
@@ -190,7 +190,7 @@ namespace SistemaVentasBatia.Repositories
 
             var queryadmin = @"SELECT  *
                           FROM (SELECT ROW_NUMBER() OVER ( ORDER BY id_cotizacion desc ) AS RowNum, id_cotizacion IdCotizacion, id_servicio IdServicio, nombre_comercial NombreComercial, 
-                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta, ISNULL(c.poliza_cumplimiento, 0) AS PolizaCumplimiento, ISNULL(c.dias_vigencia, 0) AS DiasVigencia
+                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta, ISNULL(c.poliza_cumplimiento, 0) AS PolizaCumplimiento, ISNULL(c.dias_vigencia, 0) AS DiasVigencia, ISNULL(c.cotizacion_evento_dias,0) DiasEvento
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
@@ -207,7 +207,7 @@ namespace SistemaVentasBatia.Repositories
                           ORDER BY RowNum";
             var queryuser = @"SELECT  *
                           FROM (SELECT ROW_NUMBER() OVER ( ORDER BY id_cotizacion desc ) AS RowNum, id_cotizacion IdCotizacion, id_servicio IdServicio, nombre_comercial NombreComercial, 
-                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta, ISNULL(c.poliza_cumplimiento, 0) AS PolizaCumplimiento, ISNULL(c.dias_vigencia, 0) AS DiasVigencia
+                                id_estatus_Cotizacion IdEstatusCotizacion, c.fecha_alta FechaAlta, c.id_personal IdPersonal, c.total Total, c.nombre Nombre, per.Per_Nombre + ' ' + per.Per_Paterno AS IdAlta, ISNULL(c.poliza_cumplimiento, 0) AS PolizaCumplimiento, ISNULL(c.dias_vigencia, 0) AS DiasVigencia, ISNULL(c.cotizacion_evento_dias,0) DiasEvento
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
@@ -741,9 +741,9 @@ where id_cotizacion = @idCotizacion";
             }
             return result;
         }
-        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
+        public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento)
         {
-            var query =@"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento where id_cotizacion = @idCotizacion ";
+            var query =@"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento, cotizacion_evento_dias = @diasEvento where id_cotizacion = @idCotizacion ";
             if (polizaCumplimiento == false)
             {
                 query += @"UPDATE tb_cotizacion SET total_poliza = 0 WHERE id_cotizacion = @idCotizacion ";
@@ -752,7 +752,7 @@ where id_cotizacion = @idCotizacion";
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    await connection.ExecuteAsync(query, new { idCotizacion, idServicio, polizaCumplimiento });
+                    await connection.ExecuteAsync(query, new { idCotizacion, idServicio, polizaCumplimiento, diasEvento });
                     return true;
                 }
             }

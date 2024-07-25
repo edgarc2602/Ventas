@@ -60,6 +60,7 @@ namespace SistemaVentasBatia.Services
 
         public async Task AgregarMaterialOperario(MaterialCotizacionDTO materialVM)
         {
+            materialVM.FechaAlta = DateTime.Now;
             int idEstadonew = await _materialRepo.ObtenerIdEstadoPorIdDireccionCotizacion(materialVM.IdDireccionCotizacion);
             int idProveedornew = await _materialRepo.ObtenerIdProveedorPorIdEstado(idEstadonew);
             decimal precionew = await _materialRepo.ObtenerPrecioProductoProveedor(materialVM.ClaveProducto, idProveedornew);
@@ -289,6 +290,7 @@ namespace SistemaVentasBatia.Services
 
         public async Task AgregarEquipoOperario(MaterialCotizacionDTO dto)
         {
+            dto.FechaAlta = DateTime.Now;
             int idEstadonew = await _materialRepo.ObtenerIdEstadoPorIdDireccionCotizacion(dto.IdDireccionCotizacion);
             int idProveedornew = await _materialRepo.ObtenerIdProveedorPorIdEstado(idEstadonew);
             decimal precionew = await _materialRepo.ObtenerPrecioProductoProveedor(dto.ClaveProducto, idProveedornew);
@@ -344,6 +346,7 @@ namespace SistemaVentasBatia.Services
 
         public async Task AgregarUniformeOperario(MaterialCotizacionDTO dto)
         {
+            dto.FechaAlta = DateTime.Now;
             int idEstadonew = await _materialRepo.ObtenerIdEstadoPorIdDireccionCotizacion(dto.IdDireccionCotizacion);
             int idProveedornew = await _materialRepo.ObtenerIdProveedorPorIdEstado(idEstadonew);
             decimal precionew = await _materialRepo.ObtenerPrecioProductoProveedor(dto.ClaveProducto, idProveedornew);
@@ -421,6 +424,7 @@ namespace SistemaVentasBatia.Services
 
         public async Task AgregarHerramientaOperario(MaterialCotizacionDTO dto)
         {
+            dto.FechaAlta = DateTime.Now;
             int idEstadonew = await _materialRepo.ObtenerIdEstadoPorIdDireccionCotizacion(dto.IdDireccionCotizacion);
             int idProveedornew = await _materialRepo.ObtenerIdProveedorPorIdEstado(idEstadonew);
             decimal precionew = await _materialRepo.ObtenerPrecioProductoProveedor(dto.ClaveProducto, idProveedornew);

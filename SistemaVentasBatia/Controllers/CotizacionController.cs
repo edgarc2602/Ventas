@@ -249,10 +249,10 @@ namespace SistemaVentasBatia.Controllers
 
         }
 
-        [HttpGet("[action]/{idCotizacion}/{idServicio}/{polizaCumplimiento}")]
-        public async Task<ActionResult<bool>> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento)
+        [HttpGet("[action]/{idCotizacion}/{idServicio}/{polizaCumplimiento}/{diasEvento}")]
+        public async Task<ActionResult<bool>> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento)
         {
-            return await cotizacionesSvc.ActualizarCotizacion(idCotizacion, idServicio, polizaCumplimiento);
+            return await cotizacionesSvc.ActualizarCotizacion(idCotizacion, idServicio, polizaCumplimiento, diasEvento);
         }
 
         [HttpGet("[action]")]

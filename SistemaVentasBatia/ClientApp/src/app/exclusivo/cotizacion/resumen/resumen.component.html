@@ -321,31 +321,30 @@
                 </div>
             </div>
             <br />
-            <h4>Descargar</h4>
+            <h4>Descargar <i class="fa-solid fa-download me-2"></i></h4>
             <hr />
             <div class="row">
                 <div *ngIf="model.idServicio == 5" class="col-4 col-md-4 col-4 mb-3">
-                    <button type="button" (click)="propuestaEvento()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
+                    <button type="button" (click)="formatoDocumento('Propuesta evento', 5)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
                 </div>
                 <div *ngIf="model.idServicio == 4" class="col-4 col-md-4 col-4 mb-3">
-                    <button type="button" (click)="propuestaSuministroInsumos()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
+                    <button type="button" (click)="formatoDocumento('Propuesta insumos', 4)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
+                </div>
+                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
+                    <button type="button" (click)="formatoDocumento('Propuesta técnica', 1)" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Técnica</button>
                 </div>
                 <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-4 col-4 mb-3">
-                    <button type="button" (click)="descargarCotizacionComponent(2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Económica</button>
-                    <script src="../../cotizacion/resumen/"></script>
+                    <button type="button" (click)="formatoDocumento('Propuesta económica',2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Económica</button>
                 </div>
                 <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
-                    <button type="button" (click)="descargarCotizacionComponent(1)" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica</button>
-                </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
-                    <button type="button" (click)="descargarCotizacionComponent(3)" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-pdf fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
+                    <button type="button" (click)="formatoDocumento('Propuesta técnica(Mano de obra)',3)" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
                 </div>
                 <div class="col-4 col-md-4 mb-3">
                     <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-excel fa-xl me-2"></i> Datos de cotización</button>
                 </div>
             </div>
             <br />
-            <h4>Acciones</h4>
+            <h4>Acciones <i class="fa-solid fa-chevron-right me-2"></i></h4>
             <hr />
             <div class="row">
                 <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
@@ -579,7 +578,7 @@
                 </div>
             </div>
             <div class="table-container row col-md-12 box-shadow">
-                <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" [ngClass]="{'open': allTabsOpen}"  (click)="quitarFocoDeElementos2()" style=" margin-bottom: 1px;">
+                <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" [ngClass]="{'open': allTabsOpen}" (click)="quitarFocoDeElementos2()" style=" margin-bottom: 1px;">
                     <div class="plantilla row">
                         <a id="aListaOperarios{{ dir.idDireccionCotizacion }}" class="btn text-white col-md-1 col-1 d-flex align-items-center justify-content-center" style="box-shadow:none;" data-bs-toggle="collapse" href="#dvPuestosDireccion{{ dir.idDireccionCotizacion }}">
                             <i class="fa-solid fa-location-dot fa-2x"></i>

@@ -31,76 +31,121 @@ namespace SistemaVentasBatia.Controllers
             this._reportService = reportService;
             _clienteService = clienteService;
         }
-        [HttpPost("[action]/{tipo}")]
-        public IActionResult DescargarReporteCotizacion([FromBody] int idCotizacion, int tipo = 0)
+        [HttpGet("[action]/{idCotizacion}/{tipo}/{formato}")]
+        public IActionResult DescargarReporteCotizacion(int idCotizacion = 0, int tipo = 0, string formato = "")
         {
+            string formatourl = "";
+            string formatoArchivo = "";
+            switch (formato)
+            {
+                case "pdf":
+                    formatourl = "PDF";
+                    formatoArchivo = "application/pdf";
+                    break;
+                case "word":
+                    formatourl = "WORDOPENXML";
+                    formatoArchivo = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    break;
+                case "powerpoint":
+                    formatourl = "PPTX";
+                    formatoArchivo = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                    break;
+                default:
+                    Console.WriteLine("Opción no válida.");
+                    break;
+            }
+            WebClient wc = new WebClient
+            {
+                Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
+            };
             if (tipo == 1)
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacion&rs:Format=PDF&idCotizacion=" + idCotizacion.ToString());
-                    WebClient wc = new WebClient
-                    {
-                        Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
-                    };
+                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacion&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
-                    return new FileContentResult(myDataBuffer, "application/pdf")
+                    return new FileContentResult(myDataBuffer, formatoArchivo)
                     {
-                        FileDownloadName = "PropuestaTecnica"
+                        FileDownloadName = "Propuesta Técnica"
                     };
-
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error al obtener el archivo PDF: {ex.Message}");
-                    return StatusCode(500, "Error al obtener el archivo PDF");
+                    Console.WriteLine($"Error al obtener el archivo: {ex.Message}");
+                    return StatusCode(500, "Error al obtener el archivo");
                 }
             }
             if (tipo == 2)
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacion2&rs:Format=PDF&idCotizacion=" + idCotizacion.ToString());
-                    WebClient wc = new WebClient
-                    {
-                        Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
-                    };
+                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacion2&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
-                    return new FileContentResult(myDataBuffer, "application/pdf")
+                    return new FileContentResult(myDataBuffer, formatoArchivo)
                     {
-                        FileDownloadName = "PropuestaEconomica.pdf"
+                        FileDownloadName = "Propuesta Economica"
                     };
-
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error al obtener el archivo PDF: {ex.Message}");
-                    return StatusCode(500, "Error al obtener el archivo PDF");
+                    Console.WriteLine($"Error al obtener el archivo: {ex.Message}");
+                    return StatusCode(500, "Error al obtener el archivo");
                 }
             }
             if (tipo == 3)
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacionmanodeobra&rs:Format=PDF&idCotizacion=" + idCotizacion.ToString());
-                    WebClient wc = new WebClient
-                    {
-                        Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
-                    };
+                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacionmanodeobra&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
-                    return new FileContentResult(myDataBuffer, "application/pdf")
+                    return new FileContentResult(myDataBuffer, formatoArchivo)
                     {
-                        FileDownloadName = "PropuestaTecnicaManoDeObra"
+                        FileDownloadName = "PropuestaTecnica(ManoDeObra)"
                     };
-
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error al obtener el archivo PDF: {ex.Message}");
-                    return StatusCode(500, "Error al obtener el archivo PDF");
+                    Console.WriteLine($"Error al obtener el archivo: {ex.Message}");
+                    return StatusCode(500, "Error al obtener el archivo");
+                }
+            }
+            if (tipo == 4)
+            {
+                try
+                {
+                    var url = ("http://192.168.2.4/Reporte?%2freporteinsumos&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
+                    byte[] myDataBuffer = wc.DownloadData(url.ToString());
+
+                    return new FileContentResult(myDataBuffer, formatoArchivo)
+                    {
+                        FileDownloadName = "PropuestaInsumos"
+                    };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al obtener el archivo: {ex.Message}");
+                    return StatusCode(500, "Error al obtener el archivo");
+                }
+            }
+            if (tipo == 5)
+            {
+                try
+                {
+                    var url = ("http://192.168.2.4/Reporte?%2freporteevento&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
+                    byte[] myDataBuffer = wc.DownloadData(url.ToString());
+
+                    return new FileContentResult(myDataBuffer, formatoArchivo)
+                    {
+                        FileDownloadName = "PropuestaEvento"
+                    };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al obtener el archivo: {ex.Message}");
+                    return StatusCode(500, "Error al obtener el archivo");
                 }
             }
             else
@@ -203,53 +248,5 @@ namespace SistemaVentasBatia.Controllers
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
         }
 
-        [HttpGet("[action]/{idCotizacion}")]
-        public IActionResult DescargarPropuestaInsumos(int idCotizacion)
-        {
-            try
-            {
-                var url = ("http://192.168.2.4/Reporte?%2freporteinsumos&rs:Format=PDF&idCotizacion=" + idCotizacion.ToString());
-                WebClient wc = new WebClient
-                {
-                    Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
-                };
-                byte[] myDataBuffer = wc.DownloadData(url.ToString());
-
-                return new FileContentResult(myDataBuffer, "application/pdf")
-                {
-                    FileDownloadName = "PropuestaInsumos"
-                };
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al obtener el archivo PDF: {ex.Message}");
-                return StatusCode(500, "Error al obtener el archivo PDF");
-            }
-        }
-
-        [HttpGet("[action]/{idCotizacion}")]
-        public IActionResult DescargarPropuestaEvento(int idCotizacion)
-        {
-            try
-            {
-                var url = ("http://192.168.2.4/Reporte?%2freporteevento&rs:Format=PDF&idCotizacion=" + idCotizacion.ToString());
-                WebClient wc = new WebClient
-                {
-                    Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
-                };
-                byte[] myDataBuffer = wc.DownloadData(url.ToString());
-
-                return new FileContentResult(myDataBuffer, "application/pdf")
-                {
-                    FileDownloadName = "PropuestaInsumos"
-                };
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al obtener el archivo PDF: {ex.Message}");
-                return StatusCode(500, "Error al obtener el archivo PDF");
-            }
-        }
     }
 }

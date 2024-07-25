@@ -32,7 +32,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     };
     lcots: ListaCotizacion = {
         idProspecto: 0, idServicio: 0, pagina: 1, numPaginas: 0,
-        rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0
+        rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0, diasEvento: 0
     };
     lsers: ItemN[] = [];
     lests: ItemN[] = [];
@@ -118,7 +118,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     nuevo() {
         this.lcots = {
             idProspecto: 0, idServicio: 0, pagina: 1, numPaginas: 0,
-            rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0
+            rows: 0, cotizaciones: [], idEstatusCotizacion: 1, idAlta: '', total: 0, diasEvento: 0
         };
     }
 
@@ -140,8 +140,8 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     }
 
     //Abrir modal editar cotizacion
-    editar(idCotizacion: number, servicio: string, polizaCumplimiento: boolean) {
-        this.ediw.openSel(idCotizacion, servicio, polizaCumplimiento);
+    editar(idCotizacion: number, idServicio: number, polizaCumplimiento: boolean, diasEvento: number) {
+        this.ediw.openSel(idCotizacion, idServicio, polizaCumplimiento, diasEvento);
     }
 
     openCerrarCotizacion(idCotizacion: number) {

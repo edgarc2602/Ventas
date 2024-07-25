@@ -660,36 +660,72 @@ export class ResumenComponent implements OnInit, OnDestroy {
         }
     }
 
-    descargarCotizacionComponent(tipo: number) {
+    formatoDocumento(documento: string, idReporte: number) {
+        Swal.fire({
+            title: documento,
+            text: 'Seleccione un formato de descarga',
+            icon: 'info',
+            showCancelButton: true,
+            showDenyButton: true,
+            showConfirmButton: true,
+            denyButtonText: '<i class="fa-solid fa-file-pdf fa-xl me-2"></i>PDF',
+            confirmButtonText: '<i class="fa-solid fa-file-word fa-xl me-2"></i>WORD',
+            cancelButtonText: '<i class="fa-solid fa-file-powerpoint fa-xl me-2"></i>PPTX',
+            customClass: {
+                confirmButton: 'btn-pdf',
+                denyButton: 'btn-word',
+                cancelButton: 'btn-pptx',
+                popup: 'custom-swal-width'
+            }
+        }).then((result) => {
+            if (result.isDenied) {
+                this.descargarReporte(documento, idReporte, 'pdf');
+            } else if (result.isConfirmed) {
+                this.descargarReporte(documento, idReporte, 'word');
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                this.descargarReporte(documento, idReporte, 'powerpoint');
+            }
+        });
+    }
+
+    descargarReporte(nombreArchivo: string, idReporte: number, formato: string) {
         this.existe(this.model.idCotizacion)
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.post(`${this.url}api/report/DescargarReporteCotizacion/${tipo}`, this.model.idCotizacion, { responseType: 'arraybuffer' })
+            this.http.get(`${this.url}api/report/DescargarReporteCotizacion/${this.model.idCotizacion}/${idReporte}/${formato}`, { responseType: 'arraybuffer' })
                 .subscribe(
                     (data: ArrayBuffer) => {
+                        var formatoArchivo = '';
+                        switch (formato) {
+                            case "pdf":
+                                formatoArchivo = 'application/pdf';
+                                break;
+                            case "word":
+                                formatoArchivo = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                                break;
+                            case "powerpoint":
+                                formatoArchivo = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+                                break;
+                        }
+                        const file = new Blob([data], { type: formatoArchivo });
+                        const fileURL = URL.createObjectURL(file);
+                        const a = document.createElement('a');
+                        a.href = fileURL;
+                        a.download = nombreArchivo + "-" + this.model.nombreComercial;
+                        document.body.appendChild(a);
+                        a.click();
+                        URL.revokeObjectURL(fileURL);
                         this.detenerCarga();
                         setTimeout(() => {
-                            this.okToast('Propuesta descargada');
+                            this.okToast('Descargado correctamente');
                         }, 300);
-                        const file = new Blob([data], { type: 'application/pdf' });
-                        const fileURL = URL.createObjectURL(file);
-                        const width = 800;
-                        const height = 550;
-                        const left = window.innerWidth / 2 - width / 2;
-                        const top = window.innerHeight / 2 - height / 2;
-                        const newWindow = window.open(fileURL, '_blank', `width=${width}, height=${height}, top=${top}, left=${left}`);
-                        if (newWindow) {
-                            newWindow.focus();
-                        } else {
-                            alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
-                        }
                     },
                     error => {
                         this.detenerCarga();
                         setTimeout(() => {
-                            this.errorToast('Ocurri\u00F3 un error');
+                            this.errorToast('Ocurri\u00F3 un error al descargar');
                         }, 300);
-                        console.error('Error al obtener el archivo PDF', error);
+                        console.error('Error al obtener el archivo', error);
                     }
                 );
         }, 300);

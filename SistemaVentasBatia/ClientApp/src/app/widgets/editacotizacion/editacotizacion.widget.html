@@ -15,7 +15,7 @@
                 <div class="modal-body">
                     <div>
                         <div class="row">
-                            <div class="col-sm-12 col-md-12 col-12 mb-3">
+                            <div class="col-sm-8 col-md-8 col-8 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" [(ngModel)]="idServicio" name="IdServicio" id="ddlServicioEdit">
                                         <option value="0">Seleccione...</option>
@@ -24,6 +24,13 @@
                                     <label for="ddlServicioEdit">Servicio</label>
                                 </div>
                                 <span *ngIf="ferr('IdServicio')" class="text-danger">{{ terr('IdServicio') }}</span>
+                            </div>
+                            <div *ngIf="idServicio == 5" class="col-md-4 col-sm-4 col-4 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" [(ngModel)]="diasEvento" id="txtDiasEvento">
+                                    <label for="txtDiasEvento">Duración (días)</label>
+                                </div>
+                                <span *ngIf="ferr('DiasEvento')" class="text-danger">{{ terr('DiasEvento') }}</span>
                             </div>
                         </div>
                         <h6><span class="small text-muted mb-2">Póliza de cumplimiento</span></h6>

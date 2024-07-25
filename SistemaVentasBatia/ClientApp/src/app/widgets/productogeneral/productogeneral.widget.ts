@@ -141,7 +141,7 @@ export class ProductoGeneralWidget {
 
             };
             this.productoSeleccionado = null;
-            this.okToast("Agregado a la seleci\u00F3n");
+            this.okToast("Agregado a la selecci\u00F3n");
             switch (tipo) {
                 case "material":
                     this.material.forEach(pro => {
@@ -150,12 +150,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.material.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
                 case "uniforme":
@@ -165,12 +165,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.uniforme.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
                 case "equipo":
@@ -180,12 +180,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.equipo.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
                 case "herramienta":
@@ -195,12 +195,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.herramienta.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
             }
@@ -241,12 +241,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.materialElimina.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
                 case "uniforme":
@@ -256,12 +256,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.uniformeElimina.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
                 case "equipo":
@@ -271,12 +271,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.equipoElimina.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
                 case "herramienta":
@@ -286,12 +286,12 @@ export class ProductoGeneralWidget {
                         }
                     });
                     if (this.existe) {
-                        this.errorToast("Este material ya esta fue agregado");
+                        this.errorToast("Este producto ya est\u00E1 seleccionado");
                         break;
                     }
                     else {
                         this.herramientaElimina.push(producto);
-                        this.okToast("Agregado a la seleci\u00F3n");
+                        this.okToast("Agregado a la selecci\u00F3n");
                     }
                     break;
             }

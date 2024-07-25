@@ -22,9 +22,11 @@ export class EditarCotizacion {
         subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, idEstatus: 0, diasEvento: 0
     };
     sers: ItemN[] = [];
-    idServicio: number = 0;
     idCotizacion: number = 0;
+    idServicio: number = 0;
     polizaCumplimiento: boolean = false;
+    diasEvento: number = 0;
+
     validacion: boolean = false;
     isLoading: boolean = false;
     lerr: any = {};
@@ -38,23 +40,14 @@ export class EditarCotizacion {
         }, err => console.log(err));
     }
 
-    openSel(idCotizacion: number, servicio: string, polizaCumplimiento: boolean) {
+    openSel(idCotizacion: number, idServicio: number, polizaCumplimiento: boolean, diasEvento: number) {
         this.lerr = {};
-        this.polizaCumplimiento = polizaCumplimiento;
-        switch (servicio) {
-            case 'Mantenimiento':
-                this.idServicio = 1;
-                break;
-            case 'Limpieza':
-                this.idServicio = 2;
-                break;
-            case 'Sanitización':
-                this.idServicio = 3;
-                break;
-            default:
-                break;
-        }
+
         this.idCotizacion = idCotizacion;
+        this.idServicio = idServicio;
+        this.polizaCumplimiento = polizaCumplimiento;
+        this.diasEvento = diasEvento;
+
         let docModal = document.getElementById('editcot');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
         myModal.show();
@@ -64,7 +57,7 @@ export class EditarCotizacion {
         if (this.valida()) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/${this.idServicio}/${this.polizaCumplimiento}`).subscribe(response => {
+                this.http.get<boolean>(`${this.url}api/cotizacion/ActualizarCotizacion/${this.idCotizacion}/${this.idServicio}/${this.polizaCumplimiento}/${this.diasEvento}`).subscribe(response => {
                     //actualizar monto
                     this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.idCotizacion}`).subscribe(response => {
                         this.model = response;
@@ -93,6 +86,13 @@ export class EditarCotizacion {
             this.lerr['IdServicio'] = ['Seleccione un servicio'];
             this.validacion = false;
         }
+        if (this.idServicio == 5) {
+            if (this.diasEvento == 0) {
+                this.lerr['DiasEvento'] = ['Ingrese los dias de duración del evento'];
+                this.validacion = false;
+            }
+        }
+
         return this.validacion;
     }
 

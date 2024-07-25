@@ -82,6 +82,7 @@ export class PuestoWidget {
             imss: 0, isn: 0, aguinaldo: 0, total: 0, idCotizacion: this.idC, idPersonal: this.sinU.idPersonal, idSalario: 0, idClase: 1, idTabulador: 0, jornadadesc: '', idZona: 0, cantidad: 0, diaFestivo: false, festivo: 0, bonos: 0, vales: 0,
             diaDomingo: false, domingo: 0, diaCubreDescanso: false, cubreDescanso: 0, hrInicioFin: '', hrFinFin: '', diaInicioFin: 0, diaFinFin: 0, diaDescanso: 0, diasEvento: 0, incluyeMaterial: false
         };
+        this.model.sueldo = 0
         this.idCliente = 0;
         this.idEstado = 0;
         this.lcli = null;
@@ -89,6 +90,7 @@ export class PuestoWidget {
     }
 
     existe(id: number) {
+        this.model.sueldo = 0
         this.http.get<PuestoCotiza>(`${this.url}api/puesto/${id}`).subscribe(response => {
             this.existeProducto = response.incluyeMaterial;
             this.idD = response.idDireccionCotizacion;
@@ -223,6 +225,8 @@ export class PuestoWidget {
             }, err => console.log(err));
             this.http.get<CatalogoSueldoJornalero[]>(`${this.url}api/salario/ObtenerSueldoJornal/${this.idD}/${this.idCliente}/${this.idSucursal}`).subscribe(response => {
                 this.lsuel = response;
+                this.model.sueldo = 0;
+                this.model.jornada = 0;
             })
             this.detenerCarga();
 

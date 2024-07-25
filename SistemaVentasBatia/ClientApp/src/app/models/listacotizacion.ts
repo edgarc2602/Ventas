@@ -10,4 +10,6 @@ export interface ListaCotizacion {
     idEstatusCotizacion: number;
     idAlta: string;
     total: number;
+    diasEvento: number;
+
 }
