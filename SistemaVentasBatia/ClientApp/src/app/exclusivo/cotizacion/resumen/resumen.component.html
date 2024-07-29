@@ -536,7 +536,7 @@
             <div *ngIf="isLoading" class="text-center ">
                 <i class="fas fa-spinner fa-spin fa-3x"></i>
             </div>-->
-            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" class="table-container">
+            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" class="table-container" #tbdirecciones>
                 <div class="row">
                     <div *ngFor="let dr of lsdir.direcciones" class="col-sm-12 col-md-6 mb-3">
                         <div class="card shadow-sm">
@@ -564,9 +564,10 @@
                     </div>
                 </div>
             </div>
-            <pagina-widget [pagina]="lsdir.pagina" [numPaginas]="lsdir.numPaginas" [rows]="lsdir.rows" (chgEvent)="dirPagina($event)"></pagina-widget>
-
             <br />
+            <div *ngIf="lsdir.direcciones && lsdir.direcciones.length > 0" class="fade-in-container" [style.pointer-events]="isLoading ? 'none' : 'auto'">
+                <pagina-widget [pagina]="lsdir.pagina" [numPaginas]="lsdir.numPaginas" [rows]="lsdir.rows" (chgEvent)="dirPagina($event)"></pagina-widget>
+            </div>
             <hr />
             <div class="row">
                 <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">
@@ -592,7 +593,7 @@
                                         <i class="fa-solid fa-download fa-xl me-2"></i>
                                         Descargar
                                     </button>
-                                    <input type="file" (change)="onFileChangeDir($event)" #fileInputDir style="display:none" accept=".xlsx,.xls" id="loutDir" >
+                                    <input type="file" (change)="onFileChangeDir($event)" #fileInputDir style="display:none" accept=".xlsx,.xls" id="loutDir">
                                     <button type="button" class="btn btn-outline-secondary" (click)="fileInputDir.click(); quitarFocoDeElementos2()" [disabled]="isLoadinglay">
                                         <i class="fa-solid fa-upload fa-xl me-2"></i>
                                         Cargar
@@ -617,7 +618,7 @@
                     <button class="btn btn-outline-primary btn-sm mb-1" (click)="toggleAllTabs()"><i class="fa-solid {{ allTabsOpen ? 'fa-chevron-up' : 'fa-chevron-down' }}"></i> {{ allTabsOpen ? 'Cerrar todo' : 'Abrir todo' }}</button>
                 </div>
             </div>
-            <div class="table-container row col-md-12 box-shadow">
+            <div class="table-container row col-md-12 box-shadow" #tbpuestos>
                 <div id="accordion" *ngFor="let dir of lspue.direccionesCotizacion" [ngClass]="{'open': allTabsOpen}" (click)="quitarFocoDeElementos2()" style=" margin-bottom: 1px;">
                     <div class="plantilla row">
                         <a id="aListaOperarios{{ dir.idDireccionCotizacion }}" class="btn text-white col-md-1 col-1 d-flex align-items-center justify-content-center" style="box-shadow:none;" data-bs-toggle="collapse" href="#dvPuestosDireccion{{ dir.idDireccionCotizacion }}">
@@ -743,8 +744,12 @@
                     </div>
                 </div>
             </div>
-
             <br />
+            <br />
+            <div *ngIf="lspue.direccionesCotizacion && lspue.direccionesCotizacion.length > 0" class="fade-in-container" [style.pointer-events]="isLoading ? 'none' : 'auto'">
+                <pagina-widget [pagina]="lspue.pagina" [numPaginas]="lspue.numPaginas" [rows]="lspue.rows" (chgEvent)="puePagina($event)"></pagina-widget>
+            </div>
+
             <hr />
             <div class="row">
                 <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">

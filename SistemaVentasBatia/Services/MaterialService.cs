@@ -119,8 +119,8 @@ namespace SistemaVentasBatia.Services
 
             if (listaMaterialesVM.Rows > 0)
             {
-                listaMaterialesVM.NumPaginas = (listaMaterialesVM.Rows / 10);
-                if (listaMaterialesVM.Rows % 10 > 0)
+                listaMaterialesVM.NumPaginas = (listaMaterialesVM.Rows / 50);
+                if (listaMaterialesVM.Rows % 50 > 0)
                 {
                     listaMaterialesVM.NumPaginas++;
                 }
@@ -159,8 +159,8 @@ namespace SistemaVentasBatia.Services
             listaMateriales.IdCotizacion, listaMateriales.IdDireccionCotizacion, listaMateriales.IdPuestoDireccionCotizacion, listaMateriales.Keywords);
             if (listaMateriales.Rows > 0)
             {
-                listaMateriales.NumPaginas = (listaMateriales.Rows / 10);
-                if (listaMateriales.Rows % 10 > 0)
+                listaMateriales.NumPaginas = (listaMateriales.Rows / 50);
+                if (listaMateriales.Rows % 50 > 0)
                 {
                     listaMateriales.NumPaginas++;
                 }
@@ -179,8 +179,8 @@ namespace SistemaVentasBatia.Services
             listaMateriales.IdCotizacion, listaMateriales.IdDireccionCotizacion, listaMateriales.IdPuestoDireccionCotizacion, listaMateriales.Keywords);
             if (listaMateriales.Rows > 0)
             {
-                listaMateriales.NumPaginas = (listaMateriales.Rows / 10);
-                if (listaMateriales.Rows % 10 > 0)
+                listaMateriales.NumPaginas = (listaMateriales.Rows / 50);
+                if (listaMateriales.Rows % 50 > 0)
                 {
                     listaMateriales.NumPaginas++;
                 }
@@ -199,8 +199,8 @@ namespace SistemaVentasBatia.Services
             listaMateriales.IdCotizacion, listaMateriales.IdDireccionCotizacion, listaMateriales.IdPuestoDireccionCotizacion, listaMateriales.Keywords);
             if (listaMateriales.Rows > 0)
             {
-                listaMateriales.NumPaginas = (listaMateriales.Rows / 10);
-                if (listaMateriales.Rows % 10 > 0)
+                listaMateriales.NumPaginas = (listaMateriales.Rows / 50);
+                if (listaMateriales.Rows % 50 > 0)
                 {
                     listaMateriales.NumPaginas++;
                 }

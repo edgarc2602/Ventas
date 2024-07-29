@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Xml.Schema;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
+using System.Net;
 
 namespace SistemaVentasBatia.Services
 {
@@ -97,9 +98,9 @@ namespace SistemaVentasBatia.Services
 
             if (listaCotizacionesVM.Rows > 0)
             {
-                listaCotizacionesVM.NumPaginas = (listaCotizacionesVM.Rows / 40);
+                listaCotizacionesVM.NumPaginas = (listaCotizacionesVM.Rows / 50);
 
-                if (listaCotizacionesVM.Rows % 40 > 0)
+                if (listaCotizacionesVM.Rows % 50 > 0)
                 {
                     listaCotizacionesVM.NumPaginas++;
                 }
@@ -141,9 +142,9 @@ namespace SistemaVentasBatia.Services
             listaDireccionesVM.Rows = await cotizacionesRepo.ContarDireccionesCotizacion(listaDireccionesVM.IdCotizacion);
             if (listaDireccionesVM.Rows > 0)
             {
-                listaDireccionesVM.NumPaginas = (listaDireccionesVM.Rows / 40);
+                listaDireccionesVM.NumPaginas = (listaDireccionesVM.Rows / 50);
 
-                if (listaDireccionesVM.Rows % 40 > 0)
+                if (listaDireccionesVM.Rows % 50 > 0)
                 {
                     listaDireccionesVM.NumPaginas++;
                 }
@@ -212,12 +213,27 @@ namespace SistemaVentasBatia.Services
 
         public async Task ObtenerListaPuestosPorCotizacion(ListaPuestosDireccionCotizacionDTO listaPuestosDireccionCotizacionVM)
         {
-            listaPuestosDireccionCotizacionVM.PuestosDireccionesCotizacion = mapper.Map<List<PuestoDireccionMinDTO>>(await cotizacionesRepo.ObtienePuestosPorCotizacion(listaPuestosDireccionCotizacionVM.IdCotizacion));
+            listaPuestosDireccionCotizacionVM.PuestosDireccionesCotizacion = mapper.Map<List<PuestoDireccionMinDTO>>(await cotizacionesRepo.ObtienePuestosPorCotizacion(listaPuestosDireccionCotizacionVM.IdCotizacion, listaPuestosDireccionCotizacionVM.Pagina));
         }
 
         public async Task ObtenerCatalogoDireccionesPorCotizacion(ListaPuestosDireccionCotizacionDTO listaPuestosDireccionCotizacionVM)
         {
-            listaPuestosDireccionCotizacionVM.DireccionesCotizacion = mapper.Map<List<DireccionDTO>>(await cotizacionesRepo.ObtenerCatalogoDireccionesCotizacion(listaPuestosDireccionCotizacionVM.IdCotizacion));
+            listaPuestosDireccionCotizacionVM.Rows = await cotizacionesRepo.ContarDireccionesCotizacion(listaPuestosDireccionCotizacionVM.IdCotizacion);
+
+            if (listaPuestosDireccionCotizacionVM.Rows > 0)
+            {
+                listaPuestosDireccionCotizacionVM.NumPaginas = (listaPuestosDireccionCotizacionVM.Rows / 50);
+
+                if (listaPuestosDireccionCotizacionVM.Rows % 50 > 0)
+                {
+                    listaPuestosDireccionCotizacionVM.NumPaginas++;
+                }
+                listaPuestosDireccionCotizacionVM.DireccionesCotizacion = mapper.Map<List<DireccionDTO>>(await cotizacionesRepo.ObtenerCatalogoDireccionesCotizacion(listaPuestosDireccionCotizacionVM.IdCotizacion, listaPuestosDireccionCotizacionVM.Pagina));
+            }
+            else
+            {
+                listaPuestosDireccionCotizacionVM.DireccionesCotizacion = new List<DireccionDTO>();
+            }
         }
 
         public async Task CrearPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operariosVM)

@@ -91,8 +91,8 @@ namespace SistemaVentasBatia.Services
                         {
                             direccion.Ciudad = direccionAPI.CodigoPostal.Estado;
                             direccion.Municipio = direccionAPI.CodigoPostal.Municipio;
-                            //direccion.IdEstado = direccionAPI.CodigoPostal.IdEstado;
-                            //direccion.IdMunicipio = direccionAPI.CodigoPostal.IdMunicipio;
+                            direccion.IdEstado = direccionAPI.CodigoPostal.IdEstado;
+                            direccion.IdMunicipio = direccionAPI.CodigoPostal.IdMunicipio;
                             direccion.IdMunicipio = 0;
                         }
                         else

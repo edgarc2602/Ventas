@@ -46,7 +46,7 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Direccion>> ObtenerDireccionesPorCotizacion(int idCotizacion, int pagina);
 
         Task<List<Direccion>> ObtenerCatalogoDirecciones(int idProspecto);
-        Task<List<Direccion>> ObtenerCatalogoDireccionesCotizacion(int idCotizacion);
+        Task<List<Direccion>> ObtenerCatalogoDireccionesCotizacion(int idCotizacion, int pagina);
         Task<List<DireccionCotizacion>> ObtieneDireccionesCotizacion(int idCotizacion);
 
         //PUESTO
@@ -56,7 +56,7 @@ namespace SistemaVentasBatia.Repositories
         Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacion operario);
         Task<int> InsertaPuestoDireccionCotizacion(PuestoDireccionCotizacion operario);
         Task<string> ObtenerDescripcionPuestoPorIdOperario(int id);
-        Task<List<PuestoDireccionCotizacion>> ObtienePuestosPorCotizacion(int idCotizacion);
+        Task<List<PuestoDireccionCotizacion>> ObtienePuestosPorCotizacion(int idCotizacion, int pagina);
         Task<List<PuestoDireccionCotizacion>> ObtieneOperariosCotizacion(int idCotizacion);
 
         //COTIZACION
@@ -194,7 +194,7 @@ namespace SistemaVentasBatia.Repositories
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
-                                --JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
+                                JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
                                 WHERE 
                                     ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
@@ -202,8 +202,8 @@ namespace SistemaVentasBatia.Repositories
                                     
                                     c.id_estatus_cotizacion IN (1,2,3,4,5,6)    
                                ) AS Cotizaciones
-                          WHERE   RowNum >= ((@pagina - 1) * 40) + 1
-                              AND RowNum <= (@pagina * 40)
+                          WHERE   RowNum >= ((@pagina - 1) * 50) + 1
+                              AND RowNum <= (@pagina * 50)
                           ORDER BY RowNum";
             var queryuser = @"SELECT  *
                           FROM (SELECT ROW_NUMBER() OVER ( ORDER BY id_cotizacion desc ) AS RowNum, id_cotizacion IdCotizacion, id_servicio IdServicio, nombre_comercial NombreComercial, 
@@ -211,7 +211,7 @@ namespace SistemaVentasBatia.Repositories
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
-                                --JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
+                                JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
                                 WHERE 
                                     ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
                                     ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
@@ -221,8 +221,8 @@ namespace SistemaVentasBatia.Repositories
                                     c.id_estatus_cotizacion IN (1,2,3,4,5,6)
 
                                ) AS Cotizaciones
-                          WHERE   RowNum >= ((@pagina - 1) * 40) + 1
-                              AND RowNum <= (@pagina * 40)
+                          WHERE   RowNum >= ((@pagina - 1) * 50) + 1
+                              AND RowNum <= (@pagina * 50)
                           ORDER BY RowNum";
 
 
@@ -279,8 +279,8 @@ dc.id_direccion_cotizacion IdDireccionCotizacion, d.id_direccion IdDireccion, no
                                 JOIN tb_direccion_cotizacion dc on dc.Id_Direccion = d.Id_Direccion
                                 WHERE dc.id_cotizacion = @idCotizacion and id_estatus_direccion = 1
                                ) AS Direcciones
-                          WHERE   RowNum >= ((@pagina - 1) * 40) + 1
-AND RowNum <= (@pagina * 40)
+                          WHERE   RowNum >= ((@pagina - 1) * 50) + 1
+AND RowNum <= (@pagina * 50)
 ORDER BY RowNum";
 
             var direcciones = new List<Direccion>();
@@ -338,7 +338,7 @@ ORDER BY RowNum";
                 throw ex;
             }
         }
-        public async Task<List<PuestoDireccionCotizacion>> ObtienePuestosPorCotizacion(int idCotizacion)
+        public async Task<List<PuestoDireccionCotizacion>> ObtienePuestosPorCotizacion(int idCotizacion, int pagina)
         {
             var query = @"select pdc.cantidad Cantidad, p.descripcion Puesto, jornada Jornada,j.descripcion JornadaDesc, t.descripcion Turno, hr_inicio HrInicio, hr_fin HrFin, dia_inicio DiaInicio, dia_fin DiaFin,
 	                               sueldo Sueldo, dc.id_cotizacion IdCotizacion, pdc.id_direccion_cotizacion IdDireccionCotizacion, id_puesto_direccioncotizacion IdPuestoDireccionCotizacion,
@@ -366,14 +366,22 @@ ORDER BY RowNum";
             }
             return puestosDirecciones;
         }
-        public async Task<List<Direccion>> ObtenerCatalogoDireccionesCotizacion(int idCotizacion)
+        public async Task<List<Direccion>> ObtenerCatalogoDireccionesCotizacion(int idCotizacion, int pagina)
         {
-            var query = @"SELECT d.id_direccion IdDireccion, nombre_sucursal NombreSucursal, id_tipo_inmueble IdTipoInmueble, dc.id_direccion_cotizacion IdDireccionCotizacion,
-                                    d.id_estado IdEstado, d.id_tabulador IdTabulador, municipio Municipio, ciudad Ciudad, colonia Colonia, domicilio Domicilio, referencia Referencia, codigo_postal CodigoPostal, e.descripcion Estado
-                          FROM tb_direccion d
-                          RIGHT JOIN tb_direccion_cotizacion dc on dc.id_direccion = d.id_direccion
-                          JOIN tb_estado e on d.id_estado = e.id_estado
-                          WHERE dc.id_cotizacion = @idCotizacion ORDER BY nombre_sucursal";
+            var query = @"SELECT  *
+    FROM (
+	SELECT 
+		ROW_NUMBER() OVER ( ORDER BY d.nombre_sucursal ) AS RowNum,
+		d.id_direccion IdDireccion, nombre_sucursal NombreSucursal, id_tipo_inmueble IdTipoInmueble, dc.id_direccion_cotizacion IdDireccionCotizacion,
+		d.id_estado IdEstado, d.id_tabulador IdTabulador, municipio Municipio, ciudad Ciudad, colonia Colonia, domicilio Domicilio, referencia Referencia, codigo_postal CodigoPostal, e.descripcion Estado
+	FROM tb_direccion d
+	RIGHT JOIN tb_direccion_cotizacion dc on dc.id_direccion = d.id_direccion
+	JOIN tb_estado e on d.id_estado = e.id_estado
+	WHERE dc.id_cotizacion = @idCotizacion 
+        ) AS Direcciones
+    WHERE   RowNum >= ((@pagina - 1) * 50) + 1
+        AND RowNum <= (@pagina * 50)
+    ORDER BY RowNum";
 
             var direcciones = new List<Direccion>();
 
@@ -381,7 +389,7 @@ ORDER BY RowNum";
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    direcciones = (await connection.QueryAsync<Direccion>(query, new { idCotizacion })).ToList();
+                    direcciones = (await connection.QueryAsync<Direccion>(query, new { idCotizacion, pagina })).ToList();
                 }
             }
             catch (Exception ex)

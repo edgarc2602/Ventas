@@ -20,6 +20,7 @@ export class PuestoLayoutWidget {
     turs: Catalogo[] = [];
     tabs: Catalogo[] = [];
     ljor: Catalogo[] = [];
+    edos: Catalogo[] = [];
     hors: string[] = [];
     dias: ItemN[] = [];
     fres: Catalogo[] = [];
@@ -64,6 +65,9 @@ export class PuestoLayoutWidget {
         }, err => console.log(err));
         this.http.get<Catalogo[]>(`${this.url}api/catalogo/getfrecuencia`).subscribe(response => {
             this.fres = response;
+        }, err => console.log(err));
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getestado`).subscribe(response => {
+            this.edos = response;
         }, err => console.log(err));
     }
 

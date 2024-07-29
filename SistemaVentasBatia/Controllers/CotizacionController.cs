@@ -118,10 +118,10 @@ namespace SistemaVentasBatia.Controllers
             return listaDireccionesVM;
         }
 
-        [HttpGet("{id}/{idDireccionCotizacion}/{idPuestoDireccionCotizacion}")]
-        public async Task<ActionResult<ListaPuestosDireccionCotizacionDTO>> LimpiezaPlantilla(int id, int idDireccionCotizacion = 0, int idPuestoDireccionCotizacion = 0)
+        [HttpGet("{id}/{idDireccionCotizacion}/{idPuestoDireccionCotizacion}/{pagina}")]
+        public async Task<ActionResult<ListaPuestosDireccionCotizacionDTO>> LimpiezaPlantilla(int id, int idDireccionCotizacion = 0, int idPuestoDireccionCotizacion = 0, int pagina = 0)
         {
-            var listaPuestosDireccionCotizacionVM = new ListaPuestosDireccionCotizacionDTO { IdCotizacion = id, IdDireccionCotizacion = idDireccionCotizacion, IdPuestoDireccionCotizacion = idPuestoDireccionCotizacion };
+            var listaPuestosDireccionCotizacionVM = new ListaPuestosDireccionCotizacionDTO { IdCotizacion = id, IdDireccionCotizacion = idDireccionCotizacion, IdPuestoDireccionCotizacion = idPuestoDireccionCotizacion, Pagina = pagina };
 
             await cotizacionesSvc.ObtenerListaPuestosPorCotizacion(listaPuestosDireccionCotizacionVM);
 

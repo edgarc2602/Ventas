@@ -592,8 +592,8 @@ WHERE c.id_estado = @idEstado AND
 b.id_status = 1 AND
 ISNULL(NULLIF(@idFamilia,0), b.id_familia) = b.id_familia
 ) AS Supervisiones
-WHERE   RowNum >= ((@pagina - 1) * 40) + 1
-AND RowNum <= (@pagina * 40)
+WHERE   RowNum >= ((@pagina - 1) * 50) + 1
+AND RowNum <= (@pagina * 50)
 ORDER BY RowNum
 ";
             var productos = new List<ProductoPrecioEstado>();

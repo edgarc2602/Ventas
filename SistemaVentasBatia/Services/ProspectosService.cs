@@ -71,9 +71,9 @@ namespace SistemaVentasBatia.Services
 
             if (listaProspectosVM.Rows > 0)
             {
-                listaProspectosVM.NumPaginas = (listaProspectosVM.Rows / 40);
+                listaProspectosVM.NumPaginas = (listaProspectosVM.Rows / 50);
 
-                if (listaProspectosVM.Rows % 40 > 0)
+                if (listaProspectosVM.Rows % 50 > 0)
                 {
                     listaProspectosVM.NumPaginas++;
                 }
@@ -265,8 +265,8 @@ namespace SistemaVentasBatia.Services
                     {
                         string jsonResponse = await response.Content.ReadAsStringAsync();
                         DireccionResponseAPIDTO codigoPostalResponse = JsonConvert.DeserializeObject<DireccionResponseAPIDTO>(jsonResponse);
-                        //codigoPostalResponse.CodigoPostal.IdEstado = await prospectosRepo.GetIdEstadoByEstado(codigoPostalResponse.CodigoPostal.Estado);
-                        //codigoPostalResponse.CodigoPostal.IdMunicipio = await prospectosRepo.GetIdMunucipioByMunicipio(codigoPostalResponse.CodigoPostal.IdEstado, codigoPostalResponse.CodigoPostal.Municipio);
+                        codigoPostalResponse.CodigoPostal.IdEstado = await prospectosRepo.GetIdEstadoByEstado(codigoPostalResponse.CodigoPostal.Estado);
+                        codigoPostalResponse.CodigoPostal.IdMunicipio = await prospectosRepo.GetIdMunucipioByMunicipio(codigoPostalResponse.CodigoPostal.IdEstado, codigoPostalResponse.CodigoPostal.Municipio);
                         return codigoPostalResponse;
                     }
                     else

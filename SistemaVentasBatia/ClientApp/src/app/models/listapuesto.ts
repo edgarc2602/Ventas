@@ -9,4 +9,8 @@ export interface ListaPuesto {
     idPuestoDireccionCotizacion: number;
     length: number;
     empleados: number;
+
+    pagina: number;
+    rows: number;
+    numPaginas: number;
 }

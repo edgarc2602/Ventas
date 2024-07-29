@@ -193,8 +193,8 @@ namespace SistemaVentasBatia.Services
             listaProducto.Familias = mapper.Map<List<ProductoFamiliaDTO>>(familias);
             if(listaProducto.Rows > 0)
             {
-                listaProducto.NumPaginas = (listaProducto.Rows / 40);
-                if (listaProducto.Rows % 40 > 0)
+                listaProducto.NumPaginas = (listaProducto.Rows / 50);
+                if (listaProducto.Rows % 50 > 0)
                 {
                     listaProducto.NumPaginas++;
                 }

@@ -62,6 +62,8 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild('fileInputPlan', { static: false }) fileInputPlan: ElementRef<HTMLInputElement>;
     @ViewChild('fileInputProductoExtra', { static: false }) fileInputProductoExtra: ElementRef<HTMLInputElement>;
     @ViewChild('resumenCot', { static: false }) resumenContainer: ElementRef;
+    @ViewChild('tbdirecciones', { static: false }) tbdireciones: ElementRef;
+    @ViewChild('tbpuestos', { static: false }) tbpuestos: ElementRef;
 
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
@@ -79,7 +81,9 @@ export class ResumenComponent implements OnInit, OnDestroy {
     indust: Catalogo[] = [];
     docs: ItemN[] = [];
     lsdir: ListaDireccion = {} as ListaDireccion;
-    lspue: ListaPuesto = {} as ListaPuesto;
+    lspue: ListaPuesto = {
+        puestosDireccionesCotizacion: [], direccionesCotizacion: [], idCotizacion: 0, idDireccionCotizacion: 0, idPuestoDireccionCotizacion: 0,length: 0,empleados: 0, pagina: 1, rows: 0, numPaginas: 0
+    };
     lsmat: ListaMaterial = {} as ListaMaterial;
     lsher: ListaMaterial = {} as ListaMaterial;
     lsser: ListaServicio = {} as ListaServicio;
@@ -435,10 +439,15 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     getDirs() {
-        this.lsdir.direcciones = [];
+        //this.lsdir.direcciones = [];
+        this.isLoading = true;
         this.http.get<ListaDireccion>(`${this.url}api/cotizacion/limpiezadirectorio/${this.model.idCotizacion}/${this.lsdir.pagina}`).subscribe(response => {
             this.lsdir = response;
-        }, err => console.log(err));
+            this.isLoading = false;
+        }, err => {
+            this.isLoading = false;
+            console.log(err);
+        });
     }
 
     saveDir($event) {
@@ -482,9 +491,14 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     getPlan() {
-        this.http.get<ListaPuesto>(`${this.url}api/cotizacion/${this.model.idCotizacion}/0/0`).subscribe(response => {
+        this.isLoading = true;
+        this.http.get<ListaPuesto>(`${this.url}api/cotizacion/${this.model.idCotizacion}/0/0/${this.lspue.pagina}`).subscribe(response => {
             this.lspue = response;
-        }, err => console.log(err));
+            this.isLoading = false;
+        }, err => {
+            this.isLoading = false;
+            console.log(err);
+        });
         this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`).subscribe(response => {
             this.model = response;
         }, err => console.log(err));
@@ -612,6 +626,18 @@ export class ResumenComponent implements OnInit, OnDestroy {
     dirPagina(event) {
         this.lsdir.pagina = event;
         this.getDirs();
+        if (this.tbdireciones) {
+            const container = this.tbdireciones.nativeElement;
+            container.scrollTop = 0;
+        }
+    }
+    puePagina(event) {
+        this.lspue.pagina = event;
+        this.getPlan();
+        if (this.tbpuestos) {
+            const container = this.tbpuestos.nativeElement;
+            container.scrollTop = 0;
+        }
     }
 
     toggleAllTabs() {

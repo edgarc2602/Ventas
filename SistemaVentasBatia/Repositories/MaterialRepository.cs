@@ -317,8 +317,8 @@ AND p.id_proveedor = e.id_proveedor";
 						mc.id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion AND
 						p.descripcion LIKE '%' + ISNULL(@keywords, '') + '%'
                         order by p.descripcion
-                        OFFSET ((@pagina - 1) * 10) rows
-                        fetch next 10 rows only;";
+                        OFFSET ((@pagina - 1) * 50) rows
+                        fetch next 50 rows only;";
 
             var materialesCotizacion = new List<MaterialCotizacion>();
 
@@ -1045,8 +1045,8 @@ WHERE id_servicioextra_cotizacion = @IdServicioExtraCotizacion";
 						mc.id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion AND
 						p.descripcion LIKE '%' + ISNULL(@keywords, '') + '%'
                         order by p.descripcion
-                        OFFSET ((@pagina - 1) * 10) rows
-                        fetch next 10 rows only;";
+                        OFFSET ((@pagina - 1) * 50) rows
+                        fetch next 50 rows only;";
 
             var materialesCotizacion = new List<MaterialCotizacion>();
 
@@ -1088,8 +1088,8 @@ WHERE id_servicioextra_cotizacion = @IdServicioExtraCotizacion";
 						mc.id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion AND
 						p.descripcion LIKE '%' + ISNULL(@keywords, '') + '%'
                         order by p.descripcion
-                        OFFSET ((@pagina - 1) * 10) rows
-                        fetch next 10 rows only;";
+                        OFFSET ((@pagina - 1) * 50) rows
+                        fetch next 50 rows only;";
 
             var materialesCotizacion = new List<MaterialCotizacion>();
 
@@ -1131,8 +1131,8 @@ WHERE id_servicioextra_cotizacion = @IdServicioExtraCotizacion";
 						mc.id_puesto_direccioncotizacion = @idPuestoDireccionCotizacion AND
 						p.descripcion LIKE '%' + ISNULL(@keywords, '') + '%'
                         order by p.descripcion
-                        OFFSET ((@pagina - 1) * 10) rows
-                        fetch next 10 rows only;";
+                        OFFSET ((@pagina - 1) * 50) rows
+                        fetch next 50 rows only;";
 
             var materialesCotizacion = new List<MaterialCotizacion>();
 
