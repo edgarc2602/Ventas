@@ -491,6 +491,14 @@ WHERE id_prospecto = @idProspecto
             {
                 return 11;
             }
+            if (estado == "ESTADO DE MEXICO")
+            {
+                return 11;
+            }
+            if (estado == "MICHOACAN DE OCAMPO")
+            {
+                return 16;
+            }
             else
             {
                 var query = @"

@@ -321,49 +321,70 @@
                 </div>
             </div>
             <br />
-            <h4>Descargar <i class="fa-solid fa-download me-2"></i></h4>
-            <hr />
-            <div class="row">
-                <div *ngIf="model.idServicio == 5" class="col-4 col-md-4 col-4 mb-3">
-                    <button type="button" (click)="formatoDocumento('Propuesta evento', 5)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
+
+
+            <div *ngIf="model.idEstatus == 1" class="accordion col-xl-12" id="accordionExample">
+                <!--Pestaña 0-->
+                <div class="accordion-item">
+                    <h1 class="accordion-header" id="headingCotizacion">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDescargarCotizacion" aria-expanded="false" aria-controls="collapseCotizacion">
+                            <i class="fa fa-download me-2"></i> Descargar
+                        </button>
+                    </h1>
+                    <div id="collapseDescargarCotizacion" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
+                        <div class="accordion-body">
+                            <div class="row text-center">
+                                <div *ngIf="model.idServicio == 5" class="col-4 col-md-3 col-4 mb-3">
+                                    <button type="button" (click)="formatoDocumento('Propuesta evento', 5)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-calendar-days fa-xl me-2"></i> Propuesta de evento</button>
+                                </div>
+                                <div *ngIf="model.idServicio == 4" class="col-4 col-md-3 col-4 mb-3">
+                                    <button type="button" (click)="formatoDocumento('Propuesta insumos', 4)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
+                                </div>
+                                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-3 mb-3">
+                                    <button type="button" (click)="formatoDocumento('Propuesta técnica', 1)" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Técnica</button>
+                                </div>
+                                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-3 col-4 mb-3">
+                                    <button type="button" (click)="formatoDocumento('Propuesta económica',2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Económica</button>
+                                </div>
+                                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-3 mb-3">
+                                    <button type="button" (click)="formatoDocumento('Propuesta técnica(Mano de obra)',3)" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
+                                </div>
+                                <div class="col-4 col-md-3 mb-3">
+                                    <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-excel fa-xl me-2"></i> Datos de cotización</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div *ngIf="model.idServicio == 4" class="col-4 col-md-4 col-4 mb-3">
-                    <button type="button" (click)="formatoDocumento('Propuesta insumos', 4)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-pump-soap fa-xl me-2"></i> Propuesta suministro de insumos</button>
-                </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
-                    <button type="button" (click)="formatoDocumento('Propuesta técnica', 1)" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Técnica</button>
-                </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-3 col-md-4 col-4 mb-3">
-                    <button type="button" (click)="formatoDocumento('Propuesta económica',2)" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Económica</button>
-                </div>
-                <div *ngIf="model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
-                    <button type="button" (click)="formatoDocumento('Propuesta técnica(Mano de obra)',3)" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-lines fa-xl me-2"></i> Propuesta Técnica(Mano de obra)</button>
-                </div>
-                <div class="col-4 col-md-4 mb-3">
-                    <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-secondary"><i class="fa-solid fa-file-excel fa-xl me-2"></i> Datos de cotización</button>
+                <!--Pestaña 1-->
+                <div class="accordion-item">
+                    <h1 class="accordion-header" id="headingCotizacion">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAccionesCotizacion" aria-expanded="false" aria-controls="collapseCotizacion">
+                            <i class="fa fa-chevron-right me-2"></i> Acciones
+                        </button>
+                    </h1>
+                    <div id="collapseAccionesCotizacion" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
+                        <div class="accordion-body">
+                            <div class="row text-center">
+                                <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
+                                    <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary "><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
+                                </div>
+                                <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4 mb-3">
+                                    <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" [disabled]="isLoading" class="btn btn-outline-danger"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
+                                </div>
+                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
+                                    <button *ngIf="model.idEstatus != 6 && model.idEstatus != 4" type="button" (click)="confirmaAutorizarCotizacion()" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-check fa-xl me-2"></i> Autorizar Cotización</button>
+                                </div>
+                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
+                                    <button *ngIf="model.idEstatus == 6 && model.idEstatus != 4" type="button" (click)="confirmaRemoverAutorizacionCotizacion()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-rotate-left fa-xl me-2"></i> Remover autorización</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <br />
-            <h4>Acciones <i class="fa-solid fa-chevron-right me-2"></i></h4>
-            <hr />
-            <div class="row">
-                <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
-                    <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary "><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
-                </div>
-                <!--<div class="col-4 float-end col-md-4 d-none">
-                    <button type="button" (click)="descargarDatosCotizacion()" [disabled]="isLoading" class="btn btn-outline-primary"><i class="fa-solid fa-database fa-xl"></i> Descargar datos</button>
-                </div>-->
-                <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4 mb-3">
-                    <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" [disabled]="isLoading" class="btn btn-outline-danger"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
-                </div>
-                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
-                    <button *ngIf="model.idEstatus != 6 && model.idEstatus != 4" type="button" (click)="confirmaAutorizarCotizacion()" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-check fa-xl me-2"></i> Autorizar Cotización</button>
-                </div>
-                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
-                    <button *ngIf="model.idEstatus == 6 && model.idEstatus != 4" type="button" (click)="confirmaRemoverAutorizacionCotizacion()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-rotate-left fa-xl me-2"></i> Remover autorización</button>
-                </div>
-            </div>
-            <script src="script.js"></script>
+
+
         </div>
         <div class="tab-pane fade" id="prospecto" role="tabpanel" aria-labelledby="resumen-tab">
             <div class="row">
@@ -544,27 +565,46 @@
                 </div>
             </div>
             <pagina-widget [pagina]="lsdir.pagina" [numPaginas]="lsdir.numPaginas" [rows]="lsdir.rows" (chgEvent)="dirPagina($event)"></pagina-widget>
+
+            <br />
             <hr />
-            <div *ngIf="model.idEstatus == 1" class="row text-end">
-                <div class="col-12 col-sm-12 col-md-12">
-                    <div *ngIf="isLoadinglay" class="row-12 text-center">
-                        <h6 *ngIf="isLoadinglay">Cargando Layout...</h6>
+            <div class="row">
+                <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">
+                </div>
+                <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">
+                    <!--Pestaña 0-->
+                    <div class="accordion-item">
+                        <h1 class="accordion-header" id="headingCotizacion">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLayoutDirectorio" aria-expanded="false" aria-controls="collapseCotizacion">
+                                <i class="fa fa-table-list me-2"></i> Layout
+                            </button>
+                        </h1>
+                        <div id="collapseLayoutDirectorio" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
+                            <div class="accordion-body">
+                                <div class="col-12 col-sm-12 col-md-12">
+                                    <div *ngIf="isLoadinglay" class="row-12 text-center">
+                                        <h6 *ngIf="isLoadinglay">Cargando Layout...</h6>
+                                    </div>
+                                    <div *ngIf="isLoadinglay" class="text-center ">
+                                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-info" (click)="descargarLayoutDirectorio(); quitarFocoDeElementos2()" [disabled]="isLoadinglay">
+                                        <i class="fa-solid fa-download fa-xl me-2"></i>
+                                        Descargar
+                                    </button>
+                                    <input type="file" (change)="onFileChangeDir($event)" #fileInputDir style="display:none" accept=".xlsx,.xls" id="loutDir" >
+                                    <button type="button" class="btn btn-outline-secondary" (click)="fileInputDir.click(); quitarFocoDeElementos2()" [disabled]="isLoadinglay">
+                                        <i class="fa-solid fa-upload fa-xl me-2"></i>
+                                        Cargar
+                                    </button>
+                                    <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
-                    <div *ngIf="isLoadinglay" class="text-center ">
-                        <i class="fas fa-spinner fa-spin fa-2x"></i>
-                    </div>
-                    <button type="button" class="btn btn-outline-info" (click)="descargarLayoutDirectorio(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download fa-xl me-2"></i>
-                        Descargar layout
-                    </button>
-                    <input type="file" (change)="onFileChangeDir($event)" #fileInputDir style="display:none" accept=".xlsx,.xls" id="loutDir">
-                    <button type="button" class="btn btn-outline-secondary" (click)="fileInputDir.click(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-upload fa-xl me-2"></i>
-                        Cargar layout
-                    </button>
-                    <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </button>
                 </div>
             </div>
         </div>
@@ -599,81 +639,81 @@
                                 <table class="table table-borderless table-responsive table-striped" id="tbOperarios">
                                     <tbody>
                                         <tr *ngFor="let pt of filtroPlan(dir.idDireccionCotizacion)" id="tr{{ pt.idPuestoDireccionCotizacion }}">
-                                            <td class="col-md-10">
+                                            <td class="col-xl-10 col-sm-9">
                                                 <div class="row pb-3 ">
-                                                    <div class="col-8 col-sm-4">
+                                                    <div class="col-xl-4 col-8 col-sm-6">
                                                         <span class="badge ">Puesto:</span>
                                                         <div class="ms-1">{{ pt.puesto }}</div>
                                                     </div>
-                                                    <div class="col-3 col-sm-2 ">
+                                                    <div class="col-xl-2 col-3 col-sm-2 ">
                                                         <span class="badge ">Cantidad:</span>
                                                         <div class="ms-4">{{ pt.cantidad }}</div>
                                                     </div>
-                                                    <div class="col-8 col-sm-4">
+                                                    <div class="col-xl-4 col-8 col-sm-6">
                                                         <span class="badge">Horario:</span>
                                                         <div class="ms-1 small">{{ pt.diaInicio }} a {{ pt.diaFin }} de {{ pt.hrInicio.substring(0, 5) }} a {{ pt.hrFin.substring(0, 5) }}</div>
                                                         <div *ngIf="pt.diaInicioFin == pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1 small">{{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
                                                         <div *ngIf="pt.diaInicioFin !== pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1 small">{{ pt.diaInicioFin}} a {{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
                                                     </div>
-                                                    <div class="col-3 col-sm-2">
+                                                    <div class="col-xl-2 col-3 col-sm-3">
                                                         <span class="badge ">Jornada:</span>
                                                         <div class="ms-3">{{ pt.jornadaDesc }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Turno:</span>
                                                         <div class="ms-1">{{ pt.turno }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Salario:</span>
                                                         <div class="ms-1">$ {{ pt.sueldo | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Aguinaldo:</span>
                                                         <div class="ms-1">$ {{ pt.aguinaldo | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Vacaciones:</span>
                                                         <div class="ms-1">$ {{ pt.vacaciones | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Prima Vacacional:</span>
                                                         <div class="ms-1">$ {{ pt.primaVacacional | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">ISN:</span>
                                                         <div class="ms-1">$ {{ pt.isn | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">IMSS:</span>
                                                         <div class="ms-1">$ {{ pt.imss | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Bonos:</span>
                                                         <div class="ms-1">$ {{ pt.bonos | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Vales:</span>
                                                         <div class="ms-1">$ {{ pt.vales | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Festivos:</span>
                                                         <div class="ms-1">$ {{ pt.festivo | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Domingos:</span>
                                                         <div class="ms-1">$ {{ pt.domingo | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-4 col-sm-2">
+                                                    <div class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Cubre descansos:</span>
                                                         <div class="ms-1">$ {{ pt.cubreDescanso | number: '0.2' }}</div>
                                                     </div>
-                                                    <div class="col-6 col-sm-2">
+                                                    <div class="col-xl-2 col-6 col-sm-3">
                                                         <span class="badge ">Total:</span>
                                                         <div class="ms-1">$ {{ pt.total | number: '0.2' }}</div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="col-md-2">
+                                            <td class="col-xl-2 col-sm-3">
                                                 <div class="text-center">
                                                     <a class="btn btn-sm btn-outline-secondary mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'material', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Material">
                                                         <i class="fa-solid fa-pump-soap fa-2x"></i>
@@ -703,30 +743,73 @@
                     </div>
                 </div>
             </div>
-            <hr />
-            <div *ngIf="model.idEstatus == 1" class="row text-end">
-                <div class="col-12 col-sm-12 col-md-12">
-                    <button type="button" class="btn btn-outline-primary text-start" (click)="openProductoMasivo(0); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-plus fa-1x me-1"></i><i class="fa-solid fa-list fa-xl me-2"></i>
-                        Agregar productos
-                    </button>
-                    <button type="button" class="btn btn-outline-danger text-start" (click)="openProductoMasivo(1); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-times fa-1x me-1"></i><i class="fa-solid fa-list fa-xl me-2"></i>
-                        Eliminar productos
-                    </button>
-                    <button type="button" class="btn btn-outline-info" (click)="descargarLayoutPlantilla(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download fa-xl me-2"></i>
-                        Descargar layout
-                    </button>
-                    <input type="file" (change)="onFileChangePlan($event)" #fileInputPlan style="display:none" accept=".xlsx,.xls" id="loutPlan">
-                    <button type="button" class="btn btn-outline-secondary" (click)="fileInputPlan.click(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-upload fa-xl me-2"></i>
-                        Cargar layout
-                    </button>
 
-                    <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </button>
+            <br />
+            <hr />
+            <div class="row">
+                <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">
+                </div>
+                <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">
+                    <!--Pestaña 0-->
+                    <div class="accordion-item">
+                        <h1 class="accordion-header" id="headingCotizacion">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseModificarPlantilla" aria-expanded="false" aria-controls="collapseCotizacion">
+                                <i class="fa fa-pencil me-2"></i> Modificar productos de plantillas
+                            </button>
+                        </h1>
+                        <div id="collapseModificarPlantilla" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
+                            <div class="accordion-body">
+                                <div class="row text-start">
+                                    <div class="col-6 col-sm-6 col-md-6">
+                                        <button type="button" class="btn btn-outline-primary text-start" (click)="openProductoMasivo(0); quitarFocoDeElementos2()">
+                                            <i class="fa-solid fa-plus fa-1x me-1"></i><i class="fa-solid fa-list fa-xl me-2"></i>
+                                            Agregar
+                                        </button>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-md-6">
+                                        <button type="button" class="btn btn-outline-danger text-start" (click)="openProductoMasivo(1); quitarFocoDeElementos2()">
+                                            <i class="fa-solid fa-times fa-1x me-1"></i><i class="fa-solid fa-list fa-xl me-2"></i>
+                                            Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Pestaña 1-->
+                    <div class="accordion-item">
+                        <h1 class="accordion-header" id="headingCotizacion">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLayoutPlantilla" aria-expanded="false" aria-controls="collapseCotizacion">
+                                <i class="fa fa-table-list me-2"></i> Layout
+                            </button>
+                        </h1>
+                        <div id="collapseLayoutPlantilla" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
+                            <div class="accordion-body">
+                                <div class="row text-start">
+                                    <div class="col-5 col-sm-5 col-md-5">
+                                        <button type="button" class="btn btn-outline-info" (click)="descargarLayoutPlantilla(); quitarFocoDeElementos2()">
+                                            <i class="fa-solid fa-download fa-xl me-2"></i>
+                                            Descargar
+                                        </button>
+                                    </div>
+                                    <input type="file" (change)="onFileChangePlan($event)" #fileInputPlan style="display:none" accept=".xlsx,.xls" id="loutPlan">
+                                    <div class="col-5 col-sm-5 col-md-5">
+                                        <button type="button" class="btn btn-outline-secondary" (click)="fileInputPlan.click(); quitarFocoDeElementos2()">
+                                            <i class="fa-solid fa-upload fa-xl me-2"></i>
+                                            Cargar
+                                        </button>
+                                    </div>
+                                    <div class="col-2 col-sm-2 col-md-2">
+
+                                        <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -855,28 +938,45 @@
             <div *ngIf="lsmat.materialesCotizacion && lsmat.materialesCotizacion.length > 0">
                 <pagina-widget [pagina]="lsmat.pagina" [numPaginas]="lsmat.numPaginas" [rows]="lsmat.rows" (chgEvent)="matPagina($event)"></pagina-widget>
             </div>
+            <br />
             <hr />
-            <div *ngIf="model.idEstatus == 1" class="row text-end">
-                <div class="col-12 col-sm-12 col-md-12">
-                    <div *ngIf="isLoadinglay" class="row-12 text-center">
-                        <i class="fas fa-spinner fa-spin fa-3x"></i>
-                        <h6 *ngIf="isLoadinglay">Subiendo Layout...</h6>
+            <div class="row">
+                <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">
+                </div>
+                <div *ngIf="model.idEstatus == 1" class="accordion col-xl-6" id="accordionExample">
+                    <!--Pestaña 0-->
+                    <div class="accordion-item">
+                        <h1 class="accordion-header" id="headingCotizacion">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLayoutProducto" aria-expanded="false" aria-controls="collapseCotizacion">
+                                <i class="fa fa-table-list me-2"></i> Layout
+                            </button>
+                        </h1>
+                        <div id="collapseLayoutProducto" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
+                            <div class="accordion-body">
+                                <div class="col-12 col-sm-12 col-md-12">
+                                    <div *ngIf="isLoadinglay" class="row-12 text-center">
+                                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                        <h6 *ngIf="isLoadinglay">Subiendo Layout...</h6>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-info" (click)="descargarLayoutProductoExtra(); quitarFocoDeElementos2()">
+                                        <i class="fa-solid fa-download fa-xl me-2"></i>
+                                        Layout para {{ selTipo}}
+                                    </button>
+                                    <input type="file" (change)="onFileChangeProductoExtra($event)" #fileInputProductoExtra style="display:none" accept=".xlsx,.xls" id="loutProductoExtra">
+                                    <button type="button" class="btn btn-outline-secondary" (click)="fileInputProductoExtra.click(); quitarFocoDeElementos2()">
+                                        <i class="fa-solid fa-upload fa-xl me-2"></i>
+                                        Cargar
+                                    </button>
+                                    <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-outline-info" (click)="descargarLayoutProductoExtra(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-download fa-xl me-2"></i>
-                        Descargar layout para {{ selTipo}}
-                    </button>
-                    <input type="file" (change)="onFileChangeProductoExtra($event)" #fileInputProductoExtra style="display:none" accept=".xlsx,.xls" id="loutProductoExtra">
-                    <button type="button" class="btn btn-outline-secondary" (click)="fileInputProductoExtra.click(); quitarFocoDeElementos2()">
-                        <i class="fa-solid fa-upload fa-xl me-2"></i>
-                        Cargar layout
-                    </button>
-
-                    <button type="button" class="btn btn-lg btn-outline-dark" (click)="openPueLay(); quitarFocoDeElementos2()" data-bs-toggle="tooltip" title="Información para llenar el layout">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </button>
                 </div>
             </div>
+
         </div>
         <div *ngIf="model.idServicio != 4" class="tab-pane fade" id="servicio" role="tabpanel" aria-labelledby="plantilla-tab">
             <div *ngIf="model.idEstatus == 1">

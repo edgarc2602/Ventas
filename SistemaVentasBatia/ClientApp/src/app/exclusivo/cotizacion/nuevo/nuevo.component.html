@@ -5,10 +5,10 @@
     <br />
     <div class="d-flex flex-column justify-content-center h-100">
         <div class="row">
-            <div class="col-sm-12 col-md-6 text-center mb-2">
+            <div class="col-sm-6 col-xl-6 text-center mb-2">
                 <button type="button" (click)="openNew(1)" class="btn btn-lg btn-outline-primary" id="btnSeleccionarProspecto"><i class="fa-solid fa-list"></i> Elegir un prospecto existente</button>
             </div>
-            <div class="col-sm-12 col-md-6 text-center">
+            <div class="col-sm-6 col-xl-6 text-center">
                 <button type="button" (click)="openNew(2)" class="btn btn-lg btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Crear un nuevo prospecto</button>
             </div>
         </div>
@@ -35,21 +35,21 @@
                         <br />
                         <!--Agregar prospecto-->
                         <div *ngIf="agregarTipo == 2" class="row">
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-sm-6 col-xl-4 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control validacion-prospecto" [(ngModel)]="modelp.nombreComercial" data-campo="nombreComercial" id="txtNombreComercial">
                                     <label for="txtNombreComercial">Nombre Comercial</label>
                                 </div>
                                 <span *ngIf="ferr('NombreComercial')" class="text-danger">{{ terr('NombreComercial') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-sm-6 col-xl-4 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.razonSocial" id="txtRazonSocial">
                                     <label for="txtRazonSocial">Razón Social</label>
                                 </div>
                                 <span *ngIf="ferr('RazonSocial')" class="text-danger">{{ terr('RazonSocial') }}</span>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-xl-4 col-sm-4 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control validacion-prospecto" [(ngModel)]="modelp.rfc" data-campo="rfc" id="txtRFC">
                                     <label for="txtRFC">RFC</label>
@@ -57,42 +57,42 @@
                                 <span *ngIf="ferr('Rfc')" class="text-danger">{{ terr('Rfc') }}</span>
                                 <span *ngIf="ferr('RfcLenght')" class="text-danger">{{ terr('RfcLenght') }}</span>
                             </div>
-                            <div class="col-md-8 col-sm-12 mb-3">
+                            <div class="col-xl-8 col-sm-8 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.domicilioFiscal" id="txtDomicicioFiscal">
                                     <label for="txtDomicicioFiscal">Domicilio Fiscal</label>
                                 </div>
                                 <span *ngIf="ferr('DomicilioFiscal')" class="text-danger">{{ terr('DomicilioFiscal') }}</span>
                             </div>
-                            <div class="col-md-4 col-sm-12 mb-3">
+                            <div class="col-xl-4 col-sm-6 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.nombreContacto" id="txtContacto">
                                     <label for="txtContacto">Contacto</label>
                                 </div>
                                 <span *ngIf="ferr('NombreContacto')" class="text-danger">{{ terr('NombreContacto') }}</span>
                             </div>
-                            <div class="col-md-3 col-sm-12 mb-3">
+                            <div class="col-xl-3 col-sm-6 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.emailContacto" id="txtEmailContacto">
                                     <label for="txtEmailContacto">Email Contacto</label>
                                 </div>
                                 <span *ngIf="ferr('EmailContacto')" class="text-danger">{{ terr('EmailContacto') }}</span>
                             </div>
-                            <div class="col-md-2 col-sm-12 col-6 mb-3">
+                            <div class="col-xl-2 col-sm-4 col-6 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.numeroContacto" id="txtNumeroContacto">
                                     <label for="txtNumeroContacto">Tel. Contacto</label>
                                 </div>
                                 <span *ngIf="ferr('NumeroContacto')" class="text-danger">{{ terr('NumeroContacto') }}</span>
                             </div>
-                            <div class="col-md-2 col-sm-12 col-6 mb-3">
+                            <div class="col-xl-2 col-sm-3 col-6 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="modelp.extContacto" id="txtExtension">
                                     <label for="txtExtension">Extensión</label>
                                 </div>
                                 <span *ngIf="ferr('ExtContacto')" class="text-danger">{{ terr('ExtContacto') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-5 col-12 mb-3">
+                            <div class="col-sm-5 col-xl-5 col-12 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdPuesto" [(ngModel)]="modelp.idTipoIndustria" id="slTipoIndustria">
                                         <option value=0>Seleccione...</option>
@@ -106,7 +106,7 @@
                         <br *ngIf="agregarTipo == 2" />
                         <h6 *ngIf="agregarTipo == 2"><span class="small text-muted mb-2">Documentación</span></h6>
                         <div *ngIf="agregarTipo == 2" class="row">
-                            <div class="col-sm-6 col-md-3 col-4" *ngFor="let d of docs">
+                            <div class="col-sm-4 col-xl-3 col-4" *ngFor="let d of docs">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="checkbox" id="d.nom" [value]="d.id" [(ngModel)]="d.act" /> {{ d.nom }}
@@ -116,7 +116,7 @@
                         </div>
                         <!--Elegir Prospecto-->
                         <div *ngIf="agregarTipo == 1" class="row mb-3">
-                            <div class="col-sm-6 col-md-6 col-12 mb-3">
+                            <div class="col-sm-6 col-xl-6 col-12 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" [(ngModel)]="model.idProspecto" name="IdProspecto" id="IdNuevoProspecto" required>
                                         <option value="0">Seleccione</option>
@@ -131,7 +131,7 @@
                         <br />
                         <h6><span class="small text-muted mb-2">Tipo de servicio</span></h6>
                         <div class="row mb-3">
-                            <div *ngFor="let s of sers" class="col-sm-6 col-md-2 col-4">
+                            <div *ngFor="let s of sers" class="col-sm-4 col-xl-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="selectedServicio" [checked]="s.act" (change)="updateSelectedServicio(s)" required /> {{ s.nom }}
@@ -142,7 +142,7 @@
                         </div>
                         <h6 *ngIf="isEvento == true"><span class="small text-muted mb-2">Duración del evento(días)</span></h6>
                         <div *ngIf="isEvento == true" class="row">
-                            <div class="col-sm-4 col-md-4">
+                            <div class="col-sm-4 col-xl-4">
                                 <div class="form-floating">
                                     <input type="number" class="form-control validacion-prospecto" [(ngModel)]="model.diasEvento" data-campo="DiasEvento" id="txtDiasEvento">
                                     <label for="txtDiasEvento">Dias</label>
@@ -153,7 +153,7 @@
                         <br *ngIf="isInsumo != true" />
                         <h6 *ngIf="isInsumo != true"><span class="small text-muted mb-2">Tipo de salario</span></h6>
                         <div *ngIf="isInsumo != true" class="row">
-                            <div *ngFor="let s of salt" class="col-sm-6 col-md-2 col-4">
+                            <div *ngFor="let s of salt" class="col-sm-4 col-xl-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="selectedTipoSalario1" [checked]="s.act" (change)="updateSelectedSalario(s)" required /> {{ s.nom }}
@@ -165,14 +165,14 @@
                         <br *ngIf="isInsumo != true" />
                         <h6><span class="small text-muted mb-2">Póliza de cumplimiento</span></h6>
                         <div class="row">
-                            <div class="col-sm-6 col-md-2 col-4">
+                            <div class="col-sm-4 col-xl-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="true" [(ngModel)]="model.polizaCumplimiento" required /> Si
                                     </label><br />
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-2 col-4">
+                            <div class="col-sm-4 col-xl-2 col-4">
                                 <div class="form-check">
                                     <label class="form-check-label">
                                         <input class="form-check-input" type="radio" name="polizaCumplimiento" [value]="false" [(ngModel)]="model.polizaCumplimiento" required /> No
@@ -183,7 +183,7 @@
                         <br />
 
                         <div class="row mb-3">
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-sm-8 col-xl-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" [(ngModel)]="idVendedor" name="IdVendedor" required [disabled]="user.idAutoriza != 1" id="IdNuevoVendedor">
                                         <option value="0">Seleccione</option>
@@ -193,7 +193,7 @@
                                 </div>
                                 <span *ngIf="ferr('IdVendedor')" class="text-danger">{{ terr('IdVendedor') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-3">
+                            <div class="col-sm-4 col-xl-3">
                                 <div class="form-floating">
                                     <input type="number" class="form-control validacion-prospecto" [(ngModel)]="model.diasVigencia" data-campo="diasVigencia" id="txtdiasVigencia">
                                     <label for="txtdiasVigencia">Vigencia (dias)</label>

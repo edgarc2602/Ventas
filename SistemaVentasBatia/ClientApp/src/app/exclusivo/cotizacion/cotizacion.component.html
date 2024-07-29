@@ -7,7 +7,7 @@
     </div>
     <div>
         <div class="row d-flex align-items-center">
-            <div class="col-md-3 col-6 mb-3">
+            <div class="col-xl-3 col-sm-3 col-6 mb-3">
                 <div class="form-floating">
                     <select class="form-select" asp-for="IdProspecto" [(ngModel)]="lcots.idProspecto" (change)="busca()" id="ddlProspecto">
                         <option value="0">Seleccione...</option>
@@ -16,7 +16,7 @@
                     <label for="ddlProspecto">Prospecto</label>
                 </div>
             </div>
-            <div class="col-md-3 col-6 mb-3">
+            <div class="col-xl-3 col-sm-3 col-6 mb-3">
                 <div class="form-floating">
                     <select class="form-select" [(ngModel)]="lcots.idServicio" (change)="busca()" id="ddlServicioCotizacion">
                         <option value="0">Seleccione...</option>
@@ -25,7 +25,7 @@
                     <label for="ddlServicioCotizacion">Servicio</label>
                 </div>
             </div>
-            <div class="col-md-3 col-6 mb-3">
+            <div class="col-xl-3 col-sm-3 col-6 mb-3">
                 <div class="form-floating">
                     <select class="form-select" [(ngModel)]="lcots.idEstatusCotizacion" (change)="busca()" id="ddlEstatus">
                         <option value="0">Seleccione...</option>
@@ -34,7 +34,7 @@
                     <label for="ddlEstatus">Estatus</label>
                 </div>
             </div>
-            <div class="col-md-3 col-6 mb-3 text-end">
+            <div class="col-xl-3 col-sm-3 col-6 mb-3 text-end">
                 <a [routerLink]="['/exclusivo/nuevocot']" class="btn btn-outline-primary"><i class="fa-solid fa-plus"></i> Nueva Cotización</a>
             </div>
         </div>
@@ -47,30 +47,30 @@
     <div *ngIf="lcots.cotizaciones && lcots.cotizaciones.length > 0" class="table-container box-shadow fade-in-container" #tbcotizaciones>
         <table class="table table-striped table-responsive">
             <thead class="sticky-top">
-                <tr class="d-md-none">
+                <tr class="d-xl-none">
                     <th class="ps-2 text-start">Lista de cotizaciones</th>
                     <th></th>
                 </tr>
-                <tr class="d-none d-md-table-row">
+                <tr class="d-none d-xl-table-row">
                     <th>
                         <div class="row d-flex align-items-center">
-                            <div class="col-md-1 col-sm-6 col-1">
+                            <div class="col-xl-1 col-sm-6 col-1">
                                 <span class="ms-2">Id</span>
                             </div>
-                            <div [ngClass]="user.idAutoriza ? 'col-md-3 col-sm-6 col-5' : 'col-md-5 col-sm-12 col-10'">
+                            <div [ngClass]="user.idAutoriza ? 'col-xl-3 col-sm-6 col-5' : 'col-xl-5 col-sm-12 col-10'">
                                 <span class="ms-2">Prospecto</span>
                             </div>
 
-                            <div class="col-md-2 col-sm-6 col-2">
+                            <div class="col-xl-2 col-sm-6 col-2">
                                 <span class="ms-2">Total</span>
                             </div>
-                            <div class="col-md-2 col-sm-6 col-6">
+                            <div class="col-xl-2 col-sm-6 col-6">
                                 <span class="ms-2">Fecha Alta</span>
                             </div>
-                            <div class="col-md-2 col-sm-6 col-3">
+                            <div class="col-xl-2 col-sm-6 col-3">
                                 <span class="ms-2">Vigencia</span>
                             </div>
-                            <div *ngIf="user.idAutoriza === 1" class="col-md-2 col-sm-6 col-6">
+                            <div *ngIf="user.idAutoriza === 1" class="col-xl-2 col-sm-6 col-6">
                                 <span class="ms-2">Usuario Alta</span>
                             </div>
                         </div>
@@ -80,37 +80,36 @@
             </thead>
             <tbody>
                 <tr *ngFor="let cot of lcots.cotizaciones">
-                    <td class="col-10 col-md-9">
+                    <td class="col-10 col-xl-9 col-sm-9">
                         <div class="row d-flex align-items-center">
-                            <div class="col-md-1 col-sm-6 col-2">
-                                <span class="badge d-md-none">Id:</span>
+                            <div class="col-xl-1 col-sm-2 col-2">
+                                <span class="badge d-xl-none">Id:</span>
                                 <div class="ms-2">{{ cot.idCotizacion }}</div>
                             </div>
-                            <div [ngClass]="user.idAutoriza ? 'col-md-3 col-sm-6 col-10' : 'col-md-5 col-sm-12 col-10'">
-                                <span class="badge d-md-none">Prospecto:</span>
-                                <div class="ms-2">{{ cot.nombreComercial }}</div>
-                                <small class="ms-2 text-muted">Servicio: {{ cot.servicio }}</small>
+                            <div [ngClass]="user.idAutoriza ? 'col-xl-3 col-sm-4 col-10' : 'col-xl-5 col-sm-4 col-10'">
+                                <span class="badge d-xl-none">Prospecto:</span>
+                                <div class="ms-2">{{ cot.nombreComercial }} <small class="ms-2 text-muted">({{ cot.servicio }})</small></div>
+                                
                             </div>
-
-                            <div class="col-md-2 col-sm-6 col-4 ">
-                                <span class="badge d-md-none">Total:</span>
+                            <div class="col-xl-2 col-sm-3 col-4 ">
+                                <span class="badge d-xl-none">Total:</span>
                                 <div class="ms-2">${{cot.total | number: '1.2'}}</div>
                             </div>
-                            <div class="col-md-2 col-sm-6 col-5 ">
-                                <span class="badge d-md-none">Fecha Alta:</span>
+                            <div class="col-xl-2 col-sm-3 col-5 ">
+                                <span class="badge d-xl-none">Fecha Alta:</span>
                                 <div class="ms-2">{{ cot.fechaAlta | date: 'dd-MM-yyyy' }}</div>
                             </div>
-                            <div class="col-md-2 col-sm-6 col-3">
-                                <span class="badge d-md-none">Vigencia:</span>
+                            <div class="col-xl-2 col-sm-3 col-3">
+                                <span class="badge d-xl-none">Vigencia:</span>
                                 <div class="ms-2 ">{{ cot.diasVigencia }} Dias</div>
                             </div>
-                            <div *ngIf="user.idAutoriza === 1" class="col-md-2 col-sm-6 col-12">
-                                <span class="badge d-md-none">Usuario Alta:</span>
+                            <div *ngIf="user.idAutoriza === 1" class="col-xl-2 col-sm-6 col-12">
+                                <span class="badge d-xl-none">Usuario Alta:</span>
                                 <div class="ms-2 small"> {{  cot.idAlta }}  </div>
                             </div>
                         </div>
                     </td>
-                    <td class="text-center col-2 col-md-3">
+                    <td class="text-center col-2 col-xl-3 col-sm-3">
                         <button type="button" class="btn btn-sm btn-outline-primary" [routerLink]="['/exclusivo/resumen/' + cot.idCotizacion]" data-bs-toggle="tooltip" title="Detalle"><i class="fa-solid fa-search-dollar fa-2x"></i></button>
                         <button *ngIf="cot.idEstatusCotizacion == 1" type="button" class="btn btn-sm btn-outline-success" (click)="editar(cot.idCotizacion,cot.idServicio, cot.polizaCumplimiento, cot.diasEvento)" data-bs-toggle="tooltip" title="Editar tipo de servicio"><i class="fa-solid fa-pencil fa-2x"></i></button>
                         <button *ngIf="cot.idEstatusCotizacion == 1" id="statusButton" (click)="openCerrarCotizacion(cot.idCotizacion)" class="toggle-btn {{ cot.idEstatusCotizacion === 1 ? 'active' : '' }}" data-bs-toggle="tooltip" title="Desactivar cotización">{{ cot.idEstatusCotizacion === 1 ? 'Cerrar' : 'Activar' }}</button>

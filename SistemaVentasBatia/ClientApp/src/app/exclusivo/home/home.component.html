@@ -7,10 +7,10 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-sm-12 col-xl-6">
                 <div id="dvtop"></div>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-sm-12 col-xl-6">
                 <div id="dvdonut"></div>
             </div>
         </div>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12 col-md-4 col-12 mb-3">
+        <div class="col-12 col-sm-6 col-xl-4 col- mb-3">
             <div class="form-floating">
                 <select class="form-select" [(ngModel)]="idVendedor" (change)="getCotizacionesVendedor(idVendedor)" id="ddlVendedores">
                     <option value="0">Seleccione...</option>
@@ -38,22 +38,22 @@
                     <tr>
                         <th>
                             <div class="row d-flex align-items-center">
-                                <div class="col-md-1 col-sm-6 col-2">
+                                <div class="col-xl-1 col-sm-1 col-2">
                                     <span class="ms-2">Id</span>
                                 </div>
-                                <div class="col-md-3 col-sm-6 col-4">
+                                <div class="col-xl-3 col-sm-3 col-4">
                                     <span class="ms-2">Nombre comercial</span>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-4">
+                                <div class="col-xl-2 col-sm-2 col-4">
                                     <span class="ms-2">Costo indirecto</span>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <span class="ms-2">Utilidad(%) </span>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <span class="ms-2">Utilidad</span>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <span class="ms-2">Total</span>
                                 </div>
                             </div>
@@ -64,26 +64,26 @@
                     <tr *ngFor="let c of cotizacionDetalle.cotizacionDetalle">
                         <td>
                             <div class="row d-flex align-items-center">
-                                <div class="col-md-1 col-sm-6 col-2">
+                                <div class="col-xl-1 col-sm-1 col-2">
                                     <div class="ms-2">{{ c.idCotizacion }}</div>
                                 </div>
-                                <div class="col-md-3 col-sm-6 col-4">
+                                <div class="col-xl-3 col-sm-3 col-4">
                                     <div class="ms-2">{{ c.nombreComercial }}</div>
                                     <small *ngIf="c.idServicio == 1" class="ms-2 text-muted">Servicio: Mantenimiento</small>
                                     <small *ngIf="c.idServicio == 2" class="ms-2 text-muted">Servicio: Limpieza</small>
                                     <small *ngIf="c.idServicio == 3" class="ms-2 text-muted">Servicio: Jardineria</small>
                                     <small *ngIf="c.idServicio == 4" class="ms-2 text-muted">Servicio: Fumigación</small>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <div class="ms-2">${{ c.subTotal + c.indirecto | number: '1.2-2' }}</div>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <div class="ms-2">{{ c.utilidadPor }} %</div>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <div class="ms-2">${{ c.utilidad  | number: '1.2-2' }}</div>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <div class="ms-2">${{  c.subTotal + c.indirecto + c.utilidad | number: '1.2-2' }}</div>
                                 </div>
                             </div>
@@ -95,18 +95,18 @@
                     <tr>
                         <td>
                             <div class="row d-flex align-items">
-                                <div class="col-md-4 col-sm-6 col-2 text-end">
+                                <div class="col-xl-4 col-sm-4 col-2 text-end">
                                     <div class="ms-2">Total:</div>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <div class="ms-2">${{ totalIndirecto | number: '1.2-2' }}</div>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <div class="ms-2">${{ totalUtilidad  | number: '1.2-2' }}</div>
                                 </div>
-                                <div class="col-md-2 col-sm-6 col-3">
+                                <div class="col-xl-2 col-sm-2 col-3">
                                     <div class="ms-2">${{  total | number: '1.2-2' }}</div>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-2 col-6 mb-3">
+        <div class="col-xl-2 col-sm-3 col-6 mb-3">
             <div class="form-floating">
                 <select class="form-select" [(ngModel)]="idEstatus" aria-label="IdEstatusProspecto" id="ddlEstatusProspecto">
                     <option value="0">Seleccione ...</option>
@@ -131,24 +131,24 @@
                 <label for="ddlEstatusProspecto">Estatus:</label>
             </div>
         </div>
-        <div class="col-sm-12 col-md-3 col-6 mb-3">
+        <div class="col-xl-3 col-sm-3 col-6 mb-3">
             <div class="form-floating">
                 <input type="date" class="form-control" [(ngModel)]="Finicio" id="txtFinicio">
                 <label for="txtFinicio">Fecha inicial</label>
             </div>
             <span *ngIf="ferr('Finicio')" class="text-danger">{{ terr('Finicio') }}</span>
         </div>
-        <div class="col-sm-12 col-md-3 col-6 mb-3">
+        <div class="col-xl-3 col-sm-3 col-6 mb-3">
             <div class="form-floating">
                 <input type="date" class="form-control" [(ngModel)]="Ffin" id="txtFfin">
                 <label for="txtFfin">Fecha final</label>
             </div>
             <span *ngIf="ferr('Ffin')" class="text-danger">{{ terr('Ffin') }}</span>
         </div>
-        <!--<div class="col-md-2 col-2 mb-3">
+        <!--<div class="col-xl-2 col-2 mb-3">
             <button class="btn btn-outline-info" (click)="descargarReporteProspectos('Word')"><i class="fa fa-solid fa-file-download"></i> Docx</button>
         </div>-->
-        <div class="col-md-2 col-6 mb-3 text-center">
+        <div class="col-xl-2 col-sm-3 col-6 mb-3 text-center">
             <button class="btn btn-outline-info" (click)="descargarReporteProspectos('Excel')"><i class="fa fa-solid fa-file-excel"></i> Descargar</button>
         </div>
     </div>

@@ -77,6 +77,7 @@ namespace SistemaVentasBatia.Services
                             Colonia = worksheet.Cells[row, 3].Value?.ToString(),
                             Domicilio = worksheet.Cells[row, 4].Value?.ToString(),
                             CodigoPostal = worksheet.Cells[row, 5].Value?.ToString(),
+                            IdEstado = Convert.ToInt32(worksheet.Cells[row, 6].Value)
                         };
                         //LLenar con datos enduro
                         direccion.IdTabulador = 1;
@@ -86,14 +87,25 @@ namespace SistemaVentasBatia.Services
                         //obtener informacion por CP
                         var direccionAPI = new DireccionResponseAPIDTO();
                         direccionAPI = await _prosService.GetDireccionAPI(direccion.CodigoPostal);
-                        direccion.Ciudad = direccionAPI.CodigoPostal.Estado;
-                        direccion.Municipio = direccionAPI.CodigoPostal.Municipio;
-                        direccion.IdEstado = direccionAPI.CodigoPostal.IdEstado;
-                        direccion.IdMunicipio = direccionAPI.CodigoPostal.IdMunicipio;
+                        if (direccionAPI != null)
+                        {
+                            direccion.Ciudad = direccionAPI.CodigoPostal.Estado;
+                            direccion.Municipio = direccionAPI.CodigoPostal.Municipio;
+                            //direccion.IdEstado = direccionAPI.CodigoPostal.IdEstado;
+                            //direccion.IdMunicipio = direccionAPI.CodigoPostal.IdMunicipio;
+                            direccion.IdMunicipio = 0;
+                        }
+                        else
+                        {
+                            direccion.Ciudad = direccion.Colonia;
+                            direccion.Municipio = "N/A";
+                            direccion.IdMunicipio = 0;
+                        }
+                        
                         //obtener isFrontera
                         bool isFrontera = await _repo.ObtenerFronteraPorIdMunicipio(direccion.IdMunicipio);
                         direccion.Frontera = isFrontera;
-
+                        Console.WriteLine("Direccion no:" + row + "agregada");
                         direcciones.Add(direccion);
                     }
                     var result = _repo.InsertarDireccionesExcel(direcciones, idCotizacion);
@@ -330,7 +342,9 @@ namespace SistemaVentasBatia.Services
                                 default:
                                     break;
                             }
+                            Console.WriteLine("puesto" + row.ToString());
                             puestos.Add(puesto);
+                            Console.WriteLine("error");
                         }
                     }
                     catch (Exception ex)

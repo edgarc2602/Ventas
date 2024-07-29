@@ -12,14 +12,14 @@
                 <div class="modal-body">
                     <div>
                         <div class="row">
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-xl-6 col-sm-6 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="model.nombreSucursal" id="NombreSucursal">
                                     <label for="NombreSucursal">Sucursal</label>
                                 </div>
                                 <span *ngIf="ferr('NombreSucursal')" class="text-danger">{{ terr('NombreSucursal') }}</span>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-xl-3 col-sm-6 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdTIpoInmueble" [(ngModel)]="model.idTipoInmueble" id="ddlTipoInmuebleDireccion">
                                         <option value="0">Seleccione...</option>
@@ -29,14 +29,14 @@
                                 </div>
                                 <span *ngIf="ferr('IdTipoInmueble')" class="text-danger">{{ terr('IdTipoInmueble') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-xl-3 col-sm-4 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="model.codigoPostal" (input)="getDireccionAPI()" id="txtCPDireccion">
                                     <label for="txtCPDireccion">CP</label>
                                 </div>
                                 <span *ngIf="ferr('CodigoPostal')" class="text-danger">{{ terr('CodigoPostal') }}</span>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            <div class="col-xl-4 col-sm-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdEstado" [(ngModel)]="model.idEstado" (change)="loadMun()" id="ddlEstadoDireccion">
                                         <option value="0">Seleccione...</option>
@@ -46,7 +46,7 @@
                                 </div>
                                 <span *ngIf="ferr('IdEstado')" class="text-danger">{{ terr('IdEstado') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-sm-4 col-xl-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdMunicipio" [(ngModel)]="model.idMunicipio" id="ddlMunicipioDireccion">
                                         <option value="0">Seleccione...</option>
@@ -56,7 +56,7 @@
                                 </div>
                                 <span *ngIf="ferr('IdMunicipio')" class="text-danger">{{ terr('IdMunicipio') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-sm-4 col-xl-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="Colonia" [(ngModel)]="model.colonia" id="ddlColoniaDireccion">
                                         <option value="0">Seleccione...</option>
@@ -66,7 +66,7 @@
                                 </div>
                                 <span *ngIf="ferr('Colonia')" class="text-danger">{{ terr('Colonia') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-sm-8 col-xl-4 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="model.ciudad" id="txtCiudadDireccion">
                                     <label for="txtCiudadDireccion">Ciudad</label>
@@ -74,7 +74,7 @@
                                 <span *ngIf="ferr('Ciudad')" class="text-danger">{{ terr('Ciudad') }}</span>
                             </div>
 
-                            <div class="col-sm-12 col-md-4 mb-3">
+                            <div class="col-sm-12 col-xl-8 mb-3">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" [(ngModel)]="model.domicilio" id="txtCalleNumeroDireccion">
                                     <label for="txtCalleNumeroDireccion">Calle y Número</label>

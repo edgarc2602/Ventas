@@ -9,6 +9,7 @@ using Dapper;
 using SistemaVentasBatia.Context;
 using SistemaVentasBatia.Models;
 using System.ComponentModel;
+using Xceed.Document.NET;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -148,6 +149,7 @@ namespace SistemaVentasBatia.Repositories
                         //        }
                         //    }
                         //}
+                        Console.WriteLine("Direcciones insertadas");
                         return true;
                     }
                     catch (Exception)
