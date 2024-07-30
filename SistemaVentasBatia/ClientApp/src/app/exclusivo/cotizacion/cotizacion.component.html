@@ -65,10 +65,10 @@
                                 <span class="ms-2">Total</span>
                             </div>
                             <div class="col-xl-2 col-sm-6 col-6">
-                                <span class="ms-2">Fecha Alta</span>
+                                <span class="ms-2">Vigencia</span>
                             </div>
                             <div class="col-xl-2 col-sm-6 col-3">
-                                <span class="ms-2">Vigencia</span>
+                                <span class="ms-2">Fecha Alta</span>
                             </div>
                             <div *ngIf="user.idAutoriza === 1" class="col-xl-2 col-sm-6 col-6">
                                 <span class="ms-2">Usuario Alta</span>
@@ -82,28 +82,28 @@
                 <tr *ngFor="let cot of lcots.cotizaciones">
                     <td class="col-10 col-xl-9 col-sm-9">
                         <div class="row d-flex align-items-center">
-                            <div class="col-xl-1 col-sm-2 col-2">
+                            <div class="col-xl-1 col-sm-2 col-12">
                                 <span class="badge d-xl-none">Id:</span>
                                 <div class="ms-2">{{ cot.idCotizacion }}</div>
                             </div>
-                            <div [ngClass]="user.idAutoriza ? 'col-xl-3 col-sm-4 col-10' : 'col-xl-5 col-sm-4 col-10'">
+                            <div [ngClass]="user.idAutoriza ? 'col-xl-3 col-sm-7 col-12' : 'col-xl-5 col-sm-4 col-12'">
                                 <span class="badge d-xl-none">Prospecto:</span>
-                                <div class="ms-2">{{ cot.nombreComercial }} <small class="ms-2 text-muted">({{ cot.servicio }})</small></div>
-                                
+                                <div class="ms-2">{{ cot.nombreComercial }} <small *ngIf="lcots.idServicio == 0" class="ms-2 text-muted">({{ cot.servicio }})</small></div>
+
                             </div>
-                            <div class="col-xl-2 col-sm-3 col-4 ">
+                            <div class="col-xl-2 col-sm-3 col-6 ">
                                 <span class="badge d-xl-none">Total:</span>
                                 <div class="ms-2">${{cot.total | number: '1.2'}}</div>
                             </div>
-                            <div class="col-xl-2 col-sm-3 col-5 ">
-                                <span class="badge d-xl-none">Fecha Alta:</span>
-                                <div class="ms-2">{{ cot.fechaAlta | date: 'dd-MM-yyyy' }}</div>
-                            </div>
-                            <div class="col-xl-2 col-sm-3 col-3">
+                            <div class="col-xl-2 col-sm-2 col-6">
                                 <span class="badge d-xl-none">Vigencia:</span>
                                 <div class="ms-2 ">{{ cot.diasVigencia }} Dias</div>
                             </div>
-                            <div *ngIf="user.idAutoriza === 1" class="col-xl-2 col-sm-6 col-12">
+                            <div class="col-xl-2 col-sm-3 col-6 ">
+                                <span class="badge d-xl-none">Fecha Alta:</span>
+                                <div class="ms-2">{{ cot.fechaAlta | date: 'dd-MM-yyyy' }}</div>
+                            </div>
+                            <div *ngIf="user.idAutoriza === 1" class="col-xl-2 col-sm-6 col-6">
                                 <span class="badge d-xl-none">Usuario Alta:</span>
                                 <div class="ms-2 small"> {{  cot.idAlta }}  </div>
                             </div>
