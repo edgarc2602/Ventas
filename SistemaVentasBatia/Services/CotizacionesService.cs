@@ -63,6 +63,7 @@ namespace SistemaVentasBatia.Services
         Task CambiarEstatusCotizacionesNoSeleccionadas(int idCotizacionSeleccionada, int idProspecto);
         Task<bool> AutorizarCotizacion(int idCotizacion);
         Task<bool> RemoverAutorizacionCotizacion(int idCotizacion);
+        Task<List<DireccionDTO>> ObtenerListaDireccionesPorCotizacion(int idCotizacion);
     }
 
     public class CotizacionesService : ICotizacionesService
@@ -135,6 +136,11 @@ namespace SistemaVentasBatia.Services
         {
             int autorizacion = await cotizacionesRepo.ObtenerAutorizacion(idPersonal);
             return autorizacion;
+        }
+
+        public async Task<List<DireccionDTO>> ObtenerListaDireccionesPorCotizacion(int idCotizacion)
+        {
+            return mapper.Map<List<DireccionDTO>>(await cotizacionesRepo.ObtenerListaDireccionesPorCotizacion(idCotizacion));
         }
 
         public async Task ObtenerListaDireccionesPorCotizacion(ListaDireccionDTO listaDireccionesVM)

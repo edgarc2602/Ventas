@@ -82,7 +82,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     docs: ItemN[] = [];
     lsdir: ListaDireccion = {} as ListaDireccion;
     lspue: ListaPuesto = {
-        puestosDireccionesCotizacion: [], direccionesCotizacion: [], idCotizacion: 0, idDireccionCotizacion: 0, idPuestoDireccionCotizacion: 0,length: 0,empleados: 0, pagina: 1, rows: 0, numPaginas: 0
+        puestosDireccionesCotizacion: [], direccionesCotizacion: [], idCotizacion: 0, idDireccionCotizacion: 0, idPuestoDireccionCotizacion: 0, length: 0, empleados: 0, pagina: 1, rows: 0, numPaginas: 0
     };
     lsmat: ListaMaterial = {} as ListaMaterial;
     lsher: ListaMaterial = {} as ListaMaterial;
@@ -451,9 +451,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     saveDir($event) {
-        this.modelDir.idDireccion = $event;
-        this.addDir(0);
+        if ($event != 0) {
+            this.modelDir.idDireccion = $event;
+            this.addDir(0);
+        }
         this.getAllDirs();
+        this.getDirs();
     }
 
     addDir(edit: number) {

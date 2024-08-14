@@ -157,10 +157,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult<DireccionCotizacionDTO>> AgregarDireccion([FromBody] DireccionCotizacionDTO direccionCVM)
         {
-            var listaPuestosDireccionCotizacionVM = new ListaPuestosDireccionCotizacionDTO { IdCotizacion = direccionCVM.IdCotizacion };
-            await cotizacionesSvc.ObtenerCatalogoDireccionesPorCotizacion(listaPuestosDireccionCotizacionVM);
+            var direcciones = await cotizacionesSvc.ObtenerListaDireccionesPorCotizacion(direccionCVM.IdCotizacion);
 
-            foreach (var direccion in listaPuestosDireccionCotizacionVM.DireccionesCotizacion)
+            foreach (var direccion in direcciones)
             {
                 if (direccionCVM.IdDireccion == direccion.IdDireccion)
                 {

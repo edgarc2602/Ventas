@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Connections;
 using System.Reflection.Metadata.Ecma335;
 using SistemaVentasBatia.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.Data;
 
@@ -43,6 +42,7 @@ namespace SistemaVentasBatia.Repositories
         Task<bool> ValidarDirecciones(int idCotizacion);
         Task<int> ObtieneIdDireccionCotizacionPorOperario(int idPuestoDireccionCotizacion);
         Task<int> ContarDireccionesCotizacion(int idCotizacion);
+        Task<List<Direccion>> ObtenerListaDireccionesPorCotizacion(int idCotizacion);
         Task<List<Direccion>> ObtenerDireccionesPorCotizacion(int idCotizacion, int pagina);
 
         Task<List<Direccion>> ObtenerCatalogoDirecciones(int idProspecto);
@@ -2224,6 +2224,31 @@ GETDATE(),
             {
                 throw new Exception("Error al validar producto existente: " + ex.Message, ex);
             }
+        }
+
+        public async Task<List<Direccion>> ObtenerListaDireccionesPorCotizacion(int idCotizacion)
+        {
+            string query = @"
+    SELECT
+		d.id_direccion IdDireccion, nombre_sucursal NombreSucursal, id_tipo_inmueble IdTipoInmueble, dc.id_direccion_cotizacion IdDireccionCotizacion,
+		d.id_estado IdEstado, d.id_tabulador IdTabulador, municipio Municipio, ciudad Ciudad, colonia Colonia, domicilio Domicilio, referencia Referencia, codigo_postal CodigoPostal, e.descripcion Estado
+	FROM tb_direccion d
+	RIGHT JOIN tb_direccion_cotizacion dc on dc.id_direccion = d.id_direccion
+	JOIN tb_estado e on d.id_estado = e.id_estado
+	WHERE dc.id_cotizacion = @idCotizacion ";
+            var clientes = new List<Direccion>();
+            try
+            {
+                using var connection = ctx.CreateConnection();
+
+                clientes = (await connection.QueryAsync<Direccion>(query, new { idCotizacion })).ToList();
+
+            }
+            catch (Exception)
+            {
+                throw new CustomException("Error al obtener lista");
+            }
+            return clientes;
         }
 
     }

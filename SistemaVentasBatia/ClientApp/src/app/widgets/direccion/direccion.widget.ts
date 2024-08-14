@@ -161,7 +161,7 @@ export class DireccionWidget {
                             this.okToast('Direcci\u00F3n actualizada');
                         }, 300);
                         this.close();
-                        this.sendEvent.emit(response.idDireccion);
+                        this.sendEvent.emit(0);
                     }, err => {
                         this.detenerCarga();
                         setTimeout(() => {
