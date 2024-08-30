@@ -400,17 +400,15 @@
         <span *ngIf="ferr('IdPuesto')" class="text-danger">{{ terr('IdPuesto') }}</span>
     </div>-->
                             <div class="col-sm-12 col-md-2 col-4">
-                                2
                                 
-                                iv
                                 <div class="form-floating">
                                     <input type="number" class="form-control" [(ngModel)]="model.sueldo" disabled id="txtSueldoPuesto">
-                                    be
+                                    
                                     <label for="txtSueldoPuesto">Sueldo diario</label>
                                 </div>
                                 <span *ngIf="ferr('Sueldo')" class="text-danger">{{ terr('Sueldo') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-2 col-4 mb-3">
+                            <div class="col-sm-12 col-md-3 col-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" [(ngModel)]="model.jornada" (change)="chgSalariodos()" id="ddlJornadaPuesto" disabled>
                                         <option value="0">Seleccione...</option>

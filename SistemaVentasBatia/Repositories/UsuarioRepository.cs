@@ -46,7 +46,12 @@ per_estatusventas Estatus,
 id_empleado as IdEmpleado,
 per_autorizaventas IdAutoriza,
 per_revisaventas IdSupervisa
-FROM personal where per_usuario = @Usuario and per_password = @Contrasena AND per_cotizadorventas = 1"; // and per_status=0
+FROM personal 
+where 
+per_usuario = @Usuario and 
+per_password = @Contrasena AND 
+per_cotizadorventas = 1 AND
+Per_Interno = 0";
 
             using (var connection = _ctx.CreateConnection())
             {

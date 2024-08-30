@@ -409,6 +409,10 @@ namespace SistemaVentasBatia.Services
                 }
             }
             operariosModel.IMSS = imss;
+            if (operariosModel.DiasEvento != 0)
+            {
+                operariosModel.IMSS = (imss / 30.4167M) * operariosModel.DiasEvento;
+            }
 
             operariosModel.ISN = (
                 operariosModel.Sueldo +
@@ -434,10 +438,7 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Domingo +
                 operariosModel.CubreDescanso, 2);
 
-            if(operariosModel.DiasEvento != 0)
-            {
-                operariosModel.IMSS = (operariosModel.IMSS / 30.4167M) * operariosModel.DiasEvento;
-            }
+            
             return operariosModel;
         }
 

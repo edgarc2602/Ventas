@@ -54,8 +54,5 @@ namespace SistemaVentasBatia.Controllers
             }
             return await clienteSvc.InsertarContratoCliente(contratoBytes, idClienteGenerado, nombreComercial);
         }
-
-
-
     }
 }
