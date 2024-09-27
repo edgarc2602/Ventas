@@ -287,11 +287,11 @@ namespace SistemaVentasBatia.Services
             {
                 if (operariosModel.IdPuesto != 77)
                 {
-                    operariosModel.Sueldo = (operariosModel.Sueldo / 30.4167M) * operariosModel.DiasEvento;
+                    operariosModel.Sueldo = (operariosModel.Sueldo / 30.4167M);
                 }
                 else
                 {
-                    operariosModel.Sueldo = operariosModel.Sueldo * operariosModel.DiasEvento;
+                    operariosModel.Sueldo = operariosModel.Sueldo;
                 }
             }
             int idCotizacion = await cotizacionesRepo.ObtenerIdCotizacionPorDireccion(operariosModel.IdDireccionCotizacion);
@@ -411,7 +411,7 @@ namespace SistemaVentasBatia.Services
             operariosModel.IMSS = imss;
             if (operariosModel.DiasEvento != 0)
             {
-                operariosModel.IMSS = (imss / 30.4167M) * operariosModel.DiasEvento;
+                operariosModel.IMSS = (imss / 30.4167M);
             }
 
             operariosModel.ISN = (

@@ -55,6 +55,8 @@ namespace SistemaVentasBatia.Services
             var contrato = mapper.Map<ClienteContratoDTO>(await clienteRepo.ObtenerDatosClienteContrato(idProspecto));
             return contrato;
         }
+
+        
         public async Task<bool> InsetarDatosClienteContrato(ClienteContratoDTO contrato)
         {
             var coincidencia = await clienteRepo.ConsultarContratoExistente(contrato.IdProspecto);
@@ -78,7 +80,8 @@ namespace SistemaVentasBatia.Services
 
             //CREAR XML E INSERTAR CLIENTE
             string clienteXMLString = CrearXMLCliente(cliente);
-            int idClienteCreado = clienteRepo.InsertarClienteXML(clienteXMLString, logXMLString);
+            int idGrupoEmpresa = await clienteRepo.ConsultarGrupoEmpresas(cliente.IdEmpresaPagadora);
+            int idClienteCreado = clienteRepo.InsertarClienteXML(clienteXMLString, logXMLString, idGrupoEmpresa);
 
             //CREAR XML E INSERTAR OFICINA
             string oficinaXMLString = CrearXMLOficina(idClienteCreado);
@@ -718,7 +721,7 @@ namespace SistemaVentasBatia.Services
         {
             bool result;
 
-            string pathContrato = "\\\\192.168.2.4\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
+            string pathContrato = "\\\\192.168.2.3\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
             //string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
 
             //INSERTAR ASUNTO

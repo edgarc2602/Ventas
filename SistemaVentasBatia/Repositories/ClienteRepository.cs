@@ -28,7 +28,7 @@ namespace SistemaVentasBatia.Repositories
         Task<decimal> ObtenerTotalCotizacion(int idCotizacion);
         Task<List<Direccion>> ObtenerDireccionesCotizacion(int idCotizacion);
         Task<List<PuestoDireccionCotizacion>> ObtenerPuestosDireccionCotizacion(int idDireccionCotizacion);
-        int InsertarClienteXML(string clienteXML, string logXML);
+        int InsertarClienteXML(string clienteXML, string logXML, int idGrupoEmpresa);
         bool InsertarXMLOficina(string oficinaXML);
         bool InsertarLineaNegocioXML(string lineaNegocioXML);
         int InsertarDireccionXML(string direccionXML, string logXML);
@@ -56,6 +56,8 @@ namespace SistemaVentasBatia.Repositories
         Task<bool> ConsultarPoliza(int idCotizacion);
         void InsertarHorarioActualizadoPlantillaXML(string horarioActualizadoXML);
         Task<Correo> ObenerDetalleCorreo(int idPlantilla, string fecha);
+        Task<int> ConsultarGrupoEmpresas(int idEmpresa);
+
     }
 
     public class ClienteRepository : IClienteRepository
@@ -64,6 +66,20 @@ namespace SistemaVentasBatia.Repositories
         public ClienteRepository(DapperContext ctx)
         {
             this.ctx = ctx;
+        }
+        public async Task<int> ConsultarGrupoEmpresas(int idEmpresa)
+        {
+            string query = @"SELECT id_grupo FROM tb_empresa WHERE id_empresa = @idEmpresa
+";
+            try
+            {
+                using var connection = ctx.CreateConnection();
+                return await connection.QuerySingleAsync<int>(query, new { idEmpresa});
+            }
+            catch (Exception)
+            {
+                throw new CustomException("error al obtener el grupo de empresas");
+            }
         }
         public async Task<ClienteContrato> ObtenerDatosClienteContrato(int idProspecto)
         {
@@ -319,7 +335,7 @@ namespace SistemaVentasBatia.Repositories
             }
             return direcciones;
         }
-        public int InsertarClienteXML(string clienteXML, string logXML)
+        public int InsertarClienteXML(string clienteXML, string logXML, int idGrupoEmpresa)
         {
             int result = 0;
             try
@@ -331,6 +347,7 @@ namespace SistemaVentasBatia.Repositories
                 parameters.Add("@Cabecero", new SqlXml(new System.Xml.XmlTextReader(clienteXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
                 parameters.Add("@CabeceroLog", new SqlXml(new System.Xml.XmlTextReader(logXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
                 parameters.Add("@Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                parameters.Add("@Id_grupo_empresa", idGrupoEmpresa, dbType: DbType.Int32, direction: ParameterDirection.Input);
                 connection.Execute("sp_cliente", parameters, commandType: CommandType.StoredProcedure);
                 int idMov = parameters.Get<int>("@Id");
                 result = idMov;

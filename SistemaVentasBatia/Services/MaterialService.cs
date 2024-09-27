@@ -78,7 +78,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * materialVM.DiasEvento;
+                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
                 material.ImporteMensual = material.Total;
             }
             if (materialVM.edit == 1)
@@ -309,7 +309,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = (((material.PrecioUnitario * material.Cantidad) / 12M) * 0.8M) * dto.DiasEvento;
+                material.Total = (((material.PrecioUnitario * material.Cantidad) / 12M) * 0.8M);
                 //material.Total = ((((material.PrecioUnitario / 12M) * 1.15M) * material.Cantidad) / 30.4167M) * dto.DiasEvento;
                 material.ImporteMensual = material.Total;
             }
@@ -365,7 +365,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * dto.DiasEvento;
+                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
                 material.ImporteMensual = material.Total;
             }
             if (dto.edit == 1)
@@ -442,7 +442,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * dto.DiasEvento;
+                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
                 material.ImporteMensual = material.Total;
             }
 

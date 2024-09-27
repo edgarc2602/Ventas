@@ -11,7 +11,7 @@ export class ReportService {
 
 
 
-    private ssrsUrl = 'http://192.168.2.4:80/ReportServer/report';
+    private ssrsUrl = 'http://192.168.2.3:80/ReportServer/report';
     private reportPath = '/reportecotizacion';
     private username = 'Administrador';
     private password = 'GrupoBatia@';
@@ -50,4 +50,4 @@ export class ReportService {
 
 
 
-//this.ssrsUrl = 'http://192.168.2.4/ReportServer/report/reportecotizacion?idCotizacion=' + idCotizacion ;
+//this.ssrsUrl = 'http://192.168.2.3/ReportServer/report/reportecotizacion?idCotizacion=' + idCotizacion ;

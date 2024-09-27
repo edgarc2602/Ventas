@@ -62,7 +62,7 @@ namespace SistemaVentasBatia.Controllers
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacion&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
+                    var url = ("http://192.168.2.3/Reporte?%2freportecotizacion&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
                     return new FileContentResult(myDataBuffer, formatoArchivo)
@@ -80,7 +80,7 @@ namespace SistemaVentasBatia.Controllers
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacion2&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
+                    var url = ("http://192.168.2.3/Reporte?%2freportecotizacion2&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
                     return new FileContentResult(myDataBuffer, formatoArchivo)
@@ -98,7 +98,7 @@ namespace SistemaVentasBatia.Controllers
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freportecotizacionmanodeobra&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
+                    var url = ("http://192.168.2.3/Reporte?%2freportecotizacionmanodeobra&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
                     return new FileContentResult(myDataBuffer, formatoArchivo)
@@ -116,7 +116,7 @@ namespace SistemaVentasBatia.Controllers
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freporteinsumos&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
+                    var url = ("http://192.168.2.3/Reporte?%2freporteinsumos&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
                     return new FileContentResult(myDataBuffer, formatoArchivo)
@@ -134,7 +134,7 @@ namespace SistemaVentasBatia.Controllers
             {
                 try
                 {
-                    var url = ("http://192.168.2.4/Reporte?%2freporteevento&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
+                    var url = ("http://192.168.2.3/Reporte?%2freporteevento&rs:Format=" + formatourl + "&idCotizacion=" + idCotizacion.ToString());
                     byte[] myDataBuffer = wc.DownloadData(url.ToString());
 
                     return new FileContentResult(myDataBuffer, formatoArchivo)
@@ -159,7 +159,7 @@ namespace SistemaVentasBatia.Controllers
         {
             try
             {
-                var url = ("http://192.168.2.4/Reporte?%2freporteproductoestado&rs:Format=PDF&idEstado=" + idEstado.ToString() + "&idFamilia=" + idFamilia.ToString());
+                var url = ("http://192.168.2.3/Reporte?%2freporteproductoestado&rs:Format=PDF&idEstado=" + idEstado.ToString() + "&idFamilia=" + idFamilia.ToString());
                 WebClient wc = new WebClient
                 {
                     Credentials = new NetworkCredential("Administrador", "GrupoBatia@")
@@ -203,7 +203,7 @@ namespace SistemaVentasBatia.Controllers
 
             try
             {
-                var url = ("http://192.168.2.4/Reporte?%2freporteprospectos&rs:Format=PDF&idEstatus=" + idEstatus.ToString());
+                var url = ("http://192.168.2.3/Reporte?%2freporteprospectos&rs:Format=PDF&idEstatus=" + idEstatus.ToString());
                 WebClient wc = new WebClient
                 {
                     Credentials = new NetworkCredential("Administrador", "GrupoBatia@")

@@ -501,7 +501,7 @@ FROM tb_clase";
             }
             return empresas;
         }
-
+        
         public async Task<List<Catalogo>> ObtenerCatalogoVendedores()
         {
             string query = @"SELECT IdPersonal Id, Per_Nombre + ' ' + Per_Paterno + ' ' + Per_Materno Descripcion
