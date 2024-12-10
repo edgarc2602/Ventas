@@ -150,7 +150,7 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<bool> ActualizarIndirectoUtilidadService([FromBody] Cotizacionupd cotizacionupd)
         {
-            return await cotizacionesSvc.ActualizarIndirectoUtilidad(cotizacionupd.IdCotizacion, cotizacionupd.Indirecto, cotizacionupd.Utilidad, cotizacionupd.ComisionSV, cotizacionupd.ComisionExt);
+            return await cotizacionesSvc.ActualizarIndirectoUtilidad(cotizacionupd.IdCotizacion, cotizacionupd.Indirecto, cotizacionupd.Utilidad, cotizacionupd.ComisionSV, cotizacionupd.ComisionExt, cotizacionupd.PolizaPor);
             //return RedirectToAction("LimpiezaResumen");
         }
 

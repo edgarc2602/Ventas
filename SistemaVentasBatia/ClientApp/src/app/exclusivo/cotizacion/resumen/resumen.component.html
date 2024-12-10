@@ -285,10 +285,16 @@
                         <tr *ngIf="model.polizaCumplimiento == true">
                             <td class="border-bottom border-success">
                                 <div class="row text-muted">
-                                    <div class="col-1 col-md-3"></div>
-                                    <div class="col-4 col-md-3 text-start"><h5>Póliza de cumplimiento</h5></div>
+                                    <div class="col-1 col-md-3 text-end">
+                                        <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="Calculo: Total CE * Porcentaje de Póliza / 12">
+                                            <i class="fa fa-info-circle"></i>
+                                        </span>
+                                    </div>
+                                    <div class="col-4 col-md-3 text-start">
+                                        <h5>Póliza de cumplimiento</h5>
+                                    </div>
                                     <div class="col-2 col-md-1 ">
-                                        <!--<input #comisionExttxt type="text" class="form-control" id="polizaCumplimiento" name="polizaCumplimiento" [(ngModel)]="model.polizaCumplimiento"  value="{{model.polizaCumplimiento}}" placeholder="{{model.polizaCumplimiento}}" autocomplete="off" required disabled>-->
+                                        <input type="number" class="form-control" [(ngModel)]="model.polizaPor" placeholder="{{model.polizaPor}}" autocomplete="off" required>
                                     </div>
                                     <div class="col-4 col-md-2  text-end"><h5>${{ model.totalPolizaCumplimiento | number:'1.2-2' }}</h5></div>
                                     <div class="col-1 col-md-2"></div>

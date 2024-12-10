@@ -245,6 +245,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return total;
@@ -357,6 +359,7 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                throw;
             }
             return result;
         }
@@ -377,6 +380,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return result;
@@ -550,6 +555,8 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 result = false;
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return result;
@@ -590,6 +597,8 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 result = false;
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return result;
@@ -608,6 +617,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return idConcepto;
@@ -685,6 +696,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return idAsuntoLegal;
@@ -702,7 +715,9 @@ namespace SistemaVentasBatia.Repositories
                 idAsuntoPaso = await connection.ExecuteScalarAsync<int>(query, new { idAsuntoCreado });
 
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) {
+                Console.WriteLine("Error: " + ex.Message);
+                throw ex; }
             return idAsuntoPaso;
         }
 
@@ -720,6 +735,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return result;
@@ -743,6 +760,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return result;
@@ -767,6 +786,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch(Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return result;
@@ -784,6 +805,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
         }
@@ -798,6 +821,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch(Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
         }
@@ -812,6 +837,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch(Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return porcentajes;
@@ -828,6 +855,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch(Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return concepto;
@@ -876,6 +905,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
         }
@@ -897,6 +928,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch(Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
         }
@@ -912,6 +945,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw new Exception("Error al consultar la póliza de cumplimiento", ex);
             }
         }
@@ -964,6 +999,8 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+
                 throw ex;
             }
             return correo;

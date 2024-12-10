@@ -18,6 +18,7 @@ namespace SistemaVentasBatia.Models
         public decimal Utilidad { get; set; }
         public decimal ComisionSV { get; set; }
         public decimal ComisionExt { get; set; }
+        public decimal Cumplimiento { get; set; }
         public decimal Total { get; set; }
         public Servicio IdServicio { get; set; }
         public EstatusCotizacion IdEstatusCotizacion { get; set; }

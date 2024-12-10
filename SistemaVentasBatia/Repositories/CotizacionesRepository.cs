@@ -80,6 +80,7 @@ namespace SistemaVentasBatia.Repositories
         Task<ResumenCotizacionLimpieza> ObtenerResumenCotizacionLimpieza2(int idCotizacion);
         Task<bool> GetPolizaCumplimiento(int idCotizacion);
         Task<bool> InsertarPolizaCumplimiento(decimal totalPoliza, int idCotizacion);
+        Task<decimal> ObtenerPorcentajePoliza(int idCotizacion);
         Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion);
         Task CambiarEstatusProspectoContratado(int idProspecto);
         Task CambiarEstatusCotizacionContratada(int idCotizacion);
@@ -91,7 +92,7 @@ namespace SistemaVentasBatia.Repositories
         Task<bool> RemoverAutorizacionCotizacion(int idCotizacion);
 
         //CONFIGURACION
-        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
+        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor);
         Task ActualizarPorcentajesPredeterminadosCotizacion(CotizaPorcentajes porcentajes);
         Task<int> ObtenerTipoSalario(int idCotizacion);
         Task<int> ObtenerIdZona(int idPuestoDireccion);
@@ -511,7 +512,8 @@ WHERE id_cotizacion = @idCotizacion";
 costo_indirecto CostoIndirecto,
 utilidad Utilidad,
 comision_venta ComisionSV,
-comision_externa ComisionExt
+comision_externa ComisionExt,
+cumplimiento AS Cumplimiento
 FROM tb_cotizacion  WHERE id_cotizacion = @id ";
             try
             {
@@ -674,12 +676,13 @@ DELETE FROM tb_cotiza_herramienta WHERE id_puesto_direccioncotizacion = @registr
 
             return idCotizacionNueva;
         }
-        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt)
+        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor)
         {
             decimal indirectoval = decimal.Parse(indirecto);
             decimal utilidadval = decimal.Parse(utilidad);
             decimal comisionSVval = decimal.Parse(comisionSV);
             decimal comisionExtval = decimal.Parse(comisionExt);
+            decimal polizaPorval = decimal.Parse(polizaPor);
 
             //string basemenor = ".0";
             //string basemayor = ".";
@@ -731,14 +734,15 @@ DELETE FROM tb_cotiza_herramienta WHERE id_puesto_direccioncotizacion = @registr
 costo_indirecto = @indirectoval, 
 utilidad = @utilidadval,
 comision_venta = @comisionSVval,
-comision_externa = @comisionExtval
+comision_externa = @comisionExtval,
+cumplimiento = @polizaPorval
 where id_cotizacion = @idCotizacion";
             bool result;
             try
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    await connection.ExecuteAsync(query, new { idCotizacion, indirectoval, utilidadval, comisionSVval, comisionExtval });
+                    await connection.ExecuteAsync(query, new { idCotizacion, indirectoval, utilidadval, comisionSVval, comisionExtval, polizaPorval });
                     result = true;
                 }
             }
@@ -1978,6 +1982,23 @@ GETDATE(),
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        public async Task<decimal> ObtenerPorcentajePoliza(int idCotizacion)
+        {
+            string query = @"SELECT cumplimiento FROM tb_cotizacion WHERE id_cotizacion = @idCotizacion";
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    decimal porcentaje = await connection.QueryFirstOrDefaultAsync<decimal>(query, new { idCotizacion });
+                    return porcentaje;
+                }
+            }
+            catch (Exception)
+            {
+                throw new CustomException ("Error al obtener el porcentaje de poliza");
             }
         }
         public async Task<int> ContarDireccionesCotizacion(int idCotizacion)

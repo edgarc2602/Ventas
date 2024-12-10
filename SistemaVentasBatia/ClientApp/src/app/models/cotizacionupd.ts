@@ -4,4 +4,5 @@ export interface Cotizacionupd {
     utilidad: string;
     comisionSV: string;
     comisionExt: string;
+    polizaPor: string;
 }

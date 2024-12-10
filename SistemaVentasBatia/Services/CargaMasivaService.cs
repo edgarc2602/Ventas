@@ -138,6 +138,7 @@ namespace SistemaVentasBatia.Services
                     {
                         worksheet.Cells[rowNum, 1].Value = sucursal.NombreSucursal;
                         worksheet.Cells[rowNum, 2].Value = sucursal.IdDireccionCotizacion;
+                        worksheet.Cells[rowNum, 3].Value = sucursal.IdTabulador;
                         rowNum++;
                     }
                     return package.GetAsByteArray();

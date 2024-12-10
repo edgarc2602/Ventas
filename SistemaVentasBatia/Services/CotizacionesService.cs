@@ -35,7 +35,7 @@ namespace SistemaVentasBatia.Services
         Task<int> ObtenerIdDireccionCotizacionPorOperario(int registroAEliminar);
         Task EliminarOperario(int registroAEliminar);
         Task<int> DuplicarCotizacion(int idCotizacion, bool incluyeProducto);
-        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt);
+        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor);
         Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento);
         Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id);
         Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial);
@@ -304,7 +304,7 @@ namespace SistemaVentasBatia.Services
 
             if (operariosModel.DiasEvento == 0)
             {
-                operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 20m) / 12m);
+                operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 30m) / 12m);
                 operariosModel.PrimaVacacional = ((((operariosModel.Sueldo / 30.4167m) * 12m) * .25m) / 12m);
                 operariosModel.Vacaciones = ((operariosModel.Sueldo / 30.4167m) * 12m) / 12m;
             }
@@ -642,18 +642,20 @@ namespace SistemaVentasBatia.Services
 
             foreach (var materialP in materialPuesto)
             {
-                var preciosProducto = preciosProductosPorEstado.Where(x => x.Clave == materialP.ClaveProducto);
+                var preciosProducto = preciosProductosPorEstado.Where(x => x.Clave.Trim() == materialP.ClaveProducto.Trim());
 
-                if (preciosProducto.Count() > 0)
+                if (preciosProducto.Any())
                 {
-                    materialP.Precio = preciosProducto.FirstOrDefault(x => x.Clave == materialP.ClaveProducto).Precio;
+                    materialP.Precio = preciosProducto.FirstOrDefault(x => x.Clave.Trim() == materialP.ClaveProducto.Trim()).Precio;
                 }
                 else
                 {
-                    materialP.Precio = preciosBaseProductos.FirstOrDefault(x => x.Clave == materialP.ClaveProducto).Precio;
+                    var precioBaseProducto = preciosBaseProductos.FirstOrDefault(x => x.Clave.Trim() == materialP.ClaveProducto.Trim());
+                    materialP.Precio = precioBaseProducto != null ? precioBaseProducto.Precio : 0;
                 }
             }
         }
+
 
         public async Task<ResumenCotizacionLimpiezaDTO> ObtenerResumenCotizacionLimpieza(int id)
         {
@@ -729,6 +731,7 @@ namespace SistemaVentasBatia.Services
                 resumenCotizacion.CsvPor = obtenercot.ComisionSV;
                 resumenCotizacion.UtilidadPor = obtenercot.Utilidad;
                 resumenCotizacion.ComisionExtPor = obtenercot.ComisionExt;
+                resumenCotizacion.PolizaPor = obtenercot.Cumplimiento;
                 decimal total = resumenCotizacion.SubTotal + resumenCotizacion.Indirecto + resumenCotizacion.Utilidad + resumenCotizacion.ComisionSV + resumenCotizacion.ComisionExt;
 
                 bool isPoliza = await cotizacionesRepo.GetPolizaCumplimiento(id);
@@ -737,12 +740,21 @@ namespace SistemaVentasBatia.Services
                     decimal totalF;
                     decimal diferencia;
 
-                    totalF = total;
-                    total = total * 1.10M;
-                    diferencia = total - totalF;
+                    decimal porcentaje = await cotizacionesRepo.ObtenerPorcentajePoliza(id);
+
+                    diferencia = (total * porcentaje)/ 12M;
+                    total += diferencia;
+
                     await cotizacionesRepo.InsertarPolizaCumplimiento(diferencia, id);
                     resumenCotizacion.PolizaCumplimiento = isPoliza;
                     resumenCotizacion.TotalPolizaCumplimiento = diferencia;
+
+                    //ACTUALIZAR PORCENTAJE DE POLIZA
+                    //OBTENER PORCENTAJE DE POLIZA DE tb_cotizacion y CALCULAR PARA GUARDAR EL MONTO
+                    //
+
+
+
                 }
 
                 string numerotxt = "";
@@ -933,9 +945,9 @@ namespace SistemaVentasBatia.Services
             return idCotizacionNueva;
         }
 
-        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt)
+        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor)
         {
-            return await cotizacionesRepo.ActualizarIndirectoUtilidad(idCotizacion, indirecto, utilidad, comisionSV, comisionExt);
+            return await cotizacionesRepo.ActualizarIndirectoUtilidad(idCotizacion, indirecto, utilidad, comisionSV, comisionExt, polizaPor);
         }
 
         public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento)

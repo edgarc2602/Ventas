@@ -332,7 +332,8 @@ FROM tb_clase";
             }
             var query = @"SELECT clave Clave, descripcion Descripcion
                           FROM tb_producto                          
-                          WHERE id_servicio = @idServicio and id_familia in @familias and id_status = 1 ORDER BY Descripcion;";
+                          WHERE id_familia in @familias and id_status = 1 ORDER BY Descripcion;";
+                            //id_servicio = @idServicio and 
             var listFamilia = familia.Select(x => x.ToString());
 
             var puestosCotizacion = new List<Catalogo>();

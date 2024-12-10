@@ -78,7 +78,10 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                //material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                //material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                //material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                material.Total = (material.PrecioUnitario * material.Cantidad) / materialVM.DiasEvento;
                 material.ImporteMensual = material.Total;
             }
             if (materialVM.edit == 1)
@@ -101,7 +104,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M) * materialVM.DiasEvento;
+                material.Total = material.PrecioUnitario * material.Cantidad;
             }
 
             await _materialRepo.ActualizarMaterialCotizacion(material);
@@ -333,7 +336,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                equipo.Total = ((((equipo.PrecioUnitario / 12M) * 1.15M) * equipo.Cantidad) / 30.4167M) * dto.DiasEvento;
+                equipo.Total = ((equipo.PrecioUnitario / 12M) * 1.15M) * equipo.Cantidad;
                 equipo.ImporteMensual = equipo.Total;
             }
             await _materialRepo.ActualizarEquipoCotizacion(equipo);
@@ -365,7 +368,8 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                //material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                material.Total = (material.PrecioUnitario * material.Cantidad) / dto.DiasEvento;
                 material.ImporteMensual = material.Total;
             }
             if (dto.edit == 1)
@@ -411,7 +415,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                uniforme.Total = ((uniforme.PrecioUnitario * uniforme.Cantidad) / 30.4167M) * dto.DiasEvento;
+                uniforme.Total = uniforme.PrecioUnitario * uniforme.Cantidad;
                 uniforme.ImporteMensual = uniforme.Total;
             }
             await _materialRepo.ActualizarUniformeCotizacion(uniforme);
@@ -442,7 +446,8 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                //material.Total = ((material.PrecioUnitario * material.Cantidad) / 30.4167M);
+                material.Total = (material.PrecioUnitario * material.Cantidad) / dto.DiasEvento;
                 material.ImporteMensual = material.Total;
             }
 
@@ -467,7 +472,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                herramienta.Total = ((herramienta.PrecioUnitario * herramienta.Cantidad) / 30.4167M) * dto.DiasEvento;
+                herramienta.Total = herramienta.PrecioUnitario * herramienta.Cantidad;
                 herramienta.ImporteMensual = herramienta.Total;
             }
             await _materialRepo.ActualizarHerramientaCotizacion(herramienta);

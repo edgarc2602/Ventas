@@ -197,8 +197,13 @@ namespace SistemaVentasBatia.Repositories
         public async Task <List<Direccion>> ObtenerSucursalesCotizacion(int idCotizacion)
         {
             string query = @"
-            SELECT b.nombre_sucursal NombreSucursal, a.id_direccion_cotizacion IdDireccionCotizacion FROM tb_direccion_cotizacion a 
+            SELECT 
+                b.nombre_sucursal NombreSucursal, 
+                a.id_direccion_cotizacion IdDireccionCotizacion ,
+                c.id_zona AS IdTabulador
+            FROM tb_direccion_cotizacion a 
             INNER JOIN tb_direccion b ON b.id_direccion = a.id_direccion 
+            INNER JOIN tb_estado c ON c.id_estado = b.id_estado
             WHERE a.id_cotizacion = @idCotizacion ORDER BY b.nombre_sucursal
             ";
             var sucursales = new List<Direccion>();

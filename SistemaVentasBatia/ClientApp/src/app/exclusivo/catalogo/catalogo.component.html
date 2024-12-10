@@ -83,19 +83,19 @@
                                 <hr />
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">2 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN2" value="{{ immsJornada.normal2 | number: '1.2' }}" [(ngModel)]="immsJornada.normal2" placeholder="{{ immsJornada.normal2 | number: '1.2' }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN2"  [(ngModel)]="immsJornada.normal2" placeholder="{{ immsJornada.normal2 | number: '1.2' }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">4 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN4" value="{{ immsJornada.normal4 | number: '1.2' }}" [(ngModel)]="immsJornada.normal4" placeholder="{{ immsJornada.normal4 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN4"  [(ngModel)]="immsJornada.normal4" placeholder="{{ immsJornada.normal4 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">8 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN8" value="{{ immsJornada.normal8 }}" [(ngModel)]="immsJornada.normal8" placeholder="{{ immsJornada.normal8 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN8"  [(ngModel)]="immsJornada.normal8" placeholder="{{ immsJornada.normal8 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">12 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN12" value="{{ immsJornada.normal12 }}" [(ngModel)]="immsJornada.normal12" placeholder="{{ immsJornada.normal12 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN12"  [(ngModel)]="immsJornada.normal12" placeholder="{{ immsJornada.normal12 }}" autocomplete="off" required>
                                 </div>
 
                                 <div>
@@ -104,24 +104,24 @@
                                 <hr />
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">2 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF2" value="{{ immsJornada.frontera2 }}" [(ngModel)]="immsJornada.frontera2" placeholder="{{ immsJornada.frontera2 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF2"  [(ngModel)]="immsJornada.frontera2" placeholder="{{ immsJornada.frontera2 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">4 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF4" value="{{ immsJornada.frontera4 }}" [(ngModel)]="immsJornada.frontera4" placeholder="{{ immsJornada.frontera4 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF4" [(ngModel)]="immsJornada.frontera4" placeholder="{{ immsJornada.frontera4 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">8 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF8" value="{{ immsJornada.frontera8 }}" [(ngModel)]="immsJornada.frontera8" placeholder="{{ immsJornada.frontera8 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF8" [(ngModel)]="immsJornada.frontera8" placeholder="{{ immsJornada.frontera8 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">12 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF12" value="{{ immsJornada.frontera12 }}" [(ngModel)]="immsJornada.frontera12" placeholder="{{ immsJornada.frontera12 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF12" [(ngModel)]="immsJornada.frontera12" placeholder="{{ immsJornada.frontera12 }}" autocomplete="off" required>
                                 </div>
                                 <hr />
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">Fecha Alta:</span>
-                                    <div class="ms-2">{{ cotpor.fechaAlta | date: 'dd-MM-yyyy' }}</div>
+                                    <div class="ms-2">{{ immsJornada.fechaAlta | date: 'dd-MM-yyyy' }}</div>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">Usuario Alta:</span>
@@ -157,7 +157,7 @@
                     <div class="row mb-3">
                         <div class="col-sm-12 col-md-6">
                             <div class="form-floating">
-                                <select class="form-select" name="tipoServicio" (change)="chgServicio()" [(ngModel)]="tipoServicio" disabled id="txtTipoServisioCatalogo">
+                                <select class="form-select" name="tipoServicio" (change)="chgServicio()" [(ngModel)]="tipoServicio" id="txtTipoServisioCatalogo">
                                     <option value="0">Seleccione una opción</option>
                                     <option *ngFor="let s of tser" [ngValue]="s.id">{{ s.descripcion }}</option>
                                 </select>

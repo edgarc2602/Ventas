@@ -147,8 +147,8 @@ namespace SistemaVentasBatia.Services
                     idPlantillaCreada = clienteRepo.InsertarPlantillaXML(plantillaXMLString);
 
                     //CREAR XML E INSERTAR HORARIO
-                    string horarioplantillaXMLString = CrearXMLHorarioPlantilla(idPlantillaCreada, puesto);
-                    bool horarioPlantilla = clienteRepo.InsertarHorarioPlantillaXML(horarioplantillaXMLString);
+                    //string horarioplantillaXMLString = CrearXMLHorarioPlantilla(idPlantillaCreada, puesto);
+                    //bool horarioPlantilla = clienteRepo.InsertarHorarioPlantillaXML(horarioplantillaXMLString);
 
                     if (puesto.Cantidad > 0)
                     {
@@ -721,7 +721,7 @@ namespace SistemaVentasBatia.Services
         {
             bool result;
 
-            string pathContrato = "\\\\192.168.2.3\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
+            string pathContrato = "\\\\192.168.2.4\\c$\\inetpub\\wwwroot\\SINGA_APP\\Doctos\\leg\\asuntos"; //RUTA PROD
             //string pathContrato = "C:\\Users\\LAP_Sistemas5\\source\\repos\\SINGA_NEW\\Doctos\\Leg\\asuntos"; //RUTA DEV
 
             //INSERTAR ASUNTO

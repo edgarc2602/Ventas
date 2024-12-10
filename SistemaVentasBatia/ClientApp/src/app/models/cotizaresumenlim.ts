@@ -25,6 +25,7 @@ export interface CotizaResumenLim {
     csvPor: string;
     comisionExtPor: string;
     polizaCumplimiento: boolean;
+    polizaPor: string;
     totalPolizaCumplimiento: number;
     idEstatus: number;
     diasEvento: number;
