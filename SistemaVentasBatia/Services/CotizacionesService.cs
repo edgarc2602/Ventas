@@ -304,7 +304,7 @@ namespace SistemaVentasBatia.Services
 
             if (operariosModel.DiasEvento == 0)
             {
-                operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 30m) / 12m);
+                operariosModel.Aguinaldo = (((operariosModel.Sueldo / 30.4167m) * 15m) / 12m);
                 operariosModel.PrimaVacacional = ((((operariosModel.Sueldo / 30.4167m) * 12m) * .25m) / 12m);
                 operariosModel.Vacaciones = ((operariosModel.Sueldo / 30.4167m) * 12m) / 12m;
             }
@@ -319,7 +319,7 @@ namespace SistemaVentasBatia.Services
             {
                 if (operariosModel.DiasEvento == 0)
                 {
-                    operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 8) / 12m);
+                    operariosModel.Festivo = ((((operariosModel.Sueldo / 30.4167m) * 2m) * 7) / 12m); //DIAS FESTIVOS CAMBIAN de 8 A 7 Actualizacion el 21/01/2025
                 }
                 else
                 {
@@ -333,7 +333,7 @@ namespace SistemaVentasBatia.Services
 
             if (operariosModel.DiaDomingo == true)
             {
-                if (operariosModel.DiasEvento == 0)
+                if (operariosModel.DiasEvento == 0) 
                 {
                     operariosModel.Domingo = (((operariosModel.Sueldo / 30.4167m) * .25m) * 4.33m);
                 }
@@ -423,7 +423,7 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Vales +
                 operariosModel.Festivo +
                 operariosModel.Domingo +
-                operariosModel.CubreDescanso) * .03M;
+                operariosModel.CubreDescanso) * .04M; //ISN SUBE a 4% Actualizacion el 21/01/2025
 
             operariosModel.Total = Math.Round(
                 operariosModel.Sueldo +

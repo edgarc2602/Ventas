@@ -372,7 +372,7 @@
                     <div id="collapseAccionesCotizacion" class="accordion-collapse collapse" aria-labelledby="headingCotizacion">
                         <div class="accordion-body">
                             <div class="row text-center">
-                                <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 4 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
+                                <div *ngIf="model.idEstatus == 1 || model.idEstatus == 6 && model.idServicio != 5" class="col-4 col-md-4 mb-3">
                                     <button type="button" (click)="modalContrato()" [disabled]="isLoading" class="btn btn-outline-primary "><i class="fa-solid fa-user-check fa-xl me-2"></i> Convertir prospecto a cliente</button>
                                 </div>
                                 <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4 mb-3">
