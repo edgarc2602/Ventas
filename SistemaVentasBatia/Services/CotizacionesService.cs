@@ -27,7 +27,7 @@ namespace SistemaVentasBatia.Services
         Task AgregarDireccionCotizacion(DireccionCotizacionDTO direccionCVM);
         Task ObtenerListaPuestosPorCotizacion(ListaPuestosDireccionCotizacionDTO listaPuestosDireccionCotizacionVM);
         Task ObtenerCatalogoDireccionesPorCotizacion(ListaPuestosDireccionCotizacionDTO listaPuestosDireccionCotizacionVM);
-        Task CrearPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM);
+        Task CrearPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, int idServicio);
         Task<ResumenCotizacionLimpiezaDTO> ObtenerResumenCotizacionLimpieza(int id);
         Task<bool> EliminarCotizacion(int registroAEliminar);
         Task EliminarDireccionCotizacion(int registroAEliminar);
@@ -38,7 +38,7 @@ namespace SistemaVentasBatia.Services
         Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor);
         Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento);
         Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id);
-        Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial);
+        Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial, int idServicio);
         Task<Boolean> ActualizarSalarios(PuestoTabulador salarios);
         Task<int> ObtieneIdCotizacionPorOperario(int idPuestoDireccionCotizacion);
         Task<int> ObtieneIdDireccionCotizacionPorOperario(int idPuestoDireccionCotizacion);
@@ -242,10 +242,10 @@ namespace SistemaVentasBatia.Services
             }
         }
 
-        public async Task CrearPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operariosVM)
+        public async Task CrearPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operariosVM, int idServicio)
         {
             var operariosModel = mapper.Map<PuestoDireccionCotizacion>(operariosVM);
-            operariosModel.HorarioStr = await CrearHorarioLetra(operariosModel);
+            operariosModel.HorarioStr = await CrearHorarioLetra(operariosModel, idServicio);
 
             operariosModel = await CalcularCostosOperario(operariosModel);
 
@@ -333,7 +333,7 @@ namespace SistemaVentasBatia.Services
 
             if (operariosModel.DiaDomingo == true)
             {
-                if (operariosModel.DiasEvento == 0) 
+                if (operariosModel.DiasEvento == 0)
                 {
                     operariosModel.Domingo = (((operariosModel.Sueldo / 30.4167m) * .25m) * 4.33m);
                 }
@@ -423,7 +423,7 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Vales +
                 operariosModel.Festivo +
                 operariosModel.Domingo +
-                operariosModel.CubreDescanso) * .04M; //ISN SUBE a 4% Actualizacion el 21/01/2025
+                operariosModel.CubreDescanso) * .04M; //ISN SUBE de 3% a 4% Actualizacion el 21/01/2025
 
             operariosModel.Total = Math.Round(
                 operariosModel.Sueldo +
@@ -438,7 +438,7 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Domingo +
                 operariosModel.CubreDescanso, 2);
 
-            
+
             return operariosModel;
         }
 
@@ -742,7 +742,7 @@ namespace SistemaVentasBatia.Services
 
                     decimal porcentaje = await cotizacionesRepo.ObtenerPorcentajePoliza(id);
 
-                    diferencia = (total * porcentaje)/ 12M;
+                    diferencia = (total * porcentaje) / 12M;
                     total += diferencia;
 
                     await cotizacionesRepo.InsertarPolizaCumplimiento(diferencia, id);
@@ -962,13 +962,13 @@ namespace SistemaVentasBatia.Services
             return new ListaMaterialesCotizacionLimpiezaDTO();
         }
 
-        public async Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial)
+        public async Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial, int idServicio)
         {
             var operario = mapper.Map<PuestoDireccionCotizacion>(operarioVM);
 
             operario = await CalcularCostosOperario(operario);
 
-            operario.HorarioStr = await CrearHorarioLetra(operario);
+            operario.HorarioStr = await CrearHorarioLetra(operario, idServicio);
 
             await cotizacionesRepo.ActualizarPuestoDireccionCotizacion(operario);
             if (incluyeMaterial == false) //SI NO TENIA MATERIALES
@@ -1111,18 +1111,25 @@ namespace SistemaVentasBatia.Services
             return await cotizacionesRepo.ActualizarImssJornada(imssJormada);
         }
 
-        public async Task<string> CrearHorarioLetra(PuestoDireccionCotizacion operario)
+        public async Task<string> CrearHorarioLetra(PuestoDireccionCotizacion operario, int idServicio)
         {
-            string horarioStr = operario.DiaInicio + " a " + operario.DiaFin + " de " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
-            if (operario.DiaInicioFin == operario.DiaFinFin && operario.DiaInicioFin.ToString() != "0")
+            string horarioStr = "";
+            if (idServicio != 6)
             {
-                horarioStr += ", " + operario.DiaFinFin + " de " + operario.HrInicioFin.Hours + ":00 a " + operario.HrFinFin.Hours + ":00";
+                 horarioStr = operario.DiaInicio + " a " + operario.DiaFin + " de " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
+                if (operario.DiaInicioFin == operario.DiaFinFin && operario.DiaInicioFin.ToString() != "0")
+                {
+                    horarioStr += ", " + operario.DiaFinFin + " de " + operario.HrInicioFin.Hours + ":00 a " + operario.HrFinFin.Hours + ":00";
+                }
+                if (operario.DiaInicioFin != operario.DiaFinFin && operario.DiaInicioFin.ToString() != "0")
+                {
+                    horarioStr += ", " + operario.DiaInicioFin + " a " + operario.DiaFinFin + " de " + operario.HrInicioFin.Hours + ":00 a " + operario.HrFinFin.Hours + ":00";
+                }
             }
-            if (operario.DiaInicioFin != operario.DiaFinFin && operario.DiaInicioFin.ToString() != "0")
+            else
             {
-                horarioStr += ", " + operario.DiaInicioFin + " a " + operario.DiaFinFin + " de " + operario.HrInicioFin.Hours + ":00 a " + operario.HrFinFin.Hours + ":00";
+                 horarioStr = "De " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
             }
-
             if (operario.DiaFestivo == false || operario.DiaDomingo == false || operario.DiaCubreDescanso == false)
             {
                 horarioStr += " excepto ";

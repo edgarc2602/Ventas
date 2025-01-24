@@ -13,5 +13,7 @@
         public int[] MaterialOpe { get; set; }
         public int[] UniformeOpe { get; set; }
         public int[] ServicioOpe { get; set; }
+
+        public int[] Seguridad { get; set; }
     }
 }

@@ -28,10 +28,10 @@ namespace SistemaVentasBatia.Enums
     public enum EstatusCotizacion
     {
         Activa = 1,
-        Inactivo = 3,
+        Inactiva = 3,
         Autorizada = 6,
         Contratada = 4,
-        NoSeleccionada = 5
+        No_Seleccionada = 5
         
     }
 
@@ -41,7 +41,8 @@ namespace SistemaVentasBatia.Enums
         Limpieza = 2,
         Sanitización = 3,
         Insumos = 4,
-        Evento = 5
+        Evento = 5,
+        Seguridad = 6
     }
 
     public enum SalarioTipo

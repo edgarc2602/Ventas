@@ -16,10 +16,10 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> ObtenerServicios();
         Task<List<Catalogo>> ObtenerMunicipios(int idMunicipio);
         Task<List<Catalogo>> ObtenerTiposInmueble();
-        Task<List<Catalogo>> ObtenerCatalogoPuestos();
+        Task<List<Catalogo>> ObtenerCatalogoPuestos(int idServicio);
         Task<List<Catalogo>> ObtenerCatalogoServicios();
         Task<List<Catalogo>> ObtenerCatalogoTurnos();
-        Task<List<Catalogo>> ObtenerCatalogoJornada();
+        Task<List<Catalogo>> ObtenerCatalogoJornada(int idServicio);
         Task<List<Catalogo>> ObtenerCatalogoClase();
         Task<List<Catalogo>> ObtenerCatalogoDireccionesCotizacion(int idCotizacion);
         Task<List<Catalogo>> ObtenerCatalogoPuestosCotizacion(int idCotizacion);
@@ -131,12 +131,21 @@ WHERE es.id_estado = @idEstado ORDER BY m.Municipio";
             }
             return tiposInmueble;
         }
-        public async Task<List<Catalogo>> ObtenerCatalogoPuestos()
+        public async Task<List<Catalogo>> ObtenerCatalogoPuestos(int idServicio)
         {
             var query = @"SELECT id_puesto Id, descripcion Descripcion
                           FROM tb_puesto d
-                          WHERE id_status = 1 AND cotizador = 1 ORDER BY Descripcion";
+                          WHERE id_status = 1 AND cotizador = 1 ";
+            if(idServicio == 6)
+            {
+                query += " AND id_servicio = 6 ";
+            }
+            else
+            {
+                query += "AND id_servicio != 6 ";
+            }
 
+            query += " ORDER BY Descripcion";
             var puestos = new List<Catalogo>();
 
             try
@@ -193,12 +202,20 @@ WHERE es.id_estado = @idEstado ORDER BY m.Municipio";
 
             return direcciones;
         }
-        public async Task<List<Catalogo>> ObtenerCatalogoJornada()
+        public async Task<List<Catalogo>> ObtenerCatalogoJornada(int idServicio)
         {
             var query = @"SELECT 
-id_jornada Id,
-descripcion Descripcion
-FROM tb_jornada";
+                id_jornada Id,
+                descripcion Descripcion
+                FROM tb_jornada ";
+            if (idServicio == 6)
+            {
+                query += " WHERE id_servicio = 6";
+            }
+            else
+            {
+                query += " WHERE id_servicio != 6";
+            }
 
             var direcciones = new List<Catalogo>();
 

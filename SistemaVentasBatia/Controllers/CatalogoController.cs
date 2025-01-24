@@ -63,10 +63,10 @@ namespace SistemaVentasBatia.Controllers
             return await logic.ObtenerCatalogoTurnos();
         }
 
-        [HttpGet("[action]")]
-        public async Task<IEnumerable<CatalogoDTO>> GetPuesto()
+        [HttpGet("[action]/{idServicio}")]
+        public async Task<IEnumerable<CatalogoDTO>> GetPuesto(int idServicio)
         {
-            return await logic.ObtenerCatalogoPuestos();
+            return await logic.ObtenerCatalogoPuestos(idServicio);
         }
 
         [HttpGet("[action]")]
@@ -131,10 +131,10 @@ namespace SistemaVentasBatia.Controllers
             return ls;
         }
 
-        [HttpGet("[action]")]
-        public async Task<IEnumerable<CatalogoDTO>> GetJornada()
+        [HttpGet("[action]/{idServicio}")]
+        public async Task<IEnumerable<CatalogoDTO>> GetJornada(int idServicio)
         {
-            return await logic.ObtenerCatalogoJornada();
+            return await logic.ObtenerCatalogoJornada(idServicio);
         }
 
         [HttpGet("[action]")]

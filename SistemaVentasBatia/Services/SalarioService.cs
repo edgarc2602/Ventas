@@ -16,7 +16,7 @@ namespace SistemaVentasBatia.Services
         Task<int> Create(SalarioDTO dto);
         Task<SalarioDTO> Get(int id);
         Task<SalarioMinDTO> GetFind(int idTabulador, int idPuesto, int idTurno);
-        Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno);
+        Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno, int? jornada);
         Task<int> GetZonaDefault(int idDireccionCotizacion);
         Task<bool> Update(SalarioDTO dto);
         Task<bool> Delete(int id);
@@ -81,10 +81,10 @@ namespace SistemaVentasBatia.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno)
+        public async Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno, int? jornada)
         {
             decimal result;
-            result =  await _repo.GetSueldo(idPuesto, idClase, idTabulador, idTurno);
+            result =  await _repo.GetSueldo(idPuesto, idClase, idTabulador, idTurno, jornada);
             if (idTurno == 3)
             {
                 result = result + 300;

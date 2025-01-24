@@ -47,10 +47,9 @@ export class PuestoWidget {
     idCliente: number = 0;
     idSucursal: number = 0;
     selectedSueldo: any;
+    idServicio: number = 0;
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
-        http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
-            this.pues = response;
-        }, err => console.log(err));
+        
         http.get<Catalogo[]>(`${url}api/catalogo/getturno`).subscribe(response => {
             this.turs = response;
         }, err => console.log(err));
@@ -63,9 +62,7 @@ export class PuestoWidget {
         http.get<Catalogo[]>(`${this.url}api/tabulador/getbyedo/${1}`).subscribe(response => {
             this.tabs = response;
         }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/getjornada`).subscribe(response => {
-            this.ljor = response;
-        }, err => console.log(err));
+        
         http.get<Catalogo[]>(`${url}api/catalogo/getclase`).subscribe(response => {
             this.lclas = response;
         }, err => console.log(err));
@@ -118,66 +115,136 @@ export class PuestoWidget {
     }
 
     guarda() {
-        this.lerr = {};
-        if (this.model.bonos == null) {
-            this.model.bonos = 0;
-        }
-        if (this.model.vales == null) {
-            this.model.vales = 0;
-        }
-        if (this.model.diaFinFin == 0) {
-            this.model.diaFinFin = 0;
-        }
-        if (this.model.diaInicioFin == 0) {
-            this.model.diaInicioFin = 0;
-        }
-        this.model.diasEvento = this.diasEvento;
-        if (this.valida()) {
-            this.iniciarCarga();
-            setTimeout(() => {
-                if (this.model.idPuestoDireccionCotizacion == 0) {
-                    this.http.post<PuestoCotiza>(`${this.url}api/puesto`, this.model).subscribe(response => {
-                        this.detenerCarga();
-                        setTimeout(() => {
-                            this.okToast('Puesto agregado');
-                        }, 300);
-                        this.sendEvent.emit(0);
-                        this.close();
-                    }, err => {
-                        this.detenerCarga();
-                        setTimeout(() => {
-                            this.errorToast('Ocurri\u00F3 un error');
-                        }, 300);
-                        console.log(err);
-                        if (err.error) {
-                            if (err.error.errors) {
-                                this.lerr = err.error.errors;
+        if (this.idServicio != 6) {
+            this.lerr = {};
+            if (this.model.bonos == null) {
+                this.model.bonos = 0;
+            }
+            if (this.model.vales == null) {
+                this.model.vales = 0;
+            }
+            if (this.model.diaFinFin == 0) {
+                this.model.diaFinFin = 0;
+            }
+            if (this.model.diaInicioFin == 0) {
+                this.model.diaInicioFin = 0;
+            }
+            this.model.diasEvento = this.diasEvento;
+            if (this.valida()) {
+                this.iniciarCarga();
+                setTimeout(() => {
+                    if (this.model.idPuestoDireccionCotizacion == 0) {
+                        this.http.post<PuestoCotiza>(`${this.url}api/puesto/${this.idServicio}`, this.model).subscribe(response => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.okToast('Puesto agregado');
+                            }, 300);
+                            this.sendEvent.emit(0);
+                            this.close();
+                        }, err => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.errorToast('Ocurri\u00F3 un error');
+                            }, 300);
+                            console.log(err);
+                            if (err.error) {
+                                if (err.error.errors) {
+                                    this.lerr = err.error.errors;
+                                }
                             }
-                        }
-                    });
-                } else {
-                    this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}`, this.model).subscribe(response => {
-                        this.detenerCarga();
-                        setTimeout(() => {
-                            this.okToast('Puesto actualizado');
-                        }, 300);
-                        this.sendEvent.emit(0);
-                        this.close();
-                    }, err => {
-                        this.detenerCarga();
-                        setTimeout(() => {
-                            this.errorToast('Ocurri\u00F3 un error');
-                        }, 300);
-                        console.log(err);
-                        if (err.error) {
-                            if (err.error.errors) {
-                                this.lerr = err.error.errors;
+                        });
+                    } else {
+                        this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}/${this.idServicio}`, this.model).subscribe(response => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.okToast('Puesto actualizado');
+                            }, 300);
+                            this.sendEvent.emit(0);
+                            this.close();
+                        }, err => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.errorToast('Ocurri\u00F3 un error');
+                            }, 300);
+                            console.log(err);
+                            if (err.error) {
+                                if (err.error.errors) {
+                                    this.lerr = err.error.errors;
+                                }
                             }
-                        }
-                    });
-                }
-            }, 300);
+                        });
+                    }
+                }, 300);
+            }
         }
+        else {
+            this.model.diaDescanso = 7;
+            this.model.diaFin = 1;
+            this.model.diaInicio = 1;
+            this.model.idTurno = 1;
+            this.lerr = {};
+            if (this.model.bonos == null) {
+                this.model.bonos = 0;
+            }
+            if (this.model.vales == null) {
+                this.model.vales = 0;
+            }
+            if (this.model.diaFinFin == 0) {
+                this.model.diaFinFin = 0;
+            }
+            if (this.model.diaInicioFin == 0) {
+                this.model.diaInicioFin = 0;
+            }
+            
+            this.model.diasEvento = this.diasEvento;
+            if (this.valida()) {
+                this.iniciarCarga();
+                setTimeout(() => {
+                    if (this.model.idPuestoDireccionCotizacion == 0) {
+                        this.http.post<PuestoCotiza>(`${this.url}api/puesto/${this.idServicio}`, this.model).subscribe(response => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.okToast('Puesto agregado');
+                            }, 300);
+                            this.sendEvent.emit(0);
+                            this.close();
+                        }, err => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.errorToast('Ocurri\u00F3 un error');
+                            }, 300);
+                            console.log(err);
+                            if (err.error) {
+                                if (err.error.errors) {
+                                    this.lerr = err.error.errors;
+                                }
+                            }
+                        });
+                    } else {
+                        this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}/${this.idServicio}`, this.model).subscribe(response => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.okToast('Puesto actualizado');
+                            }, 300);
+                            this.sendEvent.emit(0);
+                            this.close();
+                        }, err => {
+                            this.detenerCarga();
+                            setTimeout(() => {
+                                this.errorToast('Ocurri\u00F3 un error');
+                            }, 300);
+                            console.log(err);
+                            if (err.error) {
+                                if (err.error.errors) {
+                                    this.lerr = err.error.errors;
+                                }
+                            }
+                        });
+                    }
+                }, 300);
+            }
+        }
+        
     }
 
     chgSalario() {
@@ -196,6 +263,24 @@ export class PuestoWidget {
             });
         }, 300);
     }
+
+    chgSalarioSeg() {
+        this.iniciarCarga();
+        setTimeout(() => {
+            this.http.get<SalarioMin>(`${this.url}api/salario/${this.idT}/${this.model.idPuesto}/${this.model.idTurno}`).subscribe(response => {
+                this.detenerCarga();
+                this.suel = response;
+                this.model.idSalario = response.idSalario;
+                this.model.sueldo = response.salarioI;
+                this.sueldoDiario = response.salarioI / 30.4167;
+
+            }, err => {
+                this.detenerCarga();
+                console.log(err);
+            });
+        }, 300);
+    }
+
     obtenerIdEstado() {
         this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`).subscribe(response => {
             this.idEstado = response;
@@ -233,7 +318,7 @@ export class PuestoWidget {
         }
         else {
             setTimeout(() => {
-                this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}`).subscribe(response => {
+                this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}/${this.model.jornada}`).subscribe(response => {
                     this.detenerCarga();
                     this.model.sueldo = response;
 
@@ -335,14 +420,16 @@ export class PuestoWidget {
         return msg;
     }
 
-    openAdd(idCotizacion: number, idDireccionCotizacion: number, nombreSucursal?: string, diasEvento?: number) {
-        this.diasEvento = diasEvento
+    openAdd(idCotizacion: number, idDireccionCotizacion: number, nombreSucursal?: string, diasEvento?: number, idServicio?: number) {
+        this.idServicio = idServicio;
+        this.diasEvento = diasEvento;
         this.nombreSucursal = nombreSucursal;
         this.idC = idCotizacion;
         this.idD = idDireccionCotizacion;
         this.idP = 0;
         this.nuevo();
-
+        this.cargarHorarios();
+        this.cargarPuestos();
         this.getZonaDefault(this.idD);
         let docModal = document.getElementById('modalAgregarOperario');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);
@@ -350,11 +437,25 @@ export class PuestoWidget {
         this.obtenerIdEstado();
     }
 
-    openEdit(idCotizacion: number, idPuesto: number, nombreSucursal: string, diasEvento: number) {
-        this.diasEvento = diasEvento
+    cargarHorarios() {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getjornada/${this.idServicio}`).subscribe(response => {
+            this.ljor = response;
+        }, err => console.log(err));
+    }
+    cargarPuestos() {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getpuesto/${this.idServicio}`).subscribe(response => {
+            this.pues = response;
+        }, err => console.log(err));
+    }
+
+    openEdit(idCotizacion: number, idPuesto: number, nombreSucursal: string, diasEvento: number, idServicio: number) {
+        this.idServicio = idServicio;
+        this.diasEvento = diasEvento;
         this.nombreSucursal = nombreSucursal;
         this.idC = idCotizacion;
         this.idP = idPuesto;
+        this.cargarHorarios();
+        this.cargarPuestos();
         this.existe(this.idP);
         let docModal = document.getElementById('modalAgregarOperario');
         let myModal = bootstrap.Modal.getOrCreateInstance(docModal);

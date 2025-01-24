@@ -22,7 +22,7 @@ namespace SistemaVentasBatia.Repositories
         Task<decimal> ObtenerSalarioRealFrontera(int idPuesto);
         Task<IEnumerable<Salario>> Busqueda(int idTabulador, int idPuesto, int idTurno);
         Task<SalarioMinimo> ObtenerMinimo(int year);
-        Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno);
+        Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno, int? jornada);
         Task<int> GetZonaDefault(int idDireccionCotizacion);
         Task<int> ObtenerIdEstadoPorIdDireccionCotizaion(int idDireccionCotizacion);
         Task<List<CatalogoSueldoJornalero>> ObtenerSueldoJornaleroPorIdEstado(int idEstado, int idCliente, int idSucursal);
@@ -164,22 +164,35 @@ namespace SistemaVentasBatia.Repositories
             }
             return sm;
         }
-        public async Task<decimal> GetSueldo(int? IdPuesto, int? IdClase, int? IdTabulador, int ?IdTurno)
+        public async Task<decimal> GetSueldo(int? IdPuesto, int? IdClase, int? IdTabulador, int? IdTurno, int? jornada)
         {
             var query = @"
-SELECT sueldo
-FROM tb_sueldozonaclase
-WHERE
-  ((@IdPuesto IS NULL AND id_puesto = 0) OR id_puesto = @IdPuesto)
-  AND ((@IdClase IS NULL AND id_clase = 0) OR id_clase = @IdClase)
-  AND ((@IdTabulador IS NULL AND id_zona = 0) OR id_zona = @IdTabulador)
-";
+            SELECT sueldo
+            FROM tb_sueldozonaclase
+            WHERE
+              ((@IdPuesto IS NULL AND id_puesto = 0) OR id_puesto = @IdPuesto)
+              AND ((@IdClase IS NULL AND id_clase = 0) OR id_clase = @IdClase)
+              AND ((@IdTabulador IS NULL AND id_zona = 0) OR id_zona = @IdTabulador)";
+
+            switch (jornada)
+            {
+                case 5:
+                    query += " AND id_jornada = @jornada";
+                    break;
+                case 6:
+                    query += " AND id_jornada = @jornada";
+                    break;
+                case 7:
+                    query += " AND id_jornada = @jornada";
+                    break;
+                default: break;
+            }
             decimal result;
             try
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    result = await connection.QueryFirstOrDefaultAsync<decimal>(query, new { IdPuesto, IdClase, IdTabulador });
+                    result = await connection.QueryFirstOrDefaultAsync<decimal>(query, new { IdPuesto, IdClase, IdTabulador, jornada });
                 }
             }
             catch (Exception ex)
@@ -231,7 +244,7 @@ WHERE a.id_direccion_cotizacion = @idDireccionCotizacion";
             return result;
         }
 
-        public async Task<List<CatalogoSueldoJornalero>> ObtenerSueldoJornaleroPorIdEstado(int idEstado,int idCliente, int idSucursal)
+        public async Task<List<CatalogoSueldoJornalero>> ObtenerSueldoJornaleroPorIdEstado(int idEstado, int idCliente, int idSucursal)
         {
             //string query = @"SELECT DISTINCT b.id_cliente Id, nombre Descripcion FROm tb_jornalero_importe a INNER JOIN tb_cliente b ON a.id_cliente = b.id_cliente ORDER BY b.nombre";
             string query = @"SELECT

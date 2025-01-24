@@ -341,7 +341,7 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    await connection.ExecuteAsync(query, new { idEstatusProspecto = EstatusProspecto.Inactivo, idEstatusCotizacion = EstatusCotizacion.Inactivo, idEstatusDireccion = EstatusDireccion.Inactivo, registroAEliminar });
+                    await connection.ExecuteAsync(query, new { idEstatusProspecto = EstatusProspecto.Inactivo, idEstatusCotizacion = EstatusCotizacion.Inactiva, idEstatusDireccion = EstatusDireccion.Inactivo, registroAEliminar });
                 }
             }
             catch (Exception ex)

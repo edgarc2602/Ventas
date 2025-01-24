@@ -19,13 +19,13 @@ namespace SistemaVentasBatia.Services
         Task<List<CatalogoDTO>> ObtenerServicios();
         Task<List<CatalogoDTO>> ObtenerMunicipios(int idEstado);
         Task<List<CatalogoDTO>> ObtenerTiposInmueble();
-        Task<List<CatalogoDTO>> ObtenerCatalogoPuestos();
+        Task<List<CatalogoDTO>> ObtenerCatalogoPuestos(int idServicio);
         Task<List<CatalogoDTO>> ObtenerCatalogoServicios();
         Task<List<CatalogoDTO>> ObtenerCatalogoTurnos();
         Task<List<CatalogoDTO>> ObtenerCatalogoSucursalesCotizacion(int idCotizacion);
         Task<List<CatalogoDTO>> ObtenerCatalogoPuestosCotizacion(int idCotizacion);
         Task<List<CatalogoDTO>> ObtenerCatalogoProductos(Servicio servicio);
-        Task<List<CatalogoDTO>> ObtenerCatalogoJornada();
+        Task<List<CatalogoDTO>> ObtenerCatalogoJornada(int idServicio);
         Task<List<CatalogoDTO>> ObtenerCatalogoClase();
         Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupo(Servicio servicio, string grupo);
         Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupoElimina(string grupo, int idCotizacion);
@@ -80,9 +80,9 @@ namespace SistemaVentasBatia.Services
             return tiposInmueble;
         }
 
-        public async Task<List<CatalogoDTO>> ObtenerCatalogoPuestos()
+        public async Task<List<CatalogoDTO>> ObtenerCatalogoPuestos(int idServicio)
         {
-            var puestos = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoPuestos());
+            var puestos = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoPuestos(idServicio));
 
             return puestos;
         }
@@ -101,9 +101,9 @@ namespace SistemaVentasBatia.Services
             return turnos;
         }
 
-        public async Task<List<CatalogoDTO>> ObtenerCatalogoJornada()
+        public async Task<List<CatalogoDTO>> ObtenerCatalogoJornada(int idServicio)
         {
-            var turnos = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoJornada());
+            var turnos = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoJornada(idServicio));
 
             return turnos;
         }
@@ -139,45 +139,53 @@ namespace SistemaVentasBatia.Services
         public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupo(Servicio servicio, string grupo)
         {
             int[] fams;
-            switch (grupo.ToLower())
+            if (servicio.ToString() != "Seguridad")
             {
-                case "material":
-                    fams = _option.Material;
-                    break;
-                case "uniforme":
-                    fams = _option.Uniforme;
-                    break;
-                case "equipo":
-                    fams = _option.Equipo;
-                    break;
-                case "herramienta":
-                    fams = _option.Herramienta;
-                    break;
-                case "servicio":
-                    fams = _option.Servicio;
-                    break;
-                case "materialope":
-                    fams = _option.MaterialOpe;
-                    break;
-                case "uniformeope":
-                    fams = _option.UniformeOpe;
-                    break;
-                case "equipoope":
-                    fams = _option.EquipoOpe;
-                    break;
-                case "herramientaope":
-                    fams = _option.HerramientaOpe;
-                    break;
-                case "servicioope":
-                    fams = _option.ServicioOpe;
-                    break;
-                default:
-                    fams = new int[] { };
-                    break;
+                switch (grupo.ToLower())
+                {
+                    case "material":
+                        fams = _option.Material;
+                        break;
+                    case "uniforme":
+                        fams = _option.Uniforme;
+                        break;
+                    case "equipo":
+                        fams = _option.Equipo;
+                        break;
+                    case "herramienta":
+                        fams = _option.Herramienta;
+                        break;
+                    case "servicio":
+                        fams = _option.Servicio;
+                        break;
+                    case "materialope":
+                        fams = _option.MaterialOpe;
+                        break;
+                    case "uniformeope":
+                        fams = _option.UniformeOpe;
+                        break;
+                    case "equipoope":
+                        fams = _option.EquipoOpe;
+                        break;
+                    case "herramientaope":
+                        fams = _option.HerramientaOpe;
+                        break;
+                    case "servicioope":
+                        fams = _option.ServicioOpe;
+                        break;
+                    default:
+                        fams = new int[] { };
+                        break;
+                }
             }
+            else
+            {
+                fams = _option.Seguridad;
+            }
+
             return mapper.Map<IEnumerable<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoProductosByFamilia(servicio, fams));
         }
-        
+
         public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupoElimina(string grupo, int idCotizacion)
         {
             //ObtenerCatalogoProductosByGrupoElimina(string grupo, int idCotizacion);
@@ -195,14 +203,14 @@ namespace SistemaVentasBatia.Services
 
             return empresas;
         }
-        
+
         public async Task<List<CatalogoDTO>> ObtenerCatalogoVendedores()
         {
             var empresas = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoVendedores());
 
             return empresas;
         }
-        
+
         public async Task<List<CatalogoDTO>> ObtenerCatalogoEjecutivos()
         {
             var empresas = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoEjecutivos());
@@ -216,14 +224,14 @@ namespace SistemaVentasBatia.Services
 
             return empresas;
         }
-        
+
         public async Task<List<CatalogoDTO>> ObtenerCatalogoTiposdeIndustria()
         {
             var industrias = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoTiposdeIndustria());
 
             return industrias;
         }
-        
+
         public async Task<List<CatalogoDTO>> GetCatalogoClientes(int idEstado)
         {
             var industrias = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.GetCatalogoClientes(idEstado));

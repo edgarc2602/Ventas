@@ -29,11 +29,11 @@ namespace SistemaVentasBatia.Controllers
             return await _logic.GetFind(idtab, idpue, idtur);
         }
 
-        [HttpGet("{idPuesto?}/{idClase?}/{idTabulador?}/{idTurno?}")]
-        public async Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno)
+        [HttpGet("{idPuesto?}/{idClase?}/{idTabulador?}/{idTurno?}/{jornada?}")]
+        public async Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno, int? jornada)
         {
             decimal result;
-            result =  await _logic.GetSueldo(idPuesto, idClase, idTabulador, idTurno);
+            result =  await _logic.GetSueldo(idPuesto, idClase, idTabulador, idTurno, jornada);
 
             return result;
         }

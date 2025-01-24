@@ -31,10 +31,10 @@ namespace SistemaVentasBatia.Controllers
             return operario;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<PuestoDireccionCotizacionDTO>> AgregarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, int? idServicio)
+        [HttpPost("{idServicio}")]
+        public async Task<ActionResult<PuestoDireccionCotizacionDTO>> AgregarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, int idServicio)
         {
-            await _logic.CrearPuestoDireccionCotizacion(operarioVM);
+            await _logic.CrearPuestoDireccionCotizacion(operarioVM, idServicio);
 
             // TempData["DescripcionAlerta"] = "Se agregó correctamente al operario.";
             // TempData["IdTipoAlerta"] = TipoAlerta.Exito;
@@ -42,10 +42,10 @@ namespace SistemaVentasBatia.Controllers
             return operarioVM;
         }
 
-        [HttpPut("{incluyeMaterial}")]
-        public async Task<ActionResult<bool>> EditarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial)
+        [HttpPut("{incluyeMaterial}/{idServicio}")]
+        public async Task<ActionResult<bool>> EditarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial, int idServicio)
         {
-            await _logic.ActualizarPuestoDireccionCotizacion(operarioVM, incluyeMaterial);
+            await _logic.ActualizarPuestoDireccionCotizacion(operarioVM, incluyeMaterial, idServicio);
 
             operarioVM.IdCotizacion = await _logic.ObtieneIdCotizacionPorOperario(operarioVM.IdPuestoDireccionCotizacion);
             // TempData["DescripcionAlerta"] = "Se guardó correctamente el operario.";

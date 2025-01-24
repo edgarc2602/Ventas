@@ -22,7 +22,7 @@
                                 </div>
                                 <span *ngIf="ferr('IdPuesto')" class="text-danger">{{ terr('IdPuesto') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-3 col-4  mb-3">
+                            <div *ngIf="idServicio != 6" class="col-sm-12 col-md-3 col-4  mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="IdTurno" [(ngModel)]="model.idTurno" (change)="chgSalariodos()" id="ddlTurnoPuesto">
                                         <option value="0">Seleccione...</option>
@@ -34,7 +34,7 @@
                             </div>
                             <div class="col-sm-12 col-md-2 col-4 mb-3">
                                 <div class="form-floating">
-                                    <input type="number" class="form-control" [(ngModel)]="model.cantidad" id="txtCantidadPuesto">
+                                    <input type="number" min="1" max="9999" class="form-control" [(ngModel)]="model.cantidad" id="txtCantidadPuesto">
                                     <label for="txtCantidadPuesto">Cantidad</label>
                                 </div>
                                 <span *ngIf="ferr('Cantidad')" class="text-danger">{{ terr('Cantidad') }}</span>
@@ -50,10 +50,10 @@
                                 <span *ngIf="ferr('Jornada')" class="text-danger">{{ terr('Jornada') }}</span>
                             </div>
                             <br />
-                            <h5>Horarios</h5>
+                            <h5>Horario</h5>
                             <hr />
-                            <h6><small class="text-muted text-capitalize">Horario 1</small></h6>
-                            <div class="col-sm-12 col-md-3 col-6 mb-3">
+                            <h6 *ngIf="idServicio != 6"><small class="text-muted text-capitalize">Horario 1</small></h6>
+                            <div *ngIf="idServicio != 6" class="col-sm-12 col-md-3 col-6 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="DiaInicio" [(ngModel)]="model.diaInicio" id="ddlDiaInicioPuesto">
                                         <option value="0">Seleccione...</option>
@@ -63,7 +63,7 @@
                                 </div>
                                 <span *ngIf="ferr('DiaInicio')" class="text-danger">{{ terr('DiaInicio') }}</span>
                             </div>
-                            <div class="col-sm-12 col-md-3 col-6 mb-3">
+                            <div *ngIf="idServicio != 6" class="col-sm-12 col-md-3 col-6 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="DiaFin" [(ngModel)]="model.diaFin" id="ddlDiaFinPuesto">
                                         <option value="0">Seleccione...</option>
@@ -92,7 +92,7 @@
                                     <label for="ddlHrFinPuesto">A</label>
                                 </div>
                                 <span *ngIf="ferr('HrFin')" class="text-danger">{{ terr('HrFin') }}</span>
-                            </div><div class="col-sm-12 col-md-2 col-4 mb-3">
+                            </div><div *ngIf="idServicio != 6" class="col-sm-12 col-md-2 col-4 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="DiaInicio" [(ngModel)]="model.diaDescanso" id="ddlDiaDescansoPuesto">
                                         <option value=0>Seleccione...</option>
@@ -102,8 +102,8 @@
                                 </div>
                                 <span *ngIf="ferr('DiaDescanso')" class="text-danger">{{ terr('DiaDescanso') }}</span>
                             </div>
-                            <h6><small class="text-muted text-capitalize">Horario 2</small></h6>
-                            <div class="col-sm-12 col-md-3 col-6 mb-3">
+                            <h6 *ngIf="idServicio != 6"><small class="text-muted text-capitalize">Horario 2</small></h6>
+                            <div *ngIf="idServicio != 6" class="col-sm-12 col-md-3 col-6 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="DiaInicio" [(ngModel)]="model.diaInicioFin" id="ddlDiaInicioFinPuesto">
                                         <option value=0>Seleccione...</option>
@@ -112,7 +112,7 @@
                                     <label for="ddlDiaInicioPuesto">Dia Inicio</label>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-3 col-6 mb-3">
+                            <div *ngIf="idServicio != 6" class="col-sm-12 col-md-3 col-6 mb-3">
                                 <div class="form-floating">
                                     <select class="form-select" aria-label="DiaFin" [(ngModel)]="model.diaFinFin" id="ddlDiaFinFinPuesto">
                                         <option value=0>Seleccione...</option>
@@ -121,7 +121,7 @@
                                     <label for="ddlDiaFinPuesto">Dia Fin</label>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-2 col-4 mb-3">
+                            <div *ngIf="idServicio != 6" class="col-sm-12 col-md-2 col-4 mb-3">
                                 <div class="form-floating">
                                     <select type="text" class="form-select" [(ngModel)]="model.hrInicioFin" id="ddlHrInicioFinPuesto">
                                         <option value="00:00">Seleccione...</option>
@@ -130,7 +130,7 @@
                                     <label for="ddlHrInicioPuesto">De</label>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-2 col-4 mb-3">
+                            <div *ngIf="idServicio != 6" class="col-sm-12 col-md-2 col-4 mb-3">
                                 <div class="form-floating">
                                     <select type="text" class="form-select" [(ngModel)]="model.hrFinFin" id="ddlHrFinFinPuesto">
                                         <option value="00:00">Seleccione...</option>
@@ -191,7 +191,7 @@
                                         <label for="ddlValesPuesto">Vales</label>
                                     </div>
                                     <span *ngIf="ferr('vales')" class="text-danger">{{ terr('vales') }}</span>
-                                </div>
+0                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-4 col-md-4 col-12 align-content-center align-items-center mb-3">
@@ -199,7 +199,7 @@
                                         <label class="form-check-label">
                                             Dias festivos
                                             <input class="form-check-input" type="checkbox" [value]="model.diaFestivo" [(ngModel)]="model.diaFestivo" id="btnFestivoPuesto" />
-                                            <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="El calculo está basado en 8 dias">
+                                            <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="El calculo está basado en 7 dias">
                                                 <i class="fa fa-info-circle"></i>
                                             </span>
                                         </label><br />
@@ -524,7 +524,7 @@
                                         <label class="form-check-label">
                                             Dias festivos
                                             <input class="form-check-input" type="checkbox" [value]="model.diaFestivo" [(ngModel)]="model.diaFestivo" id="btnFestivoPuesto" />
-                                            <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="El calculo está basado en 8 dias">
+                                            <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="El calculo está basado en 7 dias">
                                                 <i class="fa fa-info-circle"></i>
                                             </span>
                                         </label><br />

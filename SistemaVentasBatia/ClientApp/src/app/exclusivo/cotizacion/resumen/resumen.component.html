@@ -10,10 +10,18 @@
                     <span *ngIf="model.idServicio == 3" class="text-muted h5">(Sanitización)</span>
                     <span *ngIf="model.idServicio == 4" class="text-muted h5">(Insumos)</span>
                     <span *ngIf="model.idServicio == 5" class="text-muted h5">(Evento, {{ model.diasEvento }} dias )</span>
+                    <span *ngIf="model.idServicio == 6" class="text-muted h5">(Seguridad)</span>
                 </h2>
             </div>
             <div class="col-5 col-md-4 text-end">
-                <h6><span>Id: {{model.idCotizacion}}</span> <span *ngIf="model.idCotizacionOriginal != 0" class="ms-3">Id original: {{model.idCotizacionOriginal}}</span></h6>
+                <h5><span>Id: {{model.idCotizacion}}</span> <span *ngIf="model.idCotizacionOriginal != 0" class="ms-3">Id original: {{model.idCotizacionOriginal}}</span></h5>
+            <!--</div>
+            <div class="col-4 col-md-3 text-end">-->
+                <h5 *ngIf="model.idEstatus == 1"><span> Estatus: Activa </span><i class="fa-solid fa-check fa-1x" style="color: yellowgreen;"></i></h5>
+                <h5 *ngIf="model.idEstatus == 3"><span> Estatus: Inactiva </span><i class="fa-solid fa-ban" style="color: red;"></i></h5>
+                <h5 *ngIf="model.idEstatus == 6"><span> Estatus: Autorizada </span><i class="fa-solid fa-eye" style="color: dodgerblue;"></i></h5>
+                <h5 *ngIf="model.idEstatus == 4"><span> Estatus: Contratada </span><i class="fa-solid fa-handshake" style="color: deepskyblue;"></i></h5>
+                <h5 *ngIf="model.idEstatus == 5"><span> Estatus: No seleccionada </span><i class="fa-solid fa-xmark" style="color: red;"></i></h5>
             </div>
         </div>
     </div>
@@ -46,7 +54,7 @@
                 Plantilla
             </button>
         </li>
-        <li class="nav-item">
+        <li *ngIf="model.idServicio != 6" class="nav-item">
             <button type="button" class="nav-link" data-bs-toggle="tab" (click)="getMat('material')"
                     data-bs-target="#material" role="tab" aria-controls="material"
                     aria-selected="false">
@@ -67,14 +75,14 @@
                 Equipo
             </button>
         </li>
-        <li class="nav-item">
+        <li *ngIf="model.idServicio != 6" class="nav-item">
             <button type="button" class="nav-link" data-bs-toggle="tab" (click)="getMat('herramienta')"
                     data-bs-target="#material" role="tab" aria-controls="herramienta"
                     aria-selected="false">
                 Herramienta
             </button>
         </li>
-        <li *ngIf="model.idServicio != 4" class="nav-item">
+        <li *ngIf="model.idServicio != 4 && model.idServicio != 6" class="nav-item">
             <button type="button" class="nav-link" (click)="getServ()" data-bs-toggle="tab"
                     data-bs-target="#servicio" role="tab" aria-controls="servicio"
                     aria-selected="false">
@@ -134,7 +142,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="model.idServicio != 6">
                             <td class="border-bottom">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -164,7 +172,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="model.idServicio != 6">
                             <td class="border-bottom" [ngClass]="{'border-success': model.idServicio == 4}">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -174,7 +182,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr *ngIf="model.idServicio != 4">
+                        <tr *ngIf="model.idServicio != 4 && model.idServicio != 6">
                             <td class="border-bottom border-success">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
@@ -636,7 +644,7 @@
                             </h6>
                             <span class="badge plantilla text-white">{{ dir.ciudad }}, {{ dir.estado }}</span>
                         </a>
-                        <a *ngIf="model.idEstatus == 1" (click)="addPlan(dir.idDireccionCotizacion, dir.nombreSucursal)" class="btn btn-outline-primary col-md-2 col-2 agrega-puesto d-flex align-items-center justify-content-center" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
+                        <a *ngIf="model.idEstatus == 1" (click)="addPlan(dir.idDireccionCotizacion, dir.nombreSucursal, model.idServicio)" class="btn btn-outline-primary col-md-2 col-2 agrega-puesto d-flex align-items-center justify-content-center" style="cursor:pointer;" data-bs-toggle="tooltip" title="Agregar operario">
                             <i class="fa-solid fa-user-plus fa-2x" style="color: white;"></i>
                         </a>
                     </div>
@@ -656,17 +664,21 @@
                                                         <span class="badge ">Cantidad:</span>
                                                         <div class="ms-4">{{ pt.cantidad }}</div>
                                                     </div>
-                                                    <div class="col-xl-4 col-8 col-sm-6">
+                                                    <div *ngIf="model.idServicio != 6" class="col-xl-4 col-8 col-sm-6">
                                                         <span class="badge">Horario:</span>
                                                         <div class="ms-1 small">{{ pt.diaInicio }} a {{ pt.diaFin }} de {{ pt.hrInicio.substring(0, 5) }} a {{ pt.hrFin.substring(0, 5) }}</div>
                                                         <div *ngIf="pt.diaInicioFin == pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1 small">{{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
                                                         <div *ngIf="pt.diaInicioFin !== pt.diaFinFin && pt.diaInicioFin !== '0'" class="ms-1 small">{{ pt.diaInicioFin}} a {{ pt.diaFinFin }} de {{ pt.hrInicioFin.substring(0, 5) }} a {{ pt.hrFinFin.substring(0, 5) }}</div>
                                                     </div>
+                                                    <div *ngIf="model.idServicio == 6" class="col-xl-4 col-8 col-sm-6">
+                                                        <span class="badge">Horario:</span>
+                                                        <div class="ms-1 small">De {{ pt.hrInicio.substring(0, 5) }} a {{ pt.hrFin.substring(0, 5) }}</div>
+                                                    </div>
                                                     <div class="col-xl-2 col-3 col-sm-3">
                                                         <span class="badge ">Jornada:</span>
                                                         <div class="ms-3">{{ pt.jornadaDesc }}</div>
                                                     </div>
-                                                    <div class="col-xl-2 col-4 col-sm-3">
+                                                    <div *ngIf="model.idServicio != 6" class="col-xl-2 col-4 col-sm-3">
                                                         <span class="badge ">Turno:</span>
                                                         <div class="ms-1">{{ pt.turno }}</div>
                                                     </div>
@@ -722,7 +734,7 @@
                                             </td>
                                             <td class="col-xl-2 col-sm-3">
                                                 <div class="text-center">
-                                                    <a class="btn btn-sm btn-outline-secondary mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'material', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Material">
+                                                    <a *ngIf="model.idServicio != 6" class="btn btn-sm btn-outline-secondary mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'material', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Material">
                                                         <i class="fa-solid fa-pump-soap fa-2x"></i>
                                                     </a>
                                                     <a class="btn btn-sm btn-outline-info mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'uniforme', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Uniforme">
@@ -731,10 +743,10 @@
                                                     <a class="btn btn-sm btn-outline-success mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'equipo', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Equipo">
                                                         <i class="fa-solid fa-helmet-safety fa-2x"></i>
                                                     </a>
-                                                    <a class="btn btn-sm btn-outline-danger mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'herramienta', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Herramienta">
+                                                    <a *ngIf="model.idServicio != 6" class="btn btn-sm btn-outline-danger mb-1" (click)="getMatPues(pt.idPuestoDireccionCotizacion, dir.idDireccionCotizacion, 'herramienta', dir.nombreSucursal, pt.puesto)" data-bs-toggle="tooltip" title="Herramienta">
                                                         <i class="fa-solid fa-hammer fa-2x"></i>
                                                     </a>
-                                                    <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.nombreSucursal)" data-bs-toggle="tooltip" title="Editar">
+                                                    <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-primary mb-1" (click)="updPlan(pt.idPuestoDireccionCotizacion, dir.nombreSucursal, model.idServicio)" data-bs-toggle="tooltip" title="Editar">
                                                         <i class="fa-solid fa-pencil fa-2x"></i>
                                                     </a>
                                                     <a *ngIf="model.idEstatus == 1" class="btn btn-sm btn-outline-danger mb-1" (click)="confirmaEliminarPuestoDireccionCotizacion(pt.idPuestoDireccionCotizacion)" title="Descartar">

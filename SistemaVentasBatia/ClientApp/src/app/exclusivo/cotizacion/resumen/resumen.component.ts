@@ -507,13 +507,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         }, err => console.log(err));
     }
 
-    addPlan(idDireccionCotizacion: number, nombreSucursal: string) {
+    addPlan(idDireccionCotizacion: number, nombreSucursal: string, idServicio: number) {
         this.selDireccion = idDireccionCotizacion;
-        this.pueAdd.openAdd(this.model.idCotizacion, idDireccionCotizacion, nombreSucursal, this.model.diasEvento);
+        this.pueAdd.openAdd(this.model.idCotizacion, idDireccionCotizacion, nombreSucursal, this.model.diasEvento, idServicio);
     }
 
-    updPlan(idPuesto: number, nombreSucursal: string) {
-        this.pueAdd.openEdit(this.model.idCotizacion, idPuesto, nombreSucursal, this.model.diasEvento);
+    updPlan(idPuesto: number, nombreSucursal: string, idServicio: number) {
+        this.pueAdd.openEdit(this.model.idCotizacion, idPuesto, nombreSucursal, this.model.diasEvento, idServicio);
     }
 
     removePlan(id: number) {

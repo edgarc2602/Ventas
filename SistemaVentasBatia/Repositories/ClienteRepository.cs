@@ -30,7 +30,7 @@ namespace SistemaVentasBatia.Repositories
         Task<List<PuestoDireccionCotizacion>> ObtenerPuestosDireccionCotizacion(int idDireccionCotizacion);
         int InsertarClienteXML(string clienteXML, string logXML, int idGrupoEmpresa);
         bool InsertarXMLOficina(string oficinaXML);
-        bool InsertarLineaNegocioXML(string lineaNegocioXML);
+        bool InsertarLineaNegocioXML(string lineaNegocioXML, int idCliente);
         int InsertarDireccionXML(string direccionXML, string logXML);
         int InsertarPlantillaXML(string plantillaXML);
         bool InsertarHorarioPlantillaXML(string horarioPlantillaXML);
@@ -383,10 +383,11 @@ namespace SistemaVentasBatia.Repositories
                 Console.WriteLine("Error: " + ex.Message);
 
                 throw ex;
+                throw;
             }
             return result;
         }
-        public bool InsertarLineaNegocioXML(string lineaNegocioXML)
+        public bool InsertarLineaNegocioXML(string lineaNegocioXML, int idCliente)
         {
             bool result = false;
             try
@@ -395,13 +396,16 @@ namespace SistemaVentasBatia.Repositories
                 connection.Open();
                 var parameters = new DynamicParameters();
                 parameters.Add("@Cabecero", new SqlXml(new System.Xml.XmlTextReader(lineaNegocioXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
+                parameters.Add("@cli", idCliente, dbType: DbType.Int32, direction: ParameterDirection.Input);
                 connection.Execute("sp_clientelinea", parameters, commandType: CommandType.StoredProcedure);
                 result = true;
 
             }
             catch (Exception ex)
             {
+               
                 Console.WriteLine("Error: " + ex.Message);
+                throw;
             }
             return result;
         }
@@ -415,7 +419,7 @@ namespace SistemaVentasBatia.Repositories
 
                 var parameters = new DynamicParameters();
                 parameters.Add("@Cabecero", new SqlXml(new System.Xml.XmlTextReader(direccionXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
-                parameters.Add("@CabeceroLog", new SqlXml(new System.Xml.XmlTextReader(logXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
+                //parameters.Add("@CabeceroLog", new SqlXml(new System.Xml.XmlTextReader(logXML, System.Xml.XmlNodeType.Document, null)), DbType.Xml, ParameterDirection.Input);
                 parameters.Add("@Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 connection.Execute("sp_puntoatencion", parameters, commandType: CommandType.StoredProcedure);
                 int idMov = parameters.Get<int>("@Id");
@@ -426,6 +430,7 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                throw;
             }
             return result;
         }
@@ -449,6 +454,7 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                throw;
             }
             return idplantilla;
         }
@@ -468,6 +474,7 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                throw;
             }
             return result;
         }
@@ -488,6 +495,7 @@ namespace SistemaVentasBatia.Repositories
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                throw;
             }
             return result;
         }

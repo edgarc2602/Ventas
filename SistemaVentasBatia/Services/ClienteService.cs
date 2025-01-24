@@ -89,7 +89,7 @@ namespace SistemaVentasBatia.Services
 
             //CREAR XML E INSERTAR LINEA DE NEGOCIO
             string lineaNegocioXMLString = CrearXMLLineaNegocio(idClienteCreado, (int)cliente.IdServicio, totalCotizacion);
-            bool lineaNegocio = clienteRepo.InsertarLineaNegocioXML(lineaNegocioXMLString);
+            bool lineaNegocio = clienteRepo.InsertarLineaNegocioXML(lineaNegocioXMLString, idClienteCreado);
 
             int idPuntoAtencionCreado = 0;
             int idPlantillaCreada = 0;
@@ -501,16 +501,23 @@ namespace SistemaVentasBatia.Services
             direccionElement.SetAttribute("estado", direccion.IdEstado.ToString());
             direccionElement.SetAttribute("tel1", "");
             direccionElement.SetAttribute("tel2", "");
-            direccionElement.SetAttribute("contacto", "");
-            direccionElement.SetAttribute("correo", "");
-            direccionElement.SetAttribute("cargo", "");
-            direccionElement.SetAttribute("ptto1", "");
-            direccionElement.SetAttribute("ptto2", "");
-            direccionElement.SetAttribute("ptto3", "");
+            direccionElement.SetAttribute("contacto", "0");
+            direccionElement.SetAttribute("correo", "0");
+            direccionElement.SetAttribute("cargo", "0");
+            direccionElement.SetAttribute("ptto1", "0");
+            direccionElement.SetAttribute("ptto2", "0");
+            direccionElement.SetAttribute("ptto3", "0");
             direccionElement.SetAttribute("prefijo", "");
-            direccionElement.SetAttribute("lat", "");
-            direccionElement.SetAttribute("lon", "");
-            direccionElement.SetAttribute("banio", "");
+            direccionElement.SetAttribute("lat", "0");
+            direccionElement.SetAttribute("lon", "0");
+            direccionElement.SetAttribute("banio", "0");
+            direccionElement.SetAttribute("baniop", "0");
+            direccionElement.SetAttribute("mingi", "0");
+            direccionElement.SetAttribute("materiales", "0");
+            direccionElement.SetAttribute("manto", "0");
+            direccionElement.SetAttribute("iguala", "0");
+            direccionElement.SetAttribute("permiso", "0");
+            direccionElement.SetAttribute("horarioe", "0");
             direccionElement.SetAttribute("idpersonal", idPersonal.ToString());
             direccionXML.AppendChild(direccionElement);
             string direccionXMLString = direccionXML.OuterXml;

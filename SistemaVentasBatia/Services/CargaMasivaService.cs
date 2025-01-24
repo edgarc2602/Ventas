@@ -327,7 +327,7 @@ namespace SistemaVentasBatia.Services
                             puesto.IdCotizacion = idCotizacion;
 
                             //Calcular sueldo
-                            decimal sueldo = await _logicSal.GetSueldo(puesto.IdPuesto, puesto.IdClase, puesto.IdTabulador, (int)puesto.IdTurno);
+                            decimal sueldo = await _logicSal.GetSueldo(puesto.IdPuesto, puesto.IdClase, puesto.IdTabulador, (int)puesto.IdTurno,0);
                             puesto.Sueldo = sueldo;
                             switch (puesto.Jornada)
                             {
@@ -354,7 +354,7 @@ namespace SistemaVentasBatia.Services
                     }
                     foreach (var puesto in puestos)
                     {
-                        await _logicCot.CrearPuestoDireccionCotizacion(puesto);
+                        await _logicCot.CrearPuestoDireccionCotizacion(puesto,0);
                     }
                 }
                 return true;
