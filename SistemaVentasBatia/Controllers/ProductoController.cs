@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.Mozilla;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Services;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductoController : ControllerBase
@@ -173,6 +176,13 @@ namespace SistemaVentasBatia.Controllers
         public async Task<ActionResult<bool>> EliminarProductosGeneral(ProductosGeneralDTO data)
         {
             return await logic.EliminarProductosGeneral(data);
+        }
+
+        [HttpGet("[action]")]
+
+        public async Task<List<EstadoProveedorDTO>> EstadoProveedor()
+        {
+            return await logic.EstadoProveedor();
         }
     }
 }

@@ -3,6 +3,7 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 import * as Highcharts from 'highcharts';
 import HC_exporting from 'highcharts/modules/exporting';
 import HC_accessibility from 'highcharts/modules/accessibility';
+import { Router } from '@angular/router';
 
 // Inicializa los módulos
 HC_exporting(Highcharts);
@@ -14,7 +15,7 @@ HC_accessibility(Highcharts);
 })
 export class ExclusivoComponent {
 
-    constructor(public user: StoreUser) {
+    constructor(public user: StoreUser, private rtr: Router) {
         let uST = eval('(' + localStorage.getItem('singaUser') + ')');
         if (uST != undefined) {
             // this.user = uST as StoreUser;
@@ -27,6 +28,9 @@ export class ExclusivoComponent {
             this.user.idAutoriza = uST.idAutoriza;
             this.user.idSupervisa = uST.idSupervisa;
             this.user.direccionIP = uST.direccionIP;
+        }
+        else {
+            this.rtr.navigate(['']);
         }
     }
     goBack() {

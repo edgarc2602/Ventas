@@ -1,5 +1,5 @@
 import { Component, Inject, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ListaProspecto } from '../../models/listaprospecto';
 import { ItemN } from 'src/app/models/item';
@@ -31,9 +31,13 @@ export class ProspectoComponent implements OnInit, OnDestroy {
     sub: any;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rter: Router, public user: StoreUser) {
-        http.get<ItemN[]>(`${url}api/prospecto/getestatus`).subscribe(response => {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        http.get<ItemN[]>(`${url}api/prospecto/getestatus`, {headers}).subscribe(response => {
             this.lests = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
         this.lista();
         this.searchKeyword$.pipe(
             debounceTime(800),
@@ -54,18 +58,33 @@ export class ProspectoComponent implements OnInit, OnDestroy {
     init() {
         this.isLoading = true;
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
-        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`).subscribe(response => {
+        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`, { headers: this.getHeaders() }).subscribe(response => {
             this.isLoading = false;
             this.lspro = response;
         }, err => {
             this.isLoading = false;
-            console.log(err);
+            this.validaError(err);
         });
+    }
+
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            this.rter.navigate(['']);
+        } else {
+            this.errorToast('Ocurrió un error');
+        }
+    }
+
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
     }
 
     lista() {
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
-        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`).subscribe(response => {
+        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`, { headers: this.getHeaders() }).subscribe(response => {
             setTimeout(() => {
                 this.lspro = response;
                 if (this.tablaContainer) {
@@ -77,7 +96,7 @@ export class ProspectoComponent implements OnInit, OnDestroy {
         }, err => {
             setTimeout(() => {
                 this.isLoading = false;
-                console.log(err);
+                this.validaError(err);
                 this.detenerCarga();
             }, 300);
         });
@@ -129,23 +148,21 @@ export class ProspectoComponent implements OnInit, OnDestroy {
 
     //acciones de confirmacion
     desactivarProspecto() {
-        this.http.put<boolean>(`${this.url}api/prospecto/desactivarprospecto`, this.idpro).subscribe(response => {
+        this.http.put<boolean>(`${this.url}api/prospecto/desactivarprospecto`, this.idpro, {headers: this.getHeaders()}).subscribe(response => {
             this.lista();
             this.okToast('Prospecto desactivado');
         }, err => {
-            console.log(err)
-            this.errorToast('Ocurrió un error');
+            this.validaError(err);
         });
         this.idpro = 0;
     }
 
     activarProspecto() {
-        this.http.put<boolean>(`${this.url}api/prospecto/activarprospecto`, this.idpro).subscribe(response => {
+        this.http.put<boolean>(`${this.url}api/prospecto/activarprospecto`, this.idpro, { headers: this.getHeaders() }).subscribe(response => {
             this.lista();
             this.okToast('Prospecto activado');
         }, err => {
-            console.log(err)
-            this.errorToast('Ocurrió un error');
+            this.validaError(err);
         });
     }
 

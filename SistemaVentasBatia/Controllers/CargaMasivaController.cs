@@ -13,10 +13,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CargaMasivaController : ControllerBase

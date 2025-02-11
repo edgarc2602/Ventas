@@ -7,8 +7,15 @@ import { Component, Input } from '@angular/core';
 export class ToastWidget {
     @Input() isErr: boolean = false;
     @Input() errMessage: string = "";
+    public alertTime = 5000;
 
-    open() {
+    open(isSesion?: number) {
+        if (isSesion = 1) {
+            this.alertTime = 5000;
+        }
+        else {
+            this.alertTime = 2000;
+        }
         let toastElement = document.getElementById('glotoast');
         toastElement.classList.remove('show');
         toastElement.classList.remove('hide');
@@ -33,6 +40,6 @@ export class ToastWidget {
                 messageElement.textContent = '';
                 titleElement.textContent = '';
             }, 200);
-        }, 2000);
+        }, this.alertTime);
     }
 }

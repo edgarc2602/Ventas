@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SistemaVentasBatia.DTOs;
@@ -9,6 +10,7 @@ using SistemaVentasBatia.Services;
 
 namespace SistemaVentasBatia.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DireccionController : ControllerBase

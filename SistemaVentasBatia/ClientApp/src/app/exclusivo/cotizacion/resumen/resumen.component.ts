@@ -1,5 +1,5 @@
-import { Component, Inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { CotizaResumenLim } from 'src/app/models/cotizaresumenlim';
 import { ItemN } from 'src/app/models/item';
@@ -123,17 +123,23 @@ export class ResumenComponent implements OnInit, OnDestroy {
     incluyeProducto: boolean = false;
 
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, private router: Router, private reportService: ReportService, public user: StoreUser, private dtpipe: DatePipe, private sinU: StoreUser) {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, private rtr: Router, private reportService: ReportService, public user: StoreUser, private dtpipe: DatePipe, private sinU: StoreUser) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         this.nuevo();
         this.lsdir = {
             pagina: 1, idCotizacion: this.model.idProspecto, idProspecto: this.model.idProspecto, idDireccion: 0, direcciones: [], rows: 0, numPaginas: 0
         };
-        http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`).subscribe(response => {
+        http.get<number>(`${url}api/cotizacion/obtenerautorizacion/${user.idPersonal}`, { headers }).subscribe(response => {
             this.autorizacion = response;
-        }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`, { headers }).subscribe(response => {
             this.indust = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
     ngOnInit(): void {
         this.sub = this.route.params.subscribe(params => {
@@ -144,6 +150,20 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.sub.unsubscribe();
+    }
+
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            this.rtr.navigate(['']);
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
     }
 
     nuevo() {
@@ -160,18 +180,20 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     existe(id: number) {
-        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${id}`).subscribe(response => {
+        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${id}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model = response;
             this.totalDia = (response.subTotal + response.indirecto + response.utilidad + response.comisionSV + response.comisionExt + response.totalPolizaCumplimiento) / this.model.diasEvento;
-            this.http.get<Prospecto>(`${this.url}api/prospecto/${this.model.idProspecto}`).subscribe(response => {
+            this.http.get<Prospecto>(`${this.url}api/prospecto/${this.model.idProspecto}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.modelpros = response;
                 this.docs = this.modelpros.listaDocumentos;
-            }, err => console.log(err));
+            }, err => {
+                this.validaError(err);
+            });
             this.getAllDirs();
             this.getDirs();
             this.getPlan();
         }, err => {
-            console.log(err)
+            this.validaError(err);
         });
     }
 
@@ -180,12 +202,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         const file = event.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
-        this.http.post<boolean>(`${this.url}api/cargamasiva/CargarDirecciones/${this.model.idCotizacion}/${this.model.idProspecto}`, formData).subscribe((response) => {
+        this.http.post<boolean>(`${this.url}api/cargamasiva/CargarDirecciones/${this.model.idCotizacion}/${this.model.idProspecto}`, formData, { headers: this.getHeaders() }).subscribe((response) => {
             this.okToast('Direcciones cargadas correctamente');
             this.getAllDirs();
             this.getDirs();
             this.isLoadinglay = false;
         }, err => {
+            this.validaError(err);
             this.isLoadinglay = false;
             this.errorToast('Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n')
         });
@@ -197,7 +220,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         const file = event.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
-        this.http.post<boolean>(`${this.url}api/cargamasiva/CargarPlantilla/${this.model.idCotizacion}`, formData).subscribe((response) => {
+        this.http.post<boolean>(`${this.url}api/cargamasiva/CargarPlantilla/${this.model.idCotizacion}`, formData, { headers: this.getHeaders() }).subscribe((response) => {
             setTimeout(() => {
                 this.getPlan();
                 this.isLoadinglay = false;
@@ -211,6 +234,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
             }, 300);
         }, err => {
             setTimeout(() => {
+                this.validaError(err);
                 this.isLoadinglay = false;
                 this.detenerCarga();
                 this.errorToast('Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n');
@@ -231,7 +255,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         const file = event.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
-        this.http.post<boolean>(`${this.url}api/cargamasiva/CargaLayoutProductoExtra/${this.model.idCotizacion}/${this.selTipo}/${this.user.idPersonal}`, formData).subscribe((response) => {
+        this.http.post<boolean>(`${this.url}api/cargamasiva/CargaLayoutProductoExtra/${this.model.idCotizacion}/${this.selTipo}/${this.user.idPersonal}`, formData, { headers: this.getHeaders() }).subscribe((response) => {
             setTimeout(() => {
                 this.getMat(this.selTipo);
                 this.isLoadinglay = false;
@@ -245,6 +269,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
             }, 300);
         }, err => {
             setTimeout(() => {
+                this.validaError(err);
                 this.isLoadinglay = false;
                 this.detenerCarga();
                 this.errorToast(err.error.message);
@@ -261,42 +286,36 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     descargarLayoutDirectorio() {
-        this.http.post(`${this.url}api/cargamasiva/DescargarLayoutDirectorio`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+        this.http.post(`${this.url}api/cargamasiva/DescargarLayoutDirectorio`, null, { headers: this.getHeaders(), responseType: 'blob' }).subscribe((response: Blob) => {
             saveAs(response, 'LayoutDirectorio.xlsx');
             this.okToast('Layout descargado');
-        },
-            error => {
-                this.errorToast('Ocurri\u00F3 un error')
-            }
-        );
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     descargarLayoutPlantilla() {
-        this.http.post(`${this.url}api/cargamasiva/DescargarLayoutPlantilla/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+        this.http.post(`${this.url}api/cargamasiva/DescargarLayoutPlantilla/${this.model.idCotizacion}`, null, { headers: this.getHeaders(), responseType: 'blob' }).subscribe((response: Blob) => {
             saveAs(response, 'LayoutPlantilla.xlsx');
             this.okToast('Layout descargado');
-        },
-            error => {
-                this.errorToast('Ocurri\u00F3 un error')
-            }
-        );
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     descargarLayoutProductoExtra() {
-        this.http.post(`${this.url}api/cargamasiva/DescargarLayoutProductoExtra/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+        this.http.post(`${this.url}api/cargamasiva/DescargarLayoutProductoExtra/${this.model.idCotizacion}`, null, { headers: this.getHeaders(), responseType: 'blob' }).subscribe((response: Blob) => {
             saveAs(response, 'Layout' + this.selTipo + '_Extra.xlsx');
             this.okToast('Layout descargado');
-        },
-            error => {
-                this.errorToast('Ocurri\u00F3 un error')
-            }
-        );
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     propuestaSuministroInsumos() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.get(`${this.url}api/report/DescargarPropuestaInsumos/${this.model.idCotizacion}`, { responseType: 'arraybuffer' })
+            this.http.get(`${this.url}api/report/DescargarPropuestaInsumos/${this.model.idCotizacion}`, { headers: this.getHeaders(), responseType: 'arraybuffer' })
                 .subscribe(
                     (data: ArrayBuffer) => {
                         this.detenerCarga();
@@ -317,6 +336,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                         }
                     },
                     error => {
+                        this.validaError(error);
                         this.detenerCarga();
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error');
@@ -330,7 +350,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     propuestaEvento() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.get(`${this.url}api/report/DescargarPropuestaEvento/${this.model.idCotizacion}`, { responseType: 'arraybuffer' })
+            this.http.get(`${this.url}api/report/DescargarPropuestaEvento/${this.model.idCotizacion}`, { headers: this.getHeaders(), responseType: 'arraybuffer' })
                 .subscribe(
                     (data: ArrayBuffer) => {
                         this.detenerCarga();
@@ -351,6 +371,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                         }
                     },
                     error => {
+                        this.validaError(error);
                         this.detenerCarga();
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error');
@@ -373,12 +394,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if (this.validaPros()) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.put<Prospecto>(`${this.url}api/prospecto`, this.modelpros).subscribe(response => {
+                this.http.put<Prospecto>(`${this.url}api/prospecto`, this.modelpros, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Prospecto actualizado')
                     }, 300);
                 }, err => {
+                    this.validaError(err);
                     this.detenerCarga();
                     setTimeout(() => {
                         this.errorToast('Ocurri\u00F3 un error');
@@ -430,23 +452,27 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     getAllDirs() {
-        this.http.get<ItemN[]>(`${this.url}api/direccion/getcatalogo/${this.model.idProspecto}`).subscribe(response => {
+        this.http.get<ItemN[]>(`${this.url}api/direccion/getcatalogo/${this.model.idProspecto}`, { headers: this.getHeaders() }).subscribe(response => {
             this.dirs = response;
-        }, err => console.log(err));
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getsucursalbycot/${this.model.idCotizacion}`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getsucursalbycot/${this.model.idCotizacion}`, { headers: this.getHeaders() }).subscribe(response => {
             this.cotdirs = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     getDirs() {
         //this.lsdir.direcciones = [];
         this.isLoading = true;
-        this.http.get<ListaDireccion>(`${this.url}api/cotizacion/limpiezadirectorio/${this.model.idCotizacion}/${this.lsdir.pagina}`).subscribe(response => {
+        this.http.get<ListaDireccion>(`${this.url}api/cotizacion/limpiezadirectorio/${this.model.idCotizacion}/${this.lsdir.pagina}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lsdir = response;
             this.isLoading = false;
         }, err => {
             this.isLoading = false;
-            console.log(err);
+            this.validaError(err);
         });
     }
 
@@ -466,7 +492,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if (this.modelDir.idDireccion != 0) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.post<DireccionCotizacion>(`${this.url}api/cotizacion/agregardireccion`, this.modelDir).subscribe(response => {
+                this.http.post<DireccionCotizacion>(`${this.url}api/cotizacion/agregardireccion`, this.modelDir, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Direcci\u00F3n agregada');
@@ -474,6 +500,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                     this.getDirs();
                 }, err => {
                     this.detenerCarga();
+                    this.validaError(err);
                     if (err.error) {
                         if (edit == 1) {
                             setTimeout(() => {
@@ -495,16 +522,19 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     getPlan() {
         this.isLoading = true;
-        this.http.get<ListaPuesto>(`${this.url}api/cotizacion/${this.model.idCotizacion}/0/0/${this.lspue.pagina}`).subscribe(response => {
+        this.http.get<ListaPuesto>(`${this.url}api/cotizacion/${this.model.idCotizacion}/0/0/${this.lspue.pagina}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lspue = response;
             this.isLoading = false;
         }, err => {
+            this.validaError(err);
             this.isLoading = false;
             console.log(err);
         });
-        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`).subscribe(response => {
+        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     addPlan(idDireccionCotizacion: number, nombreSucursal: string, idServicio: number) {
@@ -517,14 +547,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     removePlan(id: number) {
-        this.http.delete<boolean>(`${this.url}api/puesto/${id}`).subscribe(response => {
+        this.http.delete<boolean>(`${this.url}api/puesto/${id}`, { headers: this.getHeaders() }).subscribe(response => {
             if (response) {
                 this.okToast('Puesto eliminado');
                 this.getPlan();
             }
         }, err => {
-            console.log(err);
-            this.errorToast('Ocurri\u00F3 un error');
+            this.validaError(err);
         });
     }
 
@@ -539,12 +568,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         let fil: string = (this.txtMatKey != '' ? 'keywords=' + this.txtMatKey : '');
         if (fil.length > 0) fil += '&';
         fil += 'idDir=' + this.selMatDir + '&idPues=' + this.selMatPue;
-        this.http.get<ListaMaterial>(`${this.url}api/${tb}/${this.model.idCotizacion}/${this.lsmat.pagina == undefined ? 1 : this.lsmat.pagina}?${fil}`).subscribe(response => {
+        this.http.get<ListaMaterial>(`${this.url}api/${tb}/${this.model.idCotizacion}/${this.lsmat.pagina == undefined ? 1 : this.lsmat.pagina}?${fil}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lsmat = response;
             this.isLoading = false;
 
         }, err => {
             this.isLoading = false;
+            this.validaError(err);
         });
         this.isLoading = false;
     }
@@ -608,6 +638,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                     this.getMat(this.selTipo);
                 }
             }, err => {
+                this.validaError(err);
                 this.detenerCarga();
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
@@ -660,7 +691,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if (this.model.idCotizacion != 0) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarIndirectoUtilidadService`, this.modelcot).subscribe(response => {
+                this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarIndirectoUtilidadService`, this.modelcot, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Porcentajes actualizados');
@@ -669,6 +700,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                     this.getDirs();
                 }, err => {
                     this.detenerCarga();
+                    this.validaError(err);
                     setTimeout(() => {
                         this.errorToast('Ocurri\u00F3 un error');
                     }, 300);
@@ -723,7 +755,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.existe(this.model.idCotizacion)
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.get(`${this.url}api/report/DescargarReporteCotizacion/${this.model.idCotizacion}/${idReporte}/${formato}`, { responseType: 'arraybuffer' })
+            this.http.get(`${this.url}api/report/DescargarReporteCotizacion/${this.model.idCotizacion}/${idReporte}/${formato}`, { headers: this.getHeaders(), responseType: 'arraybuffer' })
                 .subscribe(
                     (data: ArrayBuffer) => {
                         var formatoArchivo = '';
@@ -753,6 +785,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                     },
                     error => {
                         this.detenerCarga();
+                        this.validaError(error);
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error al descargar');
                         }, 300);
@@ -769,7 +802,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     }
 
     getServ() {
-        this.http.get<ListaServicio>(`${this.url}api/material/ObtenerListaServiciosCotizacion/${this.model.idCotizacion}/${this.selMatDir}`).subscribe(response => {
+        this.http.get<ListaServicio>(`${this.url}api/material/ObtenerListaServiciosCotizacion/${this.model.idCotizacion}/${this.selMatDir}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lsser = response;
             this.isGen = 0;
             this.isSuc = 0;
@@ -781,13 +814,15 @@ export class ResumenComponent implements OnInit, OnDestroy {
                     this.isGen = 1;
                 }
             }
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     eliSer(id: number) {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.delete(`${this.url}api/material/EliminarServicioCotizacion/${id}`).subscribe(response => {
+            this.http.delete(`${this.url}api/material/EliminarServicioCotizacion/${id}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Servicio eliminado');
@@ -796,6 +831,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -838,13 +874,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
     }
     actualizarDatos() {
-        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`).subscribe(response => {
+        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model = response;
         }, err => console.log(err));
     }
 
     modalContrato() {
-        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`).subscribe(response => {
+        this.http.get<CotizaResumenLim>(`${this.url}api/cotizacion/limpiezaresumen/${this.model.idCotizacion}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model = response;
             if (response.idEstatus == 6) {
                 this.model.idEstatus == response.idEstatus;
@@ -853,12 +889,14 @@ export class ResumenComponent implements OnInit, OnDestroy {
             else {
                 this.errorToast("Esta cotizaci\u00F3n a\u00FAn no est\u00E1 validada por direcci\u00F3n")
             }
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     descargarDatosCotizacion() {
         this.isLoading = true;
-        this.http.post(`${this.url}api/cargamasiva/DescargarDatosCotizacion/${this.model.idCotizacion}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+        this.http.post(`${this.url}api/cargamasiva/DescargarDatosCotizacion/${this.model.idCotizacion}`, null, { headers: this.getHeaders(), responseType: 'blob' }).subscribe((response: Blob) => {
             this.okToast('Datos descargados');
             saveAs(response, 'DatosCotizacion_Id' + this.model.idCotizacion + '.xlsx');
             this.isLoading = false;
@@ -866,7 +904,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
             error => {
                 console.error('Error al descargar el archivo:', error);
                 this.isLoading = false;
-                this.errorToast('Ocurri\u00F3 un error');
+                this.validaError(error);
             }
         );
     }
@@ -964,13 +1002,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         if (this.model.idCotizacion != 0) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.get<number>(`${this.url}api/cotizacion/DuplicarCotizacion/${this.incluyeProducto}/${this.model.idCotizacion}`).subscribe(response => {
+                this.http.get<number>(`${this.url}api/cotizacion/DuplicarCotizacion/${this.incluyeProducto}/${this.model.idCotizacion}`, { headers: this.getHeaders() }).subscribe(response => {
                     this.idCotN = response;
                     if (this.resumenContainer) {
                         const container = this.resumenContainer.nativeElement;
                         container.scrollTop = 0;
                     }
-                    this.router.navigate(['/exclusivo/resumen/', this.idCotN]);
+                    this.rtr.navigate(['/exclusivo/resumen/', this.idCotN]);
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Ahora se encuentra en la nueva cotizaci\u00F3n');
@@ -978,6 +1016,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
 
                 }, err => {
                     this.detenerCarga();
+                    this.validaError(err);
                     setTimeout(() => {
                         this.errorToast('Ocurri\u00F3 un error');
                     }, 300);
@@ -990,7 +1029,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     eliminarPuestoDireccionCotizacion() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.delete<boolean>(`${this.url}api/puesto/${this.idope}`).subscribe(response => {
+            this.http.delete<boolean>(`${this.url}api/puesto/${this.idope}`, { headers: this.getHeaders() }).subscribe(response => {
                 if (response) {
                     this.detenerCarga();
                     setTimeout(() => {
@@ -1000,6 +1039,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 }
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -1011,7 +1051,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     eliminaDireccionCotizacion() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.get<boolean>(`${this.url}api/cotizacion/EliminarDireccionCotizacion/${this.idDC}`,).subscribe(response => {
+            this.http.get<boolean>(`${this.url}api/cotizacion/EliminarDireccionCotizacion/${this.idDC}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Direcci\u00F3n eliminada');
@@ -1019,6 +1059,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 this.getDirs();
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -1031,7 +1072,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     autorizarCotizacion() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.post<boolean>(`${this.url}api/cotizacion/AutorizarCotizacion`, this.model.idCotizacion).subscribe(response => {
+            this.http.post<boolean>(`${this.url}api/cotizacion/AutorizarCotizacion`, this.model.idCotizacion, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Cotizaci\u00F3n ' + this.model.idCotizacion.toString() + ' autorizada');
@@ -1040,6 +1081,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 this.getDirs();
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -1051,7 +1093,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     removerAutorizacionCotizacion() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.post<boolean>(`${this.url}api/cotizacion/RemoverAutorizacionCotizacion`, this.model.idCotizacion).subscribe(response => {
+            this.http.post<boolean>(`${this.url}api/cotizacion/RemoverAutorizacionCotizacion`, this.model.idCotizacion, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Cotizaci\u00F3n ' + this.model.idCotizacion.toString() + ' actualizada');
@@ -1060,6 +1102,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
                 this.getDirs();
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);

@@ -87,6 +87,9 @@ namespace SistemaVentasBatia
             CreateMap<CatalogoSueldoJornalero, CatalogoSueldoJornaleroDTO>();
             CreateMap<CatalogoSueldoJornaleroDTO, CatalogoSueldoJornalero>();
 
+            CreateMap<EstadoProveedor, EstadoProveedorDTO>();
+            CreateMap<EstadoProveedorDTO, EstadoProveedor>();
+
         }
     }
 }

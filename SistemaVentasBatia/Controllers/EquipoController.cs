@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EquipoController : ControllerBase

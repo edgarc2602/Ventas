@@ -57,6 +57,8 @@ namespace SistemaVentasBatia.Repositories
         Task<List<ProductoFamilia>> GetFamiliasByIdEstado(int idEstado);
 
         Task<List<PuestoDireccionCotizacion>> ObtenerPlantillasCotizacion(int idCotizacion);
+
+        Task<List<EstadoProveedor>> EstadoProveedor();
     }
 
     public class ProductoRepository : IProductoRepository
@@ -695,6 +697,28 @@ WHERE b.id_cotizacion = @idCotizacion";
                 throw ex;
             }
             return plantillas;
+        }
+
+        public async Task<List<EstadoProveedor>> EstadoProveedor()
+        {
+            string query = @"
+                SELECT 
+                a.id_estado AS IdEstado, 
+                a.descripcion AS Estado, 
+                a.id_proveedor AS IdProveedor, 
+                b.nombre AS Proveedor 
+                FROM tb_estado a
+                INNER JOIN tb_proveedor b ON a.id_proveedor = b.id_proveedor ORDER BY a.descripcion";
+            using var connection = ctx.CreateConnection();
+            try
+            {
+                var relacion = (await connection.QueryAsync<EstadoProveedor>(query)).ToList();
+                return relacion;
+            }
+            catch(Exception ex)
+            {
+                throw new CustomException("Error al cosnultar la relacion Estado/ Proveedor, detalle:"+ ex.Message);
+            }
         }
     }
 }

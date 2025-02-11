@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaVentasBatia.DTOs;  
 using SistemaVentasBatia.Services;
 
 namespace SistemaVentasBatia.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PuestoController : ControllerBase

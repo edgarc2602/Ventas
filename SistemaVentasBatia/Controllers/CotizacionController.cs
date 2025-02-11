@@ -18,9 +18,11 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CotizacionController : ControllerBase

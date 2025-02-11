@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Services;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class HerramientaController : ControllerBase

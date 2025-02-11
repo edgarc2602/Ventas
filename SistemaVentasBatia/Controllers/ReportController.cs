@@ -16,10 +16,11 @@ using SistemaVentasBatia.Services;
 using SistemaVentasBatia.DTOs;
 using Microsoft.Extensions.Logging;
 using iTextSharp.text.log;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 {
-
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportController : ControllerBase

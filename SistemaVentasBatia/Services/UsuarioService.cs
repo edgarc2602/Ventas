@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS;
+using Microsoft.IdentityModel.Tokens;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -28,13 +31,14 @@ namespace SistemaVentasBatia.Services
         Task<bool> DesactivarUsuario(int idPersonal);
         Task<bool> AgregarUsuario(AgregarUsuario usuario);
         Task<bool> EliminarUsuario(int idPersonal);
+        string GenerarToken();
     }
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _repo;
         private readonly IMapper _mapper;
 
-        public UsuarioService(IUsuarioRepository repoUsuario, IMapper mapper)
+        public UsuarioService(IUsuarioRepository repoUsuario,  IMapper mapper)
         {
             _repo = repoUsuario;
             _mapper = mapper;
@@ -199,5 +203,21 @@ namespace SistemaVentasBatia.Services
         {
             return await _repo.EliminarUsuario(idPersonal);
         }
+
+        public string GenerarToken()
+        {
+            var key = Encoding.ASCII.GetBytes("S1ng4*2025_crm_key_ClaveSeguraParaSingaCRM.@");
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Expires = DateTime.UtcNow.AddMinutes(20),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+
     }
 }

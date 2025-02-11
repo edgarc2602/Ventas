@@ -43,6 +43,7 @@ import { SubirContratoClienteWidget } from './widgets/subircontratocliente/subir
 import { ClienteWidget } from './widgets/cliente/cliente.widget';
 import { AgregarIndustriaWidget } from './widgets/agregarindustria/agregarindustria.widget';
 import { ProductoGeneralWidget } from './widgets/productogeneral/productogeneral.widget';
+import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
 
 @NgModule({
     declarations: [
@@ -111,7 +112,13 @@ import { ProductoGeneralWidget } from './widgets/productogeneral/productogeneral
             }
         ])
     ],
-    providers: [StoreUser],
+    providers: [
+        StoreUser,
+        {
+        provide: HTTP_INTERCEPTORS,
+        useClass: AuthInterceptorService,
+        multi: true
+    }],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

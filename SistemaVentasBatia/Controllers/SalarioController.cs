@@ -9,9 +9,11 @@ using System.Threading.Tasks;
 using SistemaVentasBatia.Enums;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SalarioController : ControllerBase

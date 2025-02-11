@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+﻿import { Component, Inject, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ListaCotizacion } from 'src/app/models/listacotizacion';
 import { Prospecto } from 'src/app/models/prospecto';
 import { ItemN } from 'src/app/models/item';
@@ -48,13 +48,19 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     validaDato2: any;
     sub: any;
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, public user: StoreUser) {
-        http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, public user: StoreUser, private rtr: Router) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        http.get<ItemN[]>(`${url}api/prospecto/getservicio`, {headers}).subscribe(response => {
             this.lsers = response;
-        }, err => console.log(err));
-        http.get<ItemN[]>(`${url}api/cotizacion/getestatus`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<ItemN[]>(`${url}api/cotizacion/getestatus`, {headers}).subscribe(response => {
             this.lests = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     ngOnInit(): void {
@@ -81,14 +87,29 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         if (fil.length > 0) fil += '&';
         fil += (this.lcots.idProspecto > 0 ? `idProspecto=${this.lcots.idProspecto}` : '');
         if (fil.length > 0) fil = '?' + fil;
-        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`).subscribe(response => {
+        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lcots = response;
             }, err => {
             console.log(err);
         });
-        this.http.post<Prospecto[]>(`${this.url}api/prospecto/getcatalogo`, this.user.idPersonal).subscribe(response => {
+        this.http.post<Prospecto[]>(`${this.url}api/prospecto/getcatalogo`, this.user.idPersonal, { headers: this.getHeaders() }).subscribe(response => {
             this.lpros = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
+    }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            this.rtr.navigate(['']);
+        } else {
+            this.errorToast('Ocurrió un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
     }
 
     lista() {
@@ -98,7 +119,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         if (fil.length > 0) fil += '&';
         fil += (this.lcots.idProspecto > 0 ? `idProspecto=${this.lcots.idProspecto}` : '');
         if (fil.length > 0) fil = '?' + fil;
-        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`).subscribe(response => {
+        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`, { headers: this.getHeaders() }).subscribe(response => {
             setTimeout(() => {
                 this.lcots = response;
                 if (this.tablaContainer) {
@@ -110,7 +131,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         }, err => {
             setTimeout(() => {
                 this.detenerCarga();
-                console.log(err);
+                this.validaError(err);
             }, 300);
         });
     }
@@ -134,9 +155,11 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     }
 
     getDirs() {
-        this.http.get<ListaDireccion>(`${this.url}api/cotizacion/limpiezadirectorio/${this.model.idCotizacion}`).subscribe(response => {
+        this.http.get<ListaDireccion>(`${this.url}api/cotizacion/limpiezadirectorio/${this.model.idCotizacion}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lsdir = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     //Abrir modal editar cotizacion
@@ -144,7 +167,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         this.ediw.openSel(idCotizacion, idServicio, polizaCumplimiento, diasEvento);
     }
 
-    openCerrarCotizacion(idCotizacion: number) {
+    openCerrarCotizacion(idCotizacion: number) {// jesica selene garcia arrieta
         this.cerrarCot.open(idCotizacion);
         //Vigente, vencida
     }
@@ -174,7 +197,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     cambiarEstatusCotizacion() {
         this.iniciarCarga();
         if (this.idEstatus === 1) {
-            this.http.put<boolean>(`${this.url}api/cotizacion/desactivarcotizacion`, this.idCotizacion).subscribe(response => {
+            this.http.put<boolean>(`${this.url}api/cotizacion/desactivarcotizacion`, this.idCotizacion, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' desactivada');
@@ -185,11 +208,10 @@ export class CotizacionComponent implements OnInit, OnDestroy {
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
-                console.log(err);
-
+                this.validaError(err);
             });
         } else {
-            this.http.put<boolean>(`${this.url}api/cotizacion/activarcotizacion`, this.idCotizacion).subscribe(response => {
+            this.http.put<boolean>(`${this.url}api/cotizacion/activarcotizacion`, this.idCotizacion, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' activada');
@@ -201,8 +223,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
-                console.log(err);
-
+                this.validaError(err);
             });
         }
     }
@@ -210,7 +231,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     eliminarCotizacion() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.post<boolean>(`${this.url}api/cotizacion/EliminarCotizacion`, this.idCotizacion).subscribe(response => {
+            this.http.post<boolean>(`${this.url}api/cotizacion/EliminarCotizacion`, this.idCotizacion, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Cotizaci\u00F3n ' + this.idCotizacion + ' eliminada');
@@ -221,8 +242,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
-                console.log(err);
-
+                this.validaError(err);
             });
         }, 300);
     }

@@ -18,6 +18,9 @@ using SistemaVentasBatia.Converters;
 using SistemaVentasBatia.Middleware;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Http;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SistemaVentasBatia
 {
@@ -90,6 +93,24 @@ namespace SistemaVentasBatia
 
             //Excel
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            services.AddControllers();
+
+            var key = Encoding.ASCII.GetBytes("S1ng4*2025_crm_key_ClaveSeguraParaSingaCRM.@"); // ?? Usa una clave fuerte
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -136,6 +157,7 @@ namespace SistemaVentasBatia
         //        }
         //    });
         //}
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -174,6 +196,8 @@ namespace SistemaVentasBatia
             }
 
             app.UseRouting();
+
+            app.UseAuthentication(); //  Habilita autenticación con JWT
 
             app.UseAuthorization();
 

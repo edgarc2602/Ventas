@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
+﻿import { Component, Inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Prospecto } from '../../../models/prospecto';
 import { ItemN } from '../../../models/item';
@@ -39,12 +39,18 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         @Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe,
         private router: Router, private route: ActivatedRoute, private sinU: StoreUser
     ) {
-        http.get<ItemN[]>(`${url}api/prospecto/getdocumento`).subscribe(response => {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        http.get<ItemN[]>(`${url}api/prospecto/getdocumento`, {headers}).subscribe(response => {
             this.docs = response;
-        }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`, { headers }).subscribe(response => {
             this.indust = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     nuevo() {
@@ -56,17 +62,35 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     }
 
     existe(id: number) {
-        this.http.get<Prospecto>(`${this.url}api/prospecto/${id}`).subscribe(response => {
+        this.http.get<Prospecto>(`${this.url}api/prospecto/${id}`, { headers: this.getHeaders() }).subscribe(response => {
             this.pro = response;
             this.docs = this.pro.listaDocumentos;
             this.getDir();
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
+    }
+
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            this.router.navigate(['']);
+        } else {
+            this.errorToast('Ocurrió un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
     }
 
     getDir() {
-        this.http.get<ListaDireccion>(`${this.url}api/direccion/${this.pro.idProspecto}`).subscribe(response => {
+        this.http.get<ListaDireccion>(`${this.url}api/direccion/${this.pro.idProspecto}`, { headers: this.getHeaders() }).subscribe(response => {
             this.direcs = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });    
     }
 
     selDir(idD: number) {
@@ -82,7 +106,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
             this.iniciarCarga();
             setTimeout(() => {
                 if (this.pro.idProspecto == 0) {
-                    this.http.post<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
+                    this.http.post<Prospecto>(`${this.url}api/prospecto`, this.pro, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Prospecto creado');
@@ -92,6 +116,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                             this.router.navigate(['/exclusivo/prospecto']);
                         }, 1000);
                     }, err => {
+                        this.validaError(err);
                         this.detenerCarga();
                         console.log(err);
                         if (err.error) {
@@ -104,13 +129,13 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                                     }
                                 }
                                 setTimeout(() => {
-                                    this.errorToast();
+                                    this.errorToast('');
                                 }, 300);
                             }
                         }
                     });
                 } else {
-                    this.http.put<Prospecto>(`${this.url}api/prospecto`, this.pro).subscribe(response => {
+                    this.http.put<Prospecto>(`${this.url}api/prospecto`, this.pro, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Prospecto actualizado');
@@ -121,6 +146,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                     }, err => {
                         this.detenerCarga();
                         console.log(err);
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -131,7 +157,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
                                     }
                                 }
                                 setTimeout(() => {
-                                    this.errorToast();
+                                    this.errorToast('');
                                 }, 300);
                             }
                         }
@@ -146,9 +172,9 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         this.toastWidget.isErr = false;
         this.toastWidget.open();
     }
-
-    errorToast() {
+    errorToast(message: string) {
         this.toastWidget.isErr = true;
+        this.toastWidget.errMessage = message;
         this.toastWidget.open();
     }
 

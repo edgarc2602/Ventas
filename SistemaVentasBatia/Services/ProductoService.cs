@@ -39,6 +39,7 @@ namespace SistemaVentasBatia.Services
         Task<ActionResult<ListaProductoDTO>> GetProductoProveedorByIdEstado(ListaProductoDTO listaProducto, int idEstado, int idFamilia);
         Task<bool> AgregarProductosGeneral( ProductosGeneralDTO productos);
         Task<bool> EliminarProductosGeneral( ProductosGeneralDTO productos);
+        Task<List<EstadoProveedorDTO>> EstadoProveedor();
     }
 
     public class ProductoService : IProductoService
@@ -260,6 +261,12 @@ namespace SistemaVentasBatia.Services
                 await materialService.EliminarProductoPlantillas(herr.ClaveProducto, productos.IdCotizacion, "herramienta");
             }
             return true;
+        }
+
+        public async Task<List<EstadoProveedorDTO>> EstadoProveedor()
+        {
+            var list =  mapper.Map<List<EstadoProveedorDTO>>(await repo.EstadoProveedor());
+            return list;
         }
     }
 }

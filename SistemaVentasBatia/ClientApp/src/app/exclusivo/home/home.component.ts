@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+﻿import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { fadeInOut } from 'src/app/fade-in-out';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ItemN } from 'src/app/models/item';
 import { UsuarioGrafica } from '../../models/usuariografica';
 import { UsuarioGraficaMensual } from '../../models/usuariograficamensual';
@@ -10,6 +10,7 @@ import { CotizacionVendedorDetalle } from '../../models/cotizacionvendedordetall
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { saveAs } from 'file-saver';
+import { Router } from '@angular/router';
 
 interface DatosAgrupados {
     nombre: string;
@@ -48,36 +49,57 @@ export class HomeComponent implements OnInit {
     totalIndirecto: number = 0;
     totalUtilidad: number = 0;
     total: number = 0;
-
-
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
-        http.get<UsuarioGrafica[]>(`${url}api/usuario/obtenercotizacionesusuarios/`).subscribe(response => {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        http.get<UsuarioGrafica[]>(`${url}api/usuario/obtenercotizacionesusuarios/`, {headers}).subscribe(response => {
             this.usuarios = response;
             this.getDonut();
-        }, err => console.log(err));
-        http.get<UsuarioGraficaMensual[]>(`${url}api/usuario/obtenercotizacionesmensuales`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<UsuarioGraficaMensual[]>(`${url}api/usuario/obtenercotizacionesmensuales`, { headers }).subscribe(response => {
             this.usuariosMensual = response;
-        }, err => console.log(err));
-        http.get<ItemN[]>(`${url}api/prospecto/getestatus`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<ItemN[]>(`${url}api/prospecto/getestatus`, { headers }).subscribe(response => {
             this.lests = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
-
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            this.rtr.navigate(['']);
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     ngOnInit(): void {
         this.agruparDatosMensuales()
         this.getTop();
         this.getDonut();
         this.getVendedores();
+        
     }
 
     getVendedores() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/ObtenerCatalogoVendedores`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/ObtenerCatalogoVendedores`, { headers: this.getHeaders() }).subscribe(response => {
             this.vendedores = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     agruparDatosMensuales() {
-        this.http.get<UsuarioGraficaMensual[]>(`${this.url}api/usuario/obtenercotizacionesmensuales`).subscribe(response => {
+        this.http.get<UsuarioGraficaMensual[]>(`${this.url}api/usuario/obtenercotizacionesmensuales`, { headers: this.getHeaders() }).subscribe(response => {
             const datosAgrupados: DatosAgrupados[] = [];
             response.forEach(dato => {
                 const { nombre, mes, cotizacionesPorMes } = dato;
@@ -95,7 +117,9 @@ export class HomeComponent implements OnInit {
             });
             this.datosAgrupados = datosAgrupados;
             this.getTop();
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
 
     }
     getDonut() {
@@ -127,71 +151,13 @@ export class HomeComponent implements OnInit {
                 }
             },
             tooltip: {
-                formatter: function () {
-                    return '<b>' + this.x + '</b><br/>' +
-                        this.series.name + ': ' + this.y + '<br/>';
-                }
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: seriesOptions,
-            credits: {
-                enabled: false
-            }
-        });
-    }
-
-    getTop() {
-        let container: HTMLElement = document.getElementById('dvtop');
-        const seriesOptions: Highcharts.SeriesColumnOptions[] = [];
-        this.datosAgrupados.forEach(dato => {
-            seriesOptions.push({
-                name: dato.nombre,
-                data: dato.cotizacionMes,
-                type: 'column',
-            });
-        });
-        Highcharts.chart(container, {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Cotizaciones por mes'
-            },
-            xAxis: {
-                categories: [
-                    'Jan',
-                    'Feb',
-                    'Mar',
-                    'Apr',
-                    'May',
-                    'Jun',
-                    'Jul',
-                    'Aug',
-                    'Sep',
-                    'Oct',
-                    'Nov',
-                    'Dec'
-                ],
-                crosshair: true
-            },
-            yAxis: {
-                allowDecimals: false,
-
-                min: 0,
-                title: {
-                    text: ''
-                }
-            },
-            tooltip: {
+                //formatter: function () {
+                //    return '<b>' + this.x + '</b><br/>' +
+                //        this.series.name + ': ' + this.y + '<br/>';
+                //}
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
                     '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
-
                 footerFormat: '</table>',
                 shared: true,
                 useHTML: true
@@ -209,16 +175,77 @@ export class HomeComponent implements OnInit {
         });
     }
 
+    getTop() {
+        let container: HTMLElement = document.getElementById('dvtop');
+        const seriesOptions: Highcharts.SeriesColumnOptions[] = [];
+
+        // Obtener el mes actual (0 = Enero, 1 = Febrero, ..., 11 = Diciembre)
+        const fechaActual = new Date();
+        const mesActual = fechaActual.getMonth(); // Retorna el índice del mes (0-11)
+
+        // Definir las categorías (meses) y filtrar hasta el mes actual
+        const categorias = [
+            'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+            'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+        ].slice(0, mesActual + 1); // Solo los meses hasta el actual
+
+        // Filtrar los datos de cada vendedor para solo incluir los valores hasta el mes actual
+        this.datosAgrupados.forEach(dato => {
+            seriesOptions.push({
+                name: dato.nombre,
+                data: dato.cotizacionMes.slice(0, mesActual + 1), // Recorta los datos hasta el mes actual
+                type: 'column',
+            });
+        });
+
+        Highcharts.chart(container, {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Cotizaciones por mes'
+            },
+            xAxis: {
+                categories: categorias, // Solo los meses hasta el actual
+                crosshair: true
+            },
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: ''
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: seriesOptions,
+            credits: {
+                enabled: false
+            }
+        });
+    }
+
+
     goBack() {
         window.history.back();
     }
 
     getCotizacionesVendedor(idVendedor: number) {
-
-
         if (idVendedor != 0) {
             this.iniciarCarga();
-            this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`).subscribe(response => {
+            this.http.get<CotizacionVendedorDetalle>(`${this.url}api/cotizacion/CotizacionVendedorDetallePorIdVendedor/${idVendedor}`, { headers: this.getHeaders() }).subscribe(response => {
                 setTimeout(() => {
                     this.detenerCarga();
                     this.totalIndirecto = 0;
@@ -232,10 +259,8 @@ export class HomeComponent implements OnInit {
                     })
                 }, 300);
             }, err => {
-                setTimeout(() => {
-                    this.detenerCarga();
-                    console.log(err)
-                }, 300);
+                this.detenerCarga();
+                this.validaError(err);
             });
         }
         else {
@@ -243,9 +268,10 @@ export class HomeComponent implements OnInit {
         }
     }
 
+    
     descargarReporteProspectosOld() {
         this.iniciarCarga();
-        this.http.get(`${this.url}api/report/DescargarReporteProspectos/${this.idEstatus}`, { responseType: 'arraybuffer' })
+        this.http.get(`${this.url}api/report/DescargarReporteProspectos/${this.idEstatus}`, { headers: this.getHeaders(), responseType: 'arraybuffer' })
             .subscribe(
                 (data: ArrayBuffer) => {
                     this.okToast('Reporte descargado');
@@ -262,46 +288,38 @@ export class HomeComponent implements OnInit {
                         alert('La ventana emergente ha sido bloqueada. Por favor, permite ventanas emergentes para este sitio.');
                     }
                     this.detenerCarga();
-                },
-                error => {
-                    this.errorToast('Ocurri\u00F3 un error')
-                    console.error('Error al obtener el archivo PDF', error);
+                }, err => {
                     this.detenerCarga();
-                }
-            );
+                    this.validaError(err);
+                });
     }
     descargarReporteProspectos(formato: string) {
         this.lerr = {};
         if (this.valida()) {
             this.iniciarCarga();
             if (formato == 'Word') {
-                this.http.get(`${this.url}api/report/DescargarProspectosCotizacionesDocx/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, { responseType: 'arraybuffer' })
+                this.http.get(`${this.url}api/report/DescargarProspectosCotizacionesDocx/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, { headers: this.getHeaders(), responseType: 'arraybuffer' })
                     .subscribe(
                         (data: ArrayBuffer) => {
                             const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
                             saveAs(blob, 'ReporteProspectosCotizaciones.docx');
                             this.detenerCarga();
                             this.okToast('Reporte descargado')
-                            error => {
-                                console.error('Error al obtener el archivo DOCX', error);
-                                this.detenerCarga();
-                                this.errorToast('Ocurri\u00F3 un error');
-                            }
+                        }, err => {
+                            this.detenerCarga();
+                            this.validaError(err);
                         });
             }
             if (formato == 'Excel') {
                 this.iniciarCarga();
-                this.http.post(`${this.url}api/report/DescargarProspectosCotizacionesExcel/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, null, { responseType: 'blob' }).subscribe((response: Blob) => {
+                this.http.post(`${this.url}api/report/DescargarProspectosCotizacionesExcel/${this.idEstatus}/${this.Finicio}/${this.Ffin}`, null, { headers: this.getHeaders(), responseType: 'blob' }).subscribe((response: Blob) => {
                     this.okToast('Reporte descargado');
                     saveAs(response, 'ReporteProspectosCotizaciones.xlsx');
                     this.detenerCarga();
-                },
-                    error => {
-                        console.error('Error al descargar el archivo:', error);
-                        this.detenerCarga();
-                        this.errorToast('Ocurri\u00F3 un error');
-                    }
-                );
+                }, err => {
+                    this.detenerCarga();
+                    this.validaError(err);
+                });
             }
         }
     }

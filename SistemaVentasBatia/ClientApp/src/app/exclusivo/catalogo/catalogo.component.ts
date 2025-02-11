@@ -1,5 +1,5 @@
-import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Catalogo } from 'src/app/models/catalogo';
 import { ProductoItem } from 'src/app/models/productoitem';
 import { ProductoWidget } from 'src/app/widgets/producto/producto.widget';
@@ -18,7 +18,9 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
 import { AgregarIndustriaWidget } from '../../widgets/agregarindustria/agregarindustria.widget';
-
+import { EstadoProveedor } from '../../models/estadoproveedor';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 @Component({
     selector: 'catalogo-comp',
     templateUrl: './catalogo.component.html',
@@ -69,6 +71,7 @@ export class CatalogoComponent {
     tser: Catalogo[] = [];
     lusu: AgregarUsuario[];
     estados: Catalogo[];
+    estadoProveedor: EstadoProveedor[] = [];
     zona1: number = 0;
     zona2: number = 0;
     zona3: number = 0;
@@ -94,7 +97,7 @@ export class CatalogoComponent {
     evenSub: Subject<void> = new Subject<void>();
     fechaAplica: Date;
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser) {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser, private rtr: Router) {
         http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
             this.pues = response;
         }, err => console.log(err));
@@ -130,6 +133,31 @@ export class CatalogoComponent {
             this.comisionExterna = this.cotpor.comisionExterna;
             this.fechaAplica = this.cotpor.fechaAplica;
         }, err => console.log(err));
+    }
+
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            this.rtr.navigate(['']);
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
+
+    GetEstadoProveedor() {
+        this.http.get<EstadoProveedor[]>(`${this.url}api/producto/estadoproveedor`, {headers:this.getHeaders()}).subscribe(response => {
+            this.estadoProveedor = response;
+        }, err => {
+            this.validaError(err);
+        });
+    }
+    openRelacion(idEstado: number, idProveedor: number) {
+
     }
 
     chgServicio() {
@@ -183,31 +211,39 @@ export class CatalogoComponent {
     }
 
     getServicios() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getservicio`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getservicio`, { headers: this.getHeaders() }).subscribe(response => {
             this.sers = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     reloadIndustrias() {
         this.getIndustrias();
     }
     getIndustrias() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/ObtenerCatalogoTiposdeIndustria`, { headers: this.getHeaders() }).subscribe(response => {
             this.industrias = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     getMaterial() {
         this.mates = [];
-        this.http.get<ProductoItem[]>(`${this.url}api/producto/get${this.grupo}/${this.selPuesto}`).subscribe(response => {
+        this.http.get<ProductoItem[]>(`${this.url}api/producto/get${this.grupo}/${this.selPuesto}`, { headers: this.getHeaders() }).subscribe(response => {
             this.mates = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     deleteMat(id: number) {
-        this.http.delete<boolean>(`${this.url}api/producto/del${this.grupo}/${id}`).subscribe(response => {
+        this.http.delete<boolean>(`${this.url}api/producto/del${this.grupo}/${id}`, { headers: this.getHeaders() }).subscribe(response => {
             this.getMaterial();
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     updateProd(id: number, tipo: number) {
@@ -218,7 +254,7 @@ export class CatalogoComponent {
     deleteServ(id) {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.delete(`${this.url}api/producto/EliminarServicio/${id}`).subscribe(response => {
+            this.http.delete(`${this.url}api/producto/EliminarServicio/${id}`, { headers: this.getHeaders() }).subscribe(response => {
                 if (response == false) {
                     this.detenerCarga();
                     setTimeout(() => {
@@ -235,6 +271,7 @@ export class CatalogoComponent {
                 
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -246,7 +283,7 @@ export class CatalogoComponent {
     deleteIndust(id) {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.delete(`${this.url}api/producto/EliminarIndustria/${id}`).subscribe(response => {
+            this.http.delete(`${this.url}api/producto/EliminarIndustria/${id}`, { headers: this.getHeaders() }).subscribe(response => {
                 if (response == false) {
                     this.detenerCarga();
                     setTimeout(() => {
@@ -263,6 +300,7 @@ export class CatalogoComponent {
 
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -299,14 +337,16 @@ export class CatalogoComponent {
     getPorcentajes() {
         this.limpiarPorcentajes();
         this.limpiarPorcentajesNG();
-        this.http.get<CotizaPorcentajes>(`${this.url}api/cotizacion/obtenerporcentajescotizacion`).subscribe(response => { //falta
+        this.http.get<CotizaPorcentajes>(`${this.url}api/cotizacion/obtenerporcentajescotizacion`, { headers: this.getHeaders() }).subscribe(response => { //falta
             this.cotpor = response;
             this.costoIndirecto = this.cotpor.costoIndirecto;
             this.utilidad = this.cotpor.utilidad;
             this.comisionSobreVenta = this.cotpor.comisionSobreVenta;
             this.comisionExterna = this.cotpor.comisionExterna;
             this.fechaAplica = this.cotpor.fechaAplica;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
         this.getImss();
     }
 
@@ -315,7 +355,7 @@ export class CatalogoComponent {
         this.obtenerPorcentajesCotizacion();
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.post<CotizaPorcentajes>(`${this.url}api/cotizacion/actualizarporcentajespredeterminadoscotizacion`, this.cotpor).subscribe(response => {
+            this.http.post<CotizaPorcentajes>(`${this.url}api/cotizacion/actualizarporcentajespredeterminadoscotizacion`, this.cotpor, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Porcentajes actualizados');
@@ -325,6 +365,7 @@ export class CatalogoComponent {
                 this.getPorcentajes();
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -368,8 +409,10 @@ export class CatalogoComponent {
                 this.usuario.revisa = 0;
             }
             this.usuario.idPersonal = this.idPersonal;
-            this.http.post<boolean>(`${this.url}api/usuario/agregarusuario`, this.usuario).subscribe(response => {
+            this.http.post<boolean>(`${this.url}api/usuario/agregarusuario`, this.usuario, { headers: this.getHeaders() }).subscribe(response => {
                 this.nuevoUsuario();
+            }, err => {
+                this.validaError(err);
             });
         }
     }
@@ -395,16 +438,18 @@ export class CatalogoComponent {
     }
 
     getTabulador() {
-        this.http.get<PuestoTabulador>(`${this.url}api/tabulador/ObtenerTabuladorPuesto/${this.selPuesto}/${this.idClase}`).subscribe(response => {
+        this.http.get<PuestoTabulador>(`${this.url}api/tabulador/ObtenerTabuladorPuesto/${this.selPuesto}/${this.idClase}`, { headers: this.getHeaders() }).subscribe(response => {
             this.sal = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     actualizarSalarios(id: number) {
         this.obtenerValores();
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.post<PuestoTabulador>(`${this.url}api/cotizacion/actualizarsalarios`, this.sal).subscribe(response => {
+            this.http.post<PuestoTabulador>(`${this.url}api/cotizacion/actualizarsalarios`, this.sal, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Salarios actualizados');
@@ -412,6 +457,7 @@ export class CatalogoComponent {
                 this.getTabulador();
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -439,22 +485,25 @@ export class CatalogoComponent {
     }
 
     getImss() {
-        this.http.get<number>(`${this.url}api/cotizacion/obtenerimssbase`).subscribe(response => {
+        this.http.get<number>(`${this.url}api/cotizacion/obtenerimssbase`, { headers: this.getHeaders() }).subscribe(response => {
             this.imss = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     updImss() {
         this.imss = parseFloat(this.imsstxt.nativeElement.value);
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.put<boolean>(`${this.url}api/cotizacion/actualizarimssbase`, this.imss).subscribe(response => {
+            this.http.put<boolean>(`${this.url}api/cotizacion/actualizarimssbase`, this.imss, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Actualizado');
                 }, 300);
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -465,9 +514,11 @@ export class CatalogoComponent {
     }
 
     obtenerUsuarios() {
-        this.http.get<AgregarUsuario[]>(`${this.url}api/usuario/obtenerusuarios`).subscribe(response => {
+        this.http.get<AgregarUsuario[]>(`${this.url}api/usuario/obtenerusuarios`, { headers: this.getHeaders() }).subscribe(response => {
             this.lusu = response;
-        })
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     chgEstatus(estatusVentas: number, idPersonal: number) {
@@ -475,7 +526,7 @@ export class CatalogoComponent {
         this.iniciarCarga();
         setTimeout(() => {
             if (estatusVentas === 1) {
-                this.http.put<boolean>(`${this.url}api/usuario/desactivarusuario`, idPersonal).subscribe(response => {
+                this.http.put<boolean>(`${this.url}api/usuario/desactivarusuario`, idPersonal, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Usuario desactivado');
@@ -483,13 +534,14 @@ export class CatalogoComponent {
                     this.obtenerUsuarios();
                 }, err => {
                     this.detenerCarga();
+                    this.validaError(err);
                     setTimeout(() => {
                         this.errorToast('Ocurri\u00F3 un error');
                     }, 300);
                     console.log(err);
                 });
             } else {
-                this.http.put<boolean>(`${this.url}api/usuario/activarusuario`, idPersonal).subscribe(response => {
+                this.http.put<boolean>(`${this.url}api/usuario/activarusuario`, idPersonal, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Usuario activado');
@@ -497,6 +549,7 @@ export class CatalogoComponent {
                     this.obtenerUsuarios();
                 }, err => {
                     this.detenerCarga();
+                    this.validaError(err);
                     setTimeout(() => {
                         this.errorToast('Ocurri\u00F3 un error');
                     }, 300);
@@ -524,7 +577,7 @@ export class CatalogoComponent {
         this.idPersonal = this.elimina;
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.put<boolean>(`${this.url}api/usuario/eliminarusuario`, this.idPersonal).subscribe(response => {
+            this.http.put<boolean>(`${this.url}api/usuario/eliminarusuario`, this.idPersonal, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Usuario eliminado');
@@ -532,6 +585,7 @@ export class CatalogoComponent {
                 this.obtenerUsuarios();
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);
@@ -549,18 +603,20 @@ export class CatalogoComponent {
         setTimeout(() => {
             if (filtro == 2) {
                 this.model.pagina = 1;
-                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
+                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     this.model = response;
                 }, err => {
+                    this.validaError(err);
                 });
             }
             if (filtro == 0) {
-                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
+                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     this.model = response;
                 }, err => {
                     this.detenerCarga();
+                    this.validaError(err);
                 });
             }
             if (filtro == 1) {
@@ -570,12 +626,13 @@ export class CatalogoComponent {
                 this.model.pagina = 1;
                 this.isLoading = true;
 
-                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`).subscribe(response => {
+                this.http.get<ListaProducto>(`${this.url}api/producto/GetProductoProveedorByIdEstado/${this.idEstado}/${this.model.pagina}/${this.idFamilia}`, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     this.model = response;
                     this.isLoading = false;
                 }, err => {
                     this.detenerCarga();
+                    this.validaError(err);
                 });
                 if (this.model.productos.length == 0) {
                     this.model.familias = [];
@@ -593,7 +650,7 @@ export class CatalogoComponent {
     descargarListaProductosPorEstado() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.get(`${this.url}api/report/DescargarListaProductosPorEstado/${this.idEstado}/${this.idFamilia}`, { responseType: 'arraybuffer' })
+            this.http.get(`${this.url}api/report/DescargarListaProductosPorEstado/${this.idEstado}/${this.idFamilia}`, { headers: this.getHeaders(), responseType: 'arraybuffer' })
                 .subscribe(
                     (data: ArrayBuffer) => {
                         const file = new Blob([data], { type: 'application/pdf' });
@@ -615,6 +672,7 @@ export class CatalogoComponent {
                     },
                     error => {
                         this.detenerCarga();
+                        this.validaError(error);
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error');
                         }, 300);
@@ -630,7 +688,7 @@ export class CatalogoComponent {
     }
 
     obtenerImmsJornada() {
-        this.http.get<ImmsJornada>(`${this.url}api/cotizacion/ObtenerImssJornada`).subscribe(response => {
+        this.http.get<ImmsJornada>(`${this.url}api/cotizacion/ObtenerImssJornada`, { headers: this.getHeaders() }).subscribe(response => {
             this.immsJornada = response;
         })
     }
@@ -638,7 +696,7 @@ export class CatalogoComponent {
         this.immsJornada.idPersonal = this.user.idPersonal;
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarImssJornada`, this.immsJornada).subscribe(response => {
+            this.http.post<boolean>(`${this.url}api/cotizacion/ActualizarImssJornada`, this.immsJornada, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('IMSS actualizado');
@@ -647,6 +705,7 @@ export class CatalogoComponent {
 
             }, err => {
                 this.detenerCarga();
+                this.validaError(err);
                 setTimeout(() => {
                     this.errorToast('Ocurri\u00F3 un error');
                 }, 300);

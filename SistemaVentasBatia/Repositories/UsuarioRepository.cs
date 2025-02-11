@@ -332,6 +332,8 @@ WHERE p.per_cotizadorventas = 1 AND  p.per_revisaventas = 0
         }
         public async Task<List<UsuarioGraficaMensual>> ObtenerCotizacionesMensuales()
         {
+            var factual = DateTime.Now;
+            int anio = factual.Year;
             var query = @"
 WITH MesesDeReferencia AS (
     SELECT 1 AS Mes
@@ -359,7 +361,7 @@ LEFT JOIN
     tb_cotizacion c ON p.IdPersonal = c.id_personal
         AND MONTH(c.fecha_alta) = m.Mes
 WHERE
-    p.per_revisaventas = 0 AND p.per_cotizadorventas = 1
+    p.per_revisaventas = 0 AND p.per_cotizadorventas = 1 AND YEAR(c.fecha_alta) = @anio
 GROUP BY
     p.IdPersonal,
     p.Per_Nombre,
@@ -374,7 +376,7 @@ ORDER BY
             {
                 using (var connection = _ctx.CreateConnection())
                 {
-                    usuarios = (await connection.QueryAsync<UsuarioGraficaMensual>(query)).ToList();
+                    usuarios = (await connection.QueryAsync<UsuarioGraficaMensual>(query, new { anio })).ToList();
                 }
             }
             catch (Exception ex)
@@ -387,23 +389,27 @@ ORDER BY
         {
             string query = @"
 SELECT 
-	IdPersonal IdPersonal,
-	CAST(per_autorizaventas AS BIT) AS AutorizaVentas,
-    CAST(per_estatusventas AS BIT) AS EstatusVentas,
-    CAST(per_cotizadorventas AS BIT) AS CotizadorVentas,
-    CAST(per_revisaventas AS BIT) AS RevisaVentas,
-	Per_Nombre Nombres,
-	Per_Paterno ApellidoPaterno,
-	Per_Materno ApellidoMaterno,
-	per_Puesto Puesto,
-	per_telefono Telefono,
-	per_telefonoextension TelefonoExtension,
-	per_telefonomovil TelefonoMovil,
-	per_Email Email,
-	per_firma Firma,
-	per_usuario Usuario,
-	per_password Password
-	FROM Personal WHERE per_cotizadorventas = 1 ORDER BY Per_Nombre
+	a.IdPersonal IdPersonal,
+	CAST(a.per_autorizaventas AS BIT) AS AutorizaVentas,
+    CAST(a.per_estatusventas AS BIT) AS EstatusVentas,
+    CAST(a.per_cotizadorventas AS BIT) AS CotizadorVentas,
+    CAST(a.per_revisaventas AS BIT) AS RevisaVentas,
+	a.Per_Nombre Nombres,
+	a.Per_Paterno ApellidoPaterno,
+	a.Per_Materno ApellidoMaterno,
+	--a.per_Puesto Puesto,
+	c.descripcion Puesto,
+	a.per_telefono Telefono,
+	a.per_telefonoextension TelefonoExtension,
+	a.per_telefonomovil TelefonoMovil,
+	a.per_Email Email,
+	a.per_firma Firma,
+	a.per_usuario Usuario,
+	a.per_password Password
+	FROM Personal a
+	INNER JOIN tb_empleado b ON a.id_empleado = b.id_empleado
+	INNER JOIN tb_puesto c ON c.id_puesto = b.id_puesto
+	WHERE a.per_cotizadorventas = 1 ORDER BY a.Per_Nombre
 ";
             var usuarios = new List<AgregarUsuario>();
             try

@@ -83,19 +83,19 @@
                                 <hr />
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">2 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN2"  [(ngModel)]="immsJornada.normal2" placeholder="{{ immsJornada.normal2 | number: '1.2' }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN2" [(ngModel)]="immsJornada.normal2" placeholder="{{ immsJornada.normal2 | number: '1.2' }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">4 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN4"  [(ngModel)]="immsJornada.normal4" placeholder="{{ immsJornada.normal4 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN4" [(ngModel)]="immsJornada.normal4" placeholder="{{ immsJornada.normal4 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">8 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN8"  [(ngModel)]="immsJornada.normal8" placeholder="{{ immsJornada.normal8 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN8" [(ngModel)]="immsJornada.normal8" placeholder="{{ immsJornada.normal8 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">12 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN12"  [(ngModel)]="immsJornada.normal12" placeholder="{{ immsJornada.normal12 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssN12" [(ngModel)]="immsJornada.normal12" placeholder="{{ immsJornada.normal12 }}" autocomplete="off" required>
                                 </div>
 
                                 <div>
@@ -104,7 +104,7 @@
                                 <hr />
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">2 hrs:</span>
-                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF2"  [(ngModel)]="immsJornada.frontera2" placeholder="{{ immsJornada.frontera2 }}" autocomplete="off" required>
+                                    <input type="number" #imsstxt class="form-control aliggn-content-center text-center transparent-background" id="imssF2" [(ngModel)]="immsJornada.frontera2" placeholder="{{ immsJornada.frontera2 }}" autocomplete="off" required>
                                 </div>
                                 <div class="col-sm-3 col-6 pb-3">
                                     <span class="badge">4 hrs:</span>
@@ -185,15 +185,15 @@
                                 <table class="table table-striped table-responsive">
                                     <thead class="sticky-top">
                                         <tr>
-                                            <th>Clave</th>
-                                            <th>Descripción</th>
+                                            <th class="text-start">Clave</th>
+                                            <th class="text-start">Descripción</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let s of sers">
-                                            <td>{{ s.id }}</td>
-                                            <td>{{ s.descripcion }}</td>
+                                            <td class="text-start">{{ s.id }}</td>
+                                            <td class="text-start">{{ s.descripcion }}</td>
                                             <td>
                                                 <button type="button" (click)="deleteServ(s.id)" class="btn btn-sm btn-outline-danger">
                                                     <i class="fa-solid fa-trash"></i>
@@ -577,104 +577,165 @@
             </h1>
             <div id="collapseProducto" class="accordion-collapse collapse" aria-labelledby="headingProducto">
                 <div class="accordion-body">
-                    <div class="row col-12 align-items-center ">
-                        <div class="col-md-4 col-sm-10 col-12">
-                            <h6 class="modal-title">Consultar precio de productos por estado</h6>
-                        </div>
+                    <ul class="nav nav-tabs" id="tabconfig" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" id="catalogoprecios-tab" data-bs-toggle="tab" data-bs-target="#catalogoprecios"
+                                    role="tab" aria-controls="porcentajespred" aria-selected="true">
+                                Catálogo de precios
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" id="estadoproveedor-tab" (click)="GetEstadoProveedor()" data-bs-toggle="tab" data-bs-target="#estadoproveedor"
+                                    role="tab" aria-controls="IMSS" aria-selected="false">
+                                Estado/Proveedor
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2" id="tabcontent">
+                        <div class="tab-pane fade show active text-center" id="catalogoprecios" role="tabpanel" aria-labelledby="tabulador-tab">
+                            <div class="row col-12 align-items-center ">
+                                <div class="col-md-4 col-sm-10 col-12">
+                                    <h6 class="modal-title">Consultar precio de productos por estado</h6>
+                                </div>
 
-                        <div class="col-md-2 col-6 ">
-                            <div class="form-floating shadow-sm">
-                                <select class="form-select" [(ngModel)]="idEstado" (change)="getPrecioProductoByEstado(1)" [disabled]="isLoading" id="estados">
-                                    <option value="0">Seleccione...</option>
-                                    <option *ngFor="let e of estados" [ngValue]="e.id">{{ e.descripcion }}</option>
-                                </select>
-                                <label for="estados">Estado</label>
+                                <div class="col-md-2 col-6 ">
+                                    <div class="form-floating shadow-sm">
+                                        <select class="form-select" [(ngModel)]="idEstado" (change)="getPrecioProductoByEstado(1)" [disabled]="isLoading" id="estados">
+                                            <option value="0">Seleccione...</option>
+                                            <option *ngFor="let e of estados" [ngValue]="e.id">{{ e.descripcion }}</option>
+                                        </select>
+                                        <label for="estados" class="text-start">Estado</label>
+                                    </div>
+                                </div>
+                                <div *ngIf="model.familias.length != 0" class="col-md-2 col-6 ">
+                                    <div class="form-floating shadow-sm">
+                                        <select class="form-select" [(ngModel)]="idFamilia" (change)="getPrecioProductoByEstado(2)" [disabled]="isLoading" id="familias">
+                                            <option value="0">Seleccione...</option>
+                                            <option *ngFor="let f of model.familias" [ngValue]="f.idFamilia">{{ f.descripcion }}</option>
+                                        </select>
+                                        <label for="familias" class="text-start">Familia</label>
+                                    </div>
+                                </div>
+                                <div *ngIf="model.proveedor != ''" class="col-md-4 col-6 ">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control custom-input" [(ngModel)]="model.proveedor" id="proveedor" disabled>
+                                        <label for="proveedor" class="text-start">Proveedor</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div *ngIf="model.productos && model.productos.length > 0" class="table-container fade-in-container">
+                                <table class="table table-striped table-responsive">
+                                    <thead class="sticky-top">
+                                        <tr class="d-md-none">
+                                            <th class="ps-2 text-start">Productos</th>
+                                        </tr>
+                                        <tr class="d-none d-md-table-row">
+                                            <th>
+                                                <div class="row d-flex align-items-center">
+                                                    <div class="col-md-1 col-sm-6 col-1 text-start">
+                                                        <span class="ms-2">Ord.</span>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-6 col-5 text-start">
+                                                        <span class="ms-2">Clave</span>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-3 text-start">
+                                                        <span class="ms-2">Descripción</span>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-6 col-2 text-start">
+                                                        <span class="ms-2">Precio proveedor</span>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let p of model.productos">
+                                            <td>
+                                                <div class="row d-flex align-items-center">
+                                                    <div class="col-md-1 col-sm-6 col-6 text-start">
+                                                        <span class="badge d-md-none">Ord:</span>
+                                                        <div class=" ms-2">{{ p.rowNum }}</div>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-6 col-6 text-start">
+                                                        <span class="badge d-md-none">Clave:</span>
+                                                        <div class=" ms-2">{{ p.clave }}</div>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-6 text-start">
+                                                        <span class="badge d-md-none">Descripcion:</span>
+                                                        <div class="ms-2">{{ p.descripcion }}</div>
+                                                    </div>
+                                                    <div class="col-md-2 col-sm-6 col-6 text-start">
+                                                        <span class="badge d-md-none">Precio proveedor:</span>
+                                                        <div class="ms-2">${{ p.precioProveedor | number: '1.2'}}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div *ngIf="model.productos && model.productos.length > 0">
+                                <br />
+                                <pagina-widget [pagina]="model.pagina" [numPaginas]="model.numPaginas" [rows]="model.rows" (chgEvent)="muevePagina($event)"></pagina-widget>
+                            </div>
+                            <div *ngIf="model.productos && model.productos.length > 0">
+                                <div class="col-12 float-end col-md-3 text-end">
+                                    <button type="button" id="btnProdDes" (click)="descargarListaProductosPorEstado()" class="btn  btn-outline-info" [disabled]="isLoading"><i class="fa-solid fa-download"></i> Descargar listado</button>
+                                    <span style="margin-right: 10px;"></span>
+                                </div>
+                                <br />
                             </div>
                         </div>
-                        <div *ngIf="model.familias.length != 0" class="col-md-2 col-6 ">
-                            <div class="form-floating shadow-sm">
-                                <select class="form-select" [(ngModel)]="idFamilia" (change)="getPrecioProductoByEstado(2)" [disabled]="isLoading" id="familias">
-                                    <option value="0">Seleccione...</option>
-                                    <option *ngFor="let f of model.familias" [ngValue]="f.idFamilia">{{ f.descripcion }}</option>
-                                </select>
-                                <label for="familias">Familia</label>
+                    </div>
+                    <div class="tab-content pt-2" id="tabcontent">
+                        <div class="tab-pane fade show active text-center" id="estadoproveedor" role="tabpanel" aria-labelledby="tabulador-tab">
+                            <div *ngIf="estadoProveedor && estadoProveedor.length > 0" class="table-container fade-in-container">
+                                <table class="table table-striped table-responsive">
+                                    <thead class="sticky-top">
+                                        <tr class="d-md-none">
+                                            <th class="ps-2 text-start">Relacion Estado / Proveedor</th>
+                                            <th class="ps-2 text-start"></th>
+                                        </tr>
+                                        <tr class="d-none d-md-table-row">
+                                            <th>
+                                                <div class="row d-flex align-items-center">
+                                                    <div class="col-md-3 col-sm-6 col-1  text-start">
+                                                        <span class="ms-2">Estado</span>
+                                                    </div>
+                                                    <div class="col-md-5 col-sm-6 col-5 text-start">
+                                                        <span class="ms-2">Proveedor</span>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let r of estadoProveedor">
+                                            <td>
+                                                <div class="row d-flex align-items-center">
+                                                    <div class="col-md-3 col-sm-6 col-6 text-start">
+                                                        <span class="badge d-md-none">Estado:</span>
+                                                        <div class=" ms-2">{{ r.estado }}</div>
+                                                    </div>
+                                                    <div class="col-md-5 col-sm-6 col-6 text-start">
+                                                        <span class="badge d-md-none">Proveedor:</span>
+                                                        <div class=" ms-2">{{ r.proveedor }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button type="button" (click)="openRelacion(r.idEstado, r.idProveedor)" class="btn btn-x btn-outline-primary" title="Editar">
+                                                    <i class="fa-solid fa-pencil fa-1x"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div *ngIf="model.proveedor != ''" class="col-md-4 col-6 ">
-                            <div class="form-floating">
-                                <input type="text" class="form-control custom-input" [(ngModel)]="model.proveedor" id="proveedor" disabled>
-                                <label for="proveedor">Proveedor</label>
-                            </div>
-                        </div>
                     </div>
-                    <hr />
-                    <div *ngIf="model.productos && model.productos.length > 0" class="table-container fade-in-container">
-                        <table class="table table-striped table-responsive">
-                            <thead class="sticky-top">
-                                <tr class="d-md-none">
-                                    <th class="ps-2 text-start">Productos</th>
-                                </tr>
-                                <tr class="d-none d-md-table-row">
-                                    <th>
-                                        <div class="row d-flex align-items-center">
-                                            <div class="col-md-1 col-sm-6 col-1">
-                                                <span class="ms-2">Ord.</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-5">
-                                                <span class="ms-2">Clave</span>
-                                            </div>
-                                            <div class="col-md-6 col-sm-6 col-3">
-                                                <span class="ms-2">Descripción</span>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-2">
-                                                <span class="ms-2">Precio proveedor</span>
-                                            </div>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let p of model.productos">
-                                    <td>
-                                        <div class="row d-flex align-items-center">
-                                            <div class="col-md-1 col-sm-6 col-6">
-                                                <span class="badge d-md-none">Ord:</span>
-                                                <div class=" ms-2">{{ p.rowNum }}</div>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-6">
-                                                <span class="badge d-md-none">Clave:</span>
-                                                <div class=" ms-2">{{ p.clave }}</div>
-                                            </div>
-                                            <div class="col-md-6 col-sm-6 col-6">
-                                                <span class="badge d-md-none">Descripcion:</span>
-                                                <div class="ms-2">{{ p.descripcion }}</div>
-                                            </div>
-                                            <div class="col-md-2 col-sm-6 col-6">
-                                                <span class="badge d-md-none">Precio proveedor:</span>
-                                                <div class="ms-2">${{ p.precioProveedor | number: '1.2'}}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div *ngIf="model.productos && model.productos.length > 0">
-                        <br />
-                        <pagina-widget [pagina]="model.pagina" [numPaginas]="model.numPaginas" [rows]="model.rows" (chgEvent)="muevePagina($event)"></pagina-widget>
-                    </div>
-                    <div *ngIf="model.productos && model.productos.length > 0">
-                        <div class="col-12 float-end col-md-3 text-end">
-                            <button type="button" id="btnProdDes" (click)="descargarListaProductosPorEstado()" class="btn  btn-outline-info" [disabled]="isLoading"><i class="fa-solid fa-download"></i> Descargar listado</button>
-                            <span style="margin-right: 10px;"></span>
-                        </div>
-                        <br />
-                    </div>
-                    <!--<div class="row">
-                        <div class="col d-flex justify-content-end">
-                            <button type="button" (click)="openUsu(0)" class="btn  btn-outline-primary" id="btnCrearProspecto"><i class="fa-solid fa-plus"></i> Agregar Usuario</button>
-                        </div>
-                    </div>-->
                     <br>
                 </div>
             </div>

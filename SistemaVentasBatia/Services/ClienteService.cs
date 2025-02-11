@@ -131,7 +131,7 @@ namespace SistemaVentasBatia.Services
                 {
                     totalPuntoAtencion = totalPuntoAtencion * 1.10M;
                 }
-                IgualaXML = CrearXMLIgualaPuntoAtencion(idClienteCreado, idPuntoAtencionCreado, cliente.IdServicio, totalPuntoAtencion, IgualaXML);
+                IgualaXML = CrearXMLIgualaPuntoAtencion(idClienteCreado, idPuntoAtencionCreado, cliente.IdServicio, totalPuntoAtencion, IgualaXML); //, cliente.FechaInicio,cliente.IdPersonal
 
                 //INSERTAR XML tb_cliente_inmueble_ig
 
@@ -704,8 +704,8 @@ namespace SistemaVentasBatia.Services
             igualaDireccionElement.SetAttribute("idlinea", idServicio.ToString());
             igualaDireccionElement.SetAttribute("importe", totalPuntoAtencion.ToString());
             igualaDireccionXML.AppendChild(igualaDireccionElement);
-            string asuntoLegalContratoXMLString = igualaDireccionXML.OuterXml;
-            igualaXML += asuntoLegalContratoXMLString;
+            string igualaXMLString = igualaDireccionXML.OuterXml;
+            igualaXML += igualaXMLString;
             return igualaXML;
         }
         public static int ParseNumberFromString(string input)

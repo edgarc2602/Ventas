@@ -136,14 +136,23 @@ WHERE es.id_estado = @idEstado ORDER BY m.Municipio";
             var query = @"SELECT id_puesto Id, descripcion Descripcion
                           FROM tb_puesto d
                           WHERE id_status = 1 AND cotizador = 1 ";
-            if(idServicio == 6)
+
+            if (idServicio == 0)
             {
-                query += " AND id_servicio = 6 ";
+
             }
             else
             {
-                query += "AND id_servicio != 6 ";
+                if (idServicio == 6)
+                {
+                    query += " AND id_servicio = 6 ";
+                }
+                else
+                {
+                    query += "AND id_servicio != 6 ";
+                }
             }
+            
 
             query += " ORDER BY Descripcion";
             var puestos = new List<Catalogo>();

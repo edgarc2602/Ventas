@@ -1,5 +1,5 @@
-import { Component, Inject, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, ViewChild } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Prospecto } from 'src/app/models/prospecto';
 import { Cotizacion } from 'src/app/models/cotizacion';
@@ -43,25 +43,39 @@ export class CotizaComponent {
     indust: Catalogo[] = [];
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe, private rtr: Router, public user: StoreUser) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         this.nuevo();
-        http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo`, this.user.idPersonal).subscribe(response => {
+        http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo`, this.user.idPersonal, { headers }).subscribe(response => {
             this.lpros = response;
-        }, err => console.log(err));
-        http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<ItemN[]>(`${url}api/prospecto/getservicio`, { headers }).subscribe(response => {
             this.sers = response;
-        }, err => console.log(err));
-        http.get<ItemN[]>(`${url}api/prospecto/getsalariotipo`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<ItemN[]>(`${url}api/prospecto/getsalariotipo`, { headers }).subscribe(response => {
             this.salt = response;
-        }, err => console.log(err));
-        http.get<AgregarUsuario[]>(`${url}api/usuario/obtenervendedores`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<AgregarUsuario[]>(`${url}api/usuario/obtenervendedores`, { headers }).subscribe(response => {
             this.listUsu = response;
-        }, err => console.log(err));
-        http.get<ItemN[]>(`${url}api/prospecto/getdocumento`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<ItemN[]>(`${url}api/prospecto/getdocumento`, { headers }).subscribe(response => {
             this.docs = response;
-        }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`, { headers }).subscribe(response => {
             this.indust = response;
-        }, err => console.log(err));
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     nuevo() {
@@ -89,6 +103,21 @@ export class CotizaComponent {
         }
         
     }
+
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            this.rtr.navigate(['']);
+        } else {
+            this.errorToast('Ocurrió un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
+
     guarda() {
         this.lerr = {};
         if (this.valida()) {
@@ -110,15 +139,14 @@ export class CotizaComponent {
         //    this.model.salTipo = 1
         //}
         if (this.model.idCotizacion == 0) {
-            this.http.post<boolean>(`${this.url}api/cotizacion`, this.model).subscribe(response => {
+            this.http.post<boolean>(`${this.url}api/cotizacion`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                 console.log(response);
                 this.closeNew(0);
                 this.rtr.navigate(['/exclusivo/cotiza/' + this.model.idProspecto]);
                 this.okToast('Cotizaci\u00F3n creada');
 
             }, err => {
-                console.log(err);
-                this.errorToast('Ocurri\u00F3 un error');
+                this.validaError(err);
                 if (err.error) {
                     if (err.error.errors) {
                         this.lerr = err.error.errors;
@@ -133,14 +161,13 @@ export class CotizaComponent {
         this.modelp.listaDocumentos = this.docs;
         this.modelp.idPersonal = this.idVendedor;
         if (this.modelp.idProspecto == 0) {
-            this.http.post<Prospecto>(`${this.url}api/prospecto`, this.modelp).subscribe(response => {
+            this.http.post<Prospecto>(`${this.url}api/prospecto`, this.modelp, { headers: this.getHeaders() }).subscribe(response => {
                 console.log(response);
                 this.model.idProspecto = response.idProspecto;
                 this.guardaC();
                 this.okToast('Prospecto guardado');
             }, err => {
-                console.log(err);
-                this.errorToast('Ocurri\u00F3 un error');
+                this.validaError(err);
                 if (err.error) {
                     for (let key in err.error) {
                         if (err.error.hasOwnProperty(key)) {
