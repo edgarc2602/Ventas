@@ -98,9 +98,11 @@ export class CatalogoComponent {
     fechaAplica: Date;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser, private rtr: Router) {
-        http.get<Catalogo[]>(`${url}api/catalogo/getpuesto`).subscribe(response => {
+        http.get<Catalogo[]>(`${url}api/catalogo/getpuesto/${0}`).subscribe(response => {
             this.pues = response;
-        }, err => console.log(err));
+        }, err => {
+            console.log(err)
+        });
         http.get<Catalogo[]>(`${url}api/catalogo/getservicio`).subscribe(response => {
             this.sers = response;
         }, err => console.log(err));

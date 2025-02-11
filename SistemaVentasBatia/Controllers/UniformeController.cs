@@ -13,10 +13,12 @@ namespace SistemaVentasBatia.Controllers
     public class UniformeController : ControllerBase
     {
         private readonly IMaterialService _logic;
+        private readonly IUsuarioService _logicS;
 
-        public UniformeController(IMaterialService service)
+        public UniformeController(IMaterialService service, IUsuarioService logicS)
         {
             _logic = service;
+            _logicS = logicS;
         }
 
         [HttpGet("{id}/{pagina}")]
@@ -45,6 +47,8 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idUniformeCotizacion}")]
         public async Task<ActionResult<MaterialCotizacionDTO>> GetById(int idUniformeCotizacion)
         {
+            var token = _logicS.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await _logic.ObtenerUniformeCotizacionPorId(idUniformeCotizacion);
         }
 

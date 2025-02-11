@@ -72,7 +72,11 @@ export class HomeComponent implements OnInit {
     validaError(err: any) {
         if (err.status === 401) {
             this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
             this.rtr.navigate(['']);
+            
         } else {
             this.errorToast('Ocurri\u00F3 un error');
         }
