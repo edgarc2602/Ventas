@@ -386,10 +386,10 @@
                                 <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4 mb-3">
                                     <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" [disabled]="isLoading" class="btn btn-outline-danger"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
                                 </div>
-                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
+                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 30908 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
                                     <button *ngIf="model.idEstatus != 6 && model.idEstatus != 4" type="button" (click)="confirmaAutorizarCotizacion()" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-check fa-xl me-2"></i> Autorizar Cotización</button>
                                 </div>
-                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
+                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 30908 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
                                     <button *ngIf="model.idEstatus == 6 && model.idEstatus != 4" type="button" (click)="confirmaRemoverAutorizacionCotizacion()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-rotate-left fa-xl me-2"></i> Remover autorización</button>
                                 </div>
                             </div>

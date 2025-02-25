@@ -1,11 +1,12 @@
-import { Component, Inject, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Catalogo } from 'src/app/models/catalogo';
 import { ItemN } from 'src/app/models/item';
 import { Servicio } from 'src/app/models/servicio';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Router } from '@angular/router';
 declare var bootstrap: any;
 
 @Component({
@@ -35,19 +36,19 @@ export class ServicioAddWidget {
     tipo: string = 'servicio';
     lerr: any = {};
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser, private rtr: Router) { }
 
     lista() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getservicio`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getservicio`, {headers: this.getHeaders()}).subscribe(response => {
             this.sers = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
 
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getsucursalbycot/${this.idC}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getsucursalbycot/${this.idC}`, { headers: this.getHeaders() }).subscribe(response => {
             this.dirs = response;
-        }, err => console.log(err));
-        this.http.get<ItemN[]>(`${this.url}api/catalogo/getfrecuencia`).subscribe(response => {
+        }, err => this.validaError(err));
+        this.http.get<ItemN[]>(`${this.url}api/catalogo/getfrecuencia`, { headers: this.getHeaders() }).subscribe(response => {
             this.fres = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     nuevo(id: number) {
@@ -62,10 +63,10 @@ export class ServicioAddWidget {
     existe(id: number) {
         this.edit = 1;
         this.model.edit = this.edit;
-        this.http.get<Servicio>(`${this.url}api/material/serviciogetbyid/${id}`).subscribe(response => {
+        this.http.get<Servicio>(`${this.url}api/material/serviciogetbyid/${id}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model = response;
             this.model.edit = this.edit;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
     guarda() {
         this.quitarFocoDeElementos();
@@ -77,7 +78,7 @@ export class ServicioAddWidget {
             this.iniciarCarga();
             setTimeout(() => {
                 if (this.edit == 0) {
-                    this.http.post<Servicio>(`${this.url}api/material/insertarserviciocotizacion`, this.model).subscribe(response => {
+                    this.http.post<Servicio>(`${this.url}api/material/insertarserviciocotizacion`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Servicio agregado');
@@ -90,6 +91,7 @@ export class ServicioAddWidget {
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error');
                         }, 300);
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -99,7 +101,7 @@ export class ServicioAddWidget {
                     });
                 }
                 if (this.edit == 1) {
-                    this.http.post<Servicio>(`${this.url}api/material/actualizarserviciocotizacion`, this.model).subscribe(response => {
+                    this.http.post<Servicio>(`${this.url}api/material/actualizarserviciocotizacion`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Servicio actualizado');
@@ -111,6 +113,7 @@ export class ServicioAddWidget {
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error');
                         }, 300); 
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -147,7 +150,23 @@ export class ServicioAddWidget {
     ok() {
 
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     valida() {
         this.validaciones = true;
         if (this.model.idServicioExtra == 0) {

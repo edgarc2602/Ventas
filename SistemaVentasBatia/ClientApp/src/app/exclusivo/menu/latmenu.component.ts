@@ -12,6 +12,7 @@ export class LatMenuComponent implements OnInit {
     isDarkTheme: boolean = false;
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser, private elRef: ElementRef) { }
 
+
     ngOnInit(): void {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

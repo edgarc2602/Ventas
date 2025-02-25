@@ -1,11 +1,12 @@
-import { Component, OnChanges, Input, SimpleChanges, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, OnChanges, Input, SimpleChanges, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Direccion } from '../../models/direccion';
 import { Catalogo } from '../../models/catalogo';
 declare var bootstrap: any;
 import { ToastWidget } from '../toast/toast.widget';
 import { DireccionResponseAPI } from '../../models/direccionresponseapi';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'direc-widget',
@@ -40,13 +41,16 @@ export class DireccionWidget {
     isLoading: boolean = false;
     lerr: any = {};
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) {
-        http.get<Catalogo[]>(`${url}api/catalogo/getestado`).subscribe(response => {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+        http.get<Catalogo[]>(`${url}api/catalogo/getestado`, {headers}).subscribe(response => {
             this.edos = response;
-        }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/getinmuebletipo`).subscribe(response => {
+        }, err => this.validaError(err));
+        http.get<Catalogo[]>(`${url}api/catalogo/getinmuebletipo`, {headers}).subscribe(response => {
             this.tips = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     getDireccionAPI() {
@@ -66,7 +70,7 @@ export class DireccionWidget {
                     colonias: []
                 }
             };
-            this.http.get<DireccionResponseAPI>(`${this.url}api/direccion/GetDireccionAPI/${this.model.codigoPostal}`).subscribe(response => {
+            this.http.get<DireccionResponseAPI>(`${this.url}api/direccion/GetDireccionAPI/${this.model.codigoPostal}`, {headers: this.getHeaders()}).subscribe(response => {
                 this.detenerCarga();
                 this.direccionAPI = response
                 this.model.idEstado = this.direccionAPI.codigoPostal.idEstado;
@@ -118,12 +122,28 @@ export class DireccionWidget {
     }
 
     refresh() {
-        this.http.get<Direccion>(`${this.url}api/direccion/${this.idD}/0`).subscribe(response => {
+        this.http.get<Direccion>(`${this.url}api/direccion/${this.idD}/0`,{ headers: this.getHeaders()}).subscribe(response => {
             this.model = response;
             this.chgEdo();
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     guarda() {
         for (let mun of this.muns) {
             if (mun.id == this.model.idMunicipio) {
@@ -135,7 +155,7 @@ export class DireccionWidget {
             this.iniciarCarga();
             setTimeout(() => {
                 if (this.model.idDireccion == 0) {
-                    this.http.post<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
+                    this.http.post<Direccion>(`${this.url}api/direccion`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Direcci\u00F3n creada');
@@ -147,6 +167,7 @@ export class DireccionWidget {
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error');
                         }, 300);
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -155,7 +176,7 @@ export class DireccionWidget {
                         console.log(err);
                     });
                 } else {
-                    this.http.put<Direccion>(`${this.url}api/direccion`, this.model).subscribe(response => {
+                    this.http.put<Direccion>(`${this.url}api/direccion`, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Direcci\u00F3n actualizada');
@@ -167,6 +188,7 @@ export class DireccionWidget {
                         setTimeout(() => {
                             this.errorToast('Ocurri\u00F3 un error');
                         }, 300);
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -180,15 +202,15 @@ export class DireccionWidget {
     }
 
     chgEdo() {
-        this.http.get<Catalogo[]>(`${this.url}api/tabulador/getbyedo/${1}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/tabulador/getbyedo/${1}`, { headers: this.getHeaders() }).subscribe(response => {
             this.tabs = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     loadMun() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getmunicipio/${this.model.idEstado}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getmunicipio/${this.model.idEstado}`, { headers: this.getHeaders() }).subscribe(response => {
             this.muns = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     valida() {
@@ -243,12 +265,13 @@ export class DireccionWidget {
     }
 
     existe() {
-        this.http.get<Direccion>(`${this.url}api/direccion/obtenerdireccion/${this.idD}/${this.idP}`).subscribe(response => {
+        this.http.get<Direccion>(`${this.url}api/direccion/obtenerdireccion/${this.idD}/${this.idP}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model = response;
             this.getDireccionAPI();
             this.loadMun();
         }, err => {
             console.log(err);
+            this.validaError(err);
             if (err.error) {
                 if (err.error.errors) {
                     this.lerr = err.error.errors;

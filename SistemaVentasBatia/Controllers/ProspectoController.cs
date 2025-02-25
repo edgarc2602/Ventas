@@ -22,19 +22,24 @@ namespace SistemaVentasBatia.Controllers
         private readonly IProspectosService prospectosSvc;
         private readonly ICatalogosService catalogosSvc;
         private readonly ICotizacionesService cotizacionesSvc;
+        private readonly IUsuarioService _logic;
 
 
-        public ProspectoController(ILogger<ProspectoController> logger, IProspectosService prospectosSvc, ICatalogosService catalogosSvc, ICotizacionesService cotizacionesSvc)
+        public ProspectoController(ILogger<ProspectoController> logger, IProspectosService prospectosSvc, ICatalogosService catalogosSvc, ICotizacionesService cotizacionesSvc, IUsuarioService _usuarioService)
         {
             _logger = logger;
             this.prospectosSvc = prospectosSvc;
             this.catalogosSvc = catalogosSvc;
             this.cotizacionesSvc = cotizacionesSvc;
+            _logic = _usuarioService;
         }
 
         [HttpGet("{idPersonal?}/{pagina?}/{idEstatus?}")]
         public async Task<ActionResult<ListaProspectoDTO>> Index([FromQuery] string keywords, int idPersonal = 0, int pagina = 1, int idEstatus = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             ListaProspectoDTO listaProspectosVM = new ListaProspectoDTO()
             {
                 IdEstatusProspecto = (EstatusProspecto)idEstatus,
@@ -51,12 +56,18 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProspectoDTO>> EditarProspecto(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await prospectosSvc.ObtenerProspecto(id);
         }
 
         [HttpPost("[action]")]
         public async Task<IEnumerable<ProspectoDTO>> GetCatalogo([FromBody] int idPersonal = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             int autorizacion = await cotizacionesSvc.ObtenerAutorizacion(idPersonal);
             return await prospectosSvc.ObtenerCatalogoProspectos(autorizacion, idPersonal);
         }
@@ -64,6 +75,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPut]
         public async Task<ActionResult<ProspectoDTO>> EditarProspecto(ProspectoDTO prospectoVM)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var coincidencias = await prospectosSvc.ObtenerCoincidenciasProspecto(nombreComercial: null, rfc: prospectoVM.Rfc);
             if (coincidencias.Count != 0)
             {
@@ -88,6 +102,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpDelete("{registroAEliminar}")]
         public async Task<ActionResult<bool>> EliminarProspecto(int registroAEliminar)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await prospectosSvc.EliminarProspecto(registroAEliminar);
 
             return true;
@@ -96,6 +113,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost]
         public async Task<ActionResult<ProspectoDTO>> NuevoProspecto([FromBody] ProspectoDTO prospectoVM)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var coincidencias = await prospectosSvc.ObtenerCoincidenciasProspecto(nombreComercial: null, rfc: prospectoVM.Rfc);
 
             if (coincidencias.Count() > 0)
@@ -114,6 +134,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet]
         public async Task<int> ObtenerNumeroCoincidenciasProspecto(string nombreComercial = null, string rfc = null)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var coincidencias = await prospectosSvc.ObtenerNumeroCoincidenciasProspecto(nombreComercial, rfc);
 
             return coincidencias;
@@ -122,6 +145,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet]
         public async Task<IActionResult> ObtenerCoincidenciasProspecto(string nombreComercial = null, string rfc = null)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var coincidenciasProspecto = await prospectosSvc.ObtenerCoincidenciasProspecto(nombreComercial, rfc);
 
             return Ok(coincidenciasProspecto);
@@ -130,6 +156,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Item<int>> GetDocumento()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             List<Item<int>> ls = Enum.GetValues(typeof(Documento))
                 .Cast<Documento>().Select(d => new Item<int>
                 {
@@ -144,6 +173,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Item<int>> GetEstatus()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             List<Item<int>> ls = Enum.GetValues(typeof(EstatusProspecto))
                 .Cast<EstatusProspecto>().Select(d => new Item<int>
                 {
@@ -158,6 +190,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Item<int>> GetServicio()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             List<Item<int>> ls = Enum.GetValues(typeof(Servicio))
                 .Cast<Servicio>().Select(s => new Item<int>
                 {
@@ -172,6 +207,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Item<int>> GetSalarioTipo()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             List<Item<int>> ls = Enum.GetValues(typeof(SalarioTipo))
                 .Cast<SalarioTipo>().Select(s => new Item<int>
                 {
@@ -187,12 +225,18 @@ namespace SistemaVentasBatia.Controllers
         [HttpPut("[action]")]
         public async Task<ActionResult<bool>> ActivarProspecto([FromBody] int idProspecto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await prospectosSvc.ActivarProspecto(idProspecto);
         }
 
         [HttpPut("[action]")]
         public async Task<ActionResult<bool>> DesactivarProspecto([FromBody] int idProspecto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await cotizacionesSvc.DesactivarCotizaciones(idProspecto);
             return await prospectosSvc.DesactivarProspecto(idProspecto);
         }
@@ -200,6 +244,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idProspecto}")]
         public async Task<ActionResult<ProspectoDTO>> ObtenerDatosExistentesProspecto(int idProspecto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await prospectosSvc.ObtenerDatosProspecto(idProspecto);
         }
         

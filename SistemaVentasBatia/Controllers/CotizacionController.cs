@@ -31,18 +31,23 @@ namespace SistemaVentasBatia.Controllers
         private readonly ICotizacionesService cotizacionesSvc;
         private readonly IProspectosService prospectosSvc;
         private readonly ICatalogosService catalogosSvc;
+        private readonly IUsuarioService _logic;
 
-        public CotizacionController(ILogger<CotizacionController> logger, ICotizacionesService cotizacionesSvc, IProspectosService prospectosSvc, ICatalogosService catalogosSvc)
+        public CotizacionController(ILogger<CotizacionController> logger, ICotizacionesService cotizacionesSvc, IProspectosService prospectosSvc, ICatalogosService catalogosSvc, IUsuarioService _usuarioService)
         {
             _logger = logger;
             this.cotizacionesSvc = cotizacionesSvc;
             this.prospectosSvc = prospectosSvc;
             this.catalogosSvc = catalogosSvc;
+            _logic = _usuarioService;
         }
 
         [HttpGet("{idPersonal}/{pagina}")]
         public async Task<ActionResult<ListaCotizacionDTO>> Index(int idProspecto, EstatusCotizacion estatus, int servicio, int idPersonal = 0, int pagina = 1)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var listaCotizacionesVM = new ListaCotizacionDTO();
             listaCotizacionesVM.Pagina = pagina;
             listaCotizacionesVM.IdEstatusCotizacion = estatus;
@@ -56,6 +61,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult<CotizacionDTO>> NuevoProspecto([FromBody] ProspectoDTO prospectoVM)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await prospectosSvc.CrearProspecto(prospectoVM);
             var cotizacionVM = new CotizacionDTO { IdProspecto = prospectoVM.IdProspecto };
             return cotizacionVM;
@@ -64,6 +72,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> SeleccionarProspecto([FromBody] CotizacionDTO cotizacionVM)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             foreach (var servicio in cotizacionVM.ListaTipoSalarios)
             {
                 if (servicio.Act)
@@ -88,6 +99,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{id}")]
         public async Task<ActionResult<ResumenCotizacionLimpiezaDTO>> LimpiezaResumen(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var resumen = await cotizacionesSvc.ObtenerResumenCotizacionLimpieza(id);
 
             return resumen;
@@ -96,6 +110,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet]
         public async Task<ActionResult<ProspectoDTO>> LimpiezaInfoProspecto(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var prospecto = await prospectosSvc.ObtenerProspectoPorCotizacion(id);
 
             prospecto.IdCotizacion = id;
@@ -109,6 +126,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{id}/{pagina}")]
         public async Task<ActionResult<ListaDireccionDTO>> LimpiezaDirectorio(int id, int pagina = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var listaDireccionesVM = new ListaDireccionDTO();
 
             listaDireccionesVM.IdCotizacion = id;
@@ -123,6 +143,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("{id}/{idDireccionCotizacion}/{idPuestoDireccionCotizacion}/{pagina}")]
         public async Task<ActionResult<ListaPuestosDireccionCotizacionDTO>> LimpiezaPlantilla(int id, int idDireccionCotizacion = 0, int idPuestoDireccionCotizacion = 0, int pagina = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var listaPuestosDireccionCotizacionVM = new ListaPuestosDireccionCotizacionDTO { IdCotizacion = id, IdDireccionCotizacion = idDireccionCotizacion, IdPuestoDireccionCotizacion = idPuestoDireccionCotizacion, Pagina = pagina };
 
             await cotizacionesSvc.ObtenerListaPuestosPorCotizacion(listaPuestosDireccionCotizacionVM);
@@ -152,6 +175,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<bool> ActualizarIndirectoUtilidadService([FromBody] Cotizacionupd cotizacionupd)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ActualizarIndirectoUtilidad(cotizacionupd.IdCotizacion, cotizacionupd.Indirecto, cotizacionupd.Utilidad, cotizacionupd.ComisionSV, cotizacionupd.ComisionExt, cotizacionupd.PolizaPor);
             //return RedirectToAction("LimpiezaResumen");
         }
@@ -159,6 +185,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult<DireccionCotizacionDTO>> AgregarDireccion([FromBody] DireccionCotizacionDTO direccionCVM)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var direcciones = await cotizacionesSvc.ObtenerListaDireccionesPorCotizacion(direccionCVM.IdCotizacion);
 
             foreach (var direccion in direcciones)
@@ -182,12 +211,18 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<bool> EliminarCotizacion([FromBody] int idCotizacion)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.EliminarCotizacion(idCotizacion);
         }
 
         [HttpGet("[action]/{idDC}")]
         public async Task<bool> EliminarDireccionCotizacion(int idDC)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var idCotizacion = await cotizacionesSvc.ObtenerIdCotizacionPorDireccion(idDC);
 
             await cotizacionesSvc.EliminarDireccionCotizacion(idDC);
@@ -201,6 +236,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPut]
         public async Task<IActionResult> EditarProspecto([FromBody] ProspectoDTO prospectoVM)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             if (ModelState.IsValid)
             {
                 await prospectosSvc.EditarProspecto(prospectoVM);
@@ -220,6 +258,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{incluyeProducto}/{idCotizacion}")]
         public async Task<int> DuplicarCotizacion(bool incluyeProducto, int idCotizacion)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var idNuevaCotizacion = await cotizacionesSvc.DuplicarCotizacion(idCotizacion, incluyeProducto);
 
             // TempData["DescripcionAlerta"] = "Se duplicó correctamente la cotización";
@@ -231,6 +272,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Item<int>> GetEstatus()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             List<Item<int>> ls = Enum.GetValues(typeof(EstatusCotizacion))
                 .Cast<EstatusCotizacion>().Select(s => new Item<int>
                 {
@@ -245,6 +289,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult<PuestoTabulador>> ActualizarSalarios([FromBody] PuestoTabulador salarios)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await cotizacionesSvc.ActualizarSalarios(salarios);
             return salarios;
 
@@ -253,12 +300,18 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idCotizacion}/{idServicio}/{polizaCumplimiento}/{diasEvento}")]
         public async Task<ActionResult<bool>> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ActualizarCotizacion(idCotizacion, idServicio, polizaCumplimiento, diasEvento);
         }
 
         [HttpGet("[action]")]
         public async Task<ActionResult<CotizaPorcentajes>> ObtenerPorcentajesCotizacion()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             CotizaPorcentajes porcentajes = new CotizaPorcentajes();
             porcentajes = await cotizacionesSvc.ObtenerPorcentajesCotizacion();
             return porcentajes;
@@ -267,6 +320,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult<bool>> ActualizarPorcentajesPredeterminadosCotizacion([FromBody] CotizaPorcentajes porcentajes)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await cotizacionesSvc.ActualizarPorcentajesPredeterminadosCotizacion(porcentajes);
             return true;
         }
@@ -274,6 +330,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idPersonal}")]
         public async Task<ActionResult<int>> ObtenerAutorizacion(int idPersonal = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             int autorizacion = await cotizacionesSvc.ObtenerAutorizacion(idPersonal);
             return autorizacion;
         }
@@ -281,12 +340,18 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]")]
         public async Task<ActionResult<decimal>> ObtenerImssBase()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ObtenerImssBase();
         }
 
         [HttpPut("[action]")]
         public async Task<ActionResult<bool>> ActualizarImssBase([FromBody] decimal imss)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await cotizacionesSvc.ActualizarImssBase(imss);
             return true;
         }
@@ -294,59 +359,89 @@ namespace SistemaVentasBatia.Controllers
         [HttpPut("[action]")]
         public async Task<ActionResult<bool>> ActivarCotizacion([FromBody] int idCotizacion)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ActivarCotizacion(idCotizacion);
         }
 
         [HttpPut("[action]")]
         public async Task<ActionResult<bool>> DesactivarCotizacion([FromBody] int idCotizacion)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.DesactivarCotizacion(idCotizacion);
         }
 
         [HttpGet("[action]")]
         public async Task<ActionResult<ImmsJornadaDTO>> ObtenerImssJornada()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ObtenerImssJornada();
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<bool>> ActualizarImssJornada(ImmsJornadaDTO imssJormada)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ActualizarImssJornada(imssJormada);
         }
 
         [HttpGet("[action]/{idVendedor}")]
         public async Task<ActionResult<CotizacionVendedorDetalleDTO>> CotizacionVendedorDetallePorIdVendedor(int idVendedor)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ObtenerCotizacionVendedorDetallePorIdVendedor(idVendedor);
         }
 
         [HttpGet("[action]/{idCotizacion}/{motivoCierre}")]
         public async Task<ActionResult<bool>> CerrarCotizacion(int idCotizacion, string motivoCierre)
         {
-             await cotizacionesSvc.DesactivarCotizacion(idCotizacion);
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            await cotizacionesSvc.DesactivarCotizacion(idCotizacion);
              return await cotizacionesSvc.InsertarMotivoCierreCotizacion(motivoCierre, idCotizacion);
         }
 
         [HttpGet("[action]/{idCotizacion}")]
         public async Task<int> ObtenerTotalSucursalesCotizacion(int idCotizacion)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ObtenerTotalSucursalesCotizacion(idCotizacion);
         }
         [HttpGet("[action]/{idCotizacion}")]
         public async Task<int> ObtenerTotalEmpleadosCotizacion(int idCotizacion)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.ObtenerTotalEmpleadosCotizacion(idCotizacion);
         }
         [HttpPost("[action]")]
         public async Task<bool> AutorizarCotizacion([FromBody ]int idCotizacion = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.AutorizarCotizacion(idCotizacion);
         }
         
         [HttpPost("[action]")]
         public async Task<bool> RemoverAutorizacionCotizacion([FromBody ]int idCotizacion = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             return await cotizacionesSvc.RemoverAutorizacionCotizacion(idCotizacion);
         }
     }

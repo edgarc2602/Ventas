@@ -1,5 +1,5 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Catalogo } from 'src/app/models/catalogo';
 import { ItemN } from 'src/app/models/item';
 import { Material } from 'src/app/models/material';
@@ -9,6 +9,7 @@ declare var bootstrap: any;
 import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'mateadd-widget',
@@ -42,21 +43,21 @@ export class MaterialAddWidget {
     diasEvento: number = 0;
     idProducto: number = 0;
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser, private rtr: Router) { }
 
     lista() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupo/${this.idS}/${this.tipo}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupo/${this.idS}/${this.tipo}`, {headers:this.getHeaders()}).subscribe(response => {
             this.mats = response;
-        }, err => console.log(err));
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getpuestobycot/${this.idC}`).subscribe(response => {
+        }, err => this.validaError(err));
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getpuestobycot/${this.idC}`, { headers: this.getHeaders() }).subscribe(response => {
             this.pues = response;
-        }, err => console.log(err));
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getsucursalbycot/${this.idC}`).subscribe(response => {
+        }, err => this.validaError(err));
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getsucursalbycot/${this.idC}`, { headers: this.getHeaders() }).subscribe(response => {
             this.dirs = response;
-        }, err => console.log(err));
-        this.http.get<ItemN[]>(`${this.url}api/catalogo/getfrecuencia`).subscribe(response => {
+        }, err => this.validaError(err));
+        this.http.get<ItemN[]>(`${this.url}api/catalogo/getfrecuencia`, { headers: this.getHeaders() }).subscribe(response => {
             this.fres = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     nuevo(id: number) {
@@ -73,10 +74,10 @@ export class MaterialAddWidget {
     existe(id: number) {
         this.edit = 1;
         this.model.edit = this.edit;
-        this.http.get<Material>(`${this.url}api/${this.tipo}/getbyid/${id}`).subscribe(response => {
+        this.http.get<Material>(`${this.url}api/${this.tipo}/getbyid/${id}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model = response;
             this.model.edit = this.edit;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
     guarda() {
         if (this.idServicioCotizacion == 4 || this.idServicioCotizacion == 5) {
@@ -89,7 +90,7 @@ export class MaterialAddWidget {
         if (this.valida()) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.post<Material>(`${this.url}api/${this.tipo}`, this.model).subscribe(response => {
+                this.http.post<Material>(`${this.url}api/${this.tipo}`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast(this.model.claveProducto + ' guardado');
@@ -103,7 +104,7 @@ export class MaterialAddWidget {
                     }
                 }, err => {
                     this.detenerCarga();
-                    this.errorToast('Ocurri\u00F3 un error');
+                    this.validaError(err);
                     console.log(err);
                     if (err.error) {
                         if (err.error.errors) {
@@ -114,7 +115,23 @@ export class MaterialAddWidget {
             }, 300);
         }
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     open(cot: number, dir: number, pue: number, id: number, ser: number, tp: string, showS: boolean = false, edit: number, nombreSucursal?: string, puesto?: string, idServicioCotizacion?: number, diasEvento?: number) {
         this.diasEvento = diasEvento;
         this.idServicioCotizacion = idServicioCotizacion;

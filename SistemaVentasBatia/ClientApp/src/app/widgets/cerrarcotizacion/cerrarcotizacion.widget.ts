@@ -1,5 +1,5 @@
 ﻿import { Component, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ItemN } from 'src/app/models/item';
 import { StoreUser } from 'src/app/stores/StoreUser';
@@ -23,9 +23,14 @@ export class CerrarCotizacion {
     lerr: any = {};
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router, private sinU: StoreUser) {
-        http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+        http.get<ItemN[]>(`${url}api/prospecto/getservicio`, { headers }).subscribe(response => {
             this.sers = response;
-        }, err => console.log(err));
+        }, err =>
+            this.validaError(err)
+        );
     }
 
     open(idCotizacion: number) {
@@ -38,17 +43,33 @@ export class CerrarCotizacion {
     guarda() {
         this.lerr = {};
         if (this.valida()) {
-            this.http.get<boolean>(`${this.url}api/cotizacion/CerrarCotizacion/${this.idCotizacion}/${this.motivoCierre}`).subscribe(response => {
+            this.http.get<boolean>(`${this.url}api/cotizacion/CerrarCotizacion/${this.idCotizacion}/${this.motivoCierre}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.okToast('Se cerr\u00F3 correctamente la cotizaci\u00F3n ' + this.idCotizacion)
                 this.close();
                 this.sendEvent.emit(true);
             }, err => {
-                this.errorToast('Ocurri\u00F3 un error');
-                err => console.log(err);
+                this.validaError(err)
+                console.log(err);
             })
         }
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     valida() {
         this.validacion = true;
         if (this.motivoCierre == '' || this.motivoCierre == null) {

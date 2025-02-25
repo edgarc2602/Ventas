@@ -1,3 +1,4 @@
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,21 @@ namespace SistemaVentasBatia.Controllers
     {
         private readonly ICotizacionesService _logic;
         private readonly IProspectosService _logicPro;
+        private readonly IUsuarioService logic;
 
-        public PuestoController(ICotizacionesService service, IProspectosService servicePro)
+        public PuestoController(ICotizacionesService service, IProspectosService servicePro, IUsuarioService _usuarioService)
         {
             _logic = service;
             _logicPro = servicePro;
+            logic = _usuarioService;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PuestoDireccionCotizacionDTO>> EditarOperario(int id)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var operario = await _logicPro.ObtenerOperarioPorId(id);
 
             // TempData["Turnos"] = new List<SelectListItem>((await catalogosSvc.ObtenerCatalogoTurnos()).Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Descripcion }));
@@ -36,6 +42,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("{idServicio}")]
         public async Task<ActionResult<PuestoDireccionCotizacionDTO>> AgregarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, int idServicio)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await _logic.CrearPuestoDireccionCotizacion(operarioVM, idServicio);
 
             // TempData["DescripcionAlerta"] = "Se agregó correctamente al operario.";
@@ -47,6 +56,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPut("{incluyeMaterial}/{idServicio}")]
         public async Task<ActionResult<bool>> EditarOperario([FromBody] PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial, int idServicio)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await _logic.ActualizarPuestoDireccionCotizacion(operarioVM, incluyeMaterial, idServicio);
 
             operarioVM.IdCotizacion = await _logic.ObtieneIdCotizacionPorOperario(operarioVM.IdPuestoDireccionCotizacion);
@@ -58,6 +70,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpDelete("{registroAEliminar}")]
         public async Task<ActionResult<bool>> EliminarOperador(int registroAEliminar)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var idDireccionCotizacion = await _logic.ObtenerIdDireccionCotizacionPorOperario(registroAEliminar);
 
             var idCotizacion = await _logic.ObtenerIdCotizacionPorDireccion(idDireccionCotizacion);

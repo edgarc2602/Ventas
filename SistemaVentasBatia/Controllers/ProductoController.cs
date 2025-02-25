@@ -16,21 +16,27 @@ namespace SistemaVentasBatia.Controllers
     public class ProductoController : ControllerBase
     {
         private readonly IProductoService logic;
-
-        public ProductoController(IProductoService service)
+        private readonly IUsuarioService _logic;
+        public ProductoController(IProductoService service, IUsuarioService _usuarioService)
         {
             logic = service;
+            _logic = _usuarioService;
         }
 
         [HttpGet("[action]/{id}")]
         public async Task<IEnumerable<ProductoItemDTO>> GetMaterial(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.GetMaterialPuesto(id);
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<MaterialPuestoDTO>> PostMaterial(MaterialPuestoDTO dto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             if (dto.IdMaterialPuesto == 0)
             {
                 await logic.CreateMaterial(dto);
@@ -45,12 +51,16 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{id}")]
         public async Task<IEnumerable<ProductoItemDTO>> GetHerramienta(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.GetHerramientaPuesto(id);
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<MaterialPuestoDTO>> PostHerramienta(MaterialPuestoDTO dto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             if (dto.IdMaterialPuesto == 0)
             {
                 await logic.CreateHerramienta(dto);
@@ -65,12 +75,16 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{id}")]
         public async Task<IEnumerable<ProductoItemDTO>> GetEquipo(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.GetEquipoPuesto(id);
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<MaterialPuestoDTO>> PostEquipo(MaterialPuestoDTO dto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             if (dto.IdMaterialPuesto == 0)
             {
                 await logic.CreateEquipo(dto);
@@ -85,12 +99,16 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{id}")]
         public async Task<IEnumerable<ProductoItemDTO>> GetUniforme(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.GetUniformePuesto(id);
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<MaterialPuestoDTO>> PostUniforme(MaterialPuestoDTO dto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             if (dto.IdMaterialPuesto == 0)
             {
                 await logic.CreateUniforme(dto);
@@ -105,60 +123,80 @@ namespace SistemaVentasBatia.Controllers
         [HttpDelete("[action]/{id}")]
         public async Task<ActionResult<bool>> DelMaterial(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.DeleteMaterial(id);
         }
 
         [HttpDelete("[action]/{id}")]
         public async Task<ActionResult<bool>> DelHerramienta(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.DeleteHerramienta(id);
         }
 
         [HttpDelete("[action]/{id}")]
         public async Task<ActionResult<bool>> DelEquipo(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.DeleteEquipo(id);
         }
 
         [HttpDelete("[action]/{id}")]
         public async Task<ActionResult<bool>> DelUniforme(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.DeleteUniforme(id);
         }
 
         [HttpDelete("[action]/{id}")]
         public async Task<ActionResult<bool>> EliminarServicio(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.EliminarServicio(id);
         }
         
         [HttpDelete("[action]/{id}")]
         public async Task<ActionResult<bool>> EliminarIndustria(int id)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.EliminarIndustria(id);
         }
 
         [HttpGet("[action]/{servicio}/{idPersonal}")]
         public async Task<ActionResult<bool>> AgregarServicio(string servicio = "", int idPersonal = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.AgregarServicio(servicio, idPersonal);
         }
         
         [HttpGet("[action]/{industria}/{idPersonal}")]
         public async Task<ActionResult<bool>> AgregarIndustria(string industria = "", int idPersonal = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.AgregarIndustria(industria, idPersonal);
         }
 
         [HttpGet("[action]/{idProducto}/{tipo}/{idPuesto}")]
         public async Task<ActionResult<MaterialPuestoDTO>> ObtenerProductoDefault(int idProducto, int tipo, int idPuesto)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.ObtenerProductoDefault(idProducto, tipo, idPuesto);
         }
 
         [HttpGet("[action]/{idEstado}/{pagina}/{idFamilia}")]
         public async Task<ActionResult<ListaProductoDTO>> GetProductoProveedorByIdEstado(int idEstado, int pagina, int idFamilia = 0)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             var listaproducto = new ListaProductoDTO()
             {
                 Pagina = pagina
@@ -169,12 +207,16 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult<bool>> AgregarProductosGeneral(ProductosGeneralDTO data)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.AgregarProductosGeneral(data);
         }
 
         [HttpPost("[action]")]
         public async Task<ActionResult<bool>> EliminarProductosGeneral(ProductosGeneralDTO data)
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.EliminarProductosGeneral(data);
         }
 
@@ -182,6 +224,8 @@ namespace SistemaVentasBatia.Controllers
 
         public async Task<List<EstadoProveedorDTO>> EstadoProveedor()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.EstadoProveedor();
         }
     }

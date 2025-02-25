@@ -24,16 +24,20 @@ namespace SistemaVentasBatia.Controllers
     public class CargaMasivaController : ControllerBase
     {
 
-        private readonly ICargaMasivaService _logic;
-
-        public CargaMasivaController(ICargaMasivaService logic)
+        private readonly ICargaMasivaService logic;
+        private readonly IUsuarioService _logic;
+        public CargaMasivaController(ICargaMasivaService service, IUsuarioService _usuarioService)
         {
-            _logic = logic;
+            logic = service;
+            _logic = _usuarioService;
         }
 
         [HttpPost("[action]")]
         public IActionResult DescargarLayoutDirectorio()
         {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             string rutaArchivo = Path.Combine("Layouts", "LayoutDirectorios.xlsx");
 
             byte[] fileContents = System.IO.File.ReadAllBytes(rutaArchivo);
@@ -44,14 +48,20 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]/{idCotizacion}/{idProspecto}")]
         public async Task<bool> CargarDirecciones(int idCotizacion, int idProspecto, IFormFile file)
         {
-            await _logic.CargarDirecciones(idCotizacion, idProspecto, file);
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            await logic.CargarDirecciones(idCotizacion, idProspecto, file);
             return true;
         }
 
         [HttpPost("[action]/{idCotizacion}")]
         public async Task <FileContentResult> DescargarLayoutPlantilla(int idCotizacion)
         {
-            byte[] fileContents = await _logic.ObtenerSucursalesLayout(idCotizacion);
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            byte[] fileContents = await logic.ObtenerSucursalesLayout(idCotizacion);
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
         }
@@ -59,13 +69,19 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]/{idCotizacion}")]
         public async Task <bool> CargarPlantilla( IFormFile file, int idCotizacion)
         {
-            return await _logic.CargarPlantilla(file, idCotizacion);
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            return await logic.CargarPlantilla(file, idCotizacion);
         }
 
         [HttpPost("[action]/{idCotizacion}")]
         public async Task<FileContentResult> DescargarLayoutProductoExtra(int idCotizacion)
         {
-            byte[] fileContents = await _logic.ObtenerSucursalesLayoutProductoExtra(idCotizacion);
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            byte[] fileContents = await logic.ObtenerSucursalesLayoutProductoExtra(idCotizacion);
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
         }
@@ -73,13 +89,19 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]/{idCotizacion}/{tipo}/{idPersonal}")]
         public async Task<bool> CargaLayoutProductoExtra(IFormFile file, int idCotizacion, string tipo, int idPersonal)
         {
-            return await _logic.CargaProductoExtra(file, idCotizacion, tipo, idPersonal);
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            return await logic.CargaProductoExtra(file, idCotizacion, tipo, idPersonal);
         }
 
         [HttpPost("[action]/{idCotizacion}")]
         public async Task<FileContentResult> DescargarDatosCotizacion(int idCotizacion)
         {
-            byte[] fileContents = await _logic.ObtenerDatosCotizacion(idCotizacion);
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            byte[] fileContents = await logic.ObtenerDatosCotizacion(idCotizacion);
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
 

@@ -1,11 +1,12 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Catalogo } from 'src/app/models/catalogo';
 import { ItemN } from 'src/app/models/item';
 import { MaterialPuesto } from 'src/app/models/materialpuesto';
 import { StoreUser } from '../../stores/StoreUser';
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Router } from '@angular/router';
 declare var bootstrap: any;
 
 @Component({
@@ -27,13 +28,15 @@ export class ProductoWidget implements OnChanges {
     isLoading: boolean = false;
     lerr: any = {};
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
-        http.get<ItemN[]>(`${url}api/catalogo/getfrecuencia`).subscribe(response => {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser, private rtr: Router) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        http.get<ItemN[]>(`${url}api/catalogo/getfrecuencia`, {headers}).subscribe(response => {
             this.fres = response;
-        }, err => console.log(err));
-        http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
+        }, err => this.validaError(err));
+        http.get<ItemN[]>(`${url}api/prospecto/getservicio`, {headers}).subscribe(response => {
             this.sers = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     inicio(id: number, tipo: number, idPuesto: number) {
@@ -53,9 +56,9 @@ export class ProductoWidget implements OnChanges {
     }
 
     existe(idProducto: number, tipo: number, idPuesto: number) {
-        this.http.get<MaterialPuesto>(`${this.url}api/producto/obtenerproductodefault/${idProducto}/${tipo}/${idPuesto}`).subscribe(response => {
+        this.http.get<MaterialPuesto>(`${this.url}api/producto/obtenerproductodefault/${idProducto}/${tipo}/${idPuesto}`, {headers: this.getHeaders()}).subscribe(response => {
             this.model = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
         this.open();
         this.getProductos();
     }
@@ -67,7 +70,7 @@ export class ProductoWidget implements OnChanges {
             this.iniciarCarga();
             setTimeout(() => {
                 if (this.model.idMaterialPuesto == 0) {
-                    this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
+                    this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast(this.grupo + ' agregado');
@@ -77,9 +80,10 @@ export class ProductoWidget implements OnChanges {
                     }, err => {
                         this.detenerCarga();
                         setTimeout(() => {
-                            this.errorToast('Ocurri\u00F3 un error');
+                            this.validaError(err);
                         }, 300);
                         console.log(err);
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -88,7 +92,7 @@ export class ProductoWidget implements OnChanges {
                     });
                 }
                 if (this.model.idMaterialPuesto != 0) {
-                    this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model).subscribe(response => {
+                    this.http.post<MaterialPuesto>(`${this.url}api/producto/post${this.grupo}`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast(this.grupo + ' actualizado');
@@ -98,9 +102,10 @@ export class ProductoWidget implements OnChanges {
                     }, err => {
                         this.detenerCarga();
                         setTimeout(() => {
-                            this.errorToast('Ocurri\u00F3 un error');
+                            this.validaError(err);
                         }, 300);
                         console.log(err);
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -115,12 +120,28 @@ export class ProductoWidget implements OnChanges {
     getProductos() {
         this.lsmat = [];
         if (this.idSer > 0) {
-            this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupo/${this.idSer}/${this.grupo}`).subscribe(response => {
+            this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupo/${this.idSer}/${this.grupo}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.lsmat = response;
-            }, err => console.log(err));
+            }, err => this.validaError(err));
         }
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     chgServicio() {
         this.model.claveProducto = '';
         this.getProductos();

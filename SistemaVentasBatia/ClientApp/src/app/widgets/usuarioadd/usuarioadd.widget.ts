@@ -1,11 +1,12 @@
-import { Component, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
 import { AgregarUsuario } from 'src/app/models/agregarusuario';
 import Swal from 'sweetalert2';
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -28,7 +29,7 @@ export class UsuarioAddWidget {
     selectedImage: string | ArrayBuffer | null = null;
     lerr: any = {};
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) { }
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) { }
 
     guarda() {
         this.quitarFocoDeElementos();
@@ -67,7 +68,7 @@ export class UsuarioAddWidget {
             this.iniciarCarga();
             setTimeout(() => {
                 if (this.edit > 0) {
-                    this.http.put<boolean>(`${this.url}api/usuario/actualizarusuario`, this.agregarusuario).subscribe(response => {
+                    this.http.put<boolean>(`${this.url}api/usuario/actualizarusuario`, this.agregarusuario, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Usuario actualizado');
@@ -78,14 +79,15 @@ export class UsuarioAddWidget {
                     }, err => {
                         this.detenerCarga();
                         setTimeout(() => {
-                            this.errorToast('Ocurri\u00F3 un error');
+                            this.validaError(err);
                         }, 300);
+                        this.validaError(err);
                         console.log(err);
 
                     });
                 }
                 if (this.edit == 0) {
-                    this.http.put<boolean>(`${this.url}api/usuario/agregarusuario`, this.agregarusuario).subscribe(response => {
+                    this.http.put<boolean>(`${this.url}api/usuario/agregarusuario`, this.agregarusuario, { headers: this.getHeaders() }).subscribe(response => {
                         this.response = response;
                         this.detenerCarga();
                         if (response == false) {
@@ -103,8 +105,9 @@ export class UsuarioAddWidget {
                     }, err => {
                         this.detenerCarga();
                         setTimeout(() => {
-                            this.errorToast('Ocurri\u00F3 un error');
+                            this.validaError(err);
                         }, 300);
+                        this.validaError(err);
                         if (err.error) {
                             if (err.error.errors) {
                                 this.lerr = err.error.errors;
@@ -127,7 +130,7 @@ export class UsuarioAddWidget {
 
     existe() {
         this.nuevo();
-        this.http.get<AgregarUsuario>(`${this.url}api/usuario/obtenerusuarioporidpersonal/${this.idPersonal}`).subscribe(response => {
+        this.http.get<AgregarUsuario>(`${this.url}api/usuario/obtenerusuarioporidpersonal/${this.idPersonal}`, {headers: this.getHeaders()}).subscribe(response => {
             this.agregarusuario = response;
             if (this.agregarusuario.firma != '') {
                 this.agregarusuario.firma = 'data:image/jpeg;base64,' + this.agregarusuario.firma;
@@ -138,7 +141,23 @@ export class UsuarioAddWidget {
             }
         })
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     open(idPersonal: number) {
         this.idPersonal = idPersonal;
         if (idPersonal > 0) {

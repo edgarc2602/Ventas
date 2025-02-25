@@ -1,5 +1,5 @@
-import { Component, OnChanges, Input, SimpleChanges, Inject, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, OnChanges, Input, SimpleChanges, Inject, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Direccion } from '../../models/direccion';
 import { Catalogo } from '../../models/catalogo';
@@ -12,6 +12,7 @@ import { StoreUser } from 'src/app/stores/StoreUser';
 import { error } from 'protractor';
 import { saveAs } from 'file-saver';
 import { ClienteContrato } from '../../models/clientecontrato';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -41,16 +42,30 @@ export class ClienteWidget {
     tipoContrato: boolean = false;
     idClienteGenerado: number = 0;
     contratoSeleccionado: File | null = null;
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe, private user: StoreUser) {
-        http.get<Catalogo[]>(`${url}api/catalogo/obtenerCatalogoEjecutivos`).subscribe(response => {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe, private user: StoreUser, private rtr: Router) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        http.get<Catalogo[]>(`${url}api/catalogo/obtenerCatalogoEjecutivos`, { headers }).subscribe(response => {
             this.ejecutivos = response;
-        }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/obtenerEmpresas`).subscribe(response => {
+        }, err => {
+            console.log(err)
+            this.validaError(err);
+        }
+        );
+        http.get<Catalogo[]>(`${url}api/catalogo/obtenerEmpresas`, { headers }).subscribe(response => {
             this.empresas = response;
-        }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoGerentesLimpieza`).subscribe(response => {
+        }, err => {
+            console.log(err)
+            this.validaError(err);
+        }
+        );
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoGerentesLimpieza`, { headers }).subscribe(response => {
             this.gerentes = response;
-        }, err => console.log(err));
+        }, err => {
+            console.log(err)
+            this.validaError(err);
+        }
+        );
     }
 
 
@@ -78,7 +93,7 @@ export class ClienteWidget {
             this.model.idCotizacion = this.idCotizacion;
             this.model.idProspecto = this.idProspecto;
             this.model.idPersonal = this.user.idPersonal;
-            this.http.post<number>(`${this.url}api/cliente/ConvertirProspectoACliente/${this.user.direccionIP}`, this.model).subscribe(response => {
+            this.http.post<number>(`${this.url}api/cliente/ConvertirProspectoACliente/${this.user.direccionIP}`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                 this.idClienteGenerado = response;
                 if (this.tipoContrato == true) {
                     this.cargarContratoCliente();
@@ -93,6 +108,7 @@ export class ClienteWidget {
             }, err => {
                 this.detenerCarga();
                 console.log(err);
+                this.validaError(err);
                 this.sendEvent.emit(false);
             });
         }
@@ -100,13 +116,13 @@ export class ClienteWidget {
 
     generarContratoBaseCliente() {
         //obtener datos contrato
-        this.http.get<ClienteContrato>(`${this.url}api/cliente/ObtenerDatosExistentesClienteContrato/${this.idProspecto}`).subscribe(response => {
+        this.http.get<ClienteContrato>(`${this.url}api/cliente/ObtenerDatosExistentesClienteContrato/${this.idProspecto}`, { headers: this.getHeaders() }).subscribe(response => {
             this.contrato = response;
-            this.http.get<Prospecto>(`${this.url}api/prospecto/ObtenerDatosExistentesProspecto/${this.idProspecto}`).subscribe(response => {
+            this.http.get<Prospecto>(`${this.url}api/prospecto/ObtenerDatosExistentesProspecto/${this.idProspecto}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.contrato.clienteRazonSocial = response.nombreComercial;
                 this.contrato.clienteRfc = response.rfc;
                 //enviar contrato y descargar copia
-                this.http.post(`${this.url}api/report/GenerarYDescargarContratoBaseCliente/${this.idCotizacion}/${this.idClienteGenerado}`, this.contrato, { responseType: 'arraybuffer' })
+                this.http.post(`${this.url}api/report/GenerarYDescargarContratoBaseCliente/${this.idCotizacion}/${this.idClienteGenerado}`, this.contrato, { headers: this.getHeaders(), responseType: 'arraybuffer' })
                     .subscribe(
                         (data: ArrayBuffer) => {
                             const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
@@ -115,21 +131,38 @@ export class ClienteWidget {
                             this.detenerCarga();
                             this.close();
                             error => {
-                                this.errorToast('Ocurri\u00F3 un error');
                                 this.detenerCarga();
                                 console.error('Error al obtener el archivo DOCX', error);
+                                this.validaError(error);
                             }
                         });
             }, err => {
                 console.log(err);
-                this.errorToast('Ocurri\u00F3 un error');
+                this.validaError(err);
                 this.detenerCarga();
             });
         }, err => {
             console.log(err);
-            this.errorToast('Ocurri\u00F3 un error');
+            this.validaError(err);
             this.detenerCarga();
         });
+    }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
+
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
     }
     cargarContratoCliente() {
         const formData = new FormData();
@@ -137,12 +170,12 @@ export class ClienteWidget {
         formData.append('idClienteGenerado', this.idClienteGenerado.toString());
         formData.append('nombreComercial', this.model.nombreComercial);
 
-        this.http.post<boolean>(`${this.url}api/cliente/InsertarContratoCliente`, formData).subscribe(response => {
+        this.http.post<boolean>(`${this.url}api/cliente/InsertarContratoCliente`, formData, { headers: this.getHeaders() }).subscribe(response => {
             this.okToast('Cliente generado correctamente');
             this.detenerCarga();
             this.close();
         }, err => {
-            this.errorToast('Ocurri\u00F3 un error');
+            this.validaError(err);
             this.detenerCarga();
         });
         this.detenerCarga();
@@ -222,19 +255,42 @@ export class ClienteWidget {
     }
 
     obtenerInformacionProspecto() {
-        this.http.get<Prospecto>(`${this.url}api/prospecto/${this.idProspecto}`).subscribe(response => {
-            this.model.nombreComercial = response.nombreComercial;
-        }, err => console.log(err));
+        this.http.get<Prospecto>(`${this.url}api/prospecto/${this.idProspecto}`, { headers: this.getHeaders() })
+            .subscribe(
+                response => {
+                    this.model.nombreComercial = response.nombreComercial;
+                },
+                err => {
+                    console.log(err);
+                    this.validaError(err);
+                }
+            );
     }
+
     obtenerTotalSucursalesCotizacion() {
-        this.http.get<number>(`${this.url}api/cotizacion/ObtenerTotalSucursalesCotizacion/${this.idCotizacion}`).subscribe(response => {
-            this.model.totalSucursales = response;
-        }, err => console.log(err));
+        this.http.get<number>(`${this.url}api/cotizacion/ObtenerTotalSucursalesCotizacion/${this.idCotizacion}`, { headers: this.getHeaders() })
+            .subscribe(
+                response => {
+                    this.model.totalSucursales = response;
+                },
+                err => {
+                    console.log(err);
+                    this.validaError(err);
+                }
+            );
     }
+
     obtenerTotalEmpleadosCotizacion() {
-        this.http.get<number>(`${this.url}api/cotizacion/ObtenerTotalEmpleadosCotizacion/${this.idCotizacion}`).subscribe(response => {
-            this.model.totalEmpleados = response;
-        }, err => console.log(err));
+        this.http.get<number>(`${this.url}api/cotizacion/ObtenerTotalEmpleadosCotizacion/${this.idCotizacion}`, { headers: this.getHeaders() })
+            .subscribe(
+                response => {
+                    this.model.totalEmpleados = response;
+                },
+                err => {
+                    console.log(err);
+                    this.validaError(err);
+                }
+            );
     }
 
     calcularFechaTermino() {

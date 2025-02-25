@@ -27,14 +27,19 @@ namespace SistemaVentasBatia.Controllers
     {
         private readonly IReportService _reportService;
         private readonly IClienteService _clienteService;
-        public ReportController(IReportService reportService, IClienteService clienteService)
+        private readonly IUsuarioService logic;
+        public ReportController(IReportService reportService, IClienteService clienteService, IUsuarioService _usuarioService)
         {
             this._reportService = reportService;
             _clienteService = clienteService;
+            logic = _usuarioService;
         }
         [HttpGet("[action]/{idCotizacion}/{tipo}/{formato}")]
         public IActionResult DescargarReporteCotizacion(int idCotizacion = 0, int tipo = 0, string formato = "")
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             string formatourl = "";
             string formatoArchivo = "";
             switch (formato)
@@ -158,6 +163,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idEstado}/{idFamilia}")]
         public IActionResult DescargarListaProductosPorEstado(int idEstado = 0, int idFamilia = 0)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             try
             {
                 var url = ("http://192.168.2.3/Reporte?%2freporteproductoestado&rs:Format=PDF&idEstado=" + idEstado.ToString() + "&idFamilia=" + idFamilia.ToString());
@@ -182,6 +190,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]/{idCotizacion}/{idClienteGenerado}")]
         public async Task<IActionResult> GenerarYDescargarContratoBaseCliente(int idCotizacion, int idClienteGenerado, ClienteContratoDTO contrato)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             try
             {
                 //GENERAR CONTRATO
@@ -201,7 +212,8 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idEstatus}")]
         public IActionResult DescargarReporteProspectos(int idEstatus)
         {
-
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             try
             {
                 var url = ("http://192.168.2.3/Reporte?%2freporteprospectos&rs:Format=PDF&idEstatus=" + idEstatus.ToString());
@@ -228,6 +240,8 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idEstatus}/{Finicio}/{Ffin}")]
         public async Task<IActionResult> DescargarProspectosCotizacionesDocx(int idEstatus, DateTime Finicio, DateTime Ffin)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             try
             {
                 byte[] contratoBytes = await _reportService.DescargarProspectosCotizacionesDocx(idEstatus, Finicio, Ffin);
@@ -244,6 +258,8 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost("[action]/{idEstatus}/{Finicio}/{Ffin}")]
         public async Task<FileContentResult> DescargarProspectosCotizacionesExcel(int idEstatus, DateTime Finicio, DateTime Ffin)
         {
+            var token = logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
             byte[] fileContents = await _reportService.DescargarProspectosCotizacionesExcel(idEstatus, Finicio, Ffin);
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");

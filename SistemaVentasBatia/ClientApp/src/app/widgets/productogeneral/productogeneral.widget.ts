@@ -1,5 +1,5 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StoreUser } from 'src/app/stores/StoreUser';
 declare var bootstrap: any;
 import { ToastWidget } from '../toast/toast.widget';
@@ -11,6 +11,7 @@ import { each } from 'highcharts';
 import Swal from 'sweetalert2';
 import { error } from 'protractor';
 import { Material } from '../../models/material';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'productogeneral-widget',
@@ -52,10 +53,13 @@ export class ProductoGeneralWidget {
 
 
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
-        http.get<ItemN[]>(`${url}api/catalogo/getfrecuencia`).subscribe(response => {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser, private rtr: Router) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+        http.get<ItemN[]>(`${url}api/catalogo/getfrecuencia`, {headers}).subscribe(response => {
             this.frecuencia = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
 
     }
 
@@ -104,16 +108,16 @@ export class ProductoGeneralWidget {
 
     setTipo(tipo: string) {
         this.tipoProd = tipo;
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupo/${this.idServicio}/${tipo}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupo/${this.idServicio}/${tipo}`, {headers: this.getHeaders()}).subscribe(response => {
             this.producto = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     setTipoElimina(tipo: string) {
         this.tipoProd = tipo;
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupoElimina/${tipo}/${this.idCotizacion}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getproductobygrupoElimina/${tipo}/${this.idCotizacion}`,{ headers: this.getHeaders() }).subscribe(response => {
             this.producto = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     agregar(tipo: string) {
@@ -381,7 +385,7 @@ export class ProductoGeneralWidget {
                         idCotizacion: this.idCotizacion
                     };
                     setTimeout(() => {
-                        this.http.post<boolean>(`${this.url}api/producto/AgregarProductosGeneral`, data).subscribe(response => {
+                        this.http.post<boolean>(`${this.url}api/producto/AgregarProductosGeneral`, data, { headers: this.getHeaders() }).subscribe(response => {
                             this.detenerCarga();
                             setTimeout(() => {
                                 this.okToast('Productos agregados');
@@ -395,6 +399,7 @@ export class ProductoGeneralWidget {
                             setTimeout(() => {
                                 this.errorToast('Ocurri\u00F3 un error');
                             }, 300);
+                            this.validaError(err);
                             if (err.error) {
                                 if (err.error.errors) {
                                     this.lerr = err.error.errors;
@@ -438,7 +443,7 @@ export class ProductoGeneralWidget {
                         idCotizacion: this.idCotizacion
                     };
                     setTimeout(() => {
-                        this.http.post<boolean>(`${this.url}api/producto/EliminarProductosGeneral`, data).subscribe(response => {
+                        this.http.post<boolean>(`${this.url}api/producto/EliminarProductosGeneral`, data, { headers: this.getHeaders() }).subscribe(response => {
                             this.detenerCarga();
                             setTimeout(() => {
                                 this.okToast('Productos eliminados');
@@ -452,6 +457,7 @@ export class ProductoGeneralWidget {
                             setTimeout(() => {
                                 this.errorToast('Ocurri\u00F3 un error');
                             }, 300);
+                            this.validaError(err);
                             if (err.error) {
                                 if (err.error.errors) {
                                     this.lerr = err.error.errors;
@@ -531,7 +537,23 @@ export class ProductoGeneralWidget {
         }
 
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     closeElimina() {
         if (this.materialElimina.length == 0 && this.uniformeElimina.length == 0 && this.equipoElimina.length == 0 && this.herramientaElimina.length == 0) {
             let docModal = document.getElementById('modalLimpiezaProductoGeneral');

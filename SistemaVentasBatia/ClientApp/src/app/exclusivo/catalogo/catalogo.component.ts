@@ -98,36 +98,38 @@ export class CatalogoComponent {
     fechaAplica: Date;
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, public user: StoreUser, private rtr: Router) {
-        http.get<Catalogo[]>(`${url}api/catalogo/getpuesto/${0}`).subscribe(response => {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        http.get<Catalogo[]>(`${url}api/catalogo/getpuesto/${0}`, { headers }).subscribe(response => {
             this.pues = response;
         }, err => {
             console.log(err)
         });
-        http.get<Catalogo[]>(`${url}api/catalogo/getservicio`).subscribe(response => {
+        http.get<Catalogo[]>(`${url}api/catalogo/getservicio`, { headers }).subscribe(response => {
             this.sers = response;
         }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`).subscribe(response => {
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`, { headers }).subscribe(response => {
             this.industrias = response;
         }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/gettiposervicio`).subscribe(response => {
+        http.get<Catalogo[]>(`${url}api/catalogo/gettiposervicio`, { headers }).subscribe(response => {
             this.tser = response;
         }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/getclase`).subscribe(response => {
+        http.get<Catalogo[]>(`${url}api/catalogo/getclase`, { headers }).subscribe(response => {
             this.lclas = response;
         }, err => console.log(err));
-        http.get<Catalogo[]>(`${url}api/catalogo/getestado`).subscribe(response => {
+        http.get<Catalogo[]>(`${url}api/catalogo/getestado`, { headers }).subscribe(response => {
             this.estados = response;
         }, err => console.log(err));
-        this.http.get<number>(`${this.url}api/cotizacion/obtenerimssbase`).subscribe(response => {
+        this.http.get<number>(`${this.url}api/cotizacion/obtenerimssbase`, { headers }).subscribe(response => {
             this.imss = response;
         }, err => console.log(err));
-        this.http.get<AgregarUsuario[]>(`${this.url}api/usuario/obtenerusuarios`).subscribe(response => {
+        this.http.get<AgregarUsuario[]>(`${this.url}api/usuario/obtenerusuarios`, { headers }).subscribe(response => {
             this.lusu = response;
         })
-        this.http.get<ImmsJornada>(`${this.url}api/cotizacion/ObtenerImssJornada`).subscribe(response => {
+        this.http.get<ImmsJornada>(`${this.url}api/cotizacion/ObtenerImssJornada`, { headers }).subscribe(response => {
             this.immsJornada = response;
         })
-        this.http.get<CotizaPorcentajes>(`${this.url}api/cotizacion/obtenerporcentajescotizacion`).subscribe(response => { //falta
+        this.http.get<CotizaPorcentajes>(`${this.url}api/cotizacion/obtenerporcentajescotizacion`, { headers }).subscribe(response => { //falta
             this.cotpor = response;
             this.costoIndirecto = this.cotpor.costoIndirecto;
             this.utilidad = this.cotpor.utilidad;

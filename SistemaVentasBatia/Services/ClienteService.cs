@@ -72,278 +72,284 @@ namespace SistemaVentasBatia.Services
         }
         public async Task<int> ConvertirProspectoACliente(ClienteDTO cliente, string usuarioIP)
         {
-            var porcentajes = await clienteRepo.ObtenerPorcentajesCotizacion(cliente.IdCotizacion);
-            decimal totalCotizacion = await clienteRepo.ObtenerTotalCotizacion(cliente.IdCotizacion);
-            //ResumenCotizacionLimpiezaDTO resumenCotizacion = await cotizacionesService.ObtenerResumenCotizacionLimpieza(cliente.IdCotizacion);
-            //CREAR LOG
-            string logXMLString = CrearXMLLog(cliente.IdPersonal, usuarioIP);
-
-            //CREAR XML E INSERTAR CLIENTE
-            string clienteXMLString = CrearXMLCliente(cliente);
-            int idGrupoEmpresa = await clienteRepo.ConsultarGrupoEmpresas(cliente.IdEmpresaPagadora);
-            int idClienteCreado = clienteRepo.InsertarClienteXML(clienteXMLString, logXMLString, idGrupoEmpresa);
-
-            //CREAR XML E INSERTAR OFICINA
-            string oficinaXMLString = CrearXMLOficina(idClienteCreado);
-            bool oficina = clienteRepo.InsertarXMLOficina(oficinaXMLString);
-
-            //CREAR XML E INSERTAR LINEA DE NEGOCIO
-            string lineaNegocioXMLString = CrearXMLLineaNegocio(idClienteCreado, (int)cliente.IdServicio, totalCotizacion);
-            bool lineaNegocio = clienteRepo.InsertarLineaNegocioXML(lineaNegocioXMLString, idClienteCreado);
-
-            int idPuntoAtencionCreado = 0;
-            int idPlantillaCreada = 0;
-            decimal totalMateriales = 0;
-            decimal totalHerramienta = 0;
-            decimal totalEquipo = 0;
-            decimal totalHigienicos = 0;
-            decimal totalUniforme = 0;
-            decimal totalEquipoHerramienta = 0;
-            string IgualaXML = "";
-
-            decimal totalGeneralMateriales = 0;
-            decimal totalGeneralEquipo = 0;
-            decimal totalGeneralHerramienta = 0;
-            decimal totalGeneralHigienico = 0;
-            decimal totalGeneralEquipoHerramienta = 0;
-
-            //OBTENER LISTA DIRECCIONES
-            var direcciones = mapper.Map<List<DireccionDTO>>(await clienteRepo.ObtenerDireccionesCotizacion(cliente.IdCotizacion));
-
-            bool isPoliza = await clienteRepo.ConsultarPoliza(cliente.IdCotizacion);
-
-            foreach (var direccion in direcciones)
+            try
             {
-                totalMateriales = 0;
-                totalHerramienta = 0;
-                totalEquipo = 0;
-                totalHigienicos = 0;
-                totalUniforme = 0;
-                totalEquipoHerramienta = 0;
-                //CREAR XML E INSERTAR DIRECCION
-                string direccionXMLString = CrearXMLDireccion(idClienteCreado, direccion, cliente.IdPersonal);
-                idPuntoAtencionCreado = clienteRepo.InsertarDireccionXML(direccionXMLString, logXMLString);
+                var porcentajes = await clienteRepo.ObtenerPorcentajesCotizacion(cliente.IdCotizacion);
+                decimal totalCotizacion = await clienteRepo.ObtenerTotalCotizacion(cliente.IdCotizacion);
+                //ResumenCotizacionLimpiezaDTO resumenCotizacion = await cotizacionesService.ObtenerResumenCotizacionLimpieza(cliente.IdCotizacion);
+                //CREAR LOG
+                string logXMLString = CrearXMLLog(cliente.IdPersonal, usuarioIP);
 
-                //OBTENER IGUALA POR PUNTO DE ATENCION Y CREAR XML
-                decimal totalPuntoAtencion = await clienteRepo.ObtenerTotalDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
+                //CREAR XML E INSERTAR CLIENTE
+                string clienteXMLString = CrearXMLCliente(cliente);
+                int idGrupoEmpresa = await clienteRepo.ConsultarGrupoEmpresas(cliente.IdEmpresaPagadora);
+                int idClienteCreado = clienteRepo.InsertarClienteXML(clienteXMLString, logXMLString, idGrupoEmpresa);
 
-                if (isPoliza)
+                //CREAR XML E INSERTAR OFICINA
+                string oficinaXMLString = CrearXMLOficina(idClienteCreado);
+                bool oficina = clienteRepo.InsertarXMLOficina(oficinaXMLString);
+
+                //CREAR XML E INSERTAR LINEA DE NEGOCIO
+                string lineaNegocioXMLString = CrearXMLLineaNegocio(idClienteCreado, (int)cliente.IdServicio, totalCotizacion);
+                bool lineaNegocio = clienteRepo.InsertarLineaNegocioXML(lineaNegocioXMLString, idClienteCreado);
+
+                int idPuntoAtencionCreado = 0;
+                int idPlantillaCreada = 0;
+                decimal totalMateriales = 0;
+                decimal totalHerramienta = 0;
+                decimal totalEquipo = 0;
+                decimal totalHigienicos = 0;
+                decimal totalUniforme = 0;
+                decimal totalEquipoHerramienta = 0;
+                string IgualaXML = "";
+
+                decimal totalGeneralMateriales = 0;
+                decimal totalGeneralEquipo = 0;
+                decimal totalGeneralHerramienta = 0;
+                decimal totalGeneralHigienico = 0;
+                decimal totalGeneralEquipoHerramienta = 0;
+
+                //OBTENER LISTA DIRECCIONES
+                var direcciones = mapper.Map<List<DireccionDTO>>(await clienteRepo.ObtenerDireccionesCotizacion(cliente.IdCotizacion));
+
+                bool isPoliza = await clienteRepo.ConsultarPoliza(cliente.IdCotizacion);
+
+                foreach (var direccion in direcciones)
                 {
-                    totalPuntoAtencion = totalPuntoAtencion * 1.10M;
-                }
-                IgualaXML = CrearXMLIgualaPuntoAtencion(idClienteCreado, idPuntoAtencionCreado, cliente.IdServicio, totalPuntoAtencion, IgualaXML); //, cliente.FechaInicio,cliente.IdPersonal
-
-                //INSERTAR XML tb_cliente_inmueble_ig
-
-
-                //OBTENER LISTA PUESTOS
-                var plantillas = mapper.Map<List<PuestoDireccionCotizacionDTO>>(await clienteRepo.ObtenerPuestosDireccionCotizacion(direccion.IdDireccionCotizacion)).ToList();
-
-                //INSERTAR PUESTO A DIRECCION CREADA
-                foreach (var puesto in plantillas)
-                {
+                    totalMateriales = 0;
+                    totalHerramienta = 0;
+                    totalEquipo = 0;
+                    totalHigienicos = 0;
                     totalUniforme = 0;
-                    string plantillaXMLString = CrearXMLPlantilla(idPuntoAtencionCreado, puesto, cliente.IdServicio, cliente.FechaInicio);
-                    idPlantillaCreada = clienteRepo.InsertarPlantillaXML(plantillaXMLString);
+                    totalEquipoHerramienta = 0;
+                    //CREAR XML E INSERTAR DIRECCION
+                    string direccionXMLString = CrearXMLDireccion(idClienteCreado, direccion, cliente.IdPersonal);
+                    idPuntoAtencionCreado = clienteRepo.InsertarDireccionXML(direccionXMLString, logXMLString);
 
-                    //CREAR XML E INSERTAR HORARIO
-                    //string horarioplantillaXMLString = CrearXMLHorarioPlantilla(idPlantillaCreada, puesto);
-                    //bool horarioPlantilla = clienteRepo.InsertarHorarioPlantillaXML(horarioplantillaXMLString);
+                    //OBTENER IGUALA POR PUNTO DE ATENCION Y CREAR XML
+                    decimal totalPuntoAtencion = await clienteRepo.ObtenerTotalDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
 
-                    if (puesto.Cantidad > 0)
+                    if (isPoliza)
                     {
-                        bool plantillap = clienteRepo.InsertarPlantillaPXML(idPlantillaCreada, puesto.Cantidad);
-                        bool vacanteresult = clienteRepo.InsertarVacantePlantillaXML(idPlantillaCreada, cliente.IdPersonal);
+                        totalPuntoAtencion = totalPuntoAtencion * 1.10M;
+                    }
+                    IgualaXML = CrearXMLIgualaPuntoAtencion(idClienteCreado, idPuntoAtencionCreado, cliente.IdServicio, totalPuntoAtencion, IgualaXML, cliente.IdPersonal, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss")); //, cliente.FechaInicio,cliente.IdPersonal
+
+                    //INSERTAR XML tb_cliente_inmueble_ig
+
+
+                    //OBTENER LISTA PUESTOS
+                    var plantillas = mapper.Map<List<PuestoDireccionCotizacionDTO>>(await clienteRepo.ObtenerPuestosDireccionCotizacion(direccion.IdDireccionCotizacion)).ToList();
+
+                    //INSERTAR PUESTO A DIRECCION CREADA
+                    foreach (var puesto in plantillas)
+                    {
+                        totalUniforme = 0;
+                        string plantillaXMLString = CrearXMLPlantilla(idPuntoAtencionCreado, puesto, cliente.IdServicio, cliente.FechaInicio);
+                        idPlantillaCreada = clienteRepo.InsertarPlantillaXML(plantillaXMLString);
+
+                        //CREAR XML E INSERTAR HORARIO
+                        //string horarioplantillaXMLString = CrearXMLHorarioPlantilla(idPlantillaCreada, puesto);
+                        //bool horarioPlantilla = clienteRepo.InsertarHorarioPlantillaXML(horarioplantillaXMLString);
+
+                        if (puesto.Cantidad > 0)
+                        {
+                            bool plantillap = clienteRepo.InsertarPlantillaPXML(idPlantillaCreada, puesto.Cantidad);
+                            bool vacanteresult = clienteRepo.InsertarVacantePlantillaXML(idPlantillaCreada, cliente.IdPersonal);
+                        }
+
+                        //OBTENER LISTAS DE PRODUCTOS POR PUESTO
+                        var material = await materialRepo.ObtenerMaterialCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
+                        var herramienta = await materialRepo.ObtenerHerramientaCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
+                        var equipo = await materialRepo.ObtenerEquipoCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
+                        var uniforme = await materialRepo.ObtenerUniformeCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
+
+                        //CALCULAR TOTAL E INSERTAR PRODUCTOS POR PUESTO
+                        foreach (var mat in material)
+                        {
+                            await clienteRepo.InsertarMaterialAutorizado(mat, idPuntoAtencionCreado, idClienteCreado);
+                            await clienteRepo.InsertarMaterialDireccion(mat, idPuntoAtencionCreado, idClienteCreado);
+                            if (mat.ClaveProducto.StartsWith("M-HIG"))
+                            {
+                                totalHigienicos += (mat.Total / (int)mat.IdFrecuencia) * puesto.Cantidad;
+                            }
+                            else
+                            {
+                                totalMateriales += (mat.Total / (int)mat.IdFrecuencia) * puesto.Cantidad;
+
+                            }
+                        }
+                        foreach (var herr in herramienta)
+                        {
+
+                            await clienteRepo.InsertarMaterialAutorizado(herr, idPuntoAtencionCreado, idClienteCreado);
+                            string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herr.ClaveProducto, (int)herr.IdFrecuencia, herr.Cantidad, herr.Total);
+                            clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
+                            totalHerramienta += (herr.Total / (int)herr.IdFrecuencia) * puesto.Cantidad;
+                        }
+                        foreach (var equ in equipo)
+                        {
+                            await clienteRepo.InsertarMaterialAutorizado(equ, idPuntoAtencionCreado, idClienteCreado);
+                            string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equ.ClaveProducto, (int)equ.IdFrecuencia, equ.Cantidad, equ.Total);
+                            clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
+                            totalEquipo += (equ.Total / (int)equ.IdFrecuencia) * puesto.Cantidad;
+                        }
+                        foreach (var uni in uniforme)
+                        {
+                            totalUniforme += (uni.Total / (int)uni.IdFrecuencia) * puesto.Cantidad;
+                        }
+
+                        decimal cargaSocial = 0;
+                        cargaSocial = puesto.ISN + puesto.IMSS;
+                        decimal otrasComp = puesto.Vales + puesto.Festivo + puesto.CubreDescanso;
+                        await clienteRepo.InsertarCargaSocialPuesto(idPlantillaCreada, cargaSocial, totalUniforme, puesto.Bonos, puesto.Domingo, otrasComp);
+
+                        //CREAR E INSERTAR HORARIO
+                        string horarioActualizadoXML = CrearXMLHorario(puesto, idPlantillaCreada);
+                        clienteRepo.InsertarHorarioActualizadoPlantillaXML(horarioActualizadoXML);
+                        DateTime fecha = DateTime.Now;
+                        EnviaCorreoVacantes(fecha, "Registro de Vacante", idPlantillaCreada);
                     }
 
-                    //OBTENER LISTAS DE PRODUCTOS POR PUESTO
-                    var material = await materialRepo.ObtenerMaterialCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
-                    var herramienta = await materialRepo.ObtenerHerramientaCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
-                    var equipo = await materialRepo.ObtenerEquipoCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
-                    var uniforme = await materialRepo.ObtenerUniformeCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
+                    //OBTENER LISTAS DE PRODUCTOS EXTRA POR SUCURSAL
+                    var materialExtraSuc = await materialRepo.ObtenerMaterialExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
+                    var herramientaExtraSuc = await materialRepo.ObtenerHerramientaExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
+                    var equipoExtraSuc = await materialRepo.ObtenerEquipoExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
+                    var uniformeExtraSuc = await materialRepo.ObtenerUniformeExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
+                    //var servicioExtraSuc = await servicioRepo.ObtenerListaServiciosCotizacionDireccion(cliente.IdCotizacion, 0, direccion.IdDireccionCotizacion);
 
-                    //CALCULAR TOTAL E INSERTAR PRODUCTOS POR PUESTO
-                    foreach (var mat in material)
+                    //CALCULAR TOTAL E INSERTAR PRODUCTOS EXTRA POR SUCURSAL
+                    foreach (var mat in materialExtraSuc)
                     {
                         await clienteRepo.InsertarMaterialAutorizado(mat, idPuntoAtencionCreado, idClienteCreado);
                         await clienteRepo.InsertarMaterialDireccion(mat, idPuntoAtencionCreado, idClienteCreado);
                         if (mat.ClaveProducto.StartsWith("M-HIG"))
                         {
-                            totalHigienicos += (mat.Total / (int)mat.IdFrecuencia) * puesto.Cantidad;
+                            totalHigienicos += mat.Total / (int)mat.IdFrecuencia;
                         }
                         else
                         {
-                            totalMateriales += (mat.Total / (int)mat.IdFrecuencia) * puesto.Cantidad;
-
+                            totalMateriales += mat.Total / (int)mat.IdFrecuencia;
                         }
                     }
-                    foreach (var herr in herramienta)
+                    foreach (var herr in herramientaExtraSuc)
                     {
-
                         await clienteRepo.InsertarMaterialAutorizado(herr, idPuntoAtencionCreado, idClienteCreado);
                         string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herr.ClaveProducto, (int)herr.IdFrecuencia, herr.Cantidad, herr.Total);
                         clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
-                        totalHerramienta += (herr.Total / (int)herr.IdFrecuencia) * puesto.Cantidad;
+                        totalHerramienta += herr.Total / (int)herr.IdFrecuencia;
                     }
-                    foreach (var equ in equipo)
+                    foreach (var equ in equipoExtraSuc)
                     {
                         await clienteRepo.InsertarMaterialAutorizado(equ, idPuntoAtencionCreado, idClienteCreado);
                         string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equ.ClaveProducto, (int)equ.IdFrecuencia, equ.Cantidad, equ.Total);
                         clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
-                        totalEquipo += (equ.Total / (int)equ.IdFrecuencia) * puesto.Cantidad;
-                    }
-                    foreach (var uni in uniforme)
-                    {
-                        totalUniforme += (uni.Total / (int)uni.IdFrecuencia) * puesto.Cantidad;
-                    }
+                        totalEquipo += equ.Total / (int)equ.IdFrecuencia;
 
-                    decimal cargaSocial = 0;
-                    cargaSocial = puesto.ISN + puesto.IMSS;
-                    decimal otrasComp = puesto.Vales + puesto.Festivo + puesto.CubreDescanso;
-                    await clienteRepo.InsertarCargaSocialPuesto(idPlantillaCreada, cargaSocial, totalUniforme, puesto.Bonos, puesto.Domingo, otrasComp);
+                    }
+                    //foreach (var uni in uniforme)
+                    //{
+                    //    await clienteRepo.InsertarProducto(uni, idPlantillaCreada, idClienteCreado); 
+                    //    totalUniformePuesto += uni.Total;
+                    //}
 
-                    //CREAR E INSERTAR HORARIO
-                    string horarioActualizadoXML = CrearXMLHorario(puesto, idPlantillaCreada);
-                    clienteRepo.InsertarHorarioActualizadoPlantillaXML(horarioActualizadoXML);
-                    DateTime fecha = DateTime.Now;
-                    EnviaCorreoVacantes(fecha, "Registro de Vacante", idPlantillaCreada);
+                    //INSERTAR presupuestos por direccion
+                    await clienteRepo.ActualizarPresupuestosSucursal(idPuntoAtencionCreado, totalMateriales, totalHigienicos);
+
+                    totalGeneralMateriales += totalMateriales;
+                    totalGeneralEquipo += totalEquipo;
+                    totalGeneralHerramienta += totalHerramienta;
+                    totalGeneralHigienico += totalHigienicos;
+                    totalGeneralEquipoHerramienta += (totalEquipo + totalHerramienta);
                 }
 
-                //OBTENER LISTAS DE PRODUCTOS EXTRA POR SUCURSAL
-                var materialExtraSuc = await materialRepo.ObtenerMaterialExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
-                var herramientaExtraSuc = await materialRepo.ObtenerHerramientaExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
-                var equipoExtraSuc = await materialRepo.ObtenerEquipoExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
-                var uniformeExtraSuc = await materialRepo.ObtenerUniformeExtraCotizacionDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
-                //var servicioExtraSuc = await servicioRepo.ObtenerListaServiciosCotizacionDireccion(cliente.IdCotizacion, 0, direccion.IdDireccionCotizacion);
+                //INSERTAR XML IGUALA POR PUNTO DE ATENCION
+                clienteRepo.InsertarIgualasXML(IgualaXML);
 
-                //CALCULAR TOTAL E INSERTAR PRODUCTOS EXTRA POR SUCURSAL
-                foreach (var mat in materialExtraSuc)
-                {
-                    await clienteRepo.InsertarMaterialAutorizado(mat, idPuntoAtencionCreado, idClienteCreado);
-                    await clienteRepo.InsertarMaterialDireccion(mat, idPuntoAtencionCreado, idClienteCreado);
-                    if (mat.ClaveProducto.StartsWith("M-HIG"))
-                    {
-                        totalHigienicos += mat.Total / (int)mat.IdFrecuencia;
-                    }
-                    else
-                    {
-                        totalMateriales += mat.Total / (int)mat.IdFrecuencia;
-                    }
-                }
-                foreach (var herr in herramientaExtraSuc)
-                {
-                    await clienteRepo.InsertarMaterialAutorizado(herr, idPuntoAtencionCreado, idClienteCreado);
-                    string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herr.ClaveProducto, (int)herr.IdFrecuencia, herr.Cantidad, herr.Total);
-                    clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
-                    totalHerramienta += herr.Total / (int)herr.IdFrecuencia;
-                }
-                foreach (var equ in equipoExtraSuc)
-                {
-                    await clienteRepo.InsertarMaterialAutorizado(equ, idPuntoAtencionCreado, idClienteCreado);
-                    string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equ.ClaveProducto, (int)equ.IdFrecuencia, equ.Cantidad, equ.Total);
-                    clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
-                    totalEquipo += equ.Total / (int)equ.IdFrecuencia;
+                //INSERTAR PRODUCTOS EXTRA EN AUTORIZADOS
+                //OBTENER LISTA DE PRODUCTOS EXTRA
+                //var materialExtra = await materialRepo.ObtenerMaterialExtraCotizacion(cliente.IdCotizacion);
+                //var herramientaExtra = await materialRepo.ObtenerHerramientaExtraCotizacion(cliente.IdCotizacion);
+                //var equipoExtra = await materialRepo.ObtenerEquipoExtraCotizacion(cliente.IdCotizacion);
+                //var uniformeExtra = await materialRepo.ObtenerUniformeExtraCotizacion(cliente.IdCotizacion);
+                //var servicioExtra = await servicioRepo.ObtenerListaServiciosCotizacion(cliente.IdCotizacion, 0);
 
-                }
-                //foreach (var uni in uniforme)
+                //INSERTAR SERVICIOS EXTRA COMO SUBCONTRATOS
+                //if (servicioExtra != null)
                 //{
-                //    await clienteRepo.InsertarProducto(uni, idPlantillaCreada, idClienteCreado); 
-                //    totalUniformePuesto += uni.Total;
+                //    foreach (var item in servicioExtra)
+                //    {
+                //        //decimal total = (((item.ImporteMensual * (porcentajes.CostoIndirecto + 1)) * (porcentajes.Utilidad + 1)) * (porcentajes.ComisionSobreVenta +1)) * (porcentajes.ComisionExterna +1);
+                //        await clienteRepo.InsertarSubcontrato(idClienteCreado, cliente.IdServicio, (int)item.IdFrecuencia, item.IdServicioExtra, item.ImporteMensual);
+                //    }
                 //}
 
-                //INSERTAR presupuestos por direccion
-                await clienteRepo.ActualizarPresupuestosSucursal(idPuntoAtencionCreado, totalMateriales, totalHigienicos);
 
-                totalGeneralMateriales += totalMateriales;
-                totalGeneralEquipo += totalEquipo;
-                totalGeneralHerramienta += totalHerramienta;
-                totalGeneralHigienico += totalHigienicos;
-                totalGeneralEquipoHerramienta += (totalEquipo + totalHerramienta);
+                ////CALCULAR TOTAL PRODUCTOS EXTRA
+                //foreach (var matext in materialExtra)
+                //{
+                //    await clienteRepo.InsertarMaterial(matext, idPuntoAtencionCreado, idClienteCreado);
+                //if (matext.ClaveProducto.StartsWith("M-HIG"))
+                //{
+                //    totalHigienicosExtra += matext.Total;
+                //}
+                //else
+                //{
+                //    totalMaterialesExtra += matext.Total;
+                //}
+                //}
+                //foreach (var herrext in herramientaExtra)
+                //{
+                //    string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herrext.ClaveProducto, (int)herrext.IdFrecuencia, herrext.Cantidad, herrext.Total);
+                //    clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
+                //    //totalHerramientaExtra += herrext.Total;
+                //}
+                //foreach (var equext in equipoExtra)
+                //{
+                //    string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equext.ClaveProducto, (int)equext.IdFrecuencia, equext.Cantidad, equext.Total);
+                //    clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
+                //    //totalEquipoExtra += equext.Total;
+                //}
+                //foreach (var uniext in uniformeExtra)
+                //{
+                //    await clienteRepo.InsertarProducto(uniext, idPuntoAtencionCreado, idClienteCreado);
+                //    totalUniformeExtra += uniext.Total;
+                //}
+                //foreach(var servext in servicioExtra)
+                //{
+                //    //await clienteRepo.InsertarServicio();
+                //    totalServicioExtra = servext.Total;
+                //}1852.5    totalMaterialesPuesto 1307.8
+
+                totalEquipoHerramienta = totalEquipo + totalHerramienta;
+
+                // GENERAR 3 PRESUPUESTOS, SOLO MATERIAL, SOLO HIGIENICOS Y HERRAMIENTA/EQUIPO
+                if (totalGeneralMateriales > 0)
+                {
+                    string presupuestoMaterialesXMLString = CrearXMLPresupuestoMateriales(idClienteCreado, cliente.IdServicio, 4, 1, totalGeneralMateriales, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
+                    clienteRepo.InsertarPresupuestoMaterialXML(presupuestoMaterialesXMLString);
+                }
+                if (totalGeneralHigienico > 0)
+                {
+                    string presupuestoHigienicosXMLString = CrearXMLPresupuestoHigienicos(idClienteCreado, cliente.IdServicio, 4, 2, totalGeneralHigienico, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
+                    clienteRepo.InsertarPresupuestoMaterialXML(presupuestoHigienicosXMLString);
+                }
+                if (totalGeneralEquipoHerramienta > 0)
+                {
+                    string presupuestoEquipoHerramientaXMLString = CrearXMLPresupuestoEquipoHerramienta(idClienteCreado, cliente.IdServicio, 4, "LISTA DE HERRAMIENTAS Y EQUIPO", totalGeneralEquipoHerramienta, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
+                    clienteRepo.InsertarPresupuestoEquipoHerramientaXML(presupuestoEquipoHerramientaXMLString);
+                }
+
+                //ACTUALIZAR ESTATUS DE PROSPECTO Y COTIZACIONES
+                await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
+                await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
+                await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
+                return idClienteCreado;
             }
-
-            //INSERTAR XML IGUALA POR PUNTO DE ATENCION
-            clienteRepo.InsertarIgualasXML(IgualaXML);
-
-            //INSERTAR PRODUCTOS EXTRA EN AUTORIZADOS
-            //OBTENER LISTA DE PRODUCTOS EXTRA
-            //var materialExtra = await materialRepo.ObtenerMaterialExtraCotizacion(cliente.IdCotizacion);
-            //var herramientaExtra = await materialRepo.ObtenerHerramientaExtraCotizacion(cliente.IdCotizacion);
-            //var equipoExtra = await materialRepo.ObtenerEquipoExtraCotizacion(cliente.IdCotizacion);
-            //var uniformeExtra = await materialRepo.ObtenerUniformeExtraCotizacion(cliente.IdCotizacion);
-            //var servicioExtra = await servicioRepo.ObtenerListaServiciosCotizacion(cliente.IdCotizacion, 0);
-
-            //INSERTAR SERVICIOS EXTRA COMO SUBCONTRATOS
-            //if (servicioExtra != null)
-            //{
-            //    foreach (var item in servicioExtra)
-            //    {
-            //        //decimal total = (((item.ImporteMensual * (porcentajes.CostoIndirecto + 1)) * (porcentajes.Utilidad + 1)) * (porcentajes.ComisionSobreVenta +1)) * (porcentajes.ComisionExterna +1);
-            //        await clienteRepo.InsertarSubcontrato(idClienteCreado, cliente.IdServicio, (int)item.IdFrecuencia, item.IdServicioExtra, item.ImporteMensual);
-            //    }
-            //}
-
-
-            ////CALCULAR TOTAL PRODUCTOS EXTRA
-            //foreach (var matext in materialExtra)
-            //{
-            //    await clienteRepo.InsertarMaterial(matext, idPuntoAtencionCreado, idClienteCreado);
-            //if (matext.ClaveProducto.StartsWith("M-HIG"))
-            //{
-            //    totalHigienicosExtra += matext.Total;
-            //}
-            //else
-            //{
-            //    totalMaterialesExtra += matext.Total;
-            //}
-            //}
-            //foreach (var herrext in herramientaExtra)
-            //{
-            //    string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herrext.ClaveProducto, (int)herrext.IdFrecuencia, herrext.Cantidad, herrext.Total);
-            //    clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
-            //    //totalHerramientaExtra += herrext.Total;
-            //}
-            //foreach (var equext in equipoExtra)
-            //{
-            //    string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equext.ClaveProducto, (int)equext.IdFrecuencia, equext.Cantidad, equext.Total);
-            //    clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
-            //    //totalEquipoExtra += equext.Total;
-            //}
-            //foreach (var uniext in uniformeExtra)
-            //{
-            //    await clienteRepo.InsertarProducto(uniext, idPuntoAtencionCreado, idClienteCreado);
-            //    totalUniformeExtra += uniext.Total;
-            //}
-            //foreach(var servext in servicioExtra)
-            //{
-            //    //await clienteRepo.InsertarServicio();
-            //    totalServicioExtra = servext.Total;
-            //}1852.5    totalMaterialesPuesto 1307.8
-
-            totalEquipoHerramienta = totalEquipo + totalHerramienta;
-
-            // GENERAR 3 PRESUPUESTOS, SOLO MATERIAL, SOLO HIGIENICOS Y HERRAMIENTA/EQUIPO
-            if (totalGeneralMateriales > 0)
+            catch (Exception ex)
             {
-                string presupuestoMaterialesXMLString = CrearXMLPresupuestoMateriales(idClienteCreado, cliente.IdServicio, 4, 1, totalGeneralMateriales, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
-                clienteRepo.InsertarPresupuestoMaterialXML(presupuestoMaterialesXMLString);
+                throw new CustomException("Ocurre");
             }
-            if (totalGeneralHigienico > 0)
-            {
-                string presupuestoHigienicosXMLString = CrearXMLPresupuestoHigienicos(idClienteCreado, cliente.IdServicio, 4, 2, totalGeneralHigienico, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
-                clienteRepo.InsertarPresupuestoMaterialXML(presupuestoHigienicosXMLString);
-            }
-            if (totalGeneralEquipoHerramienta > 0)
-            {
-                string presupuestoEquipoHerramientaXMLString = CrearXMLPresupuestoEquipoHerramienta(idClienteCreado, cliente.IdServicio, 4, "LISTA DE HERRAMIENTAS Y EQUIPO", totalGeneralEquipoHerramienta, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
-                clienteRepo.InsertarPresupuestoEquipoHerramientaXML(presupuestoEquipoHerramientaXMLString);
-            }
-
-            //ACTUALIZAR ESTATUS DE PROSPECTO Y COTIZACIONES
-            await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
-            await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
-            await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
-
-            return idClienteCreado;
         }
         public string CrearXMLHorario(PuestoDireccionCotizacionDTO puesto, int idPlantillaCreada)
         {
@@ -695,14 +701,17 @@ namespace SistemaVentasBatia.Services
             string asuntoLegalContratoXMLString = asuntoContratoXML.OuterXml;
             return asuntoLegalContratoXMLString;
         }
-        public string CrearXMLIgualaPuntoAtencion(int idClienteCreado, int idPuntoAtencionCreado, int idServicio, decimal totalPuntoAtencion, string igualaXML)
+        public string CrearXMLIgualaPuntoAtencion(int idClienteCreado, int idPuntoAtencionCreado, int idServicio, decimal totalPuntoAtencion, string igualaXML, int idpersonal, string fechaInicio)
         {
             var igualaDireccionXML = new XmlDocument();
             var igualaDireccionElement = igualaDireccionXML.CreateElement("partida");
             igualaDireccionElement.SetAttribute("cliente", idClienteCreado.ToString());
             igualaDireccionElement.SetAttribute("idinmueble", idPuntoAtencionCreado.ToString());
             igualaDireccionElement.SetAttribute("idlinea", idServicio.ToString());
+            igualaDireccionElement.SetAttribute("faplica", fechaInicio.ToString());
+            igualaDireccionElement.SetAttribute("movimiento", totalPuntoAtencion.ToString());
             igualaDireccionElement.SetAttribute("importe", totalPuntoAtencion.ToString());
+            igualaDireccionElement.SetAttribute("usuario", idpersonal.ToString());
             igualaDireccionXML.AppendChild(igualaDireccionElement);
             string igualaXMLString = igualaDireccionXML.OuterXml;
             igualaXML += igualaXMLString;
@@ -800,8 +809,8 @@ namespace SistemaVentasBatia.Services
             Correo email = new Correo();
             string fechastring = fecha.ToString("yyyyMMdd");
             email = await clienteRepo.ObenerDetalleCorreo(idPlantilla, fechastring);
-            //email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
-            
+            email.Gerente = "alanm@grupobatia.com.mx";  //comentar para PROD
+
             string body = @"<html style='width:100%;font-family:arial, 'helvetica neue', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;'>
                 <head>
                 <meta charset='UTF-8'>

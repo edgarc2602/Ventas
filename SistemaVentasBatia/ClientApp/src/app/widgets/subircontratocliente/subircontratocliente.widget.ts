@@ -1,8 +1,9 @@
-import { Component, Inject, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Router } from '@angular/router';
 declare var bootstrap: any;
 
 @Component({
@@ -21,7 +22,7 @@ export class SubirContratoClienteWidget {
     idAsuntoLegal: number = 0;
     idCliente: number = 0;
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) { }
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser, private rtr: Router) { }
 
     open(idCliente: number, idAsuntoLegal) {
         this.idCliente = idCliente;
@@ -42,7 +43,7 @@ export class SubirContratoClienteWidget {
         if (this.valida()) {
             this.iniciarCarga();
             setTimeout(() => {
-                this.http.get<boolean>(`${this.url}api/prospecto/SubirContratoCliente/${this.idCliente}/${this.idAsuntoLegal}`).subscribe(response => {
+                this.http.get<boolean>(`${this.url}api/prospecto/SubirContratoCliente/${this.idCliente}/${this.idAsuntoLegal}`, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     setTimeout(() => {
                         this.okToast('Contrato enviado para su revisi\u00F3n');
@@ -53,6 +54,7 @@ export class SubirContratoClienteWidget {
                     setTimeout(() => {
                         this.errorToast('Ocurri\u00F3 un error');
                     }, 300);
+                    this.validaError(err);
                     if (err.error) {
                         if (err.error.errors) {
                             this.lerr = err.error.errors;
@@ -74,7 +76,23 @@ export class SubirContratoClienteWidget {
         }
 
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     valida() {
         this.validaciones = true;
         //if (this.servicio == '') {

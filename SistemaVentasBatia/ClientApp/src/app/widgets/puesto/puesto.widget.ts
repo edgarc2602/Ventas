@@ -1,5 +1,5 @@
 ﻿import { Component, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { PuestoCotiza } from '../../models/puestocotiza';
 import { Catalogo } from '../../models/catalogo';
 import { ItemN } from '../../models/item';
@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 import { ToastWidget } from '../toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { CatalogoSueldoJornalero } from '../../models/catalogosueldojornalero';
+import { Router } from '@angular/router';
 declare var bootstrap: any;
 
 @Component({
@@ -48,24 +49,26 @@ export class PuestoWidget {
     idSucursal: number = 0;
     selectedSueldo: any;
     idServicio: number = 0;
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser) {
-        
-        http.get<Catalogo[]>(`${url}api/catalogo/getturno`).subscribe(response => {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private sinU: StoreUser, private rtr: Router) {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+        http.get<Catalogo[]>(`${url}api/catalogo/getturno`, {headers}).subscribe(response => {
             this.turs = response;
-        }, err => console.log(err));
-        http.get<ItemN[]>(`${url}api/catalogo/getdia`).subscribe(response => {
+        }, err => this.validaError(err));
+        http.get<ItemN[]>(`${url}api/catalogo/getdia`, { headers }).subscribe(response => {
             this.dias = response;
-        }, err => console.log(err));
-        http.get<string[]>(`${url}api/catalogo/gethorario`).subscribe(response => {
+        }, err => this.validaError(err));
+        http.get<string[]>(`${url}api/catalogo/gethorario`, { headers }).subscribe(response => {
             this.hors = response;
-        }, err => console.log(err));
-        http.get<Catalogo[]>(`${this.url}api/tabulador/getbyedo/${1}`).subscribe(response => {
+        }, err => this.validaError(err));
+        http.get<Catalogo[]>(`${this.url}api/tabulador/getbyedo/${1}`, { headers }).subscribe(response => {
             this.tabs = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
         
-        http.get<Catalogo[]>(`${url}api/catalogo/getclase`).subscribe(response => {
+        http.get<Catalogo[]>(`${url}api/catalogo/getclase`, { headers }).subscribe(response => {
             this.lclas = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
         
     }
 
@@ -88,10 +91,10 @@ export class PuestoWidget {
 
     existe(id: number) {
         this.model.sueldo = 0
-        this.http.get<PuestoCotiza>(`${this.url}api/puesto/${id}`).subscribe(response => {
+        this.http.get<PuestoCotiza>(`${this.url}api/puesto/${id}`, {headers: this.getHeaders()}).subscribe(response => {
             this.existeProducto = response.incluyeMaterial;
             this.idD = response.idDireccionCotizacion;
-                this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`).subscribe(response => {
+            this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`,{ headers: this.getHeaders() }).subscribe(response => {
                     this.idEstado = response;
                 }, err => console.log(err));
             this.model = response;
@@ -106,6 +109,7 @@ export class PuestoWidget {
             this.chgSalariodos();
         }, err => {
             console.log(err);
+            this.validaError(err);
             if (err.error) {
                 if (err.error.errors) {
                     this.lerr = err.error.errors;
@@ -134,7 +138,7 @@ export class PuestoWidget {
                 this.iniciarCarga();
                 setTimeout(() => {
                     if (this.model.idPuestoDireccionCotizacion == 0) {
-                        this.http.post<PuestoCotiza>(`${this.url}api/puesto/${this.idServicio}`, this.model).subscribe(response => {
+                        this.http.post<PuestoCotiza>(`${this.url}api/puesto/${this.idServicio}`, this.model, {headers:this.getHeaders()}).subscribe(response => {
                             this.detenerCarga();
                             setTimeout(() => {
                                 this.okToast('Puesto agregado');
@@ -147,6 +151,7 @@ export class PuestoWidget {
                                 this.errorToast('Ocurri\u00F3 un error');
                             }, 300);
                             console.log(err);
+                            this.validaError(err);
                             if (err.error) {
                                 if (err.error.errors) {
                                     this.lerr = err.error.errors;
@@ -154,7 +159,7 @@ export class PuestoWidget {
                             }
                         });
                     } else {
-                        this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}/${this.idServicio}`, this.model).subscribe(response => {
+                        this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}/${this.idServicio}`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                             this.detenerCarga();
                             setTimeout(() => {
                                 this.okToast('Puesto actualizado');
@@ -167,6 +172,7 @@ export class PuestoWidget {
                                 this.errorToast('Ocurri\u00F3 un error');
                             }, 300);
                             console.log(err);
+                            this.validaError(err);
                             if (err.error) {
                                 if (err.error.errors) {
                                     this.lerr = err.error.errors;
@@ -201,7 +207,7 @@ export class PuestoWidget {
                 this.iniciarCarga();
                 setTimeout(() => {
                     if (this.model.idPuestoDireccionCotizacion == 0) {
-                        this.http.post<PuestoCotiza>(`${this.url}api/puesto/${this.idServicio}`, this.model).subscribe(response => {
+                        this.http.post<PuestoCotiza>(`${this.url}api/puesto/${this.idServicio}`, this.model, {headers: this.getHeaders()}).subscribe(response => {
                             this.detenerCarga();
                             setTimeout(() => {
                                 this.okToast('Puesto agregado');
@@ -214,6 +220,7 @@ export class PuestoWidget {
                                 this.errorToast('Ocurri\u00F3 un error');
                             }, 300);
                             console.log(err);
+                            this.validaError(err);
                             if (err.error) {
                                 if (err.error.errors) {
                                     this.lerr = err.error.errors;
@@ -221,7 +228,7 @@ export class PuestoWidget {
                             }
                         });
                     } else {
-                        this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}/${this.idServicio}`, this.model).subscribe(response => {
+                        this.http.put<boolean>(`${this.url}api/puesto/${this.existeProducto}/${this.idServicio}`, this.model, {headers: this.getHeaders()}).subscribe(response => {
                             this.detenerCarga();
                             setTimeout(() => {
                                 this.okToast('Puesto actualizado');
@@ -234,6 +241,7 @@ export class PuestoWidget {
                                 this.errorToast('Ocurri\u00F3 un error');
                             }, 300);
                             console.log(err);
+                            this.validaError(err);
                             if (err.error) {
                                 if (err.error.errors) {
                                     this.lerr = err.error.errors;
@@ -246,11 +254,27 @@ export class PuestoWidget {
         }
         
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     chgSalario() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.get<SalarioMin>(`${this.url}api/salario/${this.idT}/${this.model.idPuesto}/${this.model.idTurno}`).subscribe(response => {
+            this.http.get<SalarioMin>(`${this.url}api/salario/${this.idT}/${this.model.idPuesto}/${this.model.idTurno}`, {headers: this.getHeaders()}).subscribe(response => {
                 this.detenerCarga();
                 this.suel = response;
                 this.model.idSalario = response.idSalario;
@@ -260,6 +284,7 @@ export class PuestoWidget {
             }, err => {
                 this.detenerCarga();
                 console.log(err);
+                this.validaError(err);
             });
         }, 300);
     }
@@ -267,7 +292,7 @@ export class PuestoWidget {
     chgSalarioSeg() {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.get<SalarioMin>(`${this.url}api/salario/${this.idT}/${this.model.idPuesto}/${this.model.idTurno}`).subscribe(response => {
+            this.http.get<SalarioMin>(`${this.url}api/salario/${this.idT}/${this.model.idPuesto}/${this.model.idTurno}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 this.suel = response;
                 this.model.idSalario = response.idSalario;
@@ -277,21 +302,22 @@ export class PuestoWidget {
             }, err => {
                 this.detenerCarga();
                 console.log(err);
+                this.validaError(err);
             });
         }, 300);
     }
 
     obtenerIdEstado() {
-        this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`).subscribe(response => {
+        this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`, { headers: this.getHeaders() }).subscribe(response => {
             this.idEstado = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     loadSucursalesCliente() {
         this.chgSalariodos();
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/GetCatalogoSucursalesCliente/${this.idEstado}/${this.idCliente}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/GetCatalogoSucursalesCliente/${this.idEstado}/${this.idCliente}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lsuc = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     salarioSelected(importe: number, jornada: string, idJornada: number) {
@@ -305,20 +331,20 @@ export class PuestoWidget {
     chgSalariodos() {
         this.iniciarCarga();
         if (this.model.idPuesto == 77) {
-            this.http.get<Catalogo[]>(`${this.url}api/catalogo/getcatalogoclientes/${this.idEstado}`).subscribe(response => {
+            this.http.get<Catalogo[]>(`${this.url}api/catalogo/getcatalogoclientes/${this.idEstado}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.lcli = response;
-            }, err => console.log(err));
-            this.http.get<CatalogoSueldoJornalero[]>(`${this.url}api/salario/ObtenerSueldoJornal/${this.idD}/${this.idCliente}/${this.idSucursal}`).subscribe(response => {
+            }, err => this.validaError(err));
+            this.http.get<CatalogoSueldoJornalero[]>(`${this.url}api/salario/ObtenerSueldoJornal/${this.idD}/${this.idCliente}/${this.idSucursal}`, { headers: this.getHeaders() }).subscribe(response => {
                 this.lsuel = response;
                 this.model.sueldo = 0;
                 this.model.jornada = 0;
-            })
+            }, err => this.validaError(err));
             this.detenerCarga();
 
         }
         else {
             setTimeout(() => {
-                this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}/${this.model.jornada}`).subscribe(response => {
+                this.http.get<number>(`${this.url}api/salario/${this.model.idPuesto}/${this.model.idClase}/${this.model.idTabulador}/${this.model.idTurno}/${this.model.jornada}`, { headers: this.getHeaders() }).subscribe(response => {
                     this.detenerCarga();
                     this.model.sueldo = response;
 
@@ -348,6 +374,7 @@ export class PuestoWidget {
                 }, err => {
                     this.detenerCarga();
                     console.log(err);
+                    this.validaError(err);
                 });
             }, 300);
         }
@@ -438,14 +465,14 @@ export class PuestoWidget {
     }
 
     cargarHorarios() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getjornada/${this.idServicio}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getjornada/${this.idServicio}`, {headers: this.getHeaders()}).subscribe(response => {
             this.ljor = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
     cargarPuestos() {
-        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getpuesto/${this.idServicio}`).subscribe(response => {
+        this.http.get<Catalogo[]>(`${this.url}api/catalogo/getpuesto/${this.idServicio}`, { headers: this.getHeaders() }).subscribe(response => {
             this.pues = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     openEdit(idCotizacion: number, idPuesto: number, nombreSucursal: string, diasEvento: number, idServicio: number) {
@@ -470,9 +497,9 @@ export class PuestoWidget {
     }
 
     getZonaDefault(idDireccionCotizacion: number) {
-        this.http.get<number>(`${this.url}api/salario/getzonadefault/${idDireccionCotizacion}`).subscribe(response => {
+        this.http.get<number>(`${this.url}api/salario/getzonadefault/${idDireccionCotizacion}`, { headers: this.getHeaders() }).subscribe(response => {
             this.model.idTabulador = response;
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
 
     okToast(message: string) {

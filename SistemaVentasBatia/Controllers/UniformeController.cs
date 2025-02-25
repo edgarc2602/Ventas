@@ -24,6 +24,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("{id}/{pagina}")]
         public async Task<ActionResult<ListaMaterialesCotizacionLimpiezaDTO>> Get(int idDir, int idPues, string keywords, int id, int pagina = 1)
         {
+            var token = _logicS.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             ListaMaterialesCotizacionLimpiezaDTO listaMaterialesVM = new ListaMaterialesCotizacionLimpiezaDTO()
             {
                 Pagina = pagina,
@@ -40,6 +43,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpGet("[action]/{idPuestoDireccion}")]
         public async Task<ActionResult<ListaMaterialesCotizacionLimpiezaDTO>> GetByPuesto(int idPuestoDireccion)
         {
+            var token = _logicS.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             var uniformeCotizacion = await _logic.ObtenerListaUniformeOperario(idPuestoDireccion);
             return uniformeCotizacion;
         }
@@ -55,6 +61,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPost]
         public async Task<ActionResult<MaterialCotizacionDTO>> Create([FromBody] MaterialCotizacionDTO uniforme)
         {
+            var token = _logicS.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await _logic.AgregarUniformeOperario(uniforme);
             return uniforme;
         }
@@ -62,6 +71,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpPut]
         public async Task<ActionResult<MaterialCotizacionDTO>> Update([FromBody] MaterialCotizacionDTO uniforme)
         {
+            var token = _logicS.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await _logic.ActualizarUniformeCotizacion(uniforme);
             return uniforme;
         }
@@ -69,6 +81,9 @@ namespace SistemaVentasBatia.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(int id)
         {
+            var token = _logicS.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
             await _logic.EliminarUniformeCotizacion(id);
             return true;
         }

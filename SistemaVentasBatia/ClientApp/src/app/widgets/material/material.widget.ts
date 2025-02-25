@@ -1,9 +1,10 @@
-import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+﻿import { Component, Inject, OnChanges, Input, SimpleChanges, Output, EventEmitter, ViewChild } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ListaMaterial } from 'src/app/models/listamaterial';
 declare var bootstrap: any;
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'mate-widget',
@@ -25,19 +26,35 @@ export class MaterialWidget {
     isLoading: boolean = false;
     idEstatus: number = 0;
     idTipoServicio: number = 0;
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient) { }
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) { }
 
     existe(id: number) {
         this.total = 0;
         this.edit = 1;
         this.model.edit = this.edit;
-        this.http.get<ListaMaterial>(`${this.url}api/${this.tipo}/getbypuesto/${id}`).subscribe(response => {
+        this.http.get<ListaMaterial>(`${this.url}api/${this.tipo}/getbypuesto/${id}`, {headers: this.getHeaders()}).subscribe(response => {
             this.model.edit = this.edit;
             this.model = response;
             this.totalModal();
-        }, err => console.log(err));
+        }, err => this.validaError(err));
     }
+    validaError(err: any) {
+        if (err.status === 401) {
+            this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
+            localStorage.clear();
+            localStorage.setItem('token', '');
+            localStorage.setItem('usuario', '');
+            this.rtr.navigate(['']);
 
+        } else {
+            this.errorToast('Ocurri\u00F3 un error');
+        }
+    }
+    getHeaders() {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return headers;
+    }
     agregarMaterial() {
         this.model.edit = 0;
         this.sendEvent.emit(0);
@@ -54,7 +71,7 @@ export class MaterialWidget {
     remove(id: number) {
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.delete<boolean>(`${this.url}api/${this.tipo}/${id}`).subscribe(response => {
+            this.http.delete<boolean>(`${this.url}api/${this.tipo}/${id}`, {headers: this.getHeaders()}).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast(this.tipo + ' eliminado')
@@ -65,7 +82,7 @@ export class MaterialWidget {
             }, err => {
                 this.detenerCarga();
                 setTimeout(() => {
-                this.errorToast('Ocurri� un error');
+                    this.validaError(err);
                 }, 300);
                 console.log(err);
             });
