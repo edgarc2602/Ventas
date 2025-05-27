@@ -66,7 +66,7 @@ namespace SistemaVentasBatia.Services
             PuestoTabulador result = new PuestoTabulador();
 
             result = await _repo.ObtenerTabuladorPuesto(id, idClase);
-            
+
             return result;
         }
     }

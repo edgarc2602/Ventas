@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SistemaVentasBatia.Models
+﻿namespace SistemaVentasBatia.Models
 {
     public class ClienteContrato
     {

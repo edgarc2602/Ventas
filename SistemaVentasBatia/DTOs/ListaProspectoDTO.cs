@@ -1,8 +1,5 @@
-﻿using System;
+﻿using SistemaVentasBatia.Enums;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
 
 namespace SistemaVentasBatia.DTOs
 {

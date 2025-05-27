@@ -1,19 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SistemaVentasBatia.Models;
-using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Services;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Diagnostics.Contracts;
-using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 
@@ -56,7 +46,7 @@ namespace SistemaVentasBatia.Controllers
         }
 
         [HttpPost("[action]/{idCotizacion}")]
-        public async Task <FileContentResult> DescargarLayoutPlantilla(int idCotizacion)
+        public async Task<FileContentResult> DescargarLayoutPlantilla(int idCotizacion)
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");
@@ -65,9 +55,9 @@ namespace SistemaVentasBatia.Controllers
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "archivo.xlsx");
         }
-        
+
         [HttpPost("[action]/{idCotizacion}")]
-        public async Task <bool> CargarPlantilla( IFormFile file, int idCotizacion)
+        public async Task<bool> CargarPlantilla(IFormFile file, int idCotizacion)
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");

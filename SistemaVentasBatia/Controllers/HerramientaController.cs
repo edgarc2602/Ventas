@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Services;
@@ -14,7 +13,7 @@ namespace SistemaVentasBatia.Controllers
     {
         private readonly IMaterialService _logic;
         private readonly IUsuarioService logic;
-        public HerramientaController(IMaterialService service,IUsuarioService _usuarioService)
+        public HerramientaController(IMaterialService service, IUsuarioService _usuarioService)
         {
             _logic = service;
             logic = _usuarioService;

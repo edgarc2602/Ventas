@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using SistemaVentasBatia.Models;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Enums;
+using SistemaVentasBatia.Models;
 
 namespace SistemaVentasBatia
 {
@@ -77,7 +77,7 @@ namespace SistemaVentasBatia
             CreateMap<ProductoPrecioEstadoDTO, ProductoPrecioEstado>();
 
             CreateMap<ProductoFamilia, ProductoFamiliaDTO>();
-            CreateMap<ProductoFamiliaDTO,ProductoFamilia>();
+            CreateMap<ProductoFamiliaDTO, ProductoFamilia>();
             CreateMap<ImmsJornada, ImmsJornadaDTO>();
             CreateMap<ImmsJornadaDTO, ImmsJornada>();
             CreateMap<ClienteContrato, ClienteContratoDTO>();

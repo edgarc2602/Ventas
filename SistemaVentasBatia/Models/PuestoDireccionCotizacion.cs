@@ -1,5 +1,5 @@
-﻿using System;
-using SistemaVentasBatia.Enums;
+﻿using SistemaVentasBatia.Enums;
+using System;
 
 namespace SistemaVentasBatia.Models
 {
@@ -49,7 +49,7 @@ namespace SistemaVentasBatia.Models
         public DiaSemana? DiaInicioFin { get; set; }
         public DiaSemana? DiaFinFin { get; set; }
         public DiaSemana? DiaDescanso { get; set; }
-        public string HorarioStr {  get; set; }
+        public string HorarioStr { get; set; }
         public int DiasEvento { get; set; }
         public bool IncluyeMaterial { get; set; }
     }

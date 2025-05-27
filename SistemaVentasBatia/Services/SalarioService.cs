@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
 using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Enums;
-using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security;
 using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Services
@@ -84,7 +79,7 @@ namespace SistemaVentasBatia.Services
         public async Task<decimal> GetSueldo(int? idPuesto, int? idClase, int? idTabulador, int? idTurno, int? jornada)
         {
             decimal result;
-            result =  await _repo.GetSueldo(idPuesto, idClase, idTabulador, idTurno, jornada);
+            result = await _repo.GetSueldo(idPuesto, idClase, idTabulador, idTurno, jornada);
             if (idTurno == 3)
             {
                 result = result + 300;
@@ -103,7 +98,7 @@ namespace SistemaVentasBatia.Services
             int idEstado = await _repo.ObtenerIdEstadoPorIdDireccionCotizaion(idDireccionCotizacion);
             var sueldos = new List<CatalogoSueldoJornaleroDTO>();
 
-                sueldos = _mapper.Map<List<CatalogoSueldoJornaleroDTO>>(await _repo.ObtenerSueldoJornaleroPorIdEstado(idEstado, idCliente, idSucursal));
+            sueldos = _mapper.Map<List<CatalogoSueldoJornaleroDTO>>(await _repo.ObtenerSueldoJornaleroPorIdEstado(idEstado, idCliente, idSucursal));
 
             return sueldos;
         }

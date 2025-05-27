@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SistemaVentasBatia.DTOs
+﻿namespace SistemaVentasBatia.DTOs
 {
     public class ClienteContratoDTO
     {

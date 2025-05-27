@@ -1,19 +1,12 @@
 ﻿using AutoMapper;
+using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
-using SistemaVentasBatia.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using System.Runtime.CompilerServices;
-using SistemaVentasBatia.Controllers;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Xml.Schema;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
-using System.Net;
 
 namespace SistemaVentasBatia.Services
 {
@@ -1116,7 +1109,7 @@ namespace SistemaVentasBatia.Services
             string horarioStr = "";
             if (idServicio != 6)
             {
-                 horarioStr = operario.DiaInicio + " a " + operario.DiaFin + " de " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
+                horarioStr = operario.DiaInicio + " a " + operario.DiaFin + " de " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
                 if (operario.DiaInicioFin == operario.DiaFinFin && operario.DiaInicioFin.ToString() != "0")
                 {
                     horarioStr += ", " + operario.DiaFinFin + " de " + operario.HrInicioFin.Hours + ":00 a " + operario.HrFinFin.Hours + ":00";
@@ -1128,7 +1121,7 @@ namespace SistemaVentasBatia.Services
             }
             else
             {
-                 horarioStr = "De " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
+                horarioStr = "De " + operario.HrInicio.Hours + ":00 a " + operario.HrFin.Hours + ":00";
             }
             if (operario.DiaFestivo == false || operario.DiaDomingo == false || operario.DiaCubreDescanso == false)
             {

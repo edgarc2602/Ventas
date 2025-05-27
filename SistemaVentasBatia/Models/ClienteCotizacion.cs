@@ -1,6 +1,4 @@
-﻿using System.Security.Policy;
-
-namespace SistemaVentasBatia.Models
+﻿namespace SistemaVentasBatia.Models
 {
     public class ClienteCotizacion
     {

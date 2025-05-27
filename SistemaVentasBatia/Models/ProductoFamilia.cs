@@ -3,6 +3,6 @@
     public class ProductoFamilia
     {
         public int IdFamilia { get; set; }
-        public string  Descripcion { get; set; }
+        public string Descripcion { get; set; }
     }
 }

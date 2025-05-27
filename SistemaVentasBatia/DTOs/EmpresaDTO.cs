@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 
 namespace SistemaVentasBatia.DTOs
 {
@@ -14,13 +13,13 @@ namespace SistemaVentasBatia.DTOs
         public string CalleNumero { get; set; }
         public string Colonia { get; set; }
         public string CP { get; set; }
-        public string Municipio { get; set;}
+        public string Municipio { get; set; }
         public int IdEstado { get; set; }
         public int IdEstatus { get; set; }
         public int IdClase { get; set; }
         public string Representante { get; set; }
         public string FolioVigente { get; set; }
-        public string ConstitutivaEscrituraPublica { get; set;  }
+        public string ConstitutivaEscrituraPublica { get; set; }
         public DateTime ConstitutivaFecha { get; set; }
         public string ConstitutivaLicenciado { get; set; }
         public string ConstitutivaNumeroNotario { get; set; }

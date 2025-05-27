@@ -1,12 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -101,7 +100,7 @@ namespace SistemaVentasBatia.Controllers
         }
 
         [HttpGet("[action]/{cp}")]
-        public async Task <ActionResult<DireccionResponseAPIDTO>> GetDireccionAPI(string cp = "")
+        public async Task<ActionResult<DireccionResponseAPIDTO>> GetDireccionAPI(string cp = "")
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");

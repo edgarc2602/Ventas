@@ -5,9 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using SistemaVentasBatia.DTOs;
-using System.Text.RegularExpressions;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -298,7 +295,7 @@ namespace SistemaVentasBatia.Repositories
             }
             return reg;
         }
-        
+
         public async Task<bool> VerificarIndustriasExistentes(int id)
 
         {
@@ -371,7 +368,7 @@ GETDATE(),
             }
             return reg;
         }
-        
+
         public async Task<bool> AgregarIndustria(string industria, int idPersonal)
         {
             var query = @"INSERT INTO tb_industria_tipo (descripcion,id_estatus,fecha_alta, id_personal) VALUES (@industria,1,GETDATE(), @idPersonal)";
@@ -565,9 +562,9 @@ ISNULL(NULLIF(@idFamilia,0), b.id_familia) = b.id_familia
             try
             {
                 using var connection = ctx.CreateConnection();
-                numrows = await connection.QuerySingleAsync<int>(query, new {idEstado, idFamilia});
+                numrows = await connection.QuerySingleAsync<int>(query, new { idEstado, idFamilia });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -602,7 +599,7 @@ ORDER BY RowNum
             {
                 using var connection = ctx.CreateConnection();
                 productos = (await connection.QueryAsync<ProductoPrecioEstado>(query, new { idEstado, pagina, idFamilia })).ToList();
-                
+
             }
             catch (Exception ex)
             {
@@ -620,7 +617,7 @@ WHERE a.id_estado = @idEstado";
             try
             {
                 using var connection = ctx.CreateConnection();
-                proveedor = await connection.QuerySingleAsync<string>(query, new { idEstado});
+                proveedor = await connection.QuerySingleAsync<string>(query, new { idEstado });
 
             }
             catch (Exception ex)
@@ -634,7 +631,7 @@ WHERE a.id_estado = @idEstado";
             var query = @"
 SELECT a.id_proveedor FROM tb_estado a WHERE a.id_estado = @idEstado
 ";
-            int  idProveedor;
+            int idProveedor;
             try
             {
                 using var connection = ctx.CreateConnection();
@@ -715,9 +712,9 @@ WHERE b.id_cotizacion = @idCotizacion";
                 var relacion = (await connection.QueryAsync<EstadoProveedor>(query)).ToList();
                 return relacion;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new CustomException("Error al cosnultar la relacion Estado/ Proveedor, detalle:"+ ex.Message);
+                throw new CustomException("Error al cosnultar la relacion Estado/ Proveedor, detalle:" + ex.Message);
             }
         }
     }

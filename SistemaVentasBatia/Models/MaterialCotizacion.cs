@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
+﻿using SistemaVentasBatia.Enums;
+using System;
 
 namespace SistemaVentasBatia.Models
 {
@@ -33,7 +30,7 @@ namespace SistemaVentasBatia.Models
         public int IdPersonal { get; set; }
 
         public string DescripcionMaterial { get; set; }
-        
+
         public string NombreSucursal { get; set; }
 
         public string DescripcionPuesto { get; set; }

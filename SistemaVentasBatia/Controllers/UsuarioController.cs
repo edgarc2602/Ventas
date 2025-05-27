@@ -20,7 +20,7 @@ namespace SistemaVentasBatia.Controllers
     {
         private readonly IUsuarioService _logic;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        
+
         public UsuarioController(IUsuarioService logic, IHttpContextAccessor httpContextAccessor)
         {
             _logic = logic;

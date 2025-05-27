@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
+﻿using SistemaVentasBatia.Enums;
 
 namespace SistemaVentasBatia.DTOs
 {
@@ -36,7 +32,7 @@ namespace SistemaVentasBatia.DTOs
         public decimal ComisionExtPor { get; set; }
         public decimal PolizaPor { get; set; }
         public bool PolizaCumplimiento { get; set; }
-        public decimal  TotalPolizaCumplimiento { get; set; }
+        public decimal TotalPolizaCumplimiento { get; set; }
         public int IdEstatus { get; set; }
         public int DiasEvento { get; set; }
     }

@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using SistemaVentasBatia.Context;
 using SistemaVentasBatia.Models;
-using System.ComponentModel;
-using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Enums;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
-using System.Net;
-using System.Net.NetworkInformation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -118,7 +109,7 @@ namespace SistemaVentasBatia.Repositories
                     empresa = await connection.QueryFirstAsync<Empresa>(query, new { idEmpresa });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -130,12 +121,12 @@ namespace SistemaVentasBatia.Repositories
             string estadoNombre = "";
             try
             {
-                using(var connection = _ctx.CreateConnection())
+                using (var connection = _ctx.CreateConnection())
                 {
                     estadoNombre = await connection.QueryFirstAsync<string>(query, new { idEstado });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -160,7 +151,7 @@ namespace SistemaVentasBatia.Repositories
         }
         public async Task<List<Prospecto>> ObtenerListaProspectos(int idEstatus, DateTime Finicio, DateTime Ffin)
         {
-            if(idEstatus == 2)
+            if (idEstatus == 2)
             {
                 idEstatus = 3;
             }
@@ -193,8 +184,8 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = _ctx.CreateConnection())
                 {
-                        prospectos = (await connection.QueryAsync<Prospecto>(query, new {idEstatus,Finicio, Ffin })).ToList();
-                    
+                    prospectos = (await connection.QueryAsync<Prospecto>(query, new { idEstatus, Finicio, Ffin })).ToList();
+
 
                 }
             }
@@ -204,9 +195,9 @@ namespace SistemaVentasBatia.Repositories
             }
             return prospectos;
         }
-        public async Task<List<Cotizacion>> ObtenerCotizacionesPorIdProspecto(int idEstatus,int idProspecto, DateTime Finicio, DateTime Ffin)
+        public async Task<List<Cotizacion>> ObtenerCotizacionesPorIdProspecto(int idEstatus, int idProspecto, DateTime Finicio, DateTime Ffin)
         {
-            if(idEstatus == 2)
+            if (idEstatus == 2)
             {
                 idEstatus = 3;
             }
@@ -227,7 +218,7 @@ namespace SistemaVentasBatia.Repositories
                     WHERE 
                     c.id_prospecto = @idProspecto AND
                     c.fecha_alta BETWEEN @Finicio AND @Ffin AND ";
-            if(idEstatus == 0)
+            if (idEstatus == 0)
             {
                 query += "c.id_estatus_cotizacion IN (1,3)";
             }

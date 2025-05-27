@@ -1,5 +1,4 @@
 ﻿using System;
-using SistemaVentasBatia.Enums;
 
 namespace SistemaVentasBatia.DTOs
 {

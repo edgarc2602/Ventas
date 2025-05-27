@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
-using SistemaVentasBatia.Models;
-using SistemaVentasBatia.Repositories;
+using Microsoft.Extensions.Options;
 using SistemaVentasBatia.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Options;
-using Microsoft.Extensions.Options;
-using iTextSharp.text.io;
+using SistemaVentasBatia.Repositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Services
 {

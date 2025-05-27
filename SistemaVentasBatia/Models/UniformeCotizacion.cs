@@ -1,8 +1,5 @@
 ﻿using SistemaVentasBatia.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Models
 {
@@ -43,6 +40,6 @@ namespace SistemaVentasBatia.Models
 
 
         public int IdDireccionCotizacionDireccion { get; set; }
-        public int IdPuesto { get; set; }   
+        public int IdPuesto { get; set; }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Enums
 {
@@ -32,7 +29,7 @@ namespace SistemaVentasBatia.Enums
         Autorizada = 6,
         Contratada = 4,
         No_Seleccionada = 5
-        
+
     }
 
     public enum Servicio

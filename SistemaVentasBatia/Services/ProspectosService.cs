@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
+using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
-using SistemaVentasBatia.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
 using System.Net.Http;
-using Newtonsoft.Json;
-using System.Xml;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Services
 {

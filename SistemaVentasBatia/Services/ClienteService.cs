@@ -1,27 +1,16 @@
 ﻿using AutoMapper;
+using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
-using SistemaVentasBatia.DTOs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Xml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateAndTime.Workdays;
-using Org.BouncyCastle.Asn1.BC;
-using System.Runtime.CompilerServices;
-using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Asn1.Tsp;
-using Microsoft.AspNetCore.Routing;
 using System.IO;
-using System.Drawing;
-using System.Text.RegularExpressions;
-using System.Diagnostics.Eventing.Reader;
-using System.Net.Mail;
+using System.Linq;
 using System.Net;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace SistemaVentasBatia.Services
 {
@@ -56,7 +45,7 @@ namespace SistemaVentasBatia.Services
             return contrato;
         }
 
-        
+
         public async Task<bool> InsetarDatosClienteContrato(ClienteContratoDTO contrato)
         {
             var coincidencia = await clienteRepo.ConsultarContratoExistente(contrato.IdProspecto);
@@ -205,8 +194,8 @@ namespace SistemaVentasBatia.Services
                         await clienteRepo.InsertarCargaSocialPuesto(idPlantillaCreada, cargaSocial, totalUniforme, puesto.Bonos, puesto.Domingo, otrasComp);
 
                         //CREAR E INSERTAR HORARIO
-                        string horarioActualizadoXML = CrearXMLHorario(puesto, idPlantillaCreada);
-                        clienteRepo.InsertarHorarioActualizadoPlantillaXML(horarioActualizadoXML);
+                        //string horarioActualizadoXML = CrearXMLHorario(puesto, idPlantillaCreada);
+                        //clienteRepo.InsertarHorarioActualizadoPlantillaXML(horarioActualizadoXML);
                         DateTime fecha = DateTime.Now;
                         EnviaCorreoVacantes(fecha, "Registro de Vacante", idPlantillaCreada);
                     }
@@ -326,12 +315,12 @@ namespace SistemaVentasBatia.Services
                 // GENERAR 3 PRESUPUESTOS, SOLO MATERIAL, SOLO HIGIENICOS Y HERRAMIENTA/EQUIPO
                 if (totalGeneralMateriales > 0)
                 {
-                    string presupuestoMaterialesXMLString = CrearXMLPresupuestoMateriales(idClienteCreado, cliente.IdServicio, 4, 1, totalGeneralMateriales, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
+                    string presupuestoMaterialesXMLString = CrearXMLPresupuestoMateriales(idClienteCreado, cliente.IdServicio, 4, 1, totalGeneralMateriales, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"), cliente.IdPersonal);
                     clienteRepo.InsertarPresupuestoMaterialXML(presupuestoMaterialesXMLString);
                 }
                 if (totalGeneralHigienico > 0)
                 {
-                    string presupuestoHigienicosXMLString = CrearXMLPresupuestoHigienicos(idClienteCreado, cliente.IdServicio, 4, 2, totalGeneralHigienico, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
+                    string presupuestoHigienicosXMLString = CrearXMLPresupuestoHigienicos(idClienteCreado, cliente.IdServicio, 4, 2, totalGeneralHigienico, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"), cliente.IdPersonal);
                     clienteRepo.InsertarPresupuestoMaterialXML(presupuestoHigienicosXMLString);
                 }
                 if (totalGeneralEquipoHerramienta > 0)
@@ -376,7 +365,7 @@ namespace SistemaVentasBatia.Services
                     horarioElement.SetAttribute("dia" + i.ToString() + "a", puesto.HrFin.Hours.ToString());
                 }
 
-                if((int)puesto.DiaInicioFin > (int)puesto.DiaFin)
+                if ((int)puesto.DiaInicioFin > (int)puesto.DiaFin)
                 {
                     for (int i = (int)puesto.DiaInicioFin; i <= (int)puesto.DiaFinFin; i++)
                     {
@@ -423,7 +412,7 @@ namespace SistemaVentasBatia.Services
                 }
 
                 //LENAR VACIOS SI EXISTE
-                for(int i = (int)puesto.DiaFin + 1; i < (int)puesto.DiaInicio; i++)
+                for (int i = (int)puesto.DiaFin + 1; i < (int)puesto.DiaInicio; i++)
                 {
                     horarioElement.SetAttribute("dia" + i.ToString() + "de", "0");
                     horarioElement.SetAttribute("dia" + i.ToString() + "a", "0");
@@ -521,7 +510,7 @@ namespace SistemaVentasBatia.Services
             direccionElement.SetAttribute("mingi", "0");
             direccionElement.SetAttribute("materiales", "0");
             direccionElement.SetAttribute("manto", "0");
-            direccionElement.SetAttribute("iguala", "0");
+            direccionElement.SetAttribute("iguala", "1");
             direccionElement.SetAttribute("permiso", "0");
             direccionElement.SetAttribute("horarioe", "0");
             direccionElement.SetAttribute("idpersonal", idPersonal.ToString());
@@ -604,7 +593,7 @@ namespace SistemaVentasBatia.Services
             string lineaNegocioXMLString = lineaNegocioXML.OuterXml;
             return lineaNegocioXMLString;
         }
-        public string CrearXMLPresupuestoMateriales(int idClienteCreado, int idLineaNegocio, int idPeriodo, int idConcepto, decimal importe, string fechaInicio)
+        public string CrearXMLPresupuestoMateriales(int idClienteCreado, int idLineaNegocio, int idPeriodo, int idConcepto, decimal importe, string fechaInicio, int usuario)
         {
             var PresMatXML = new XmlDocument();
             var pttoElement = PresMatXML.CreateElement("material");
@@ -614,11 +603,12 @@ namespace SistemaVentasBatia.Services
             pttoElement.SetAttribute("concepto", idConcepto.ToString());
             pttoElement.SetAttribute("importe", importe.ToString());
             pttoElement.SetAttribute("faplica", fechaInicio.ToString());
+            pttoElement.SetAttribute("usuario", usuario.ToString());
             PresMatXML.AppendChild(pttoElement);
             string PptoMatXMLString = PresMatXML.OuterXml;
             return PptoMatXMLString;
         }
-        public string CrearXMLPresupuestoHigienicos(int idClienteCreado, int idLineaNegocio, int idPeriodo, int idConcepto, decimal importe, string fechaInicio)
+        public string CrearXMLPresupuestoHigienicos(int idClienteCreado, int idLineaNegocio, int idPeriodo, int idConcepto, decimal importe, string fechaInicio, int usuario)
         {
             var PresMatXML = new XmlDocument();
             var pttoElement = PresMatXML.CreateElement("material");
@@ -628,6 +618,7 @@ namespace SistemaVentasBatia.Services
             pttoElement.SetAttribute("concepto", idConcepto.ToString());
             pttoElement.SetAttribute("importe", importe.ToString());
             pttoElement.SetAttribute("faplica", fechaInicio.ToString());
+            pttoElement.SetAttribute("usuario", usuario.ToString());
             PresMatXML.AppendChild(pttoElement);
             string PptoMatXMLString = PresMatXML.OuterXml;
             return PptoMatXMLString;
@@ -1125,7 +1116,7 @@ namespace SistemaVentasBatia.Services
                     mail.To.Add(destinatario);
                 }
             }
-            using (var smtp = new SmtpClient("smtp.office365.com", 587))
+            using (var smtp = new SmtpClient("smtp-mail.outlook.com", 587))
             {
                 smtp.Credentials = new NetworkCredential("adminsinga@grupobatia.com.mx", "Ad*Gb6584");
                 smtp.EnableSsl = true;

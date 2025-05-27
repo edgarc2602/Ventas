@@ -1,13 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Enums;
+using SistemaVentasBatia.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Services;
-using SistemaVentasBatia.Enums;
-using System.Diagnostics.Eventing.Reader;
-using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -220,7 +219,7 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.ObtenerCatalogoGerentesLimpieza();
         }
-        
+
         [HttpGet("[action]")]
         public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoTiposdeIndustria()
         {
@@ -228,7 +227,7 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.ObtenerCatalogoTiposdeIndustria();
         }
-        
+
         [HttpGet("[action]/{idEstado}")]
         public async Task<IEnumerable<CatalogoDTO>> GetCatalogoClientes(int idEstado)
         {

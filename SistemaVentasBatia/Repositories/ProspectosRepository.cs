@@ -1,16 +1,11 @@
 ﻿using Dapper;
 using SistemaVentasBatia.Context;
+using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.AspNetCore.Connections;
-using System.Collections;
-using System.Data.SqlTypes;
-using System.Data;
 
 namespace SistemaVentasBatia.Repositories
 {

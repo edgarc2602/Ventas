@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using SistemaVentasBatia.Context;
 using SistemaVentasBatia.Models;
-using System.ComponentModel;
-using Xceed.Document.NET;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -30,7 +27,7 @@ namespace SistemaVentasBatia.Repositories
         Task<List<MaterialCotizacion>> ObtenerUniformePlantillas(int idCotizacion);
         Task<List<MaterialCotizacion>> ObtenerEquipoPlantillas(int idCotizacion);
         Task<List<MaterialCotizacion>> ObtenerHerramientaPlantillas(int idCotizacion);
-        
+
         Task<List<MaterialCotizacion>> ObtenerMaterialExtra(int idCotizacion);
         Task<List<MaterialCotizacion>> ObtenerUniformeExtra(int idCotizacion);
         Task<List<MaterialCotizacion>> ObtenerEquipoExtra(int idCotizacion);
@@ -186,7 +183,7 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = _ctx.CreateConnection())
                 {
-                     await connection.ExecuteScalarAsync<int>(query, new {idDireccion, idCotizacion });
+                    await connection.ExecuteScalarAsync<int>(query, new { idDireccion, idCotizacion });
                 }
             }
             catch (Exception ex)
@@ -194,7 +191,7 @@ namespace SistemaVentasBatia.Repositories
                 throw ex;
             }
         }
-        public async Task <List<Direccion>> ObtenerSucursalesCotizacion(int idCotizacion)
+        public async Task<List<Direccion>> ObtenerSucursalesCotizacion(int idCotizacion)
         {
             string query = @"
             SELECT 
@@ -214,7 +211,7 @@ namespace SistemaVentasBatia.Repositories
                     sucursales = (await connection.QueryAsync<Direccion>(query, new { idCotizacion })).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -292,10 +289,10 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = _ctx.CreateConnection())
                 {
-                    prospecto = await connection.QueryFirstAsync<Prospecto>(query, new {idCotizacion});
+                    prospecto = await connection.QueryFirstAsync<Prospecto>(query, new { idCotizacion });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -329,7 +326,7 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = _ctx.CreateConnection())
                 {
-                    direcciones = (await connection.QueryAsync<Direccion>(query, new { idCotizacion})).ToList();
+                    direcciones = (await connection.QueryAsync<Direccion>(query, new { idCotizacion })).ToList();
                 }
             }
             catch (Exception ex)
@@ -451,7 +448,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
             }
             return material;
         }
-        
+
         public async Task<List<MaterialCotizacion>> ObtenerUniformePlantillas(int idCotizacion)
         {
             string query = @"
@@ -485,7 +482,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
             }
             return material;
         }
-        
+
         public async Task<List<MaterialCotizacion>> ObtenerEquipoPlantillas(int idCotizacion)
         {
             string query = @"
@@ -519,7 +516,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
             }
             return material;
         }
-        
+
         public async Task<List<MaterialCotizacion>> ObtenerHerramientaPlantillas(int idCotizacion)
         {
             string query = @"
@@ -553,7 +550,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion != 0 O
             }
             return material;
         }
-        
+
         public async Task<List<MaterialCotizacion>> ObtenerMaterialExtra(int idCotizacion)
         {
             string query = @"
@@ -587,7 +584,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 OR
             }
             return material;
         }
-        
+
         public async Task<List<MaterialCotizacion>> ObtenerUniformeExtra(int idCotizacion)
         {
             string query = @"
@@ -621,7 +618,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 OR
             }
             return material;
         }
-        
+
         public async Task<List<MaterialCotizacion>> ObtenerEquipoExtra(int idCotizacion)
         {
             string query = @"
@@ -655,7 +652,7 @@ WHERE a.id_cotizacion = @idCotizacion AND a.id_puesto_direccioncotizacion = 0 OR
             }
             return material;
         }
-        
+
         public async Task<List<MaterialCotizacion>> ObtenerHerramientaExtra(int idCotizacion)
         {
             string query = @"

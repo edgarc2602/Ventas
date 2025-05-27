@@ -1,12 +1,11 @@
 ﻿using Dapper;
 using SistemaVentasBatia.Context;
+using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using SistemaVentasBatia.DTOs;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -152,7 +151,7 @@ WHERE es.id_estado = @idEstado ORDER BY m.Municipio";
                     query += "AND id_servicio != 6 ";
                 }
             }
-            
+
 
             query += " ORDER BY Descripcion";
             var puestos = new List<Catalogo>();
@@ -359,7 +358,7 @@ FROM tb_clase";
             var query = @"SELECT clave Clave, descripcion Descripcion
                           FROM tb_producto                          
                           WHERE id_familia in @familias and id_status = 1 ORDER BY Descripcion;";
-                            //id_servicio = @idServicio and 
+            //id_servicio = @idServicio and 
             var listFamilia = familia.Select(x => x.ToString());
 
             var puestosCotizacion = new List<Catalogo>();
@@ -528,7 +527,7 @@ FROM tb_clase";
             }
             return empresas;
         }
-        
+
         public async Task<List<Catalogo>> ObtenerCatalogoVendedores()
         {
             string query = @"SELECT IdPersonal Id, Per_Nombre + ' ' + Per_Paterno + ' ' + Per_Materno Descripcion
@@ -609,7 +608,7 @@ FROM tb_clase";
             }
             return industrias;
         }
-        
+
         public async Task<List<Catalogo>> GetCatalogoClientes(int idEstado)
         {
             string query = @"SELECT DISTINCT b.id_cliente Id, nombre Descripcion FROm tb_jornalero_importe a INNER JOIN tb_cliente b ON a.id_cliente = b.id_cliente WHERE a.id_estado = @idEstado ORDER BY b.nombre";
@@ -629,7 +628,7 @@ FROM tb_clase";
             }
             return clientes;
         }
-        
+
         public async Task<List<Catalogo>> GetCatalogoSucursalesCliente(int idEstado, int idCliente)
         {
             string query = @"SELECT 

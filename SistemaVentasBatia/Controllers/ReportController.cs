@@ -1,22 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SistemaVentasBatia.Models;
-using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using iTextSharp.text.pdf;
-using iTextSharp.text;
-using Microsoft.AspNetCore.Http;
-using iTextSharp.text.pdf.parser;
-using Xceed.Words.NET;
-using SistemaVentasBatia.Services;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SistemaVentasBatia.DTOs;
-using Microsoft.Extensions.Logging;
-using iTextSharp.text.log;
-using Microsoft.AspNetCore.Authorization;
+using SistemaVentasBatia.Services;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {

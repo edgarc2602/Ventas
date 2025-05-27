@@ -1,24 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SistemaVentasBatia.Services;
 using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Enums;
+using SistemaVentasBatia.Models;
+using SistemaVentasBatia.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using SistemaVentasBatia.Models;
-using System.IO;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -408,7 +398,7 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
 
             await cotizacionesSvc.DesactivarCotizacion(idCotizacion);
-             return await cotizacionesSvc.InsertarMotivoCierreCotizacion(motivoCierre, idCotizacion);
+            return await cotizacionesSvc.InsertarMotivoCierreCotizacion(motivoCierre, idCotizacion);
         }
 
         [HttpGet("[action]/{idCotizacion}")]
@@ -428,16 +418,16 @@ namespace SistemaVentasBatia.Controllers
             return await cotizacionesSvc.ObtenerTotalEmpleadosCotizacion(idCotizacion);
         }
         [HttpPost("[action]")]
-        public async Task<bool> AutorizarCotizacion([FromBody ]int idCotizacion = 0)
+        public async Task<bool> AutorizarCotizacion([FromBody] int idCotizacion = 0)
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");
 
             return await cotizacionesSvc.AutorizarCotizacion(idCotizacion);
         }
-        
+
         [HttpPost("[action]")]
-        public async Task<bool> RemoverAutorizacionCotizacion([FromBody ]int idCotizacion = 0)
+        public async Task<bool> RemoverAutorizacionCotizacion([FromBody] int idCotizacion = 0)
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");

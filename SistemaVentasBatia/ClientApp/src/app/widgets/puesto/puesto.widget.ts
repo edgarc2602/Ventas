@@ -91,7 +91,7 @@ export class PuestoWidget {
 
     existe(id: number) {
         this.model.sueldo = 0
-        this.http.get<PuestoCotiza>(`${this.url}api/puesto/${id}`, {headers: this.getHeaders()}).subscribe(response => {
+        this.http.get<PuestoCotiza>(`${this.url}api/puesto/${id}`).subscribe(response => {
             this.existeProducto = response.incluyeMaterial;
             this.idD = response.idDireccionCotizacion;
             this.http.get<number>(`${this.url}api/salario/getestadodireccion/${this.idD}`,{ headers: this.getHeaders() }).subscribe(response => {

@@ -581,7 +581,7 @@ export class CatalogoComponent {
         this.idPersonal = this.elimina;
         this.iniciarCarga();
         setTimeout(() => {
-            this.http.put<boolean>(`${this.url}api/usuario/eliminarusuario`, this.idPersonal, { headers: this.getHeaders() }).subscribe(response => {
+            this.http.put<boolean>(`${this.url}api/usuario/eliminarusuario`, this.idPersonal , { headers: this.getHeaders() }).subscribe(response => {
                 this.detenerCarga();
                 setTimeout(() => {
                     this.okToast('Usuario eliminado');
@@ -596,7 +596,7 @@ export class CatalogoComponent {
                 console.log(err);
             });
         }, 300);
-        this.idPersonal = 0;
+        //this.idPersonal = 0;
         this.elimina = 0;
     }
 

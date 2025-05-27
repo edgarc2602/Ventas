@@ -1,5 +1,3 @@
-using SistemaVentasBatia.Enums;
-
 namespace SistemaVentasBatia.DTOs
 {
     public class ProductoItemDTO

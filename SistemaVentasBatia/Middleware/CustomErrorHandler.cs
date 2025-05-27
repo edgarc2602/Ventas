@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SistemaVentasBatia.Models;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;

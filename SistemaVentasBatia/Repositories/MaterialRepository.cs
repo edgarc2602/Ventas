@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using SistemaVentasBatia.Context;
 using SistemaVentasBatia.Models;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -1973,14 +1969,14 @@ WHERE cse.id_servicioextra_cotizacion = @id";
                 default:
                     break;
             }
-            string query = @"DELETE FROM " + table +  " WHERE id_cotizacion = @idCotizacion AND clave_producto LIKE '%' + @clave + '%' AND id_puesto_direccioncotizacion != 0";
+            string query = @"DELETE FROM " + table + " WHERE id_cotizacion = @idCotizacion AND clave_producto LIKE '%' + @clave + '%' AND id_puesto_direccioncotizacion != 0";
             try
             {
                 using var connection = _ctx.CreateConnection();
                 await connection.ExecuteAsync(query, new { idCotizacion, clave });
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

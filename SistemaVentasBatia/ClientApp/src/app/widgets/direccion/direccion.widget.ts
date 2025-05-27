@@ -176,7 +176,7 @@ export class DireccionWidget {
                         console.log(err);
                     });
                 } else {
-                    this.http.put<Direccion>(`${this.url}api/direccion`, { headers: this.getHeaders() }).subscribe(response => {
+                    this.http.put<Direccion>(`${this.url}api/direccion`, this.model, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
                             this.okToast('Direcci\u00F3n actualizada');

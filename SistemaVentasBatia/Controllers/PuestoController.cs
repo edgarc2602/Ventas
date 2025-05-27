@@ -1,9 +1,8 @@
-using System.Security.AccessControl;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SistemaVentasBatia.DTOs;  
+using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Services;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {

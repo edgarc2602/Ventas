@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.IdentityModel.Tokens;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Models;
@@ -8,9 +6,7 @@ using SistemaVentasBatia.Repositories;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,7 +34,7 @@ namespace SistemaVentasBatia.Services
         private readonly IUsuarioRepository _repo;
         private readonly IMapper _mapper;
 
-        public UsuarioService(IUsuarioRepository repoUsuario,  IMapper mapper)
+        public UsuarioService(IUsuarioRepository repoUsuario, IMapper mapper)
         {
             _repo = repoUsuario;
             _mapper = mapper;
@@ -72,7 +68,7 @@ namespace SistemaVentasBatia.Services
             {
                 Acceso acc = _mapper.Map<Acceso>(dto);
                 usu = _mapper.Map<UsuarioDTO>(await _repo.Login(acc));
-                if(usu != null)
+                if (usu != null)
                 {
                     usu.DireccionIP = ip;
                 }

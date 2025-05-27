@@ -1,5 +1,3 @@
-using System;
-
 namespace SistemaVentasBatia.Models
 {
     public class ErrorViewModel

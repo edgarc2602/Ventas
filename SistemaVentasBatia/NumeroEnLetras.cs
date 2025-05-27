@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 public static class NumeroEnLetras
 {
@@ -14,7 +13,7 @@ public static class NumeroEnLetras
         {
             dec = $" PESOS {decimales:0,0} /100";
         }
-        
+
         else
         {
             dec = $" PESOS {decimales:0,0} /100";

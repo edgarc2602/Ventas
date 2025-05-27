@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using SistemaVentasBatia.Enums;
+﻿using SistemaVentasBatia.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace SistemaVentasBatia.DTOs
 {

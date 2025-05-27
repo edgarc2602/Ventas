@@ -3,7 +3,7 @@
 namespace SistemaVentasBatia.DTOs
 {
     public class CorrectivosMRDTO
-    {   
+    {
         public int IdClaveCM { get; set; }
         public string EntrevistaCliente { get; set; }
         public string TrabajosGeneral { get; set; }

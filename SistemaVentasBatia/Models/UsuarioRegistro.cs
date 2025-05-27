@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-
-namespace SistemaVentasBatia.Models
+﻿namespace SistemaVentasBatia.Models
 {
     public class UsuarioRegistro
     {

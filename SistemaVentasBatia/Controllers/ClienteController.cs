@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using SistemaVentasBatia.Services;
-using SistemaVentasBatia.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using SistemaVentasBatia.Models;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Services;
 using System.IO;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -21,7 +15,7 @@ namespace SistemaVentasBatia.Controllers
     {
         private readonly IClienteService clienteSvc;
         private readonly IUsuarioService _logic;
-        public ClienteController( IClienteService clienteSvc, ICatalogosService catalogosSvc, ICotizacionesService cotizacionesSvc,IUsuarioService _usuarioService)
+        public ClienteController(IClienteService clienteSvc, ICatalogosService catalogosSvc, ICotizacionesService cotizacionesSvc, IUsuarioService _usuarioService)
         {
             this.clienteSvc = clienteSvc;
             _logic = _usuarioService;
@@ -46,7 +40,7 @@ namespace SistemaVentasBatia.Controllers
         }
 
         [HttpPost("[action]/{direccionIP}")]
-        public async Task<ActionResult<int>> ConvertirProspectoACliente(string direccionIP,ClienteDTO cliente, [FromServices] IHttpContextAccessor httpContextAccessor)
+        public async Task<ActionResult<int>> ConvertirProspectoACliente(string direccionIP, ClienteDTO cliente, [FromServices] IHttpContextAccessor httpContextAccessor)
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");

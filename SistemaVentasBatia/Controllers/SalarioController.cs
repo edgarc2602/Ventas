@@ -1,15 +1,9 @@
-﻿using iTextSharp.text.pdf;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Services;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -20,7 +14,7 @@ namespace SistemaVentasBatia.Controllers
     {
         private readonly ISalarioService _logic;
         private readonly IUsuarioService logicuse;
-        public SalarioController(ISalarioService logic,IUsuarioService _usuarioService)
+        public SalarioController(ISalarioService logic, IUsuarioService _usuarioService)
         {
             _logic = logic;
             logicuse = _usuarioService;
@@ -42,7 +36,7 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
 
             decimal result;
-            result =  await _logic.GetSueldo(idPuesto, idClase, idTabulador, idTurno, jornada);
+            result = await _logic.GetSueldo(idPuesto, idClase, idTabulador, idTurno, jornada);
 
             return result;
         }
@@ -62,7 +56,7 @@ namespace SistemaVentasBatia.Controllers
             var token = logicuse.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");
 
-            return await _logic.ObtenerSueldoJornal(idD,idCliente, idSucursal);
+            return await _logic.ObtenerSueldoJornal(idD, idCliente, idSucursal);
         }
 
         [HttpGet("[action]/{idD}")]

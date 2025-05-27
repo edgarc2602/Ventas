@@ -1,26 +1,22 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using SistemaVentasBatia.Context;
-using SistemaVentasBatia.Options;
-using SistemaVentasBatia.Services;
-using SistemaVentasBatia.Repositories;
 using SistemaVentasBatia.Converters;
 using SistemaVentasBatia.Middleware;
-using OfficeOpenXml;
-using Microsoft.AspNetCore.Http;
+using SistemaVentasBatia.Options;
+using SistemaVentasBatia.Repositories;
+using SistemaVentasBatia.Services;
+using System.Linq;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 
 namespace SistemaVentasBatia
 {

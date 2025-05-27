@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
+﻿using SistemaVentasBatia.Enums;
+using System;
 
 namespace SistemaVentasBatia.Models
 {

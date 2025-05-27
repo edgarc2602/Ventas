@@ -1,10 +1,9 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Services;
+using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -15,7 +14,7 @@ namespace SistemaVentasBatia.Controllers
     {
         private readonly IMaterialService _logic;
         private readonly IUsuarioService logic;
-        public MaterialController(IMaterialService service,IUsuarioService _usuarioService)
+        public MaterialController(IMaterialService service, IUsuarioService _usuarioService)
         {
             _logic = service;
             logic = _usuarioService;
@@ -76,7 +75,7 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
 
             await _logic.InsertarServicioCotizacion(servicio);
-            
+
         }
 
         [HttpPost("[action]")]

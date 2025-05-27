@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SistemaVentasBatia.DTOs
 {
@@ -14,7 +11,7 @@ namespace SistemaVentasBatia.DTOs
         public int IdCotizacion { get; set; }
 
         public int IdDireccionCotizacion { get; set; }
-        
+
         public int IdPuestoDireccionCotizacion { get; set; }
         public int Empleados { get; set; }
 

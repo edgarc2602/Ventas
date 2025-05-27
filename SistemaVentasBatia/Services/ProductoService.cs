@@ -1,15 +1,11 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
-using SistemaVentasBatia.DTOs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using System.Runtime.ConstrainedExecution;
-using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 
 namespace SistemaVentasBatia.Services
 {
@@ -37,8 +33,8 @@ namespace SistemaVentasBatia.Services
         Task ActualizarEquipo(MaterialPuestoDTO producto);
         Task ActualizarUniforme(MaterialPuestoDTO producto);
         Task<ActionResult<ListaProductoDTO>> GetProductoProveedorByIdEstado(ListaProductoDTO listaProducto, int idEstado, int idFamilia);
-        Task<bool> AgregarProductosGeneral( ProductosGeneralDTO productos);
-        Task<bool> EliminarProductosGeneral( ProductosGeneralDTO productos);
+        Task<bool> AgregarProductosGeneral(ProductosGeneralDTO productos);
+        Task<bool> EliminarProductosGeneral(ProductosGeneralDTO productos);
         Task<List<EstadoProveedorDTO>> EstadoProveedor();
     }
 
@@ -106,7 +102,7 @@ namespace SistemaVentasBatia.Services
         public async Task<bool> EliminarServicio(int id)
         {
             bool result = await repo.VerificarServiciosExistentes(id);
-            if(result == true)
+            if (result == true)
             {
                 return false;
             }
@@ -127,7 +123,7 @@ namespace SistemaVentasBatia.Services
         {
             return await repo.AgregarServicio(servicio, idPersonal);
         }
-        
+
         public async Task<bool> AgregarIndustria(string industria, int idPersonal)
         {
             return await repo.AgregarIndustria(industria, idPersonal);
@@ -187,12 +183,12 @@ namespace SistemaVentasBatia.Services
 
         public async Task<ActionResult<ListaProductoDTO>> GetProductoProveedorByIdEstado(ListaProductoDTO listaProducto, int idEstado, int idFamilia)
         {
-            listaProducto.Rows = await repo.CountProductoProveedorByIdEstado(idEstado,idFamilia);
+            listaProducto.Rows = await repo.CountProductoProveedorByIdEstado(idEstado, idFamilia);
             listaProducto.Proveedor = await repo.GetProveedorByIdEstado(idEstado);
             listaProducto.IdProveedor = await repo.GetIdProveedorByIdEstado(idEstado);
             var familias = await repo.GetFamiliasByIdEstado(idEstado);
             listaProducto.Familias = mapper.Map<List<ProductoFamiliaDTO>>(familias);
-            if(listaProducto.Rows > 0)
+            if (listaProducto.Rows > 0)
             {
                 listaProducto.NumPaginas = (listaProducto.Rows / 50);
                 if (listaProducto.Rows % 50 > 0)
@@ -212,9 +208,9 @@ namespace SistemaVentasBatia.Services
         public async Task<bool> AgregarProductosGeneral(ProductosGeneralDTO productos)
         {
             var lista = await repo.ObtenerPlantillasCotizacion(productos.IdCotizacion);
-            foreach(var dir in lista)
+            foreach (var dir in lista)
             {
-                foreach(var mat in productos.Material)
+                foreach (var mat in productos.Material)
                 {
                     mat.IdDireccionCotizacion = dir.IdDireccionCotizacion;
                     mat.IdPuestoDireccionCotizacion = dir.IdPuestoDireccionCotizacion;
@@ -265,7 +261,7 @@ namespace SistemaVentasBatia.Services
 
         public async Task<List<EstadoProveedorDTO>> EstadoProveedor()
         {
-            var list =  mapper.Map<List<EstadoProveedorDTO>>(await repo.EstadoProveedor());
+            var list = mapper.Map<List<EstadoProveedorDTO>>(await repo.EstadoProveedor());
             return list;
         }
     }

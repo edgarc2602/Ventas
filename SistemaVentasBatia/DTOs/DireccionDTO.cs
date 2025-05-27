@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.DTOs
-{   
+{
     public class DireccionDTO
     {
         public int IdDireccion { get; set; }
@@ -25,7 +22,7 @@ namespace SistemaVentasBatia.DTOs
         public int IdEstado { get; set; }
         //public int IdTabulador { get; set; }
 
-        
+
         [StringLength(200, ErrorMessage = "Máximo 200 posiciones")]
         public string Municipio { get; set; }
         [Required(ErrorMessage = "Ciudad es necesario")]
@@ -39,8 +36,8 @@ namespace SistemaVentasBatia.DTOs
         [StringLength(200, ErrorMessage = "Máximo 200 posiciones")]
         public string Domicilio { get; set; }
         [StringLength(300, ErrorMessage = "Máximo 300 posiciones")]
-        public string Referencia { get; set; } 
-        
+        public string Referencia { get; set; }
+
         [Required(ErrorMessage = "Código postal es necesario")]
         [StringLength(5, ErrorMessage = "Máximo 5 posiciones")]
         public string CodigoPostal { get; set; }

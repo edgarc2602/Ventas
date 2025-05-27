@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.Mozilla;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Services;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Controllers
@@ -159,7 +156,7 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.EliminarServicio(id);
         }
-        
+
         [HttpDelete("[action]/{id}")]
         public async Task<ActionResult<bool>> EliminarIndustria(int id)
         {
@@ -175,7 +172,7 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.AgregarServicio(servicio, idPersonal);
         }
-        
+
         [HttpGet("[action]/{industria}/{idPersonal}")]
         public async Task<ActionResult<bool>> AgregarIndustria(string industria = "", int idPersonal = 0)
         {

@@ -1,33 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using OfficeOpenXml;
-using System.IO;
-using System.Data.SqlClient;
-using System.Data;
-using OfficeOpenXml.Drawing.Chart;
-using SistemaVentasBatia.Enums;
-using Turno = SistemaVentasBatia.Enums.Turno;
-using System.Data.Common;
-using Xceed.Words.NET;
-using iTextSharp.text.log;
-using iTextSharp.text.pdf;
-using iTextSharp.text;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using Xceed.Document.NET;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
 using System.Drawing;
-using OfficeOpenXml.Style;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
 namespace SistemaVentasBatia.Services
 {
     public interface IReportService
@@ -283,15 +267,16 @@ namespace SistemaVentasBatia.Services
                     {
                         pros.Cotizaciones = await _repo.ObtenerCotizacionesPorIdProspecto(idEstatus, pros.IdProspecto, Finicio, Ffin);
                     }
-                    if(prospectosCotizaciones != null)
+                    if (prospectosCotizaciones != null)
                     {
                         ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
                         string prospectotext = "";
                         int rowIndex = 3;
                         foreach (var prospecto in prospectosCotizaciones)
                         {
-                            
-                            if(prospecto.RepresentanteLegal != prospectotext){
+
+                            if (prospecto.RepresentanteLegal != prospectotext)
+                            {
                                 worksheet.Cells[rowIndex, 1].Value = prospecto.RepresentanteLegal;
                                 prospectotext = prospecto.RepresentanteLegal;
                                 AgregarBordeSuperior(rowIndex, worksheet);
@@ -300,7 +285,7 @@ namespace SistemaVentasBatia.Services
                             int i = 0;
                             foreach (var cotizacion in prospecto.Cotizaciones)
                             {
-                                if(i == 0)
+                                if (i == 0)
                                 {
                                     worksheet.Cells[rowIndex, 2].Value = prospecto.NombreComercial;
                                     worksheet.Cells[rowIndex, 3].Value = prospecto.RazonSocial;

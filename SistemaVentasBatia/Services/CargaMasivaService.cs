@@ -1,24 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS;
+using OfficeOpenXml;
 using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using OfficeOpenXml;
 using System.IO;
-using System.Data.SqlClient;
-using System.Data;
-using OfficeOpenXml.Drawing.Chart;
-using SistemaVentasBatia.Enums;
+using System.Threading.Tasks;
 using Turno = SistemaVentasBatia.Enums.Turno;
-using System.Data.Common;
-using Microsoft.AspNetCore.WebUtilities;
-using OfficeOpenXml.Drawing.Slicer.Style;
 
 namespace SistemaVentasBatia.Services
 {
@@ -101,7 +92,7 @@ namespace SistemaVentasBatia.Services
                             direccion.Municipio = "N/A";
                             direccion.IdMunicipio = 0;
                         }
-                        
+
                         //obtener isFrontera
                         bool isFrontera = await _repo.ObtenerFronteraPorIdMunicipio(direccion.IdMunicipio);
                         direccion.Frontera = isFrontera;
@@ -327,7 +318,7 @@ namespace SistemaVentasBatia.Services
                             puesto.IdCotizacion = idCotizacion;
 
                             //Calcular sueldo
-                            decimal sueldo = await _logicSal.GetSueldo(puesto.IdPuesto, puesto.IdClase, puesto.IdTabulador, (int)puesto.IdTurno,0);
+                            decimal sueldo = await _logicSal.GetSueldo(puesto.IdPuesto, puesto.IdClase, puesto.IdTabulador, (int)puesto.IdTurno, 0);
                             puesto.Sueldo = sueldo;
                             switch (puesto.Jornada)
                             {
@@ -354,7 +345,7 @@ namespace SistemaVentasBatia.Services
                     }
                     foreach (var puesto in puestos)
                     {
-                        await _logicCot.CrearPuestoDireccionCotizacion(puesto,0);
+                        await _logicCot.CrearPuestoDireccionCotizacion(puesto, 0);
                     }
                 }
                 return true;
@@ -394,7 +385,7 @@ namespace SistemaVentasBatia.Services
                         wsRes.Cells[8, 2].Value = "$" + rC.Herramienta.ToString("N2");
                         wsRes.Cells[9, 1].Value = "Servicio";
                         wsRes.Cells[9, 2].Value = "$" + rC.Servicio.ToString("N2");
-                        
+
                         wsRes.Cells[10, 1].Value = "Total Costo Directo";
                         wsRes.Cells[10, 2].Value = "$" + rC.SubTotal.ToString("N2");
                         wsRes.Cells[11, 1].Value = "Costo Indirecto (" + rC.IndirectoPor + "%)";
@@ -404,7 +395,7 @@ namespace SistemaVentasBatia.Services
                         wsRes.Cells[13, 1].Value = "Utilidad (" + rC.UtilidadPor + "%)";
                         wsRes.Cells[13, 2].Value = "$" + rC.Utilidad.ToString("N2");
                         wsRes.Cells[14, 1].Value = "Total U";
-                        wsRes.Cells[14, 2].Value = "$" + (rC.SubTotal+ rC.Indirecto + rC.Utilidad).ToString("N2");
+                        wsRes.Cells[14, 2].Value = "$" + (rC.SubTotal + rC.Indirecto + rC.Utilidad).ToString("N2");
                         wsRes.Cells[15, 1].Value = "Comisión Sobre Venta (" + rC.CsvPor + "%)";
                         wsRes.Cells[15, 2].Value = "$" + rC.ComisionSV.ToString("N2");
                         wsRes.Cells[16, 1].Value = "Total CSV";
@@ -470,11 +461,11 @@ namespace SistemaVentasBatia.Services
 
                     //Plantilla
                     var plan = await _repo.ObtenerPlantillas(idCotizacion);
-                    if(plan.Count != 0)
+                    if (plan.Count != 0)
                     {
                         var wsP = package.Workbook.Worksheets[3];
                         int rowp = 2;
-                        foreach(var p in plan)
+                        foreach (var p in plan)
                         {
                             wsP.Cells[rowp, 1].Value = p.IdPuestoDireccionCotizacion;
                             wsP.Cells[rowp, 2].Value = p.Puesto;
@@ -497,12 +488,12 @@ namespace SistemaVentasBatia.Services
                             wsP.Cells[rowp, 19].Value = p.Turno;
                             wsP.Cells[rowp, 20].Value = p.Horario;
                             wsP.Cells[rowp, 21].Value = (DiaSemana)p.IdDiaDescanso;
-                            wsP.Cells[rowp, 22].Value = (p.IdTieneMaterial == true)? "Si" : "No";
+                            wsP.Cells[rowp, 22].Value = (p.IdTieneMaterial == true) ? "Si" : "No";
                             wsP.Cells[rowp, 23].Value = p.FechaAlta.ToString("dd-MM-yyyy");
                             rowp++;
                         }
-                    } 
-                    
+                    }
+
                     //MaterialPlantilla
                     var mP = await _repo.ObtenerMaterialPlantillas(idCotizacion);
                     if (mP.Count != 0)
@@ -779,7 +770,7 @@ namespace SistemaVentasBatia.Services
                     {
                         throw new Exception("Uno o mas productos no pertenecen a la familia " + tipo);
                     }
-                    
+
                 }
             }
         }
@@ -788,7 +779,7 @@ namespace SistemaVentasBatia.Services
             bool result = false;
             string comparacion = "";
 
-            switch( tipo)
+            switch (tipo)
             {
                 case "material":
                     {

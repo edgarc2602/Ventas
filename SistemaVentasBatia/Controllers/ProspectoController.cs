@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SistemaVentasBatia.Services;
 using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Enums;
+using SistemaVentasBatia.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using SistemaVentasBatia.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaVentasBatia.Controllers
 {
@@ -249,8 +247,8 @@ namespace SistemaVentasBatia.Controllers
 
             return await prospectosSvc.ObtenerDatosProspecto(idProspecto);
         }
-        
 
-        
+
+
     }
 }

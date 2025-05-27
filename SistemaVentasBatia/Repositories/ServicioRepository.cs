@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using Dapper;
+using SistemaVentasBatia.Context;
+using SistemaVentasBatia.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Dapper;
-using SistemaVentasBatia.Context;
-using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Models;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -51,10 +47,10 @@ WHERE cse.id_cotizacion = @idCotizacion";
             {
                 using (var connection = _ctx.CreateConnection())
                 {
-                    servicioscotizacion = (await connection.QueryAsync<ServicioCotizacion>(query, new{ idCotizacion})).ToList();
+                    servicioscotizacion = (await connection.QueryAsync<ServicioCotizacion>(query, new { idCotizacion })).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

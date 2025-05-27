@@ -3,18 +3,10 @@ using SistemaVentasBatia.Context;
 using SistemaVentasBatia.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.AspNetCore.Connections;
-using System.Collections;
-using System.Data.SqlTypes;
-using System.Data;
-using System.Diagnostics.Contracts;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
-using SistemaVentasBatia.DTOs;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -48,7 +40,7 @@ namespace SistemaVentasBatia.Repositories
         Task<bool> ActualizarEstatusAsuntoPaso(int idAsuntoPaso);
         Task<decimal> ObtenerTotalDireccion(int idCotizacion, int idDireccionCotizacion);
         void InsertarIgualasXML(string IgualasXML);
-        Task ActualizarPresupuestosSucursal(int idPuntoAtencion, decimal totalMateriales, decimal  totalHigienicos);
+        Task ActualizarPresupuestosSucursal(int idPuntoAtencion, decimal totalMateriales, decimal totalHigienicos);
         Task<CotizaPorcentajes> ObtenerPorcentajesCotizacion(int idCotizacion);
         Task InsertarSubcontrato(int idClienteCreado, int idServicio, int idFrecuencia, int idServicioExtra, decimal total);
         Task<string> ObtenerDescripcionServicio(int idServicioExtra);
@@ -74,7 +66,7 @@ namespace SistemaVentasBatia.Repositories
             try
             {
                 using var connection = ctx.CreateConnection();
-                return await connection.QuerySingleAsync<int>(query, new { idEmpresa});
+                return await connection.QuerySingleAsync<int>(query, new { idEmpresa });
             }
             catch (Exception)
             {
@@ -403,7 +395,7 @@ namespace SistemaVentasBatia.Repositories
             }
             catch (Exception ex)
             {
-               
+
                 Console.WriteLine("Error: " + ex.Message);
                 throw;
             }
@@ -723,9 +715,11 @@ namespace SistemaVentasBatia.Repositories
                 idAsuntoPaso = await connection.ExecuteScalarAsync<int>(query, new { idAsuntoCreado });
 
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine("Error: " + ex.Message);
-                throw ex; }
+                throw ex;
+            }
             return idAsuntoPaso;
         }
 
@@ -792,7 +786,7 @@ namespace SistemaVentasBatia.Repositories
                     result = totalPuestosDireccion + totalExtrasDireccion;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
 
@@ -827,7 +821,7 @@ namespace SistemaVentasBatia.Repositories
                 using var connection = ctx.CreateConnection();
                 await connection.ExecuteAsync(query, new { idPuntoAtencion, totalMaterial, totalHigienicos });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
 
@@ -843,7 +837,7 @@ namespace SistemaVentasBatia.Repositories
                 using var connection = ctx.CreateConnection();
                 porcentajes = await connection.QueryFirstAsync<CotizaPorcentajes>(query, new { idCotizacion });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
 
@@ -861,7 +855,7 @@ namespace SistemaVentasBatia.Repositories
                 concepto = await connection.QueryFirstAsync<string>(query, new { idServicioExtra });
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
 
@@ -873,7 +867,8 @@ namespace SistemaVentasBatia.Repositories
         public async Task InsertarSubcontrato(int idClienteCreado, int idServicio, int idFrecuencia, int idServicioExtra, decimal total)
         {
 
-            switch (idFrecuencia){
+            switch (idFrecuencia)
+            {
                 case 1: idFrecuencia = 4; break;
                 case 2: idFrecuencia = 5; break;
                 case 3: idFrecuencia = 6; break;
@@ -932,9 +927,9 @@ namespace SistemaVentasBatia.Repositories
             try
             {
                 using var connection = ctx.CreateConnection();
-                await connection.ExecuteAsync(query, new { idPlantillaCreada, cargaSocial, uniforme,bonos, primaDominical, otrasComp });
+                await connection.ExecuteAsync(query, new { idPlantillaCreada, cargaSocial, uniforme, bonos, primaDominical, otrasComp });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
 
@@ -982,8 +977,8 @@ namespace SistemaVentasBatia.Repositories
                         select top 1 
 	                        a.id_vacante, 
 	                        a.id_plantilla, 
-	                        b.nombre as cliente, 
-	                        c.nombre as sucursal, 
+	                        c.nombre as cliente, 
+	                        b.nombre as sucursal, 
 	                        d.descripcion as puesto,
 	                        isnull(b.direccion + ' ' + b.colonia + ' ' + b.cp + ' ' + b.delegacionmunicipio + ' ' + e.descripcion,'') as ubicacion,
 	                        isnull('Turno: ' + g.descripcion + ', descripcion'  + f.horariode + ', salida: ' + f.horarioa + ', Jornal: ' + cast(f.jornal as char) + ', de: ' + f.diade + ', a: ' + f.diaa,'') as horario,

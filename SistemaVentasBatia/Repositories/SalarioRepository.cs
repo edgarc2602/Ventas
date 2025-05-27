@@ -1,7 +1,5 @@
 ﻿using Dapper;
 using SistemaVentasBatia.Context;
-using SistemaVentasBatia.DTOs;
-using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using System;
 using System.Collections.Generic;

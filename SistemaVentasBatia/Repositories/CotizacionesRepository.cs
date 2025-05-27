@@ -1,19 +1,12 @@
 ﻿using Dapper;
 using SistemaVentasBatia.Context;
+using SistemaVentasBatia.DTOs;
+using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SistemaVentasBatia.Enums;
-using SistemaVentasBatia.Controllers;
-using System.Reflection;
-using Microsoft.AspNetCore.Connections;
-using System.Reflection.Metadata.Ecma335;
-using SistemaVentasBatia.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using System.Data;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -65,12 +58,12 @@ namespace SistemaVentasBatia.Repositories
         Task DesactivarCotizaciones(int idProspecto);
         Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento);
         Task InsertarTotalCotizacion(decimal total, int idCotizacion, string numerotxt);
-        Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio,int idPersonal, int autorizacion);
+        Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int idPersonal, int autorizacion);
         Task<int> ObtenerAutorizacion(int idPersonal);
         Task<int> ObtieneIdCotizacionPorOperario(int idPuestoDireccionCotizacion);
         Task<bool> ActivarCotizacion(int idCotizacion);
         Task<bool> DesactivarCotizacion(int idCotizacion);
-        Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre,int idCotizacion);
+        Task<bool> InsertarMotivoCierreCotizacion(string motivoCierre, int idCotizacion);
         Task<string> ObtenerNombreSucursalPorIdOperario(int id);
         Task<Cotizacion> ObtenerCotizacion(int id);
         Task<Cotizacion> ObtenerNombreComercialCotizacion(int idCotizacion);
@@ -168,7 +161,7 @@ namespace SistemaVentasBatia.Repositories
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    if(autorizacion == 0)
+                    if (autorizacion == 0)
                     {
                         rows = await connection.QuerySingleAsync<int>(queryuser, new { idProspecto, idEstatusCotizacion, idServicio, idPersonal });
                     }
@@ -755,7 +748,7 @@ where id_cotizacion = @idCotizacion";
         }
         public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento)
         {
-            var query =@"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento, cotizacion_evento_dias = @diasEvento where id_cotizacion = @idCotizacion ";
+            var query = @"UPDATE tb_cotizacion set id_servicio = @idServicio, poliza_cumplimiento = @polizaCumplimiento, cotizacion_evento_dias = @diasEvento where id_cotizacion = @idCotizacion ";
             if (polizaCumplimiento == false)
             {
                 query += @"UPDATE tb_cotizacion SET total_poliza = 0 WHERE id_cotizacion = @idCotizacion ";
@@ -1626,7 +1619,7 @@ ORDER BY id_porcentaje desc";
                     porcentajes = await connection.QueryFirstAsync<CotizaPorcentajes>(query);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1663,7 +1656,7 @@ GetDate(),
                     await connecion.ExecuteAsync(query, porcentajes);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1680,7 +1673,7 @@ WHERE id_puesto = @idPuesto AND id_clase = @idClase AND id_zona = @idZona
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    result = await connection.QueryFirstOrDefaultAsync<decimal>(query, new {idPuesto, idClase, idZona});
+                    result = await connection.QueryFirstOrDefaultAsync<decimal>(query, new { idPuesto, idClase, idZona });
                 }
             }
             catch (Exception ex)
@@ -1705,7 +1698,7 @@ WHERE dc.id_direccion_cotizacion = @idPuestoDireccion
                     result = await connection.QueryFirstAsync<int>(query, new { idPuestoDireccion });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1720,7 +1713,7 @@ WHERE dc.id_direccion_cotizacion = @idPuestoDireccion
                 using var connection = ctx.CreateConnection();
                 imss = await connection.QueryFirstOrDefaultAsync<decimal>(query);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1998,7 +1991,7 @@ GETDATE(),
             }
             catch (Exception)
             {
-                throw new CustomException ("Error al obtener el porcentaje de poliza");
+                throw new CustomException("Error al obtener el porcentaje de poliza");
             }
         }
         public async Task<int> ContarDireccionesCotizacion(int idCotizacion)
@@ -2164,7 +2157,7 @@ GETDATE(),
             }
             return idEstatus;
         }
-        
+
         public async Task<int> ObtenerDiasEvento(int idCotizacion)
         {
             string query = @"SELECT cotizacion_evento_dias FROM tb_cotizacion WHERE id_cotizacion = @idCotizacion";
@@ -2201,7 +2194,7 @@ GETDATE(),
             }
             return result;
         }
-        
+
         public async Task<bool> RemoverAutorizacionCotizacion(int idCotizacion)
         {
             bool result;
