@@ -10,8 +10,9 @@ using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Xml;
-
+using SistemaVentasBatia.Context;
 namespace SistemaVentasBatia.Services
 {
     public interface IClienteService
@@ -29,14 +30,15 @@ namespace SistemaVentasBatia.Services
         private readonly IServicioRepository servicioRepo;
         private readonly ICotizacionesService cotizacionesService;
         private readonly IMapper mapper;
-
-        public ClienteService(IClienteRepository clienteRepo, IMapper mapper, IMaterialRepository materialRepo, IServicioRepository servicioRepo, ICotizacionesService cotizacionesService)
+        private readonly DapperContext ctx;
+        public ClienteService(IClienteRepository clienteRepo, IMapper mapper, IMaterialRepository materialRepo, IServicioRepository servicioRepo, ICotizacionesService cotizacionesService, DapperContext _ctx)
         {
             this.clienteRepo = clienteRepo;
             this.mapper = mapper;
             this.materialRepo = materialRepo;
             this.servicioRepo = servicioRepo;
             this.cotizacionesService = cotizacionesService;
+            this.ctx = _ctx;
         }
 
         public async Task<ClienteContratoDTO> ObtenerDatosClienteContrato(int idProspecto)
@@ -55,14 +57,17 @@ namespace SistemaVentasBatia.Services
                 return await clienteRepo.ActualizarDatosClienteContrato(contratoData);
             }
             else
-            {
+            {           
                 return await clienteRepo.InsertarDatosClienteContrato(contratoData);
             }
         }
         public async Task<int> ConvertirProspectoACliente(ClienteDTO cliente, string usuarioIP)
         {
-            try
-            {
+            //using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            //using var connection = ctx.CreateConnection(); // UNA SOLA CONEXIÓN
+            //connection.Open();
+            try 
+                {
                 var porcentajes = await clienteRepo.ObtenerPorcentajesCotizacion(cliente.IdCotizacion);
                 decimal totalCotizacion = await clienteRepo.ObtenerTotalCotizacion(cliente.IdCotizacion);
                 //ResumenCotizacionLimpiezaDTO resumenCotizacion = await cotizacionesService.ObtenerResumenCotizacionLimpieza(cliente.IdCotizacion);
@@ -72,15 +77,18 @@ namespace SistemaVentasBatia.Services
                 //CREAR XML E INSERTAR CLIENTE
                 string clienteXMLString = CrearXMLCliente(cliente);
                 int idGrupoEmpresa = await clienteRepo.ConsultarGrupoEmpresas(cliente.IdEmpresaPagadora);
-                int idClienteCreado = clienteRepo.InsertarClienteXML(clienteXMLString, logXMLString, idGrupoEmpresa);
+                int idClienteCreado = clienteRepo.InsertarClienteXML(clienteXMLString, logXMLString, idGrupoEmpresa); //INSERT-------------------------------------------------------------------------
+
+                //INSERTAR ENCARGADO DE CLIENTE
+                await clienteRepo.InsertarEncargado(cliente.IdGerenteLimpieza, idClienteCreado);//INSERT-------------------------------------------------------------------------
 
                 //CREAR XML E INSERTAR OFICINA
                 string oficinaXMLString = CrearXMLOficina(idClienteCreado);
-                bool oficina = clienteRepo.InsertarXMLOficina(oficinaXMLString);
+                bool oficina = clienteRepo.InsertarXMLOficina(oficinaXMLString);//INSERT-------------------------------------------------------------------------
 
                 //CREAR XML E INSERTAR LINEA DE NEGOCIO
                 string lineaNegocioXMLString = CrearXMLLineaNegocio(idClienteCreado, (int)cliente.IdServicio, totalCotizacion);
-                bool lineaNegocio = clienteRepo.InsertarLineaNegocioXML(lineaNegocioXMLString, idClienteCreado);
+                bool lineaNegocio = clienteRepo.InsertarLineaNegocioXML(lineaNegocioXMLString, idClienteCreado);//INSERT-------------------------------------------------------------------------
 
                 int idPuntoAtencionCreado = 0;
                 int idPlantillaCreada = 0;
@@ -103,8 +111,7 @@ namespace SistemaVentasBatia.Services
 
                 bool isPoliza = await clienteRepo.ConsultarPoliza(cliente.IdCotizacion);
 
-                foreach (var direccion in direcciones)
-                {
+                foreach(var direccion in direcciones) {
                     totalMateriales = 0;
                     totalHerramienta = 0;
                     totalEquipo = 0;
@@ -113,13 +120,12 @@ namespace SistemaVentasBatia.Services
                     totalEquipoHerramienta = 0;
                     //CREAR XML E INSERTAR DIRECCION
                     string direccionXMLString = CrearXMLDireccion(idClienteCreado, direccion, cliente.IdPersonal);
-                    idPuntoAtencionCreado = clienteRepo.InsertarDireccionXML(direccionXMLString, logXMLString);
+                    idPuntoAtencionCreado = clienteRepo.InsertarDireccionXML(direccionXMLString, logXMLString);//INSERT-------------------------------------------------------------------------
 
                     //OBTENER IGUALA POR PUNTO DE ATENCION Y CREAR XML
                     decimal totalPuntoAtencion = await clienteRepo.ObtenerTotalDireccion(cliente.IdCotizacion, direccion.IdDireccionCotizacion);
 
-                    if (isPoliza)
-                    {
+                    if(isPoliza) {
                         totalPuntoAtencion = totalPuntoAtencion * 1.10M;
                     }
                     IgualaXML = CrearXMLIgualaPuntoAtencion(idClienteCreado, idPuntoAtencionCreado, cliente.IdServicio, totalPuntoAtencion, IgualaXML, cliente.IdPersonal, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss")); //, cliente.FechaInicio,cliente.IdPersonal
@@ -131,20 +137,18 @@ namespace SistemaVentasBatia.Services
                     var plantillas = mapper.Map<List<PuestoDireccionCotizacionDTO>>(await clienteRepo.ObtenerPuestosDireccionCotizacion(direccion.IdDireccionCotizacion)).ToList();
 
                     //INSERTAR PUESTO A DIRECCION CREADA
-                    foreach (var puesto in plantillas)
-                    {
+                    foreach(var puesto in plantillas) {
                         totalUniforme = 0;
                         string plantillaXMLString = CrearXMLPlantilla(idPuntoAtencionCreado, puesto, cliente.IdServicio, cliente.FechaInicio);
-                        idPlantillaCreada = clienteRepo.InsertarPlantillaXML(plantillaXMLString);
+                        idPlantillaCreada = clienteRepo.InsertarPlantillaXML(plantillaXMLString);//INSERT-------------------------------------------------------------------------
 
                         //CREAR XML E INSERTAR HORARIO
                         //string horarioplantillaXMLString = CrearXMLHorarioPlantilla(idPlantillaCreada, puesto);
                         //bool horarioPlantilla = clienteRepo.InsertarHorarioPlantillaXML(horarioplantillaXMLString);
 
-                        if (puesto.Cantidad > 0)
-                        {
+                        if(puesto.Cantidad > 0) {
                             bool plantillap = clienteRepo.InsertarPlantillaPXML(idPlantillaCreada, puesto.Cantidad);
-                            bool vacanteresult = clienteRepo.InsertarVacantePlantillaXML(idPlantillaCreada, cliente.IdPersonal);
+                            bool vacanteresult = clienteRepo.InsertarVacantePlantillaXML(idPlantillaCreada, cliente.IdPersonal);//INSERT-------------------------------------------------------------------------
                         }
 
                         //OBTENER LISTAS DE PRODUCTOS POR PUESTO
@@ -154,50 +158,43 @@ namespace SistemaVentasBatia.Services
                         var uniforme = await materialRepo.ObtenerUniformeCotizacionOperario(puesto.IdPuestoDireccionCotizacion, cliente.IdCotizacion);
 
                         //CALCULAR TOTAL E INSERTAR PRODUCTOS POR PUESTO
-                        foreach (var mat in material)
-                        {
-                            await clienteRepo.InsertarMaterialAutorizado(mat, idPuntoAtencionCreado, idClienteCreado);
-                            await clienteRepo.InsertarMaterialDireccion(mat, idPuntoAtencionCreado, idClienteCreado);
-                            if (mat.ClaveProducto.StartsWith("M-HIG"))
-                            {
+                        foreach(var mat in material) {
+                            await clienteRepo.InsertarMaterialAutorizado(mat, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
+                            await clienteRepo.InsertarMaterialDireccion(mat, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
+                            if(mat.ClaveProducto.StartsWith("M-HIG")) {
                                 totalHigienicos += (mat.Total / (int)mat.IdFrecuencia) * puesto.Cantidad;
-                            }
-                            else
-                            {
+                            } else {
                                 totalMateriales += (mat.Total / (int)mat.IdFrecuencia) * puesto.Cantidad;
 
                             }
                         }
-                        foreach (var herr in herramienta)
-                        {
+                        foreach(var herr in herramienta) {
 
-                            await clienteRepo.InsertarMaterialAutorizado(herr, idPuntoAtencionCreado, idClienteCreado);
+                            await clienteRepo.InsertarMaterialAutorizado(herr, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
                             string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herr.ClaveProducto, (int)herr.IdFrecuencia, herr.Cantidad, herr.Total);
-                            clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
+                            clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString); //INSERT-------------------------------------------------------------------------
                             totalHerramienta += (herr.Total / (int)herr.IdFrecuencia) * puesto.Cantidad;
                         }
-                        foreach (var equ in equipo)
-                        {
-                            await clienteRepo.InsertarMaterialAutorizado(equ, idPuntoAtencionCreado, idClienteCreado);
+                        foreach(var equ in equipo) {
+                            await clienteRepo.InsertarMaterialAutorizado(equ, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
                             string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equ.ClaveProducto, (int)equ.IdFrecuencia, equ.Cantidad, equ.Total);
-                            clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
+                            clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString); //INSERT-------------------------------------------------------------------------
                             totalEquipo += (equ.Total / (int)equ.IdFrecuencia) * puesto.Cantidad;
                         }
-                        foreach (var uni in uniforme)
-                        {
+                        foreach(var uni in uniforme) {
                             totalUniforme += (uni.Total / (int)uni.IdFrecuencia) * puesto.Cantidad;
                         }
 
                         decimal cargaSocial = 0;
                         cargaSocial = puesto.ISN + puesto.IMSS;
                         decimal otrasComp = puesto.Vales + puesto.Festivo + puesto.CubreDescanso;
-                        await clienteRepo.InsertarCargaSocialPuesto(idPlantillaCreada, cargaSocial, totalUniforme, puesto.Bonos, puesto.Domingo, otrasComp);
+                        await clienteRepo.InsertarCargaSocialPuesto(idPlantillaCreada, cargaSocial, totalUniforme, puesto.Bonos, puesto.Domingo, otrasComp); //INSERT-------------------------------------------------------------------------
 
                         //CREAR E INSERTAR HORARIO
                         //string horarioActualizadoXML = CrearXMLHorario(puesto, idPlantillaCreada);
                         //clienteRepo.InsertarHorarioActualizadoPlantillaXML(horarioActualizadoXML);
                         DateTime fecha = DateTime.Now;
-                        EnviaCorreoVacantes(fecha, "Registro de Vacante", idPlantillaCreada);
+                        EnviaCorreoVacantes(fecha, "Registro de Vacante", idPlantillaCreada, cliente.IdGerenteLimpieza);
                     }
 
                     //OBTENER LISTAS DE PRODUCTOS EXTRA POR SUCURSAL
@@ -208,31 +205,25 @@ namespace SistemaVentasBatia.Services
                     //var servicioExtraSuc = await servicioRepo.ObtenerListaServiciosCotizacionDireccion(cliente.IdCotizacion, 0, direccion.IdDireccionCotizacion);
 
                     //CALCULAR TOTAL E INSERTAR PRODUCTOS EXTRA POR SUCURSAL
-                    foreach (var mat in materialExtraSuc)
-                    {
-                        await clienteRepo.InsertarMaterialAutorizado(mat, idPuntoAtencionCreado, idClienteCreado);
-                        await clienteRepo.InsertarMaterialDireccion(mat, idPuntoAtencionCreado, idClienteCreado);
-                        if (mat.ClaveProducto.StartsWith("M-HIG"))
-                        {
+                    foreach(var mat in materialExtraSuc) {
+                        await clienteRepo.InsertarMaterialAutorizado(mat, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
+                        await clienteRepo.InsertarMaterialDireccion(mat, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
+                        if(mat.ClaveProducto.StartsWith("M-HIG")) {
                             totalHigienicos += mat.Total / (int)mat.IdFrecuencia;
-                        }
-                        else
-                        {
+                        } else {
                             totalMateriales += mat.Total / (int)mat.IdFrecuencia;
                         }
                     }
-                    foreach (var herr in herramientaExtraSuc)
-                    {
-                        await clienteRepo.InsertarMaterialAutorizado(herr, idPuntoAtencionCreado, idClienteCreado);
+                    foreach(var herr in herramientaExtraSuc) {
+                        await clienteRepo.InsertarMaterialAutorizado(herr, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
                         string herramientaXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, herr.ClaveProducto, (int)herr.IdFrecuencia, herr.Cantidad, herr.Total);
-                        clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString);
+                        clienteRepo.InsertarEquipoHerramientaXML(herramientaXMLString); //INSERT-------------------------------------------------------------------------
                         totalHerramienta += herr.Total / (int)herr.IdFrecuencia;
                     }
-                    foreach (var equ in equipoExtraSuc)
-                    {
-                        await clienteRepo.InsertarMaterialAutorizado(equ, idPuntoAtencionCreado, idClienteCreado);
+                    foreach(var equ in equipoExtraSuc) {
+                        await clienteRepo.InsertarMaterialAutorizado(equ, idPuntoAtencionCreado, idClienteCreado); //INSERT-------------------------------------------------------------------------
                         string equipoXMLString = CrearXMLInsertarEquipoHerramienta(idPuntoAtencionCreado, equ.ClaveProducto, (int)equ.IdFrecuencia, equ.Cantidad, equ.Total);
-                        clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString);
+                        clienteRepo.InsertarEquipoHerramientaXML(equipoXMLString); //INSERT-------------------------------------------------------------------------
                         totalEquipo += equ.Total / (int)equ.IdFrecuencia;
 
                     }
@@ -243,7 +234,7 @@ namespace SistemaVentasBatia.Services
                     //}
 
                     //INSERTAR presupuestos por direccion
-                    await clienteRepo.ActualizarPresupuestosSucursal(idPuntoAtencionCreado, totalMateriales, totalHigienicos);
+                    await clienteRepo.ActualizarPresupuestosSucursal(idPuntoAtencionCreado, totalMateriales, totalHigienicos); //UPDATE-------------------------------------------------------------------------
 
                     totalGeneralMateriales += totalMateriales;
                     totalGeneralEquipo += totalEquipo;
@@ -253,7 +244,7 @@ namespace SistemaVentasBatia.Services
                 }
 
                 //INSERTAR XML IGUALA POR PUNTO DE ATENCION
-                clienteRepo.InsertarIgualasXML(IgualaXML);
+                clienteRepo.InsertarIgualasXML(IgualaXML); //INSERT-------------------------------------------------------------------------
 
                 //INSERTAR PRODUCTOS EXTRA EN AUTORIZADOS
                 //OBTENER LISTA DE PRODUCTOS EXTRA
@@ -313,32 +304,31 @@ namespace SistemaVentasBatia.Services
                 totalEquipoHerramienta = totalEquipo + totalHerramienta;
 
                 // GENERAR 3 PRESUPUESTOS, SOLO MATERIAL, SOLO HIGIENICOS Y HERRAMIENTA/EQUIPO
-                if (totalGeneralMateriales > 0)
-                {
+                if(totalGeneralMateriales > 0) {
                     string presupuestoMaterialesXMLString = CrearXMLPresupuestoMateriales(idClienteCreado, cliente.IdServicio, 4, 1, totalGeneralMateriales, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"), cliente.IdPersonal);
-                    clienteRepo.InsertarPresupuestoMaterialXML(presupuestoMaterialesXMLString);
+                    clienteRepo.InsertarPresupuestoMaterialXML(presupuestoMaterialesXMLString); //INSERT-------------------------------------------------------------------------
                 }
-                if (totalGeneralHigienico > 0)
-                {
+                if(totalGeneralHigienico > 0) {
                     string presupuestoHigienicosXMLString = CrearXMLPresupuestoHigienicos(idClienteCreado, cliente.IdServicio, 4, 2, totalGeneralHigienico, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"), cliente.IdPersonal);
-                    clienteRepo.InsertarPresupuestoMaterialXML(presupuestoHigienicosXMLString);
+                    clienteRepo.InsertarPresupuestoMaterialXML(presupuestoHigienicosXMLString); //INSERT-------------------------------------------------------------------------
                 }
-                if (totalGeneralEquipoHerramienta > 0)
-                {
+                if(totalGeneralEquipoHerramienta > 0) {
                     string presupuestoEquipoHerramientaXMLString = CrearXMLPresupuestoEquipoHerramienta(idClienteCreado, cliente.IdServicio, 4, "LISTA DE HERRAMIENTAS Y EQUIPO", totalGeneralEquipoHerramienta, cliente.FechaInicio.ToString("yyyy-MM-dd HH:mm:ss"));
-                    clienteRepo.InsertarPresupuestoEquipoHerramientaXML(presupuestoEquipoHerramientaXMLString);
+                    clienteRepo.InsertarPresupuestoEquipoHerramientaXML(presupuestoEquipoHerramientaXMLString); //INSERT-------------------------------------------------------------------------
                 }
 
                 //ACTUALIZAR ESTATUS DE PROSPECTO Y COTIZACIONES
-                await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto);
-                await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion);
-                await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto);
+                await cotizacionesService.CambiarEstatusProspectoContratado(cliente.IdProspecto); //INSERT-------------------------------------------------------------------------
+                await cotizacionesService.CambiarEstatusCotizacionContratada(cliente.IdCotizacion); //INSERT-------------------------------------------------------------------------
+                await cotizacionesService.CambiarEstatusCotizacionesNoSeleccionadas(cliente.IdCotizacion, cliente.IdProspecto); //INSERT-------------------------------------------------------------------------
                 return idClienteCreado;
+            } catch(Exception ex) {
+                // Aquí no se llama a scope.Complete(), así que se hace rollback automáticamente
+                // Puedes registrar el error
+                Console.WriteLine("Ocurrió un error: " + ex.Message);
+                throw; // O manejar como gustes
             }
-            catch (Exception ex)
-            {
-                throw new CustomException("Ocurre");
-            }
+            
         }
         public string CrearXMLHorario(PuestoDireccionCotizacionDTO puesto, int idPlantillaCreada)
         {
@@ -795,12 +785,16 @@ namespace SistemaVentasBatia.Services
             // Devolver null si no se detecta el formato
             return null;
         }
-        private async void EnviaCorreoVacantes(DateTime fecha, string titulo, int idPlantilla)
+        private async void EnviaCorreoVacantes(DateTime fecha, string titulo, int idPlantilla, int idEncargado)
         {
             Correo email = new Correo();
             string fechastring = fecha.ToString("yyyyMMdd");
-            email = await clienteRepo.ObenerDetalleCorreo(idPlantilla, fechastring);
-            email.Gerente = "alanm@grupobatia.com.mx";  //comentar para PROD
+            email = await clienteRepo.ObenerDetalleCorreo(idPlantilla, fechastring, idEncargado);
+            //AQI SE CAMBIA LA LOGICA PARA OBTENER EL SUPERVISOR
+            if (email == null) {
+                return;
+            }
+            //email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
 
             string body = @"<html style='width:100%;font-family:arial, 'helvetica neue', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;'>
                 <head>

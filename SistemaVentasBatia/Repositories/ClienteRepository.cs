@@ -47,8 +47,9 @@ namespace SistemaVentasBatia.Repositories
         Task InsertarCargaSocialPuesto(int idPlantillaCreada, decimal cargaSocial, decimal uniforme, decimal bonos, decimal primaDominical, decimal otrasComp);
         Task<bool> ConsultarPoliza(int idCotizacion);
         void InsertarHorarioActualizadoPlantillaXML(string horarioActualizadoXML);
-        Task<Correo> ObenerDetalleCorreo(int idPlantilla, string fecha);
+        Task<Correo> ObenerDetalleCorreo(int idPlantilla, string fecha, int idEncargado);
         Task<int> ConsultarGrupoEmpresas(int idEmpresa);
+        Task InsertarEncargado(int idEncargado, int idClienteGenerado);
 
     }
 
@@ -971,44 +972,65 @@ namespace SistemaVentasBatia.Repositories
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
-        public async Task<Correo> ObenerDetalleCorreo(int idPlantilla, string fecha)
+        public async Task<Correo> ObenerDetalleCorreo(int idPlantilla, string fecha, int idEncargado)
         {
             string query = @"
                         select top 1 
-	                        a.id_vacante, 
-	                        a.id_plantilla, 
-	                        c.nombre as cliente, 
-	                        b.nombre as sucursal, 
-	                        d.descripcion as puesto,
-	                        isnull(b.direccion + ' ' + b.colonia + ' ' + b.cp + ' ' + b.delegacionmunicipio + ' ' + e.descripcion,'') as ubicacion,
-	                        isnull('Turno: ' + g.descripcion + ', descripcion'  + f.horariode + ', salida: ' + f.horarioa + ', Jornal: ' + cast(f.jornal as char) + ', de: ' + f.diade + ', a: ' + f.diaa,'') as horario,
-	                        h.correo as gerente, 
-	                        i.correo as coord
-                        From tb_vacante a inner join tb_cliente_inmueble b on a.id_inmueble = b.id_inmueble
-                        inner join tb_cliente c on b.id_cliente = c.id_cliente 
-                        inner join tb_puesto d on a.id_puesto = d.id_puesto
+                            a.id_vacante, 
+                            a.id_plantilla, 
+                            c.nombre as cliente, 
+                            b.nombre as sucursal, 
+                            d.descripcion as puesto,
+                            isnull(b.direccion + ' ' + b.colonia + ' ' + b.cp + ' ' + b.delegacionmunicipio + ' ' + e.descripcion,'') as ubicacion,
+                            isnull('Turno: ' + g.descripcion + ', descripcion'  + f.horariode + ', salida: ' + f.horarioa + ', Jornal: ' + cast(f.jornal as char) + ', de: ' + f.diade + ', a: ' + f.diaa,'') as horario,
+                            j.Per_Email as gerente, 
+                            i.correo as coord
+                        From tb_vacante a 
+                        left outer join tb_cliente_inmueble b on a.id_inmueble = b.id_inmueble
+                        left outer join tb_cliente c on b.id_cliente = c.id_cliente 
+                        left outer join tb_puesto d on a.id_puesto = d.id_puesto
                         left outer join tb_estado e on b.id_estado = e.id_estado
                         inner join tb_cliente_plantilla f on a.id_plantilla = f.id_plantilla
                         inner join tb_turno g on f.id_turno = g.id_turno
-                        left outer join tb_empleado h on c.id_operativo = h.id_empleado
-                        left outer join tb_empleado i on c.id_coordinadorrh = i.id_empleado 
+                        left outer join Personal j ON j.id_empleado = @idEncargado
+                        left  outer join tb_empleado i on c.id_coordinadorrh = i.id_empleado 
                         where a.id_plantilla = @idPlantilla and cast(fechaalta as date) = @fecha
                         order by id_vacante desc";
             var correo = new Correo();
             try
             {
                 using var connection = ctx.CreateConnection();
-                correo = await connection.QueryFirstOrDefaultAsync<Correo>(query, new { idPlantilla, fecha });
+                correo = await connection.QueryFirstOrDefaultAsync<Correo>(query, new { idPlantilla, fecha, idEncargado });
+                return correo;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
 
-                throw ex;
+                return null;
             }
-            return correo;
         }
 
-    }
+        public async Task InsertarEncargado(int idEncargado, int idClienteGenerado) {
+            string query = @"
+                        DECLARE @idPlantilla INT;
+                        DECLARE @posicion INT;
 
+                        SELECT TOP 1
+                            @idPlantilla = id_plantilla,
+                            @posicion = posicion
+                        FROM tb_cliente_plantillap
+                        WHERE id_empleado = @idEncargado;
+
+                        INSERT INTO tb_plantilla_organizacion_cliente (id_plantillad, posiciond, id_cliente)
+                        VALUES (@idPlantilla, @posicion, @idClienteGenerado);";
+            try {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteAsync(query, new { idEncargado, idClienteGenerado });
+            } catch(Exception ex) {
+                Console.WriteLine("Error: " + ex.Message);
+                throw ex;
+            }
+        }
+    }
 }

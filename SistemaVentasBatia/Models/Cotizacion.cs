@@ -29,5 +29,6 @@ namespace SistemaVentasBatia.Models
         public bool PolizaCumplimiento { get; set; }
         public int DiasVigencia { get; set; }
         public int DiasEvento { get; set; }
+        public decimal PorcentajeFinanciamiento { get; set; }
     }
 }

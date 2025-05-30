@@ -15,4 +15,5 @@ export interface Cotizacion {
     polizaCumplimiento: boolean;
     diasVigencia: number;
     diasEvento: number;
+    porcentajeFinanciamiento: number;
 }

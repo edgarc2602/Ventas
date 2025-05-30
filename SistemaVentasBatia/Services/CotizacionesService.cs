@@ -28,7 +28,7 @@ namespace SistemaVentasBatia.Services
         Task<int> ObtenerIdDireccionCotizacionPorOperario(int registroAEliminar);
         Task EliminarOperario(int registroAEliminar);
         Task<int> DuplicarCotizacion(int idCotizacion, bool incluyeProducto);
-        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor);
+        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor, string PorcentajeFinanciamiento);
         Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento);
         Task<ListaMaterialesCotizacionLimpiezaDTO> ObtenerMaterialCotizacionLimpieza(int id);
         Task ActualizarPuestoDireccionCotizacion(PuestoDireccionCotizacionDTO operarioVM, bool incluyeMaterial, int idServicio);
@@ -292,6 +292,7 @@ namespace SistemaVentasBatia.Services
 
             int salt = await cotizacionesRepo.ObtenerTipoSalario(idCotizacion);
             bool isfrontera = await cotizacionesRepo.ObtenerFronteraPorIdDireccion(operariosModel.IdDireccionCotizacion);
+            decimal porcentajeIsnPorEstado = await cotizacionesRepo.ObtenerIsnPorEstado(operariosModel.IdDireccionCotizacion);
             var immsJornada = new ImmsJornadaDTO();
             immsJornada = mapper.Map<ImmsJornadaDTO>(await cotizacionesRepo.ObtenerImmsJornada());
 
@@ -406,7 +407,7 @@ namespace SistemaVentasBatia.Services
             {
                 operariosModel.IMSS = (imss / 30.4167M);
             }
-
+            //AQUI APLICAR EL ISN DINAMICO POR ESTADO
             operariosModel.ISN = (
                 operariosModel.Sueldo +
                 operariosModel.Aguinaldo +
@@ -416,7 +417,8 @@ namespace SistemaVentasBatia.Services
                 operariosModel.Vales +
                 operariosModel.Festivo +
                 operariosModel.Domingo +
-                operariosModel.CubreDescanso) * .04M; //ISN SUBE de 3% a 4% Actualizacion el 21/01/2025
+                //operariosModel.CubreDescanso) * .04M; //ISN SUBE de 3% a 4% Actualizacion el 21/01/2025
+                operariosModel.CubreDescanso) * porcentajeIsnPorEstado; //ISN SUBE de 3% a 4% Actualizacion el 21/01/2025
 
             operariosModel.Total = Math.Round(
                 operariosModel.Sueldo +
@@ -664,6 +666,7 @@ namespace SistemaVentasBatia.Services
                 resumenCotizacion.Utilidad = (resumenCotizacion.SubTotal + resumenCotizacion.Indirecto) * obtenercot.Utilidad;
                 resumenCotizacion.ComisionSV = (resumenCotizacion.SubTotal + resumenCotizacion.Indirecto + resumenCotizacion.Utilidad) * (obtenercot.ComisionSV);
                 resumenCotizacion.ComisionExt = (resumenCotizacion.SubTotal + resumenCotizacion.Indirecto + resumenCotizacion.Utilidad + resumenCotizacion.ComisionSV) * (obtenercot.ComisionExt);
+                //resumenCotizacion.Financiamiento = (resumenCotizacion.SubTotal + resumenCotizacion.Indirecto + resumenCotizacion.Utilidad + resumenCotizacion.ComisionSV + resumenCotizacion.ComisionExt) * (obtenercot.PorcentajeFinanciamiento);
                 resumenCotizacion.NombreComercial = obtenernombre.NombreComercial;
                 decimal indirecto;
                 if (resumenCotizacion.SubTotal != 0)
@@ -725,6 +728,7 @@ namespace SistemaVentasBatia.Services
                 resumenCotizacion.UtilidadPor = obtenercot.Utilidad;
                 resumenCotizacion.ComisionExtPor = obtenercot.ComisionExt;
                 resumenCotizacion.PolizaPor = obtenercot.Cumplimiento;
+                resumenCotizacion.PorcentajeFinanciamiento = obtenercot.PorcentajeFinanciamiento;
                 decimal total = resumenCotizacion.SubTotal + resumenCotizacion.Indirecto + resumenCotizacion.Utilidad + resumenCotizacion.ComisionSV + resumenCotizacion.ComisionExt;
 
                 bool isPoliza = await cotizacionesRepo.GetPolizaCumplimiento(id);
@@ -741,7 +745,7 @@ namespace SistemaVentasBatia.Services
                     await cotizacionesRepo.InsertarPolizaCumplimiento(diferencia, id);
                     resumenCotizacion.PolizaCumplimiento = isPoliza;
                     resumenCotizacion.TotalPolizaCumplimiento = diferencia;
-
+                    
                     //ACTUALIZAR PORCENTAJE DE POLIZA
                     //OBTENER PORCENTAJE DE POLIZA DE tb_cotizacion y CALCULAR PARA GUARDAR EL MONTO
                     //
@@ -749,7 +753,8 @@ namespace SistemaVentasBatia.Services
 
 
                 }
-
+                resumenCotizacion.Financiamiento = total * resumenCotizacion.PorcentajeFinanciamiento;
+                total = total + resumenCotizacion.Financiamiento;
                 string numerotxt = "";
                 if (total == 0)
                 {
@@ -938,9 +943,9 @@ namespace SistemaVentasBatia.Services
             return idCotizacionNueva;
         }
 
-        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor)
+        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor, string PorcentajeFinanciamiento)
         {
-            return await cotizacionesRepo.ActualizarIndirectoUtilidad(idCotizacion, indirecto, utilidad, comisionSV, comisionExt, polizaPor);
+            return await cotizacionesRepo.ActualizarIndirectoUtilidad(idCotizacion, indirecto, utilidad, comisionSV, comisionExt, polizaPor, PorcentajeFinanciamiento);
         }
 
         public async Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento)

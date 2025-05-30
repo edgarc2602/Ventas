@@ -16,6 +16,7 @@ export interface CotizaResumenLim {
     utilidad: number;
     comisionSV: number;
     comisionExt: number;
+    financiamiento: number;
     total: number;
     idCotizacionOriginal: number;
 
@@ -26,6 +27,7 @@ export interface CotizaResumenLim {
     comisionExtPor: string;
     polizaCumplimiento: boolean;
     polizaPor: string;
+    porcentajeFinanciamiento: number;
     totalPolizaCumplimiento: number;
     idEstatus: number;
     diasEvento: number;

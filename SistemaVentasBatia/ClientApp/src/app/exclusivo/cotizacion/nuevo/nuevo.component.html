@@ -200,6 +200,16 @@
                                 </div>
                                 <span *ngIf="ferr('diasVigencia')" class="text-danger">{{ terr('diasVigencia') }}</span>
                             </div>
+                            <div class="col-sm-8 col-xl-4 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" [(ngModel)]="model.porcentajeFinanciamiento" name="porcentajeFinanciamiento" required id="porcentajeFinanciamiento">
+                                        <!--<option value="0">Seleccione</option>-->
+                                        <option *ngFor="let p of listPorcentaje" [ngValue]="p.valor">{{ p.descripcion  }}</option>
+                                    </select>
+                                    <label for="porcentajeFinanciamiento">Porcentaje de financiamiento</label>
+                                </div>
+                                <span *ngIf="ferr('porcentajeFinanciamiento')" class="text-danger">{{ terr('porcentajeFinanciamiento') }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 ﻿import { Component, Inject, Output, EventEmitter, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ItemN } from 'src/app/models/item';
 import { StoreUser } from 'src/app/stores/StoreUser';
@@ -7,6 +7,7 @@ declare var bootstrap: any;
 import { ToastWidget } from '../toast/toast.widget';
 import { CotizaResumenLim } from '../../models/cotizaresumenlim';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { Catalogo } from '../../../app/models/catalogo';
 
 @Component({
     selector: 'editcot-widget',
@@ -19,7 +20,7 @@ export class EditarCotizacion {
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
-        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, polizaPor: '', totalPolizaCumplimiento: 0, idEstatus: 0, diasEvento: 0
+        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, polizaPor: '', totalPolizaCumplimiento: 0, idEstatus: 0, diasEvento: 0, financiamiento: 0, porcentajeFinanciamiento: 0
     };
     sers: ItemN[] = [];
     idCotizacion: number = 0;
@@ -32,9 +33,7 @@ export class EditarCotizacion {
     lerr: any = {};
 
     constructor(
-        @Inject('BASE_URL') private url: string, private http: HttpClient,
-        private rtr: Router, private sinU: StoreUser
-    ) {
+        @Inject('BASE_URL') private url: string, private http: HttpClient,private rtr: Router, private sinU: StoreUser ) {
         http.get<ItemN[]>(`${url}api/prospecto/getservicio`).subscribe(response => {
             this.sers = response;
         }, err => console.log(err));

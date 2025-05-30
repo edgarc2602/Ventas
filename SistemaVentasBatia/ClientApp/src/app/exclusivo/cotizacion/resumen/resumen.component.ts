@@ -68,13 +68,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
-        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, polizaPor: '', totalPolizaCumplimiento: 0, idEstatus: 0, diasEvento: 0
+        subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0, idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, polizaPor: '', totalPolizaCumplimiento: 0, idEstatus: 0, diasEvento: 0, financiamiento: 0, porcentajeFinanciamiento: 0
     };
     modelDir: DireccionCotizacion = {
         idCotizacion: 0, idDireccionCotizacion: 0, idDireccion: 0, nombreSucursal: ''
     };
     modelcot: Cotizacionupd = {
-        idCotizacion: 0, indirecto: '', utilidad: '', comisionSV: '', comisionExt: '', polizaPor: ''
+        idCotizacion: 0, indirecto: '', utilidad: '', comisionSV: '', comisionExt: '', polizaPor: '', porcentajeFinanciamiento: ''
     };
     dirs: ItemN[] = [];
     cotdirs: Catalogo[] = [];
@@ -121,6 +121,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     lerr: any = {};
     sub: any;
     incluyeProducto: boolean = false;
+    listPorcentaje: Catalogo[] = [];
 
 
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, private rtr: Router, private reportService: ReportService, public user: StoreUser, private dtpipe: DatePipe, private sinU: StoreUser) {
@@ -137,6 +138,11 @@ export class ResumenComponent implements OnInit, OnDestroy {
         });
         http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoTiposdeIndustria`, { headers }).subscribe(response => {
             this.indust = response;
+        }, err => {
+            this.validaError(err);
+        });
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoPorcentajesFinanciamiento`, { headers }).subscribe(response => {
+            this.listPorcentaje = response;
         }, err => {
             this.validaError(err);
         });
@@ -169,7 +175,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     nuevo() {
         this.model = {
             idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0, material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0, subTotal: 0, indirecto: 0, utilidad: 0, total: 0, idCotizacionOriginal: 0,
-            idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, polizaPor: '', idEstatus: 0, diasEvento: 0
+            idServicio: 0, nombreComercial: '', utilidadPor: '', indirectoPor: '', csvPor: '', comisionSV: 0, comisionExt: 0, comisionExtPor: '', polizaCumplimiento: false, totalPolizaCumplimiento: 0, polizaPor: '', idEstatus: 0, diasEvento: 0, financiamiento: 0, porcentajeFinanciamiento: 0
         };
         let fec: Date = new Date();
         this.modelpros = {
@@ -687,6 +693,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.modelcot.comisionExt = this.model.comisionExtPor.toString();
         this.modelcot.comisionExt = this.model.comisionExtPor.toString();
         this.modelcot.polizaPor = this.model.polizaPor.toString();
+        this.modelcot.porcentajeFinanciamiento = this.model.porcentajeFinanciamiento.toString();
         this.quitarFocoDeElementos2();
         if (this.model.idCotizacion != 0) {
             this.iniciarCarga();

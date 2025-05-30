@@ -8,5 +8,6 @@
         public string ComisionSV { get; set; }
         public string ComisionExt { get; set; }
         public string PolizaPor { get; set; }
+        public string PorcentajeFinanciamiento { get; set; }
     }
 }

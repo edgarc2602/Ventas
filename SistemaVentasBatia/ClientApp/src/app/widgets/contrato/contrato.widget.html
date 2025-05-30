@@ -55,7 +55,7 @@
                             </div>
                             <div class="col-sm-12 col-md-2 col-12 mb-3">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control custom-input" [(ngModel)]="contrato.clienteRfc" id="txtclienteRfc" disabled>
+                                    <input type="text" class="form-control custom-input" [(ngModel)]="contrato.clienteRfc" id="txtclienteRfc">
                                     <label for="txtclienteRfc">RFC</label>
                                 </div>
                                 <span *ngIf="ferr('clienteRfc')" class="text-danger">{{ terr('clienteRfc') }}</span>

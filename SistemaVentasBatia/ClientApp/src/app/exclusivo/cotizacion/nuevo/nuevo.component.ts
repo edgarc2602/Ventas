@@ -35,6 +35,7 @@ export class CotizaComponent {
     sers: ItemN[] = [];
     salt: ItemN[] = [];
     docs: ItemN[] = [];
+    listPorcentaje: Catalogo[] = [];
     agregarTipo: number = 0;
     idVendedor: number = 0;
     salTipo: number = 0;
@@ -76,6 +77,11 @@ export class CotizaComponent {
         }, err => {
             this.validaError(err);
         });
+        http.get<Catalogo[]>(`${url}api/catalogo/ObtenerCatalogoPorcentajesFinanciamiento`, { headers }).subscribe(response => {
+            this.listPorcentaje = response;
+        }, err => {
+            this.validaError(err);
+        });
     }
 
     nuevo() {
@@ -84,7 +90,7 @@ export class CotizaComponent {
         this.model = {
             idCotizacion: 0, idProspecto: 0, idServicio: 0, total: 0,
             fechaAlta: fec.toISOString(), idCotizacionOriginal: 0,
-            idPersonal: this.user.idPersonal, listaServicios: [], salTipo: 0, listaTipoSalarios: [], polizaCumplimiento: false, diasVigencia: 0, diasEvento: 0
+            idPersonal: this.user.idPersonal, listaServicios: [], salTipo: 0, listaTipoSalarios: [], polizaCumplimiento: false, diasVigencia: 0, diasEvento: 0, porcentajeFinanciamiento: 0
         };
         this.sers.forEach(s => s.act = false);
         //this.salt.forEach(s => s.act = false);
@@ -109,7 +115,14 @@ export class CotizaComponent {
             this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
             this.rtr.navigate(['']);
         } else {
-            this.errorToast('Ocurrió un error');
+            if (err.error) {
+                if (err.error.message) {
+                    this.errorToast(err.error.message);
+                }
+            }
+            else {
+                this.errorToast('Ocurrió un error');
+            }
         }
     }
     getHeaders() {

@@ -37,6 +37,7 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> ObtenerCatalogoTiposdeIndustria();
         Task<List<Catalogo>> GetCatalogoClientes(int idEstado);
         Task<List<Catalogo>> GetCatalogoSucursalesCliente(int idEstado, int idCliente);
+        Task<List<Catalogo>> ObtenerCatalogoPorcentajesFinanciamiento();
 
     }
 
@@ -646,6 +647,31 @@ WHERE a.id_estado = @idEstado AND a.id_cliente = @idCliente  ORDER BY b.nombre";
                 using (var connection = ctx.CreateConnection())
                 {
                     clientes = (await connection.QueryAsync<Catalogo>(query, new { idEstado, idCliente })).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return clientes;
+        }
+        
+        public async Task<List<Catalogo>> ObtenerCatalogoPorcentajesFinanciamiento()
+        {
+            string query = @"
+                SELECT id_cotiza_financiamiento AS Id,
+                descripcion AS Descripcion,
+                porcentaje AS Valor
+                FROM tb_cotiza_financiamiento
+                WHERE id_estatus = 1";
+
+            var clientes = new List<Catalogo>();
+
+            try
+            {
+                using (var connection = ctx.CreateConnection())
+                {
+                    clientes = (await connection.QueryAsync<Catalogo>(query)).ToList();
                 }
             }
             catch (Exception ex)

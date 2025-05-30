@@ -83,9 +83,10 @@ namespace SistemaVentasBatia.Repositories
         Task<int> ObtenerDiasEvento(int idCotizacion);
         Task<bool> AutorizarCotizacion(int idCotizacion);
         Task<bool> RemoverAutorizacionCotizacion(int idCotizacion);
+        Task<decimal> ObtenerIsnPorEstado(int idDireccionCotizacion);
 
         //CONFIGURACION
-        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor);
+        Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor, string porcentajeFinanciamiento);
         Task ActualizarPorcentajesPredeterminadosCotizacion(CotizaPorcentajes porcentajes);
         Task<int> ObtenerTipoSalario(int idCotizacion);
         Task<int> ObtenerIdZona(int idPuestoDireccion);
@@ -118,8 +119,8 @@ namespace SistemaVentasBatia.Repositories
                         where fechaaplica <= @FechaAlta
                         order by id_porcentaje desc;
 
-                        insert into tb_cotizacion(id_prospecto, id_servicio, costo_indirecto, utilidad, total, id_estatus_cotizacion, fecha_alta, id_personal, id_porcentaje, comision_venta, comision_externa, id_tiposalario, poliza_cumplimiento, dias_vigencia, cotizacion_evento_dias)
-                        values(@IdProspecto, @IdServicio, @pci, @pu, @Total, @IdEstatusCotizacion, @FechaAlta, @IdPersonal, @idp, @cv, @ce, @SalTipo, @PolizaCumplimiento, @DiasVigencia, @DiasEvento)
+                        insert into tb_cotizacion(id_prospecto, id_servicio, costo_indirecto, utilidad, total, id_estatus_cotizacion, fecha_alta, id_personal, id_porcentaje, comision_venta, comision_externa, id_tiposalario, poliza_cumplimiento, dias_vigencia, cotizacion_evento_dias, financiamiento)
+                        values(@IdProspecto, @IdServicio, @pci, @pu, @Total, @IdEstatusCotizacion, @FechaAlta, @IdPersonal, @idp, @cv, @ce, @SalTipo, @PolizaCumplimiento, @DiasVigencia, @DiasEvento, @PorcentajeFinanciamiento)
                         select scope_identity()";
             try
             {
@@ -420,8 +421,8 @@ ORDER BY RowNum";
         {
             var query = @"SELECT * FROM fn_resumencotizacion(@idCotizacion)";
             var queryserv = @"SELECT ISNULL(SUM(ISNULL(importemensual,0)),0) AS Servicio
-FROM tb_cotiza_servicioextra
-WHERE id_cotizacion = @idCotizacion";
+                                FROM tb_cotiza_servicioextra
+                                WHERE id_cotizacion = @idCotizacion";
 
             var resumen = new ResumenCotizacionLimpieza();
 
@@ -506,7 +507,8 @@ costo_indirecto CostoIndirecto,
 utilidad Utilidad,
 comision_venta ComisionSV,
 comision_externa ComisionExt,
-cumplimiento AS Cumplimiento
+cumplimiento AS Cumplimiento,
+financiamiento AS PorcentajeFinanciamiento
 FROM tb_cotizacion  WHERE id_cotizacion = @id ";
             try
             {
@@ -646,8 +648,8 @@ DELETE FROM tb_cotiza_herramienta WHERE id_puesto_direccioncotizacion = @registr
         public async Task<int> CopiarCotizacion(int idCotizacion)
         {
             var query = @"INSERT INTO tb_cotizacion(
-                                  id_prospecto, id_servicio, costo_indirecto,utilidad,total, id_estatus_cotizacion, fecha_alta, id_personal, id_cotizacion_original, id_porcentaje, comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza, poliza_cumplimiento, dias_vigencia, cierre_motivo, cotizacion_evento_dias)
-                          SELECT  id_prospecto, id_servicio,costo_indirecto,utilidad, total, id_estatus_cotizacion, getdate(),  id_personal, id_cotizacion,          id_porcentaje, comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza, poliza_cumplimiento, dias_vigencia, cierre_motivo, cotizacion_evento_dias
+                                  id_prospecto, id_servicio, costo_indirecto,utilidad,total, id_estatus_cotizacion, fecha_alta, id_personal, id_cotizacion_original, id_porcentaje, comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza, poliza_cumplimiento, dias_vigencia, cierre_motivo, cotizacion_evento_dias, cumplimiento, financiamiento)
+                          SELECT  id_prospecto, id_servicio,costo_indirecto,utilidad, total, id_estatus_cotizacion, getdate(),  id_personal, id_cotizacion,          id_porcentaje, comision_venta, comision_externa, total_letra, id_tiposalario, total_poliza, poliza_cumplimiento, dias_vigencia, cierre_motivo, cotizacion_evento_dias, cumplimiento, financiamiento
                           FROM tb_cotizacion
                           WHERE id_cotizacion = @idCotizacion;
                         
@@ -669,13 +671,14 @@ DELETE FROM tb_cotiza_herramienta WHERE id_puesto_direccioncotizacion = @registr
 
             return idCotizacionNueva;
         }
-        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor)
+        public async Task<bool> ActualizarIndirectoUtilidad(int idCotizacion, string indirecto, string utilidad, string comisionSV, string comisionExt, string polizaPor, string porcentajeFinanciamiento)
         {
             decimal indirectoval = decimal.Parse(indirecto);
             decimal utilidadval = decimal.Parse(utilidad);
             decimal comisionSVval = decimal.Parse(comisionSV);
             decimal comisionExtval = decimal.Parse(comisionExt);
             decimal polizaPorval = decimal.Parse(polizaPor);
+            decimal porcentajeFinanciamientoval = decimal.Parse(porcentajeFinanciamiento);
 
             //string basemenor = ".0";
             //string basemayor = ".";
@@ -728,14 +731,15 @@ costo_indirecto = @indirectoval,
 utilidad = @utilidadval,
 comision_venta = @comisionSVval,
 comision_externa = @comisionExtval,
-cumplimiento = @polizaPorval
+cumplimiento = @polizaPorval,
+financiamiento = @porcentajeFinanciamientoval
 where id_cotizacion = @idCotizacion";
             bool result;
             try
             {
                 using (var connection = ctx.CreateConnection())
                 {
-                    await connection.ExecuteAsync(query, new { idCotizacion, indirectoval, utilidadval, comisionSVval, comisionExtval, polizaPorval });
+                    await connection.ExecuteAsync(query, new { idCotizacion, indirectoval, utilidadval, comisionSVval, comisionExtval, polizaPorval, porcentajeFinanciamientoval });
                     result = true;
                 }
             }
@@ -2265,5 +2269,26 @@ GETDATE(),
             return clientes;
         }
 
+        public async Task<decimal> ObtenerIsnPorEstado(int idDireccionCotizacion) {
+            string query = @"
+                SELECT c.porcentaje_isn AS PorcentajeIsn FROM tb_direccion_cotizacion a 
+                INNER JOIN tb_direccion b ON a.id_direccion = b.id_direccion
+                INNER JOIN tb_estado c ON b.id_estado = c.id_estado
+                WHERE a.id_direccion_cotizacion = @idDireccionCotizacion
+            ";
+            decimal porcentajeIsn;
+            try {
+                using var connection = ctx.CreateConnection();
+                porcentajeIsn = await connection.ExecuteScalarAsync<decimal>(query, new { idDireccionCotizacion });
+                if(porcentajeIsn == 0) {
+                    return 4;
+                } else {
+                    return porcentajeIsn;
+                }
+            } catch(Exception ex) {
+                Console.WriteLine(ex.Message);
+                return 4;
+            }
+        }
     }
 }

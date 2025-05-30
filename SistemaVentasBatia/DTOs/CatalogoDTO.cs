@@ -7,6 +7,7 @@
         public string Descripcion { get; set; }
 
         public string Clave { get; set; }
+        public decimal Valor { get; set; }
 
     }
 }

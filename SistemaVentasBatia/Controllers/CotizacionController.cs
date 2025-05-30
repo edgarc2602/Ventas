@@ -168,7 +168,7 @@ namespace SistemaVentasBatia.Controllers
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");
 
-            return await cotizacionesSvc.ActualizarIndirectoUtilidad(cotizacionupd.IdCotizacion, cotizacionupd.Indirecto, cotizacionupd.Utilidad, cotizacionupd.ComisionSV, cotizacionupd.ComisionExt, cotizacionupd.PolizaPor);
+            return await cotizacionesSvc.ActualizarIndirectoUtilidad(cotizacionupd.IdCotizacion, cotizacionupd.Indirecto, cotizacionupd.Utilidad, cotizacionupd.ComisionSV, cotizacionupd.ComisionExt, cotizacionupd.PolizaPor, cotizacionupd.PorcentajeFinanciamiento);
             //return RedirectToAction("LimpiezaResumen");
         }
 

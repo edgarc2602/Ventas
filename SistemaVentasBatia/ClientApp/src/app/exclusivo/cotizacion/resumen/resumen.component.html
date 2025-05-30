@@ -309,11 +309,53 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr *ngIf="model.polizaCumplimiento == true">
+                            <td class="border-bottom">
+                                <div class="row">
+                                    <div class="col-1 col-md-3"></div>
+                                    <div class="col-6 col-md-3 text-start"><h5>Total PC</h5></div>
+                                    <div class="col-4 col-md-3 text-end"><h5>${{ (model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt + model.totalPolizaCumplimiento) | number:'1.2-2' }}</h5></div>
+                                    <div class="col-1 col-md-2"></div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="border-bottom border-success">
+                                <div class="row text-muted">
+                                    <div class="col-1 col-md-3"></div>
+                                    <div class="col-4 col-md-2 text-start"><h5>Financiamiento</h5></div>
+                                    <div class="col-sm-2 col-xl-2">
+                                        <div class="form-floating">
+                                            <select class="form-select" [(ngModel)]="model.porcentajeFinanciamiento" name="porcentajeFinanciamiento" required id="porcentajeFinanciamiento">
+                                                <!--<option value="0">Seleccione</option>-->
+                                                <option *ngFor="let p of listPorcentaje" [ngValue]="p.valor">{{ p.descripcion  }}</option>
+                                            </select>
+                                            <label for="porcentajeFinanciamiento">Porcentaje de financiamiento</label>
+                                        </div>
+                                        <span *ngIf="ferr('porcentajeFinanciamiento')" class="text-danger">{{ terr('porcentajeFinanciamiento') }}</span>
+                                    </div>
+                                    <div class="col-4 col-md-2  text-end"><h5>${{ model.financiamiento | number:'1.2-2' }}</h5></div>
+                                    <div class="col-1 col-md-2"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="border-bottom">
+                                <div class="row">
+                                    <div class="col-1 col-md-3"></div>
+                                    <div class="col-6 col-md-3 text-start"><h5>Total Financiamiento</h5></div>
+                                    <div class="col-4 col-md-3 text-end"><h5>${{ (model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt + model.financiamiento + model.totalPolizaCumplimiento ) | number:'1.2-2' }}</h5></div>
+                                    <div class="col-1 col-md-2"></div>
+                                </div>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td class="border-bottom">
                                 <div class="row">
                                     <div class="col-3 col-md-3 offset-3 text-start"><h4>Total</h4></div>
-                                    <div class="col-3 col-md-3 text-end"><h4>${{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt + model.totalPolizaCumplimiento | number:'1.2-2' }}</h4></div>
+                                    <div class="col-3 col-md-3 text-end"><h4>${{ model.subTotal + model.indirecto + model.utilidad + model.comisionSV + model.comisionExt + model.financiamiento + model.totalPolizaCumplimiento | number:'1.2-2' }}</h4></div>
                                 </div>
                             </td>
                         </tr>
@@ -386,10 +428,10 @@
                                 <div *ngIf="model.idEstatus == 1" class="col-4 col-md-4 mb-3">
                                     <button type="button" (click)="confirmaDuplicarCotizacion(model.idCotizacion)" [disabled]="isLoading" class="btn btn-outline-danger"><i class="fa-solid fa-copy fa-xl me-2"></i> Duplicar Cotización</button>
                                 </div>
-                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 30908 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
+                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
                                     <button *ngIf="model.idEstatus != 6 && model.idEstatus != 4" type="button" (click)="confirmaAutorizarCotizacion()" [disabled]="isLoading" class="btn btn-outline-info"><i class="fa-solid fa-check fa-xl me-2"></i> Autorizar Cotización</button>
                                 </div>
-                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 30908 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
+                                <div *ngIf="user.idPersonal == 27 || user.idPersonal == 43 || user.idPersonal == 20655 || user.idPersonal == 1" class="col-4 col-md-4 mb-3">
                                     <button *ngIf="model.idEstatus == 6 && model.idEstatus != 4" type="button" (click)="confirmaRemoverAutorizacionCotizacion()" [disabled]="isLoading" class="btn btn-outline-success"><i class="fa-solid fa-rotate-left fa-xl me-2"></i> Remover autorización</button>
                                 </div>
                             </div>

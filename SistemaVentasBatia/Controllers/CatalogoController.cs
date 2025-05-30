@@ -243,5 +243,12 @@ namespace SistemaVentasBatia.Controllers
             return await logic.GetCatalogoSucursalesCliente(idEstado, idCliente);
         }
 
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoPorcentajesFinanciamiento() {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+            return await logic.ObtenerCatalogoPorcentajesFinanciamiento();
+        }
+
     }
 }

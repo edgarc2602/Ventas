@@ -18,6 +18,7 @@ namespace SistemaVentasBatia.Models
         public decimal Indirecto { get; set; }
         public decimal Utilidad { get; set; }
         public decimal ComisionSV { get; set; }
+        public decimal Financiamiento { get; set; }
         public decimal Total { get; set; }
         public int IdProspecto { get; set; }
         public Servicio IdServicio { get; set; }

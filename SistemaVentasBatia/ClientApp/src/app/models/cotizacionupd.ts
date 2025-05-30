@@ -5,4 +5,5 @@ export interface Cotizacionupd {
     comisionSV: string;
     comisionExt: string;
     polizaPor: string;
+    porcentajeFinanciamiento: string;
 }
