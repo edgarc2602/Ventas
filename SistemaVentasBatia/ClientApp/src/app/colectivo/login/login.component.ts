@@ -5,6 +5,7 @@ import { Acceso } from 'src/app/models/acceso';
 import { Usuario } from 'src/app/models/usuario';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { fadeInOut } from 'src/app/fade-in-out';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
     selector: 'login-comp',
@@ -22,6 +23,8 @@ export class LoginComponent {
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) { }
 
     onLogin() {
+        
+
         this.isLoading = true;
         this.lerr = {};
 
@@ -31,6 +34,7 @@ export class LoginComponent {
                     setTimeout(() => {
                         this.isLoading = false;
 
+
                         // Obtener el token desde los headers
                         const authHeader = response.headers.get('Authorization');
                         const token = authHeader ? authHeader.replace('Bearer ', '') : null;
@@ -38,6 +42,12 @@ export class LoginComponent {
                         if (token) {
                             localStorage.setItem('token', token);
                         }
+
+                        //const secretKey = '51ng4C14V36870';
+
+                        //const userEncrypted = CryptoJS.AES.encrypt(JSON.stringify(response.body), secretKey).toString();
+                        //localStorage.setItem('singaUser', userEncrypted);
+
 
                         // Guardar usuario en localStorage
                         localStorage.setItem('singaUser', JSON.stringify(response.body));

@@ -794,7 +794,7 @@ namespace SistemaVentasBatia.Services
             if (email == null) {
                 return;
             }
-            //email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
+            email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
 
             string body = @"<html style='width:100%;font-family:arial, 'helvetica neue', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;'>
                 <head>
