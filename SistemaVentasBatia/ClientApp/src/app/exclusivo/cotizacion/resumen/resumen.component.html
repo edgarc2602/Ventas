@@ -82,7 +82,7 @@
                 Herramienta
             </button>
         </li>
-        <li *ngIf="model.idServicio != 4 && model.idServicio != 6" class="nav-item">
+        <li *ngIf="model.idServicio != 4" class="nav-item">
             <button type="button" class="nav-link" (click)="getServ()" data-bs-toggle="tab"
                     data-bs-target="#servicio" role="tab" aria-controls="servicio"
                     aria-selected="false">
@@ -182,7 +182,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr *ngIf="model.idServicio != 4 && model.idServicio != 6">
+                        <tr *ngIf="model.idServicio != 4">
                             <td class="border-bottom border-success">
                                 <div class="row">
                                     <div class="col-1 col-md-3"></div>
