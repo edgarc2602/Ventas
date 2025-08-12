@@ -147,7 +147,7 @@ namespace SistemaVentasBatia.Services
                         //bool horarioPlantilla = clienteRepo.InsertarHorarioPlantillaXML(horarioplantillaXMLString);
 
                         if(puesto.Cantidad > 0) {
-                            bool plantillap = clienteRepo.InsertarPlantillaPXML(idPlantillaCreada, puesto.Cantidad);
+                            bool plantillap = clienteRepo.InsertarPlantillaPXML(idPlantillaCreada, puesto.Cantidad, cliente.IdPersonal);
                             bool vacanteresult = clienteRepo.InsertarVacantePlantillaXML(idPlantillaCreada, cliente.IdPersonal);//INSERT-------------------------------------------------------------------------
                         }
 
@@ -450,6 +450,7 @@ namespace SistemaVentasBatia.Services
             clienteElement.SetAttribute("ppzo", cliente.DeductivaPlazoEntrega ? "1" : "0");
             clienteElement.SetAttribute("empresa", cliente.IdEmpresaPagadora.ToString());
             clienteElement.SetAttribute("idpersonal", cliente.IdPersonal.ToString());
+            clienteElement.SetAttribute("idcotizacion", cliente.IdCotizacion.ToString());
             clienteXML.AppendChild(clienteElement);
             string clienteXMLString = clienteXML.OuterXml;
             return clienteXMLString;
@@ -794,7 +795,7 @@ namespace SistemaVentasBatia.Services
             if (email == null) {
                 return;
             }
-            email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
+            //email.Gerente = "edgarc@grupobatia.com.mx";  //comentar para PROD
 
             string body = @"<html style='width:100%;font-family:arial, 'helvetica neue', helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;'>
                 <head>

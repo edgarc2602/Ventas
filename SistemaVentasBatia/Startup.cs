@@ -33,6 +33,18 @@ namespace SistemaVentasBatia
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
+
+            // Configurar CORS para permitir todas las solicitudes
+            services.AddCors(options => {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => {
+                        builder.AllowAnyOrigin()    // Permite cualquier origen (cambiar en producción)
+                               .AllowAnyMethod()    // Permite cualquier método (GET, POST, etc.)
+                               .AllowAnyHeader()
+                                .WithExposedHeaders("Authorization");// Permite cualquier cabecera
+                    });
+            });
+
             // Repository Context
             services.AddSingleton<DapperContext>();
 
@@ -192,6 +204,9 @@ namespace SistemaVentasBatia
             }
 
             app.UseRouting();
+
+            // Habilitar CORS
+            app.UseCors("AllowAllOrigins");
 
             app.UseAuthentication(); //  Habilita autenticación con JWT
 

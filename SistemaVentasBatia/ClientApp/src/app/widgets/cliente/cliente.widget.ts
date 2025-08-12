@@ -156,7 +156,7 @@ export class ClienteWidget {
             this.rtr.navigate(['']);
 
         } else {
-            this.errorToast('Ocurri\u00F3 un error');
+            this.errorToast('Ocurri\u00F3 un error: ' + err);
         }
     }
     getHeaders() {

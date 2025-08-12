@@ -26,7 +26,7 @@ namespace SistemaVentasBatia.Repositories
         int InsertarDireccionXML(string direccionXML, string logXML);
         int InsertarPlantillaXML(string plantillaXML);
         bool InsertarHorarioPlantillaXML(string horarioPlantillaXML);
-        bool InsertarPlantillaPXML(int idPlantillaCreada, int cantidad);
+        bool InsertarPlantillaPXML(int idPlantillaCreada, int cantidad, int idUsuario);
         bool InsertarVacantePlantillaXML(int idPlantillaCreada, int idPersonal);
         Task<bool> InsertarMaterialAutorizado(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
         Task<bool> InsertarMaterialDireccion(MaterialCotizacion producto, int idPlantilla, int idClienteCreado);
@@ -471,7 +471,7 @@ namespace SistemaVentasBatia.Repositories
             }
             return result;
         }
-        public bool InsertarPlantillaPXML(int idPlantillaCreada, int cantidad)
+        public bool InsertarPlantillaPXML(int idPlantillaCreada, int cantidad, int idUsuario)
         {
             bool result = false;
             try
@@ -482,6 +482,7 @@ namespace SistemaVentasBatia.Repositories
                 var parameters = new DynamicParameters();
                 parameters.Add("@pla", idPlantillaCreada, dbType: DbType.Int32, direction: ParameterDirection.Input);
                 parameters.Add("@cant", cantidad, dbType: DbType.Int32, direction: ParameterDirection.Input);
+                parameters.Add("@id_usuario", idUsuario, dbType: DbType.Int32, direction: ParameterDirection.Input);
                 connection.Execute("sp_plantillaP", parameters, commandType: CommandType.StoredProcedure);
                 result = true;
             }

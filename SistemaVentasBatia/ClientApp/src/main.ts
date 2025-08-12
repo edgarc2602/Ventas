@@ -5,6 +5,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 export function getBaseUrl() {
+    //return "https://www.singa.com.mx:8084/";
   return document.getElementsByTagName('base')[0].href;
 }
 
