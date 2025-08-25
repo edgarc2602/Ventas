@@ -66,6 +66,8 @@ namespace SistemaVentasBatia
             CreateMap<Acceso, AccesoDTO>();
             CreateMap<UsuarioDTO, Usuario>();
             CreateMap<Usuario, UsuarioDTO>();
+            CreateMap<UsuarioGrupo, UsuarioGrupoDTO>();
+            CreateMap<UsuarioGrupoDTO, UsuarioGrupo>();
 
             CreateMap<Salario, SalarioDTO>();
             CreateMap<SalarioDTO, Salario>();

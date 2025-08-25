@@ -44,6 +44,7 @@ import { ClienteWidget } from './widgets/cliente/cliente.widget';
 import { AgregarIndustriaWidget } from './widgets/agregarindustria/agregarindustria.widget';
 import { ProductoGeneralWidget } from './widgets/productogeneral/productogeneral.widget';
 import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
+import { MatFormFieldModule, MatOptionModule, MatSelectModule } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -82,7 +83,7 @@ import { AuthInterceptorService } from './interceptors/auth-interceptor.service'
         SubirContratoClienteWidget,
         ClienteWidget,
         AgregarIndustriaWidget,
-        ProductoGeneralWidget
+        ProductoGeneralWidget,
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -110,7 +111,10 @@ import { AuthInterceptorService } from './interceptors/auth-interceptor.service'
                     { path: 'catalogo', component: CatalogoComponent }
                 ]
             }
-        ])
+        ]),
+        MatSelectModule,
+        MatFormFieldModule,
+        MatOptionModule
     ],
     providers: [
         StoreUser,

@@ -34,7 +34,6 @@ namespace SistemaVentasBatia.Controllers
             var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
             usu.DireccionIP = ipAddress.ToString();
             var usuario = await _logic.Login(dto, usu);
-
             if (usuario == null)
             {
                 return Unauthorized(new { message = "Credenciales incorrectas" });
@@ -55,7 +54,7 @@ namespace SistemaVentasBatia.Controllers
 
             // Agregar el token en los headers de la respuesta
             Response.Headers.Add("Authorization", $"Bearer {tokenString}");
-
+            
             return Ok(usuario); // Devuelve solo el objeto usuario
         }
 

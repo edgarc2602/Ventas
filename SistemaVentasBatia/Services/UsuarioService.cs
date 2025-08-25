@@ -80,6 +80,18 @@ namespace SistemaVentasBatia.Services
                 {
                     throw new CustomException("Usuario inactivo");
                 }
+                usu.Grupo = _mapper.Map<List<UsuarioGrupoDTO>>(await _repo.Grupo(usu.IdPersonal));
+                if (usu.Grupo != null)
+                {
+                    foreach (var grupo in usu.Grupo)
+                    {
+                        if (grupo.Principal == true)
+                        {
+                            usu.IdGrupoActivo = grupo.IdGrupo;
+                            usu.DescripcionGrupoActivo = grupo.Descripcion;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

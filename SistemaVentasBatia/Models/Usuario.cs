@@ -1,4 +1,6 @@
-﻿namespace SistemaVentasBatia.Models
+﻿using System.Collections.Generic;
+
+namespace SistemaVentasBatia.Models
 {
     public class Usuario
     {
@@ -11,5 +13,13 @@
         public int IdAutoriza { get; set; }
         public int IdSupervisa { get; set; }
         public string DireccionIP { get; set; }
+        public List<UsuarioGrupo> Grupo { get; set; }
+        public string DescripcionGrupoActivo { get; set; }
+    }
+    public class UsuarioGrupo
+    {
+        public int IdGrupo { get; set; }
+        public string Descripcion { get; set; }
+        public bool Principal { get; set; }
     }
 }

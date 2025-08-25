@@ -33,8 +33,7 @@ export class LoginComponent {
                 .subscribe(response => {
                     setTimeout(() => {
                         this.isLoading = false;
-
-
+                        this.usu = response.body as Usuario;
                         // Obtener el token desde los headers
                         const authHeader = response.headers.get('Authorization');
                         const token = authHeader ? authHeader.replace('Bearer ', '') : null;
@@ -50,7 +49,8 @@ export class LoginComponent {
 
 
                         // Guardar usuario en localStorage
-                        localStorage.setItem('singaUser', JSON.stringify(response.body));
+                        localStorage.setItem('singaUser', JSON.stringify(this.usu));
+                        console.log(this.usu)
                         this.rtr.navigate(['/exclusivo']);
                     }, 500);
                 }, err => {
