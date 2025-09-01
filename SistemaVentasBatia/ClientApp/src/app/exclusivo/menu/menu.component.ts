@@ -29,7 +29,7 @@ export class ExMenuComponent {
 
     logout() {
         localStorage.removeItem('singaUser');
-        this.user = null;
+        Object.keys(this.user).forEach(k => this.user[k] = null);
         this.rtr.navigate(['']);
     }
 

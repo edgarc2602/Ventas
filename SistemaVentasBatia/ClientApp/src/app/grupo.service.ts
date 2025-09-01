@@ -1,7 +1,7 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class GrupoService {
     grupoCambiado: EventEmitter<number> = new EventEmitter<number>();

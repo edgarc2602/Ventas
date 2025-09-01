@@ -15,7 +15,7 @@ namespace SistemaVentasBatia.Services
     public interface IProspectosService
     {
         Task CrearProspecto(ProspectoDTO prospectoVM);
-        Task ObtenerListaProspectos(ListaProspectoDTO listaProspectosVM, int autorizacion, int idPersonal);
+        Task ObtenerListaProspectos(ListaProspectoDTO listaProspectosVM, int autorizacion, int idPersonal,int idGrupoActivo);
         Task<ProspectoDTO> ObtenerProspecto(int idProspecto);
         Task EditarProspecto(ProspectoDTO prospectoVM);
         Task ObtenerListaDirecciones(ListaDireccionDTO listaDireccionesVM);
@@ -64,9 +64,9 @@ namespace SistemaVentasBatia.Services
             prospectoVM.IdProspecto = prospecto.IdProspecto;
         }
 
-        public async Task ObtenerListaProspectos(ListaProspectoDTO listaProspectosVM, int autorizacion, int idPersonal)
+        public async Task ObtenerListaProspectos(ListaProspectoDTO listaProspectosVM, int autorizacion, int idPersonal, int idGrupoActivo)
         {
-            listaProspectosVM.Rows = await prospectosRepo.ContarProspectos(listaProspectosVM.IdEstatusProspecto, listaProspectosVM.Keywords, idPersonal, autorizacion);
+            listaProspectosVM.Rows = await prospectosRepo.ContarProspectos(listaProspectosVM.IdEstatusProspecto, listaProspectosVM.Keywords, idPersonal, autorizacion, idGrupoActivo);
 
             if (listaProspectosVM.Rows > 0)
             {
@@ -78,7 +78,7 @@ namespace SistemaVentasBatia.Services
                 }
 
                 listaProspectosVM.Prospectos = mapper.Map<List<ProspectoDTO>>(
-                    await prospectosRepo.ObtenerProspectos(listaProspectosVM.Pagina, listaProspectosVM.IdEstatusProspecto, listaProspectosVM.Keywords, autorizacion, idPersonal));
+                    await prospectosRepo.ObtenerProspectos(listaProspectosVM.Pagina, listaProspectosVM.IdEstatusProspecto, listaProspectosVM.Keywords, autorizacion, idPersonal,idGrupoActivo));
             }
             else
             {

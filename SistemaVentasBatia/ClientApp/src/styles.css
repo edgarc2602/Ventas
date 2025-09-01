@@ -1,4 +1,6 @@
 ﻿@import "~@fortawesome/fontawesome-free/css/all.css";
+
+
 .password-input {
     -webkit-text-security: disc; /* Para navegadores basados en WebKit como Safari y Chrome */
     text-security: disc; /* Para otros navegadores que soporten text-security */
@@ -14,7 +16,7 @@ a {
     font-family: 'Arial', sans-serif; /* Cambia la familia de fuentes */
     font-size: 24px; /* Cambia el tamaño de la fuente */
     font-weight: bold; /* Cambia el peso de la fuente */
-    color: #333; /* Cambia el color del texto */
+    color: #333; /* Cambia el color del atexto */
 }
 
 .custom-swal-content {
@@ -1168,3 +1170,48 @@ table {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.custom-mat .mat-form-field-flex {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: black !important;
+    border-radius: 4px;
+}
+
+.custom-mat .mat-select-value {
+    color: black !important;
+}
+
+.custom-mat .mat-select-arrow {
+    color: black !important;
+}
+
+.mat-option {
+    background: white !important;
+    color: black !important;
+}
+
+    .mat-option:hover {
+        background: #f5f5f5 !important;
+    }
+
+.dark-theme .custom-mat .mat-form-field-flex {
+    background: #383434 !important;
+    color: white !important;
+}
+
+.dark-theme .custom-mat .mat-select-value {
+    color: white !important;
+}
+
+.dark-theme .custom-mat .mat-select-arrow {
+    color: white !important;
+}
+
+.dark-theme .mat-option {
+    background: #282424 !important;
+    color: white !important;
+}
+
+    .dark-theme .mat-option:hover {
+        background: #444 !important;
+    }
