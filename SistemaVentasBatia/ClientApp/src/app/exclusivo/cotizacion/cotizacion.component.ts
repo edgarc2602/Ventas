@@ -13,6 +13,8 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
 import { CerrarCotizacion } from '../../widgets/cerrarcotizacion/cerrarcotizacion.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
+import { GrupoService } from 'src/app/grupo.service';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
     selector: 'cotizacion',
@@ -47,8 +49,9 @@ export class CotizacionComponent implements OnInit, OnDestroy {
     validaDato1: any;
     validaDato2: any;
     sub: any;
+    private subscription: Subscription;
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, public user: StoreUser, private rtr: Router) {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, public user: StoreUser, private rtr: Router, private grupoService: GrupoService) {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         http.get<ItemN[]>(`${url}api/prospecto/getservicio`, {headers}).subscribe(response => {
@@ -77,6 +80,9 @@ export class CotizacionComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.sub.unsubscribe();
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     init() {
@@ -87,7 +93,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         if (fil.length > 0) fil += '&';
         fil += (this.lcots.idProspecto > 0 ? `idProspecto=${this.lcots.idProspecto}` : '');
         if (fil.length > 0) fil = '?' + fil;
-        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`, { headers: this.getHeaders() }).subscribe(response => {
+        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}/${this.user.idGrupoActivo}${fil}`, { headers: this.getHeaders() }).subscribe(response => {
             this.lcots = response;
             }, err => {
             console.log(err);
@@ -97,13 +103,22 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         }, err => {
             this.validaError(err);
         });
+        this.subscription = this.grupoService.grupoCambiado.subscribe(idGrupo => {
+            this.okToast("Grupo de empresas cambiado");
+            this.lista();
+        });
     }
     validaError(err: any) {
         if (err.status === 401) {
             this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
             this.rtr.navigate(['']);
         } else {
-            this.errorToast('Ocurrió un error');
+            if (err.message != null) {
+                this.errorToast(err.message);
+            }
+            else {
+                this.errorToast('Error');
+            }
         }
     }
     getHeaders() {
@@ -119,7 +134,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
         if (fil.length > 0) fil += '&';
         fil += (this.lcots.idProspecto > 0 ? `idProspecto=${this.lcots.idProspecto}` : '');
         if (fil.length > 0) fil = '?' + fil;
-        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}${fil}`, { headers: this.getHeaders() }).subscribe(response => {
+        this.http.get<ListaCotizacion>(`${this.url}api/cotizacion/${this.user.idPersonal}/${this.lcots.pagina}/${this.user.idGrupoActivo}${fil}`, { headers: this.getHeaders() }).subscribe(response => {
             setTimeout(() => {
                 this.lcots = response;
                 if (this.tablaContainer) {

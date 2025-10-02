@@ -11,6 +11,7 @@ namespace SistemaVentasBatia.Repositories
     public interface IUsuarioRepository
     {
         Task<Usuario> Login(Acceso acceso);
+        Task<List<UsuarioGrupo>> Grupo(int idPersonal);
         Task<bool> InsertarUsuario(UsuarioRegistro usuario);
         Task<bool> ActualizarUsuario(AgregarUsuario usuario);
         Task<bool> AgregarUsuario(AgregarUsuario usuario);
@@ -57,6 +58,19 @@ Per_Interno = 0";
                 usu = (await connection.QueryFirstOrDefaultAsync<Usuario>(query, acceso));
             }
             return usu;
+        }
+        public async Task<List<UsuarioGrupo>> Grupo(int idPersonal) {
+            string query = @"
+                SELECT a.id_grupo AS IdGrupo, b.descripcion AS Descripcion, a.principal AS Principal  FROM personal_grupo a 
+                INNER JOIN tb_grupo_empresa b ON b.id_grupo = a.id_grupo
+                WHERE a.idpersonal = @idPersonal";
+            try {
+                using var connection = _ctx.CreateConnection();
+                return (await connection.QueryAsync<UsuarioGrupo>(query, new { idPersonal })).ToList();
+            } catch(Exception) {
+                throw new CustomException("Ocurrio un error al consultar el grupo de empresas");
+            }
+
         }
         public async Task<bool> InsertarUsuario(UsuarioRegistro usuario)
         {

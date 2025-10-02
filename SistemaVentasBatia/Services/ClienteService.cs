@@ -1113,7 +1113,7 @@ namespace SistemaVentasBatia.Services
             }
             using (var smtp = new SmtpClient("smtp-mail.outlook.com", 587))
             {
-                smtp.Credentials = new NetworkCredential("adminsinga@grupobatia.com.mx", "Ad*Gb6584");
+                smtp.Credentials = new NetworkCredential("adminsinga@grupobatia.com.mx", "Ad*Gb099ewe3");
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
             }

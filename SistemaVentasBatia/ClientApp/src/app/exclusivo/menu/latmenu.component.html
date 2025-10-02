@@ -1,6 +1,6 @@
 <nav id="sidebarMenu" class="col-xl-auto d-xl-none  sidebar collapse-horizontal collapse text-center">
     <ul class="nav d-flex flex-column justify-content-center h-100 pt-2">
-        <li class="nav-item mb-3 text-sm-start text-md-center">
+        <li class="nav-item text-sm-start text-md-center">
             <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo']" [routerLinkActive]='["active"]' [routerLinkActiveOptions]="{ exact: true }" aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right">
                     <span> <i class="fa-solid fa-house fa-2x mb-2"></i></span>
@@ -10,7 +10,7 @@
             </a>
         </li>
 
-        <li class="nav-item mb-3 text-sm-start text-md-center">
+        <li class="nav-item text-sm-start text-md-center">
             <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/prospecto']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right">
                     <span> <i class="fa-solid fa-business-time fa-2x mb-2"></i></span>
@@ -19,17 +19,8 @@
                 </div>
             </a>
         </li>
-        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
-            <a class="nav-link" aria-current="page" href="#">
-                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Clientes">
-                    <span> <i class="fa-solid fa-users fa-2x"></i></span>
-                    <div class="float-end d-block d-sm-none"><h6>CLIENTES</h6></div>
-                    <hr class="d-block d-sm-none" />
 
-                </div>
-            </a>
-        </li>-->
-        <li class="nav-item mb-3 text-sm-start text-md-center">
+        <li class="nav-item text-sm-start text-md-center">
             <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/cotiza/0']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right">
                     <span> <i class="fa-solid fa-file-invoice-dollar fa-2x mb-2"></i></span>
@@ -38,7 +29,16 @@
                 </div>
             </a>
         </li>
-        <li *ngIf="user.idAutoriza == 1" class="nav-item mb-3 text-sm-start text-md-center">
+        <li  class="nav-item text-sm-start text-md-center">
+            <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/prospectoseguimiento']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right">
+                    <span> <i class="fa-solid fa-rectangle-list fa-2x"></i></span>
+                    <div class=" d-block d-xl-none"><h6>SEGUIMIENTO <br /> DE PROSPECTOS</h6></div>
+                    <hr class="d-block d-xl-none" />
+                </div>
+            </a>
+        </li>
+        <li *ngIf="user.idAutoriza == 1" class="nav-item text-sm-start text-md-center">
             <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right">
                     <span> <i class="fa-solid fa-gears fa-2x mb-2"></i></span>
@@ -47,7 +47,8 @@
                 </div>
             </a>
         </li>
-        <li *ngIf="user.idAutoriza == 0" class="nav-item mb-3 text-sm-start text-md-center">
+
+        <li *ngIf="user.idAutoriza == 0" class="nav-item text-sm-start text-md-center">
             <a class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right">
                     <span> <i class="fa-solid fa-rectangle-list fa-2x"></i></span>
@@ -56,7 +57,7 @@
                 </div>
             </a>
         </li>
-        <li class="nav-item mb-3 text-sm-start text-md-center">
+        <li class="nav-item text-sm-start text-md-center">
             <a *ngIf="isDarkTheme" class="nav-link" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" (click)="toggleTheme()">
                 <div data-bs-toggle="tooltip" data-bs-placement="right">
                     <span> <i class="fa-solid fa-sun fa-2x mb-2" style="color: lightgray;"></i></span>
@@ -74,22 +75,12 @@
                 </div>
             </a>
         </li>
-        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
-            <a class="nav-link" aria-current="page" href="#">
-
-                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Cuenta">
-                    <span> <i class="fa-solid fa-user-tie fa-2x"></i></span>
-                    <div class="float-end d-block d-sm-none"><h6>MI CUENTA</h6></div>
-                    <hr class="d-block d-sm-none" />
-                </div>
-            </a>
-        </li>-->
     </ul>
 </nav>
 <!--MENU ESTATICO FS-->
-<nav id="sidebarMenustatic" class="col-xl-auto d-none d-xl-block sidebar collapse">
-    <ul class="nav d-flex flex-column justify-content-center h-100 pt-2">
-        <li class="nav-item mb-3 text-sm-start text-md-center">
+<nav id="sidebarMenustatic" class="col-xl-auto d-none d-xl-block text-center sidebar collapse justify-content-center">
+    <ul class="nav d-flex flex-column justify-content-center ">
+        <li class="nav-item mb-3 text-sm-start text-md-center " >
             <a class="nav-link" [routerLink]="['/exclusivo']" [routerLinkActive]='["active"]' [routerLinkActiveOptions]="{ exact: true }" aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right" title="Home">
                     <span> <i class="fa-solid fa-house fa-2x"></i></span>
@@ -107,16 +98,6 @@
                 </div>
             </a>
         </li>
-        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
-        <a class="nav-link" aria-current="page" href="#">
-            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Clientes">
-                <span> <i class="fa-solid fa-users fa-2x"></i></span>
-                <div class="float-end d-block d-sm-none"><h6>CLIENTES</h6></div>
-                <hr class="d-block d-sm-none" />
-
-            </div>
-        </a>
-    </li>-->
         <li class="nav-item mb-3 text-sm-start text-md-center">
             <a class="nav-link" [routerLink]="['/exclusivo/cotiza/0']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right" title="Cotizaciones">
@@ -135,6 +116,16 @@
                 </div>
             </a>
         </li>
+
+        <li class="nav-item mb-3 text-sm-start text-md-center">
+            <a class="nav-link" [routerLink]="['/exclusivo/prospectoseguimiento']" [routerLinkActive]='["active"]' aria-current="page">
+                <div data-bs-toggle="tooltip" data-bs-placement="right" title="Seguimiento de prospectos">
+                    <span> <i class="fa-solid fa-timeline fa-2x"></i></span>
+                    <div class="float-end d-block d-sm-none"><h6>SEGUIMIENTO DE PROSPECTOS</h6></div>
+                    <hr class="d-block d-sm-none" />
+                </div>
+            </a>
+        </li>
         <li *ngIf="user.idAutoriza == 1" class="nav-item mb-3 text-sm-start text-md-center">
             <a class="nav-link" [routerLink]="['/exclusivo/catalogo']" [routerLinkActive]='["active"]' aria-current="page">
                 <div data-bs-toggle="tooltip" data-bs-placement="right" title="Ajustes">
@@ -144,16 +135,6 @@
                 </div>
             </a>
         </li>
-        <!--<li class="nav-item mb-3 text-sm-start text-md-center">
-        <a class="nav-link" aria-current="page" href="#">
-
-            <div data-bs-toggle="tooltip" data-bs-placement="right" title="Mi Cuenta">
-                <span> <i class="fa-solid fa-user-tie fa-2x"></i></span>
-                <div class="float-end d-block d-sm-none"><h6>MI CUENTA</h6></div>
-                <hr class="d-block d-sm-none" />
-            </div>
-        </a>
-    </li>-->
         <li class="nav-item mb-3 text-sm-start text-md-center">
             <div *ngIf="isDarkTheme" data-bs-toggle="tooltip" data-bs-placement="right" title="Tema claro">
                 <button class="btn" (click)="toggleTheme()"><i class="fa-solid fa-sun fa-2x " style="color: #fff;"></i></button>

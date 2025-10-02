@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Enums;
+using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Services;
 using System;
 using System.Collections.Generic;
@@ -248,6 +249,27 @@ namespace SistemaVentasBatia.Controllers
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.ObtenerCatalogoPorcentajesFinanciamiento();
+        }
+        
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoUnidadMedida() {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+            return await logic.ObtenerCatalogoUnidadMedida();
+        }
+
+        [HttpGet("[action]/{servicio}/{grupo}/{pagina}")]
+        public async Task<ListaCatalogoProductosDTO> GetProductoByGrupoFiltrado( string keywords, Servicio servicio, string grupo, int pagina) {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            ListaCatalogoProductosDTO modellista = new ListaCatalogoProductosDTO {
+                Pagina = pagina,
+                Keywords = keywords ?? ""
+            };
+            await logic.ObtenerCatalogoProductosGrupoFiltrado(servicio, grupo, modellista);
+
+            return modellista;
         }
 
     }

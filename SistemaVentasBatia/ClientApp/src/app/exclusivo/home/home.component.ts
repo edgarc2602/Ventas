@@ -11,6 +11,8 @@ import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { saveAs } from 'file-saver';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { StoreUser } from '../../stores/StoreUser';
 
 interface DatosAgrupados {
     nombre: string;
@@ -49,7 +51,9 @@ export class HomeComponent implements OnInit {
     totalIndirecto: number = 0;
     totalUtilidad: number = 0;
     total: number = 0;
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router) {
+    iframeHome: SafeResourceUrl;
+
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rtr: Router, private sanitizer: DomSanitizer, public user: StoreUser,) {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         http.get<UsuarioGrafica[]>(`${url}api/usuario/obtenercotizacionesusuarios/`, {headers}).subscribe(response => {
@@ -68,6 +72,8 @@ export class HomeComponent implements OnInit {
         }, err => {
             this.validaError(err);
         });
+        const urlProj = `https://www.singa.com.mx:8097/?user_id=${this.user.idPersonal}`;
+        this.iframeHome = this.sanitizer.bypassSecurityTrustResourceUrl(urlProj);
     }
     validaError(err: any) {
         if (err.status === 401) {

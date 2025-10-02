@@ -1,9 +1,11 @@
 using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using SistemaVentasBatia.Context;
 using SistemaVentasBatia.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace SistemaVentasBatia.Repositories
@@ -56,6 +58,16 @@ namespace SistemaVentasBatia.Repositories
         Task<List<PuestoDireccionCotizacion>> ObtenerPlantillasCotizacion(int idCotizacion);
 
         Task<List<EstadoProveedor>> EstadoProveedor();
+
+
+        //CRUD PRODUCTOS SUMCO
+        Task<List<ProductoSumco>> GetAllProductosSumco(string keywords, int pagina);
+        Task<int> CountProductosSumco(string keywords);
+        Task<bool> InsertProductoSumco(ProductoSumco producto);
+        Task<ProductoSumco> GetProductoSumco(int idProducto);
+        Task<bool> UpdateProductoSumco(ProductoSumco producto);
+        Task<bool> DeleteProductoSumco(int idProducto);
+
     }
 
     public class ProductoRepository : IProductoRepository
@@ -716,6 +728,136 @@ WHERE b.id_cotizacion = @idCotizacion";
             {
                 throw new CustomException("Error al cosnultar la relacion Estado/ Proveedor, detalle:" + ex.Message);
             }
+        }
+
+        //CRUD PRODUCTOS SUMCO
+        public async Task<bool> InsertProductoSumco(ProductoSumco producto) {
+            string query = @"INSERT into tb_producto_sumco ( 
+                                clave,  
+                                nombre,  
+                                id_unidad, 
+                                precio,  
+                                precio_compra, 
+                                falta,      
+                                personal_alta,
+                                id_estatus
+                            ) VALUES(
+                                @Clave,
+                                @Nombre, 
+                                @IdUnidad,
+                                @Precio,
+                                @PrecioCompra,  
+                                GETDATE(), 
+                                @PersonalAlta,
+                                1)";
+            try {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteScalarAsync<int>(query, producto);
+            } catch(Exception ex) {
+                throw new Exception(ex.Message);
+            }
+            return true;
+        }
+        public async Task<ProductoSumco> GetProductoSumco(int idProducto) {
+            string query = @"SELECT
+	                            a.id_producto AS IdProducto,
+                                a.clave AS Clave,
+                                a.nombre AS Nombre,
+                                a.id_unidad AS IdUnidad,
+                                a.precio AS Precio,
+                                a.precio_compra AS PrecioCompra,
+                                a.falta AS FechaAlta,
+                                a.fmod AS FechaMod,
+                                a.personal_alta AS PersonalAlta,
+                                a.personal_mod AS PersonalMod,
+                                a.id_estatus AS IdEstatus
+                          FROM tb_producto_sumco a
+                          WHERE a.id_producto = @idProducto";
+            try {
+                using var connection = ctx.CreateConnection();
+                var producto = await connection.QuerySingleAsync<ProductoSumco>(query, new { idProducto });
+                return producto;
+            } catch(Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<bool> UpdateProductoSumco(ProductoSumco producto) {
+            string query = @"UPDATE tb_producto_sumco 
+                            SET
+                            clave = @Clave,
+                            nombre = @Nombre,
+                            id_unidad = @IdUnidad,
+                            precio = @Precio,
+                            precio_compra = @PrecioCompra,
+                            fmod = GETDATE(),
+                            personal_mod = @PersonalMod
+                            WHERE id_producto = @IdProducto";
+            try {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteScalarAsync<int>(query, producto);
+            } catch(Exception ex) {
+                throw new Exception(ex.Message);
+            }
+            return true;
+
+        }
+        public async Task<bool> DeleteProductoSumco(int idProducto) {
+            string query = @"UPDATE tb_producto_sumco 
+                            SET id_estatus = 2 
+                            WHERE id_producto = @idProducto";
+            try {
+                using var connection = ctx.CreateConnection();
+                await connection.ExecuteScalarAsync<int>(query, new {idProducto});
+            } catch(Exception ex) {
+                throw new Exception(ex.Message);
+            }
+            return true;
+        }
+
+        public async Task<List<ProductoSumco>> GetAllProductosSumco(string keywords, int pagina) {
+            string query = @"
+                            SELECT
+	                        ROW_NUMBER() OVER ( ORDER BY a.id_producto desc ) AS RowNum,
+	                        a.id_producto AS IdProducto,
+                                a.clave AS Clave,
+                                a.nombre AS Nombre,
+                                a.id_unidad AS IdUnidad,
+		                        b.descripcion AS Unidad,
+                                a.precio AS Precio,
+                                a.precio_compra AS PrecioCompra,
+                                a.falta AS FechaAlta,
+                                a.fmod AS FechaMod,
+                                a.personal_alta AS PersonalAlta,
+                                a.personal_mod AS PersonalMod,
+                                a.id_estatus AS IdEstatus
+                          FROM tb_producto_sumco a
+                          INNER JOIN tb_unidadmedida b ON a.id_unidad = b.id_unidad 
+                            WHERE id_estatus = 1 AND
+                            nombre like '%' + @keywords + '%'";
+            try {
+                using var connection = ctx.CreateConnection();
+                var productos = (await connection.QueryAsync<ProductoSumco>(query, new {keywords, pagina})).ToList();
+                return productos;
+            } catch(Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<int> CountProductosSumco(string keywords) {
+            
+            string query = @"SELECT 
+                                count(*) Rows
+                            FROM tb_producto_sumco
+                            WHERE id_estatus = 1 AND
+                            nombre like '%' + @keywords + '%'";
+            int numrows = 0;
+            try {
+                using var connection = ctx.CreateConnection();
+                numrows = await connection.QuerySingleAsync<int>(query, new { keywords });
+            } catch(Exception ex) {
+                throw ex;
+            }
+            return numrows;
         }
     }
 }

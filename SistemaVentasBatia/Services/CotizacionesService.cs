@@ -13,7 +13,7 @@ namespace SistemaVentasBatia.Services
     public interface ICotizacionesService
     {
         Task CrearCotizacion(CotizacionDTO cotizacionVM);
-        Task ObtenerListaCotizaciones(ListaCotizacionDTO listaCotizacionesVM, int autorizacion, int idPersonal);
+        Task ObtenerListaCotizaciones(ListaCotizacionDTO listaCotizacionesVM, int autorizacion, int idPersonal, int idGrupoActivo);
         Task<int> ObtenerAutorizacion(int idPersonal);
         Task ObtenerListaDireccionesPorCotizacion(ListaDireccionDTO listaDireccionesVM);
         Task<List<DireccionDTO>> ObtenerCatalogoDireccionesPorProspecto(int idProspecto);
@@ -86,9 +86,9 @@ namespace SistemaVentasBatia.Services
             cotizacionVM.IdCotizacion = cotizacion.IdCotizacion;
         }
 
-        public async Task ObtenerListaCotizaciones(ListaCotizacionDTO listaCotizacionesVM, int autorizacion, int idPersonal)
+        public async Task ObtenerListaCotizaciones(ListaCotizacionDTO listaCotizacionesVM, int autorizacion, int idPersonal, int idGrupoActivo)
         {
-            listaCotizacionesVM.Rows = await cotizacionesRepo.ContarCotizaciones(listaCotizacionesVM.IdProspecto, listaCotizacionesVM.IdEstatusCotizacion, listaCotizacionesVM.IdServicio, idPersonal, autorizacion);
+            listaCotizacionesVM.Rows = await cotizacionesRepo.ContarCotizaciones(listaCotizacionesVM.IdProspecto, listaCotizacionesVM.IdEstatusCotizacion, listaCotizacionesVM.IdServicio, idPersonal, autorizacion, idGrupoActivo);
 
             if (listaCotizacionesVM.Rows > 0)
             {
@@ -99,7 +99,7 @@ namespace SistemaVentasBatia.Services
                     listaCotizacionesVM.NumPaginas++;
                 }
 
-                var lista = await cotizacionesRepo.ObtenerCotizaciones(listaCotizacionesVM.Pagina, listaCotizacionesVM.IdProspecto, listaCotizacionesVM.IdEstatusCotizacion, listaCotizacionesVM.IdServicio, autorizacion, idPersonal);
+                var lista = await cotizacionesRepo.ObtenerCotizaciones(listaCotizacionesVM.Pagina, listaCotizacionesVM.IdProspecto, listaCotizacionesVM.IdEstatusCotizacion, listaCotizacionesVM.IdServicio, autorizacion, idPersonal, idGrupoActivo);
                 listaCotizacionesVM.Cotizaciones = lista.Select(c =>
                     new CotizacionMinDTO
                     {

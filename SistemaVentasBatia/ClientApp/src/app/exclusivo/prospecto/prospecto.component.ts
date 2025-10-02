@@ -6,10 +6,11 @@ import { ItemN } from 'src/app/models/item';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { fadeInOut } from 'src/app/fade-in-out';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { ConfirmacionWidget } from 'src/app/widgets/confirmacion/confirmacion.widget'
+import { GrupoService } from 'src/app/grupo.service';
 
 @Component({
     selector: 'prospecto',
@@ -29,8 +30,9 @@ export class ProspectoComponent implements OnInit, OnDestroy {
     isLoading: boolean = false;
     private searchKeyword$ = new Subject<string>();
     sub: any;
+    private subscription: Subscription;
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rter: Router, public user: StoreUser) {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private rter: Router, public user: StoreUser, private grupoService: GrupoService) {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         http.get<ItemN[]>(`${url}api/prospecto/getestatus`, {headers}).subscribe(response => {
@@ -53,17 +55,24 @@ export class ProspectoComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     init() {
+
         this.isLoading = true;
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
-        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`, { headers: this.getHeaders() }).subscribe(response => {
+        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}/${this.user.idGrupoActivo}/${qust}`, { headers: this.getHeaders() }).subscribe(response => {
             this.isLoading = false;
             this.lspro = response;
         }, err => {
             this.isLoading = false;
             this.validaError(err);
+        }); this.subscription = this.grupoService.grupoCambiado.subscribe(idGrupo => {
+            this.okToast("Grupo de empresas cambiado");
+            this.lista();
         });
     }
 
@@ -72,7 +81,12 @@ export class ProspectoComponent implements OnInit, OnDestroy {
             this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
             this.rter.navigate(['']);
         } else {
-            this.errorToast('Ocurrió un error');
+            if (err.message != null) {
+                this.errorToast(err.message);
+            }
+            else {
+                this.errorToast('Error');
+            }
         }
     }
 
@@ -84,7 +98,7 @@ export class ProspectoComponent implements OnInit, OnDestroy {
 
     lista() {
         let qust: string = this.lspro.keywords == '' ? '' : '?keywords=' + this.lspro.keywords;
-        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}${qust}`, { headers: this.getHeaders() }).subscribe(response => {
+        this.http.get<ListaProspecto>(`${this.url}api/prospecto/${this.user.idPersonal}/${this.lspro.pagina}/${this.lspro.idEstatusProspecto}/${this.user.idGrupoActivo}/${qust}`, { headers: this.getHeaders() }).subscribe(response => {
             setTimeout(() => {
                 this.lspro = response;
                 if (this.tablaContainer) {

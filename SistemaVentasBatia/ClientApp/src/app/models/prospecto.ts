@@ -23,4 +23,6 @@ export interface Prospecto {
     //actaConstitutiva: string;
     //registroPatronal: string;
     //empresaVenta: number;
+
+    idGrupoActivo: number;
 }

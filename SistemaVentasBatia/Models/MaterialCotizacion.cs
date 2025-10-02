@@ -43,5 +43,7 @@ namespace SistemaVentasBatia.Models
         public int IdPuesto { get; set; }
 
         public int edit { get; set; }
+
+        public decimal PrecioCompra { get; set; }
     }
 }

@@ -58,7 +58,7 @@ namespace SistemaVentasBatia.Repositories
         Task DesactivarCotizaciones(int idProspecto);
         Task<bool> ActualizarCotizacion(int idCotizacion, int idServicio, bool polizaCumplimiento, int diasEvento);
         Task InsertarTotalCotizacion(decimal total, int idCotizacion, string numerotxt);
-        Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int idPersonal, int autorizacion);
+        Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int idPersonal, int autorizacion, int idGrupoActivo);
         Task<int> ObtenerAutorizacion(int idPersonal);
         Task<int> ObtieneIdCotizacionPorOperario(int idPuestoDireccionCotizacion);
         Task<bool> ActivarCotizacion(int idCotizacion);
@@ -67,7 +67,7 @@ namespace SistemaVentasBatia.Repositories
         Task<string> ObtenerNombreSucursalPorIdOperario(int id);
         Task<Cotizacion> ObtenerCotizacion(int id);
         Task<Cotizacion> ObtenerNombreComercialCotizacion(int idCotizacion);
-        Task<List<Cotizacion>> ObtenerCotizaciones(int pagina, int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int admin, int idPersonal);
+        Task<List<Cotizacion>> ObtenerCotizaciones(int pagina, int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int admin, int idPersonal, int idGrupoActivo);
         Task<List<MaterialCotizacion>> ObtieneMaterialesCotizacion(int idCotizacion);
         Task<ResumenCotizacionLimpieza> ObtenerResumenCotizacionLimpieza(int idCotizacion);
         Task<ResumenCotizacionLimpieza> ObtenerResumenCotizacionLimpieza2(int idCotizacion);
@@ -134,7 +134,7 @@ namespace SistemaVentasBatia.Repositories
                 throw ex;
             }
         }
-        public async Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int idPersonal, int autorizacion)
+        public async Task<int> ContarCotizaciones(int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int idPersonal, int autorizacion, int idGrupoActivo)
         {
             var queryuser = @"SELECT count(*) Rows
                                 FROM tb_cotizacion c 
@@ -180,7 +180,7 @@ namespace SistemaVentasBatia.Repositories
 
             return rows;
         }
-        public async Task<List<Cotizacion>> ObtenerCotizaciones(int pagina, int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int admin, int idPersonal)
+        public async Task<List<Cotizacion>> ObtenerCotizaciones(int pagina, int idProspecto, EstatusCotizacion idEstatusCotizacion, int idServicio, int admin, int idPersonal, int idGrupoActivo)
         {
 
             var queryadmin = @"SELECT  *

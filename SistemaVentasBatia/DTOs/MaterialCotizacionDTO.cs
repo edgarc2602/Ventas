@@ -33,5 +33,6 @@ namespace SistemaVentasBatia.DTOs
         public int IdPersonal { get; set; }
         public int edit { get; set; }
         public int DiasEvento { get; set; }
+        public decimal PrecioCompra { get; set; }
     }
 }

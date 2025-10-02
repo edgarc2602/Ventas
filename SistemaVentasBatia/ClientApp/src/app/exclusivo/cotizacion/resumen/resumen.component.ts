@@ -33,7 +33,13 @@ import { SubirContratoClienteWidget } from '../../../widgets/subircontratoclient
 import { ClienteWidget } from '../../../widgets/cliente/cliente.widget';
 import { ProductoGeneralWidget } from '../../../widgets/productogeneral/productogeneral.widget';
 import { MaterialPuesto } from '../../../models/materialpuesto';
-
+import { RegisterMaterialSumcoWidget } from '../../../widgets/registermaterialsumco/registermaterialsumco.widget';
+import { AddMaterialSumcoWidget } from '../../../widgets/addmaterialsumco/addmaterialsumco.widget';
+import { listaproductosumco } from '../../../models/listaproductosumco';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { MaterialAddSumcoWidget } from '../../../widgets/materialaddsumco/materialaddsumco.widget';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'resumen',
@@ -64,7 +70,9 @@ export class ResumenComponent implements OnInit, OnDestroy {
     @ViewChild('resumenCot', { static: false }) resumenContainer: ElementRef;
     @ViewChild('tbdirecciones', { static: false }) tbdireciones: ElementRef;
     @ViewChild('tbpuestos', { static: false }) tbpuestos: ElementRef;
-
+    @ViewChild(RegisterMaterialSumcoWidget, { static: false }) registerSumco: RegisterMaterialSumcoWidget;
+    @ViewChild(AddMaterialSumcoWidget, { static: false }) addSumco: AddMaterialSumcoWidget;
+    @ViewChild(MaterialAddSumcoWidget, { static: false }) addSumcoNew: MaterialAddSumcoWidget;
     model: CotizaResumenLim = {
         idCotizacion: 0, idProspecto: 0, salario: 0, cargaSocial: 0, prestaciones: 0, provisiones: 0,
         material: 0, uniforme: 0, equipo: 0, herramienta: 0, servicio: 0,
@@ -79,7 +87,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     dirs: ItemN[] = [];
     cotdirs: Catalogo[] = [];
     indust: Catalogo[] = [];
-    docs: ItemN[] = [];
+    docs: ItemN[] = []; q   
     lsdir: ListaDireccion = {} as ListaDireccion;
     lspue: ListaPuesto = {
         puestosDireccionesCotizacion: [], direccionesCotizacion: [], idCotizacion: 0, idDireccionCotizacion: 0, idPuestoDireccionCotizacion: 0, length: 0, empleados: 0, pagina: 1, rows: 0, numPaginas: 0
@@ -88,9 +96,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
     lsher: ListaMaterial = {} as ListaMaterial;
     lsser: ListaServicio = {} as ListaServicio;
     modelpros: Prospecto = {} as Prospecto;
+    modelsumco: listaproductosumco = {
+        productos: [], numPaginas: 0, rows: 0, pagina: 1, keywords: ''
+    };
     selDireccion: number = 0;
     selPuesto: number = 0;
     selMatDir: number = 0;
+    selMatDirSumco: number = 0;
     selMatPue: number = 0;
     edit: number = 0;
     isGen: number = 0;
@@ -108,6 +120,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
     allTabsOpen = true;
     selTipo: string = 'material';
     txtMatKey: string = '';
+    txtMatSumcoKey: string = '';
     indirectoValue: string = this.model.utilidadPor;
     utilidadValue: string = this.model.indirectoPor;
     CSV: string = this.model.csvPor;
@@ -122,9 +135,10 @@ export class ResumenComponent implements OnInit, OnDestroy {
     sub: any;
     incluyeProducto: boolean = false;
     listPorcentaje: Catalogo[] = [];
+    private searchSumcoKeyword$ = new Subject<string>();
 
 
-    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, private rtr: Router, private reportService: ReportService, public user: StoreUser, private dtpipe: DatePipe, private sinU: StoreUser) {
+    constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private route: ActivatedRoute, private rtr: Router, private reportService: ReportService, public user: StoreUser, private dtpipe: DatePipe, private sinU: StoreUser, private dialog: MatDialog) {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         this.nuevo();
@@ -146,6 +160,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
         }, err => {
             this.validaError(err);
         });
+        this.searchSumcoKeyword$.pipe(
+            debounceTime(500),
+            distinctUntilChanged()
+        ).subscribe(() => {
+            this.modelsumco.pagina = 1;
+            this.GetAllProductosSumco();
+        });
     }
     ngOnInit(): void {
         this.sub = this.route.params.subscribe(params => {
@@ -163,7 +184,12 @@ export class ResumenComponent implements OnInit, OnDestroy {
             this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
             this.rtr.navigate(['']);
         } else {
-            this.errorToast('Ocurri\u00F3 un error');
+            if (err.message != null) {
+                this.errorToast(err.message);
+            }
+            else {
+                this.errorToast('Error');
+            }
         }
     }
     getHeaders() {
@@ -180,7 +206,7 @@ export class ResumenComponent implements OnInit, OnDestroy {
         let fec: Date = new Date();
         this.modelpros = {
             idProspecto: 0, nombreComercial: '', razonSocial: '', rfc: '', domicilioFiscal: '', representanteLegal: '', telefono: '', fechaAlta: this.dtpipe.transform(fec, 'yyyy-MM-ddTHH:mm:ss'), nombreContacto: '',
-            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, idTipoIndustria: 0
+            emailContacto: '', numeroContacto: '', extContacto: '', idCotizacion: 0, listaDocumentos: [], idPersonal: this.sinU.idPersonal, idEstatusProspecto: 0, idTipoIndustria: 0, idGrupoActivo: this.sinU.idGrupoActivo
         };
         this.docs.forEach(d => d.act = false);
     }
@@ -219,6 +245,13 @@ export class ResumenComponent implements OnInit, OnDestroy {
             this.errorToast('Ocurri\u00F3 un error al cargar el layout, verifique la informaci\u00F3n')
         });
         this.fileInputDir.nativeElement.value = '';
+    }
+
+    openRegisterProductoSumco(idProducto: number) {
+        this.registerSumco.open(idProducto);
+    }
+    openAddProductoSumco() {
+        this.addSumco.open(this.model.idCotizacion, this.user.idPersonal);
     }
 
     onFileChangePlan(event: any): void {
@@ -584,6 +617,23 @@ export class ResumenComponent implements OnInit, OnDestroy {
         });
         this.isLoading = false;
     }
+    getMatSumco(tb: string) {
+        this.isLoading = true;
+        this.selTipo = tb;
+        let fil: string = (this.txtMatKey != '' ? 'keywords=' + this.txtMatKey : '');
+        if (fil.length > 0) fil += '&';
+        fil += 'idDir=' + this.selMatDir + '&idPues=' + this.selMatPue;
+        this.http.get<ListaMaterial>(`${this.url}api/${tb}/${this.model.idCotizacion}/${this.lsmat.pagina == undefined ? 1 : this.lsmat.pagina}?${fil}`, { headers: this.getHeaders() }).subscribe(response => {
+            this.lsmat = response;
+            this.isLoading = false;
+
+        }, err => {
+            this.isLoading = false;
+            this.validaError(err);
+        });
+        this.isLoading = false;
+
+    }
 
     getNewDir() {
         this.dirAdd.open(this.model.idProspecto, 0);
@@ -625,11 +675,26 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, 0, this.model.idServicio, tp, true, this.edit, "", "", this.model.idServicio, this.model.diasEvento);
     }
 
+    getNewMatSumco(tp: string) {
+
+        this.selPuesto = 0;
+        this.selDireccion = 0;
+        this.sDir = true;
+        this.selTipo = tp;
+        this.addSumcoNew.open(0,this.model.idCotizacion,this.model.idServicio, tp);
+    }
+
     selNewMat(id: number, tp: string, edit: number) {
         this.edit = 1;
         this.sDir = true;
         this.selTipo = tp;
         this.proAdd.open(this.model.idCotizacion, this.selDireccion, this.selPuesto, id, this.model.idServicio, tp, true, this.edit, "", "", this.model.idServicio, this.model.diasEvento);
+    }
+    selNewMatSumco(id: number, tp: string, edit: number) {
+        this.edit = 1;
+        this.sDir = true;
+        this.selTipo = tp;
+        this.addSumcoNew.open(id,this.model.idCotizacion, this.model.idServicio, tp);
     }
 
     removeMat(id: number) {
@@ -661,6 +726,11 @@ export class ResumenComponent implements OnInit, OnDestroy {
     matPagina(event) {
         this.lsmat.pagina = event;
         this.getMat(this.selTipo);
+    }
+
+    matSumcoPagina(event) {
+        this.modelsumco.pagina = event;
+        this.GetAllProductosSumco();
     }
 
     dirPagina(event) {
@@ -1170,4 +1240,56 @@ export class ResumenComponent implements OnInit, OnDestroy {
         this.getPlan();
         this.actualizarDatos();
     }
+
+    onKeywordsSumcoInput() {
+        this.searchSumcoKeyword$.next(this.modelsumco.keywords);
+    }
+
+    GetAllProductosSumco() {
+        let fil: string = (this.modelsumco.keywords != '' ? 'keywords=' + this.modelsumco.keywords : '');
+        //if (fil.length > 0) fil += '&';
+        //fil += 'idDir=' + this.selMatDirSumco;
+        this.http.get<listaproductosumco>(`${this.url}api/producto/GetAllProductosSumco/${this.modelsumco.pagina}?${fil}` ,{ headers: this.getHeaders() }).subscribe(response => {
+            this.modelsumco = response;
+            
+        }, err => this.validaError(err));
+    }
+
+    registerMaterialSumco(idMaterial: number) {
+        this.registerSumco.open(idMaterial);
+    }
+
+    editSumcoProd(idProducto: number) {
+        this.registerSumco.open(idProducto)
+    }
+
+    returnSumcoWidgetEvent() {
+        this.GetAllProductosSumco();
+    }
+    removeSumcoProd(idProducto: number) {
+        Swal.fire({
+            title: 'Confirmar',
+            text: '¿Está seguro que desea eliminar el producto especificado?',
+            icon: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: '<i class="fa-solid fa-check fa-xl me-2"></i>Aceptar',
+            cancelButtonText: '<i class="fa-solid fa-xmark fa-xl me-2"></i>Cancelar',
+            customClass: {
+                confirmButton: 'btn-pdf',
+                cancelButton: 'btn-word',
+                popup: 'custom-swal-width'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.http.patch<boolean>(`${this.url}api/producto/DeleteProductoSumco/${idProducto}`, { headers: this.getHeaders() }).subscribe(response => {
+                    this.GetAllProductosSumco();
+                }, err => this.validaError(err));
+            } else {
+                
+            }
+        });
+        
+    }
+
 }   

@@ -225,5 +225,63 @@ namespace SistemaVentasBatia.Controllers
             Response.Headers.Add("Authorization", $"Bearer {token}");
             return await logic.EstadoProveedor();
         }
+
+        //CRUD SUMCO
+
+        [HttpGet("[action]/{pagina}")]
+        public async Task<ListaProductoSumcoDTO> GetAllProductosSumco(string keywords, int pagina) {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            ListaProductoSumcoDTO listaproductos = new ListaProductoSumcoDTO {
+                Pagina = pagina,
+                Keywords = keywords ?? ""
+            };
+
+            await logic.GetAllProductosSumco(listaproductos);
+            return listaproductos;
+        }
+
+        [HttpPost("[action]")]
+        public async Task<bool> InsertProductoSumco(ProductoSumcoDTO producto) {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+            return await logic.InsertProductoSumco(producto);
+        }
+
+        [HttpGet("[action]/{idProducto}")]
+        public async Task<ProductoSumcoDTO> GetProductoSumco(int idProducto) {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+            return await logic.GetProductoSumco(idProducto);
+        }
+
+        [HttpPut("[action]")]
+        public async Task<bool> UpdateProductoSumco(ProductoSumcoDTO producto) {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+            return await logic.UpdateProductoSumco(producto);
+        }
+
+        [HttpPatch("[action]/{idProducto}")]
+        public async Task<bool> DeleteProductoSumco(int idProducto) {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+            return await logic.DeleteProductoSumco(idProducto);
+        }
+        ////GET PRODUCTO SINGA
+        //[HttpGet("[action]/{pagina}")]
+        //public async Task<ListaProductoSumcoDTO> GetAllProductosSumco(string keywords, int pagina) {
+        //    var token = _logic.GenerarToken();
+        //    Response.Headers.Add("Authorization", $"Bearer {token}");
+
+        //    ListaProductoSumcoDTO listaproductos = new ListaProductoSumcoDTO {
+        //        Pagina = pagina,
+        //        Keywords = keywords ?? ""
+        //    };
+
+        //    await logic.GetAllProductosSumco(listaproductos);
+        //    return listaproductos;
+        //}
     }
 }

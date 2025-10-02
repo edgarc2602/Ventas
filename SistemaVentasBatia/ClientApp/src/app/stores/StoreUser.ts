@@ -11,4 +11,12 @@ export class StoreUser {
     idAutoriza: number;
     idSupervisa: number;
     direccionIP: string;
+    grupo: StoreUserGroup[];
+    idGrupoActivo: number;
+    descripcionGrupoActivo: string;
+}
+export class StoreUserGroup {
+    idGrupo: number;
+    descripcion: string;
+    principal: boolean;
 }

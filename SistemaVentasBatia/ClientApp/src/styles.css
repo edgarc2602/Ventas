@@ -1,4 +1,39 @@
 ﻿@import "~@fortawesome/fontawesome-free/css/all.css";
+
+
+
+
+.custom-autocomplete .mat-autocomplete-panel {
+    width: 100px; /* O el tamaño que prefieras */
+    height: 350px
+}
+
+.mat-form-field {
+    width: 100px;
+    height: 20px;
+}
+
+.custom-mat {
+    width: 120px;
+    height: auto;
+}
+
+    .custom-mat .mat-form-field-underline {
+        display: none;
+    }
+
+    .custom-mat .mat-form-field-wrapper {
+        padding-bottom: 0; /* Ajustar para que no quede espacio extra */
+    }
+
+    .custom-mat .mat-form-field-label-wrapper {
+        display: none;
+    }
+
+.custom-autocomplete-panel {
+    z-index: 2000 !important; /* debe ser mayor que el z-index de tu modal */
+}
+
 .password-input {
     -webkit-text-security: disc; /* Para navegadores basados en WebKit como Safari y Chrome */
     text-security: disc; /* Para otros navegadores que soporten text-security */
@@ -1164,4 +1199,13 @@ table {
     100% {
         width: 100%;
     }
+}
+
+
+.mi-panel-select {
+    z-index: 9999 !important;
+    background-color: red
+}
+.cdk-overlay-container, .cdk-overlay-pane {
+    z-index: 9999 !important;
 }

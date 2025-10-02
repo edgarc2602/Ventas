@@ -32,8 +32,8 @@ namespace SistemaVentasBatia.Controllers
             _logic = _usuarioService;
         }
 
-        [HttpGet("{idPersonal}/{pagina}")]
-        public async Task<ActionResult<ListaCotizacionDTO>> Index(int idProspecto, EstatusCotizacion estatus, int servicio, int idPersonal = 0, int pagina = 1)
+        [HttpGet("{idPersonal}/{pagina}/{idGrupoActivo}")]
+        public async Task<ActionResult<ListaCotizacionDTO>> Index(int idProspecto, EstatusCotizacion estatus, int servicio, int idPersonal = 0, int pagina = 1, int idGrupoActivo = 0)
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");
@@ -44,7 +44,7 @@ namespace SistemaVentasBatia.Controllers
             listaCotizacionesVM.IdServicio = servicio;
             listaCotizacionesVM.IdProspecto = idProspecto;
             int autorizacion = await cotizacionesSvc.ObtenerAutorizacion(idPersonal);
-            await cotizacionesSvc.ObtenerListaCotizaciones(listaCotizacionesVM, autorizacion, idPersonal);
+            await cotizacionesSvc.ObtenerListaCotizaciones(listaCotizacionesVM, autorizacion, idPersonal, idGrupoActivo);
             return listaCotizacionesVM;
         }
 

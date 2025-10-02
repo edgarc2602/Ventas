@@ -6,11 +6,26 @@
                     <img src="images/batia_logo.png" style="width:45%; height:90%;" />
                 </a>
             </div>
-            <div class="navbar w-100" style="height:60px; background-color:transparent; backdrop-filter: none">
+            <div class="navbar w-100 d-flex align-items-center justify-content-end" style="height:60px; background-color:transparent; backdrop-filter: none;">
                 <div>
                     <button class=" d-xl-none collapsed btn" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation" (click)="button()">
                         <i class="fa-solid fa-bars"></i>
                     </button>
+                </div>
+                <div class="col-xl-8 col-md-4 col-sm-4 col-6 d-flex align-items-center justify-content-end me-3">
+                    <img *ngIf="user.idGrupoActivo == 1" src="images/GRUPO BATIA.png" class="img-fluid me-3" style="width: 40px; height: 40px;" />
+                    <img *ngIf="user.idGrupoActivo == 2" src="images/ALTA.png" class="img-fluid me-3" style="width: 60px; height: 30px;" />
+                    <img *ngIf="user.idGrupoActivo == 3" src="images/SUMCO.png" class="img-fluid me-3" style="width: 60px; height: 30px;" />
+
+                    <div class="col-xl-3 col-sm-3 col-3 mb-1">
+                        <div class="form-floating" >
+                            <select class="form-select" style="height:35px" [value]="user.idGrupoActivo" (change)="cambiaGrupo($event.target.value)" id="ddlServicioCotizacion">
+                                <option value="0">Seleccione...</option>
+                                <option *ngFor="let e of user.grupo" [value]="e.idGrupo">{{ e.descripcion }}</option>
+                            </select>
+                            <label for="ddlGrupoEmpresa">Grupo de empresas</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="float-right">
                     Bienvenido(a), {{ user.nombre }}
@@ -19,5 +34,4 @@
             </div>
         </div>
     </nav>
-</header>   
-  
+</header>

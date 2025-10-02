@@ -1,4 +1,4 @@
-﻿using System;
+﻿                                    using System;
 
 namespace SistemaVentasBatia.Enums
 {
@@ -39,7 +39,8 @@ namespace SistemaVentasBatia.Enums
         Sanitización = 3,
         Insumos = 4,
         Evento = 5,
-        Seguridad = 6
+        Seguridad = 6,
+        Materiales = 7
     }
 
     public enum SalarioTipo

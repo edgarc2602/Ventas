@@ -60,29 +60,31 @@ namespace SistemaVentasBatia.Services
             return existe;
         }
 
-        public async Task<UsuarioDTO> Login(AccesoDTO dto, UsuarioDTO usu)
-        {
+        public async Task<UsuarioDTO> Login(AccesoDTO dto, UsuarioDTO usu) {
             dto.Contrasena = Encriptar(dto.Contrasena);
             string ip = usu.DireccionIP;
-            try
-            {
+            try {
                 Acceso acc = _mapper.Map<Acceso>(dto);
                 usu = _mapper.Map<UsuarioDTO>(await _repo.Login(acc));
-                if (usu != null)
-                {
+                if(usu != null) {
                     usu.DireccionIP = ip;
                 }
-                if (usu == null)
-                {
+                if(usu == null) {
                     throw new CustomException("Usuario no Existe");
                 }
-                if (usu.Estatus == 0)
-                {
+                if(usu.Estatus == 0) {
                     throw new CustomException("Usuario inactivo");
                 }
-            }
-            catch (Exception ex)
-            {
+                usu.Grupo = _mapper.Map<List<UsuarioGrupoDTO>>(await _repo.Grupo(usu.IdPersonal));
+                if(usu.Grupo != null) {
+                    foreach(var grupo in usu.Grupo) {
+                        if(grupo.Principal == true) {
+                            usu.IdGrupoActivo = grupo.IdGrupo;
+                            usu.DescripcionGrupoActivo = grupo.Descripcion;
+                        }
+                    }
+                }
+            } catch(Exception ex) {
                 throw ex;
             }
 

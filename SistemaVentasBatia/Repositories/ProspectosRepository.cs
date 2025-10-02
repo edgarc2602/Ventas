@@ -18,10 +18,10 @@ namespace SistemaVentasBatia.Repositories
         Task<bool> ActivarProspecto(int idProspecto);
         Task<bool> DesactivarProspecto(int idProspecto);
         Task<int> ObtenerIdProspectoPorCotizacion(int idCotizacion);
-        Task<int> ContarProspectos(EstatusProspecto idEstatusProspecto, string keywords, int idPersonal, int autorizacion);
+        Task<int> ContarProspectos(EstatusProspecto idEstatusProspecto, string keywords, int idPersonal, int autorizacion, int idGrupoActivo);
         Task<Prospecto> ObtenerProspectoPorId(int idProspecto);
         Task<Prospecto> ObtenerProspectoPorCotizacion(int idCotizacion);
-        Task<List<Prospecto>> ObtenerProspectos(int pagina, EstatusProspecto idEstatusProspecto, string keywords, int autorizacion, int idPersonal);
+        Task<List<Prospecto>> ObtenerProspectos(int pagina, EstatusProspecto idEstatusProspecto, string keywords, int autorizacion, int idPersonal, int idGrupoActivo);
         Task<List<Prospecto>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal);
         Task<List<Prospecto>> ObtenerCoincidenciasProspecto(string nombreComercial, string rfc);
         Task EliminarTotalPolizasByIdProspecto(int idProspecto);
@@ -49,9 +49,9 @@ namespace SistemaVentasBatia.Repositories
         public async Task InsertarProspecto(Prospecto prospecto)
         {
             var query = @"insert into tb_prospecto (nombre_comercial, razon_social, rfc, domicilio_fiscal, telefono, representante_legal, documentacion,
-                            id_estatus_prospecto, fecha_alta, id_personal, nombre_contacto, email_contacto, numero_contacto, ext_contacto, id_tipoindustria)
+                            id_estatus_prospecto, fecha_alta, id_personal, nombre_contacto, email_contacto, numero_contacto, ext_contacto, id_tipoindustria, id_grupo)
                         values(@NombreComercial, @RazonSocial, @Rfc, @DomicilioFiscal, @Telefono, @RepresentanteLegal, @Documentacion, 
-                            @IdEstatusProspecto, @FechaAlta, @IdPersonal, @NombreContacto, @EmailContacto, @NumeroContacto, @ExtContacto, @IdTipoIndustria)
+                            @IdEstatusProspecto, @FechaAlta, @IdPersonal, @NombreContacto, @EmailContacto, @NumeroContacto, @ExtContacto, @IdTipoIndustria, @IdGrupoActivo)
                           select scope_identity()";
             //,poder_representante_legal, acta_constitutiva, registro_patronal, empresa_venta
             //,@PoderRepresentanteLegal, @ActaConstitutiva, @RegistroPatronal, @EmpresaVenta
@@ -67,12 +67,13 @@ namespace SistemaVentasBatia.Repositories
                 throw ex;
             }
         }
-        public async Task<int> ContarProspectos(EstatusProspecto idEstatusProspecto, string keywords, int idPersonal, int autorizacion)
+        public async Task<int> ContarProspectos(EstatusProspecto idEstatusProspecto, string keywords, int idPersonal, int autorizacion, int idGrupoActivo)
         {
             var queryuser = @"SELECT count(id_prospecto) Rows 
                         FROM tb_prospecto
                         WHERE
                             id_personal = @idPersonal AND
+                            id_grupo = @idGrupoActivo AND
                             ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto
                             AND nombre_comercial like '%' + @keywords + '%';";
             var queryadmin = @"SELECT count(id_prospecto) Rows 
@@ -89,7 +90,7 @@ namespace SistemaVentasBatia.Repositories
                 {
                     if (autorizacion == 0)
                     {
-                        numrows = await connection.QuerySingleAsync<int>(queryuser, new { idEstatusProspecto, keywords = keywords ?? "", idPersonal });
+                        numrows = await connection.QuerySingleAsync<int>(queryuser, new { idGrupoActivo , idEstatusProspecto, keywords = keywords ?? "", idPersonal });
                     }
                     else
                     {
@@ -105,7 +106,7 @@ namespace SistemaVentasBatia.Repositories
 
             return numrows;
         }
-        public async Task<List<Prospecto>> ObtenerProspectos(int pagina, EstatusProspecto idEstatusProspecto, string keywords, int autorizacion, int idPersonal)
+        public async Task<List<Prospecto>> ObtenerProspectos(int pagina, EstatusProspecto idEstatusProspecto, string keywords, int autorizacion, int idPersonal, int idGrupoActivo)
         {
             var queryadmin = @"SELECT ROW_NUMBER() OVER ( ORDER BY id_prospecto desc ) AS RowNum, id_prospecto IdProspecto, nombre_comercial NombreComercial , razon_social RazonSocial, rfc Rfc, 
 				                domicilio_fiscal DomicilioFiscal, telefono Telefono,numero_contacto NumeroContacto, p.Per_Nombre + ' ' + p.Per_Paterno +' ' + p.Per_Materno RepresentanteLegal , documentacion Documentacion, 
@@ -114,6 +115,7 @@ namespace SistemaVentasBatia.Repositories
 						INNER JOIN dbo.Personal p on tb_prospecto.id_personal = p.IdPersonal
                         WHERE
                             ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto AND
+                            
                             nombre_comercial like '%' + @keywords + '%' 
                         ORDER BY nombre_comercial
                         OFFSET ((@pagina - 1) * 50) ROWS
@@ -126,6 +128,7 @@ namespace SistemaVentasBatia.Repositories
                         WHERE
                             ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto AND
                             nombre_comercial like '%' + @keywords + '%'  AND
+                            id_grupo =  @idGrupoActivo AND
                             tb_prospecto.id_personal = @idPersonal
                         ORDER BY nombre_comercial
                         OFFSET ((@pagina - 1) * 50) ROWS
@@ -143,7 +146,7 @@ namespace SistemaVentasBatia.Repositories
                     }
                     else if (autorizacion == 0)
                     {
-                        prospectos = (await connection.QueryAsync<Prospecto>(queryuser, new { pagina, idEstatusProspecto, keywords = keywords ?? "", idPersonal })).ToList();
+                        prospectos = (await connection.QueryAsync<Prospecto>(queryuser, new { pagina, idEstatusProspecto, keywords = keywords ?? "", idPersonal, idGrupoActivo })).ToList();
 
                     }
                 }

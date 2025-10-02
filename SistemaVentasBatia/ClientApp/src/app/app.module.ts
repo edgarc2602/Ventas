@@ -30,7 +30,6 @@ import { ServicioAddWidget } from './widgets/servicioadd/servicioadd.widget';
 import { AgregarServicioWidget } from './widgets/agregarservicio/agregarservicio.widget';
 import { StoreUser } from './stores/StoreUser';
 import { CommonModule } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { fadeInOut } from './fade-in-out';
 import { UsuarioAddWidget } from './widgets/usuarioadd/usuarioadd.widget';
 import { PuestoLayoutWidget } from './widgets/puestolayout/puestolayout.widget';
@@ -44,6 +43,17 @@ import { ClienteWidget } from './widgets/cliente/cliente.widget';
 import { AgregarIndustriaWidget } from './widgets/agregarindustria/agregarindustria.widget';
 import { ProductoGeneralWidget } from './widgets/productogeneral/productogeneral.widget';
 import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
+import { ProspectoSeguimientoComponent } from './exclusivo/prospectoseguimiento/prospectoseguimiento.component';
+import {  MatOptionModule } from '@angular/material';
+import { RegisterMaterialSumcoWidget } from './widgets/registermaterialsumco/registermaterialsumco.widget';
+import { AddMaterialSumcoWidget } from './widgets/addmaterialsumco/addmaterialsumco.widget';
+import { MaterialAddSumcoWidget } from './widgets/materialaddsumco/materialaddsumco.widget';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
     declarations: [
@@ -82,7 +92,11 @@ import { AuthInterceptorService } from './interceptors/auth-interceptor.service'
         SubirContratoClienteWidget,
         ClienteWidget,
         AgregarIndustriaWidget,
-        ProductoGeneralWidget
+        ProductoGeneralWidget,
+        ProspectoSeguimientoComponent,
+        RegisterMaterialSumcoWidget,
+        AddMaterialSumcoWidget,
+        MaterialAddSumcoWidget
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -107,11 +121,25 @@ import { AuthInterceptorService } from './interceptors/auth-interceptor.service'
                     { path: 'cotiza/:idp', component: CotizacionComponent },
                     { path: 'nuevocot', component: CotizaComponent },
                     { path: 'resumen/:id', component: ResumenComponent },
-                    { path: 'catalogo', component: CatalogoComponent }
+                    { path: 'catalogo', component: CatalogoComponent },
+                    { path: 'prospectoseguimiento', component: ProspectoSeguimientoComponent }
                 ]
             }
-        ])
+        ]),
+        MatSelectModule,
+        MatFormFieldModule,
+        MatOptionModule,
+        
+        MatInputModule,
+        MatFormFieldModule,
+
+        MatAutocompleteModule,
+        MatInputModule,
+        MatSelectModule,
+        MatFormFieldModule,
+        MatDialogModule
     ],
+    entryComponents: [MaterialAddSumcoWidget],
     providers: [
         StoreUser,
         {

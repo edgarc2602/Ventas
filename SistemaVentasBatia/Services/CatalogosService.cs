@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Options;
 using SistemaVentasBatia.DTOs;
 using SistemaVentasBatia.Enums;
+using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Options;
 using SistemaVentasBatia.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,6 +26,7 @@ namespace SistemaVentasBatia.Services
         Task<List<CatalogoDTO>> ObtenerCatalogoJornada(int idServicio);
         Task<List<CatalogoDTO>> ObtenerCatalogoClase();
         Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupo(Servicio servicio, string grupo);
+        Task ObtenerCatalogoProductosGrupoFiltrado(Servicio servicio, string grupo, ListaCatalogoProductosDTO modellista);
         Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupoElimina(string grupo, int idCotizacion);
         Task<List<CatalogoDTO>> ObtenerCatalogoFamiliasPorIdServicio(int idServicio);
         Task<List<CatalogoDTO>> ObtenerCatalogoEmpresas();
@@ -34,6 +37,7 @@ namespace SistemaVentasBatia.Services
         Task<List<CatalogoDTO>> GetCatalogoClientes(int idEstado);
         Task<List<CatalogoDTO>> GetCatalogoSucursalesCliente(int idEstado, int idCliente);
         Task<List<CatalogoDTO>> ObtenerCatalogoPorcentajesFinanciamiento();
+        Task<List<CatalogoDTO>> ObtenerCatalogoUnidadMedida();
     }
 
     public class CatalogosService : ICatalogosService
@@ -183,6 +187,69 @@ namespace SistemaVentasBatia.Services
             return mapper.Map<IEnumerable<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoProductosByFamilia(servicio, fams));
         }
 
+        public async Task ObtenerCatalogoProductosGrupoFiltrado(Servicio servicio, string grupo, ListaCatalogoProductosDTO modellista) {
+            int[] fams;
+            if(servicio.ToString() != "Seguridad") {
+                switch(grupo.ToLower()) {
+                    case "material":
+                        fams = _option.Material;
+                        break;
+                    case "uniforme":
+                        fams = _option.Uniforme;
+                        break;
+                    case "equipo":
+                        fams = _option.Equipo;
+                        break;
+                    case "herramienta":
+                        fams = _option.Herramienta;
+                        break;
+                    case "servicio":
+                        fams = _option.Servicio;
+                        break;
+                    case "materialope":
+                        fams = _option.MaterialOpe;
+                        break;
+                    case "uniformeope":
+                        fams = _option.UniformeOpe;
+                        break;
+                    case "equipoope":
+                        fams = _option.EquipoOpe;
+                        break;
+                    case "herramientaope":
+                        fams = _option.HerramientaOpe;
+                        break;
+                    case "servicioope":
+                        fams = _option.ServicioOpe;
+                        break;
+                    default:
+                        fams = new int[] { };
+                        break;
+                }
+            } else {
+                fams = _option.Seguridad;
+            }
+
+
+            try {
+                modellista.Rows = await catalogosRepo.ContarCatalogoProductosByFamiliaFiltrado(servicio, fams,modellista.Keywords);
+                if(modellista.Rows > 0) {
+                    modellista.NumPaginas = (modellista.Rows / 50);
+                    if(modellista.Rows % 50 > 0) {
+                        modellista.NumPaginas++;
+                    }
+                    modellista.Productos = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoProductosByFamiliaFiltrado(servicio, fams, modellista.Keywords, modellista.Pagina));
+
+
+                } else {
+                    modellista.Productos = new List<CatalogoDTO>();
+                }
+            } catch(Exception ex) {
+                throw new CustomException("Error al obtener lista productos, capa Services" + ex.Message);
+            }
+
+
+        }
+
         public async Task<IEnumerable<CatalogoDTO>> ObtenerCatalogoProductosGrupoElimina(string grupo, int idCotizacion)
         {
             //ObtenerCatalogoProductosByGrupoElimina(string grupo, int idCotizacion);
@@ -246,6 +313,12 @@ namespace SistemaVentasBatia.Services
         {
             var sucursales = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoPorcentajesFinanciamiento());
             return sucursales;
+        }
+        
+        public async Task<List<CatalogoDTO>> ObtenerCatalogoUnidadMedida()
+        {
+            var unidades = mapper.Map<List<CatalogoDTO>>(await catalogosRepo.ObtenerCatalogoUnidadMedida());
+            return unidades;
         }
     }
 }

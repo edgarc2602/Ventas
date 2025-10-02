@@ -4,6 +4,7 @@ using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +27,8 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> ObtenerCatalogoEmpresas();
         Task<List<MaterialPuesto>> ObtenerMaterialDefaultPorPuesto(int idPuesto);
         Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByFamilia(Servicio idServicio, int[] familia);
+        Task<int> ContarCatalogoProductosByFamiliaFiltrado(Servicio idServicio, int[] familia, string keywords);
+        Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByFamiliaFiltrado(Servicio idServicio, int[] familia, string keywords, int pagina);
         Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByGrupoElimina(string grupo, int idCotizacion);
         Task<IEnumerable<MaterialPuesto>> ObtenerHerramientaDefaultPorPuesto(int idPuesto);
         Task<IEnumerable<MaterialPuesto>> ObtenerEquipoDefaultPorPuesto(int idPuesto);
@@ -38,6 +41,7 @@ namespace SistemaVentasBatia.Repositories
         Task<List<Catalogo>> GetCatalogoClientes(int idEstado);
         Task<List<Catalogo>> GetCatalogoSucursalesCliente(int idEstado, int idCliente);
         Task<List<Catalogo>> ObtenerCatalogoPorcentajesFinanciamiento();
+        Task<List<Catalogo>> ObtenerCatalogoUnidadMedida();
 
     }
 
@@ -378,6 +382,74 @@ FROM tb_clase";
             return puestosCotizacion;
         }
 
+        public async Task<int> ContarCatalogoProductosByFamiliaFiltrado(Servicio idServicio, int[] familia, string keywords) {
+            if((int)idServicio == 4 || (int)idServicio == 5 || (int)idServicio == 7) {
+                idServicio = Servicio.Limpieza;
+            }
+            var query = @"SELECT COUNT(*)
+                          FROM tb_producto                          
+                          WHERE 
+                          id_familia in @familias and 
+                          id_status = 1 AND 
+                          descripcion like '%' + @keywords + '%'";
+            var listFamilia = familia.Select(x => x.ToString());
+
+            int total = 0;
+            try {
+                using(var connection = ctx.CreateConnection()) {
+                    total = await connection.ExecuteScalarAsync<int>(query, new { familias = listFamilia, keywords });
+                }
+            } catch(Exception ex) {
+                throw ex;
+            }
+            return total;
+        }
+        public async Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByFamiliaFiltrado(Servicio idServicio, int[] familia, string keywords, int pagina) {
+            if((int)idServicio == 4 || (int)idServicio == 5 || (int)idServicio == 7) {
+                idServicio = Servicio.Limpieza;
+            }
+            var query = @"
+                        SELECT  *   
+                        FROM (
+                          SELECT 
+                          ROW_NUMBER() OVER ( ORDER BY descripcion ) AS RowNum,
+                          clave Clave, 
+                          descripcion Descripcion
+                          FROM tb_producto                          
+                          WHERE 
+                          id_familia in @familias and 
+                          id_status = 1 AND 
+                          descripcion like '%' + @keywords + '%' 
+                        ) AS Productos
+                        WHERE   RowNum >= ((@pagina - 1) * 50) + 1
+                        AND RowNum <= (@pagina * 50)
+                        ORDER BY RowNum";
+            var listFamilia = familia.Select(x => x.ToString());
+
+            var productosfiltrados = new List<Catalogo>();
+
+            try {
+                using(var connection = ctx.CreateConnection()) {
+                    productosfiltrados = (await connection.QueryAsync<Catalogo>(query, new { idServicio, familias = listFamilia, keywords, pagina })).ToList();
+                }
+            } catch(Exception ex) {
+                throw ex;
+            }
+            return productosfiltrados;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         public async Task<IEnumerable<Catalogo>> ObtenerCatalogoProductosByGrupoElimina(string grupo, int idCotizacion)
         {
             string table = @"";
@@ -679,6 +751,24 @@ WHERE a.id_estado = @idEstado AND a.id_cliente = @idCliente  ORDER BY b.nombre";
                 throw ex;
             }
             return clientes;
+        }
+
+        public async Task <List<Catalogo>> ObtenerCatalogoUnidadMedida() {
+            string query = @"
+                SELECT 
+                id_unidad AS Id,
+                descripcion AS Descripcion
+                FROM tb_unidadmedida";
+            var unidades = new List<Catalogo>();
+
+            try {
+                using(var connection = ctx.CreateConnection()) {
+                    unidades = (await connection.QueryAsync<Catalogo>(query)).ToList();
+                }
+            } catch(Exception ex) {
+                throw ex;
+            }
+            return unidades;
         }
     }
 }

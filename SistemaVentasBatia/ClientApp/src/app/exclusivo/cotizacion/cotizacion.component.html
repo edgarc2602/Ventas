@@ -27,7 +27,7 @@
             </div>
             <div class="col-xl-3 col-sm-3 col-6 mb-3">
                 <div class="form-floating">
-                    <select class="form-select" [(ngModel)]="lcots.idEstatusCotizacion" (change)="busca()" id="ddlEstatus">
+                    <select class="form-select" [value] ="" [(ngModel)]="lcots.idEstatusCotizacion" (change)="busca()" id="ddlEstatus">
                         <option value="0">Seleccione...</option>
                         <option *ngFor="let e of lests" [ngValue]="e.id">{{ e.nom }}</option>
                     </select>

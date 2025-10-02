@@ -25,9 +25,12 @@ export class ExclusivoComponent {
             this.user.idInterno = uST.idInterno;
             this.user.idEmpleado = uST.idEmpleado;
             this.user.estatus = uST.estatus;
+            this.user.grupo = uST.grupo;
             this.user.idAutoriza = uST.idAutoriza;
             this.user.idSupervisa = uST.idSupervisa;
             this.user.direccionIP = uST.direccionIP;
+            this.user.idGrupoActivo = uST.idGrupoActivo;
+            this.user.descripcionGrupoActivo = uST.descripcionGrupoActivo;
         }
         else {
             this.rtr.navigate(['']);

@@ -5,12 +5,11 @@ using SistemaVentasBatia.Models;
 using SistemaVentasBatia.Repositories;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Threading.Tasks;
 
-namespace SistemaVentasBatia.Services
-{
-    public interface IProductoService
-    {
+namespace SistemaVentasBatia.Services {
+    public interface IProductoService {
         Task CreateMaterial(MaterialPuestoDTO mat);
         Task CreateUniforme(MaterialPuestoDTO uni);
         Task CreateHerramienta(MaterialPuestoDTO her);
@@ -36,6 +35,13 @@ namespace SistemaVentasBatia.Services
         Task<bool> AgregarProductosGeneral(ProductosGeneralDTO productos);
         Task<bool> EliminarProductosGeneral(ProductosGeneralDTO productos);
         Task<List<EstadoProveedorDTO>> EstadoProveedor();
+
+        //CRUD SUMCO
+        Task GetAllProductosSumco(ListaProductoSumcoDTO listaproductos);
+        Task<bool> InsertProductoSumco(ProductoSumcoDTO producto);
+        Task<ProductoSumcoDTO> GetProductoSumco(int idProducto);
+        Task<bool> UpdateProductoSumco(ProductoSumcoDTO producto);
+        Task<bool> DeleteProductoSumco(int idProducto);
     }
 
     public class ProductoService : IProductoService
@@ -263,6 +269,55 @@ namespace SistemaVentasBatia.Services
         {
             var list = mapper.Map<List<EstadoProveedorDTO>>(await repo.EstadoProveedor());
             return list;
+        }
+
+        //CRUD SUMCO
+        public async Task GetAllProductosSumco(ListaProductoSumcoDTO listaProductosSumco) {
+            try {
+                listaProductosSumco.Rows = await repo.CountProductosSumco(listaProductosSumco.Keywords);
+                if( listaProductosSumco.Rows > 0) {
+                    listaProductosSumco.NumPaginas = (listaProductosSumco.Rows / 50);
+                    if(listaProductosSumco.Rows % 50 > 0) {
+                        listaProductosSumco.NumPaginas++;
+                    }
+                    listaProductosSumco.Productos =  mapper.Map<List<ProductoSumcoDTO>>(await repo.GetAllProductosSumco(listaProductosSumco.Keywords, listaProductosSumco.Pagina));
+
+
+                }else {
+                    listaProductosSumco.Productos = new List<ProductoSumcoDTO>();
+                }
+            } catch(Exception ex) {
+                throw new CustomException("Error al obtener lista productos, capa Services" + ex.Message);
+            }
+        }
+        public async Task<bool> InsertProductoSumco(ProductoSumcoDTO producto) {
+            try {
+                return await repo.InsertProductoSumco(mapper.Map<ProductoSumco>(producto));
+            } catch(Exception ex) {
+                throw new CustomException("Error al insertar producto, capa Services" + ex.Message);
+            }
+        }
+        public async Task<ProductoSumcoDTO> GetProductoSumco(int idProducto) {
+            try {
+                var producto = mapper.Map<ProductoSumcoDTO>(await repo.GetProductoSumco(idProducto));
+                return producto == null ? new ProductoSumcoDTO() : producto ;
+            } catch(Exception ex) {
+                throw new CustomException("Error al obtener producto, capa Services" + ex.Message);
+            }
+        }
+        public async Task<bool> UpdateProductoSumco(ProductoSumcoDTO producto) {
+            try {
+                return await repo.UpdateProductoSumco(mapper.Map<ProductoSumco>(producto));
+            } catch(Exception ex) {
+                throw new CustomException("Error al actualizar producto, capa Services" + ex.Message);
+            }
+        }
+        public async Task<bool> DeleteProductoSumco(int idProducto) {
+            try {
+                return await repo.DeleteProductoSumco(idProducto);
+            } catch(Exception ex) {
+                throw new CustomException("Error al eliminar producto, capa Services" + ex.Message);
+            }
         }
     }
 }
