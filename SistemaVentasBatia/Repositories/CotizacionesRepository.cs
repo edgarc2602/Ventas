@@ -2065,7 +2065,7 @@ GETDATE(),
         public async Task CambiarEstatusProspectoContratado(int idProspecto)
         {
             string query = @"UPDATE tb_prospecto
-                            SET id_estatus_prospecto = 4
+                            SET id_estatus_prospecto = 4, id_estado_flujo = 8 
                             WHERE id_prospecto = @idProspecto";
             try
             {
@@ -2181,7 +2181,14 @@ GETDATE(),
         public async Task<bool> AutorizarCotizacion(int idCotizacion)
         {
             bool result;
-            string query = @"UPDATE tb_cotizacion SET id_estatus_cotizacion = 6 WHERE id_cotizacion = @idCotizacion";
+            string query = @"   UPDATE tb_cotizacion SET id_estatus_cotizacion = 6 WHERE id_cotizacion = @idCotizacion
+                                DECLARE @IdProspecto INT = 0 ;
+                                SET @IdProspecto = (SELECT b.id_prospecto FROM tb_cotizacion a 
+                                INNER JOIN tb_prospecto b ON a.id_prospecto = b.id_prospecto 
+                                WHERE a.id_cotizacion = @idCotizacion)
+
+                                UPDATE tb_prospecto SET id_estatus_prospecto = 3, id_estado_flujo = 7 WHERE id_prospecto = @IdProspecto
+";
             try
             {
                 using (var connection = ctx.CreateConnection())
@@ -2202,7 +2209,14 @@ GETDATE(),
         public async Task<bool> RemoverAutorizacionCotizacion(int idCotizacion)
         {
             bool result;
-            string query = @"UPDATE tb_cotizacion SET id_estatus_cotizacion = 1 WHERE id_cotizacion = @idCotizacion";
+            string query = @"   UPDATE tb_cotizacion SET id_estatus_cotizacion = 1 WHERE id_cotizacion = @idCotizacion
+                                DECLARE @IdProspecto INT = 0 ;
+                                SET @IdProspecto = (SELECT b.id_prospecto FROM tb_cotizacion a 
+                                INNER JOIN tb_prospecto b ON a.id_prospecto = b.id_prospecto 
+                                WHERE a.id_cotizacion = @idCotizacion)
+
+                                UPDATE tb_prospecto SET id_estatus_prospecto = 1, id_estado_flujo = 6 WHERE id_prospecto = @IdProspecto
+";
             try
             {
                 using (var connection = ctx.CreateConnection())

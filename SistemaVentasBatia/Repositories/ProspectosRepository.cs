@@ -254,9 +254,9 @@ namespace SistemaVentasBatia.Repositories
         public async Task<List<Prospecto>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal)
         {
             var queryadmin = @"SELECT id_prospecto IdProspecto, nombre_comercial NombreComercial
-                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,4) ORDER BY nombre_comercial";
+                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,2,3,4) ORDER BY nombre_comercial";
             var queryuser = @"SELECT id_prospecto IdProspecto, nombre_comercial NombreComercial
-                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,4) AND id_personal = @idPersonal ORDER BY nombre_comercial";
+                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,2,3,4) AND id_personal = @idPersonal ORDER BY nombre_comercial";
 
             var prospectos = new List<Prospecto>();
 

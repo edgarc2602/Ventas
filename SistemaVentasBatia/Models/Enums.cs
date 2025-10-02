@@ -13,6 +13,7 @@ namespace SistemaVentasBatia.Enums
     {
         Activo = 1,
         Inactivo = 2,
+        Autorizado = 3,
         Contratado = 4
     }
 
