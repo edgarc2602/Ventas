@@ -376,7 +376,7 @@ namespace SistemaVentasBatia.Services
                         imss = immsJornada.Frontera12;
                         break;
                     default:
-                        imss = 2188M;
+                        imss = 2600M;
                         break;
                 }
             }
@@ -398,7 +398,7 @@ namespace SistemaVentasBatia.Services
                         imss = immsJornada.Normal12;
                         break;
                     default:
-                        imss = 2188M;
+                        imss = 2600M;
                         break;
                 }
             }
