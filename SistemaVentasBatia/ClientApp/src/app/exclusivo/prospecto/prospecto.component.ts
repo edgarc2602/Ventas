@@ -40,7 +40,7 @@ export class ProspectoComponent implements OnInit, OnDestroy {
         }, err => {
             this.validaError(err);
         });
-        this.lista();
+        //this.lista();
         this.searchKeyword$.pipe(
             debounceTime(800),
             distinctUntilChanged()

@@ -98,7 +98,7 @@ export class CotizacionComponent implements OnInit, OnDestroy {
             }, err => {
             console.log(err);
         });
-        this.http.post<Prospecto[]>(`${this.url}api/prospecto/getcatalogo`, this.user.idPersonal, { headers: this.getHeaders() }).subscribe(response => {
+        this.http.post<Prospecto[]>(`${this.url}api/prospecto/getcatalogo/${this.user.idGrupoActivo}`, this.user.idPersonal, { headers: this.getHeaders() }).subscribe(response => {
             this.lpros = response;
         }, err => {
             this.validaError(err);

@@ -22,7 +22,7 @@ namespace SistemaVentasBatia.Repositories
         Task<Prospecto> ObtenerProspectoPorId(int idProspecto);
         Task<Prospecto> ObtenerProspectoPorCotizacion(int idCotizacion);
         Task<List<Prospecto>> ObtenerProspectos(int pagina, EstatusProspecto idEstatusProspecto, string keywords, int autorizacion, int idPersonal, int idGrupoActivo);
-        Task<List<Prospecto>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal);
+        Task<List<Prospecto>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal, int idGrupoActivo);
         Task<List<Prospecto>> ObtenerCoincidenciasProspecto(string nombreComercial, string rfc);
         Task EliminarTotalPolizasByIdProspecto(int idProspecto);
 
@@ -74,12 +74,13 @@ namespace SistemaVentasBatia.Repositories
                         WHERE
                             id_personal = @idPersonal AND
                             id_grupo = @idGrupoActivo AND
-                            ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto
+                            (@idEstatusProspecto = 0 OR id_estatus_prospecto = @idEstatusProspecto)
                             AND nombre_comercial like '%' + @keywords + '%';";
             var queryadmin = @"SELECT count(id_prospecto) Rows 
                         FROM tb_prospecto
                         WHERE
-                            ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto
+                            (@idEstatusProspecto = 0 OR id_estatus_prospecto = @idEstatusProspecto)
+                            AND id_grupo = @idGrupoActivo
                             AND nombre_comercial like '%' + @keywords + '%';";
 
             var numrows = 0;
@@ -94,7 +95,7 @@ namespace SistemaVentasBatia.Repositories
                     }
                     else
                     {
-                        numrows = await connection.QuerySingleAsync<int>(queryadmin, new { idEstatusProspecto, keywords = keywords ?? "" });
+                        numrows = await connection.QuerySingleAsync<int>(queryadmin, new { idEstatusProspecto, keywords = keywords ?? "", idGrupoActivo });
                     }
 
                 }
@@ -114,8 +115,8 @@ namespace SistemaVentasBatia.Repositories
                         FROM tb_prospecto
 						INNER JOIN dbo.Personal p on tb_prospecto.id_personal = p.IdPersonal
                         WHERE
-                            ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto AND
-                            
+                            (@idEstatusProspecto = 0 OR id_estatus_prospecto = @idEstatusProspecto) AND
+                            id_grupo = @idGrupoActivo AND
                             nombre_comercial like '%' + @keywords + '%' 
                         ORDER BY nombre_comercial
                         OFFSET ((@pagina - 1) * 50) ROWS
@@ -126,7 +127,7 @@ namespace SistemaVentasBatia.Repositories
                         FROM tb_prospecto
 						INNER JOIN dbo.Personal p on tb_prospecto.id_personal = p.IdPersonal
                         WHERE
-                            ISNULL(NULLIF(@idEstatusProspecto,0), id_estatus_prospecto) = id_estatus_prospecto AND
+                            (@idEstatusProspecto = 0 OR id_estatus_prospecto = @idEstatusProspecto) AND
                             nombre_comercial like '%' + @keywords + '%'  AND
                             id_grupo =  @idGrupoActivo AND
                             tb_prospecto.id_personal = @idPersonal
@@ -141,7 +142,7 @@ namespace SistemaVentasBatia.Repositories
                 {
                     if (autorizacion == 1)
                     {
-                        prospectos = (await connection.QueryAsync<Prospecto>(queryadmin, new { pagina, idEstatusProspecto, keywords = keywords ?? "" })).ToList();
+                        prospectos = (await connection.QueryAsync<Prospecto>(queryadmin, new { pagina, idEstatusProspecto, keywords = keywords ?? "", idGrupoActivo })).ToList();
 
                     }
                     else if (autorizacion == 0)
@@ -251,12 +252,12 @@ namespace SistemaVentasBatia.Repositories
                 throw ex;
             }
         }
-        public async Task<List<Prospecto>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal)
+        public async Task<List<Prospecto>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal, int idGrupoActivo)
         {
             var queryadmin = @"SELECT id_prospecto IdProspecto, nombre_comercial NombreComercial
-                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,2,3,4) ORDER BY nombre_comercial";
+                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,2,3,4) AND id_grupo = @idGrupoActivo ORDER BY nombre_comercial";
             var queryuser = @"SELECT id_prospecto IdProspecto, nombre_comercial NombreComercial
-                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,2,3,4) AND id_personal = @idPersonal ORDER BY nombre_comercial";
+                          FROM tb_prospecto WHERE id_estatus_prospecto IN (1,2,3,4) AND id_grupo = @idGrupoActivo AND id_personal = @idPersonal ORDER BY nombre_comercial";
 
             var prospectos = new List<Prospecto>();
 
@@ -266,11 +267,11 @@ namespace SistemaVentasBatia.Repositories
                 {
                     if (autorizacion == 1)
                     {
-                        prospectos = (await connection.QueryAsync<Prospecto>(queryadmin)).ToList();
+                        prospectos = (await connection.QueryAsync<Prospecto>(queryadmin, new { idGrupoActivo })).ToList();
                     }
                     else if (autorizacion == 0)
                     {
-                        prospectos = (await connection.QueryAsync<Prospecto>(queryuser, new { idPersonal })).ToList();
+                        prospectos = (await connection.QueryAsync<Prospecto>(queryuser, new { idPersonal, idGrupoActivo })).ToList();
                     }
                 }
             }

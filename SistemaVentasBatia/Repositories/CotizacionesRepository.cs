@@ -141,20 +141,20 @@ namespace SistemaVentasBatia.Repositories
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 WHERE 
                                     c.id_personal = @idPersonal AND
-                                    ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
-                                    ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
-                                    ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio
-                                    AND
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6) ";
+                                    (@idProspecto = 0 OR c.id_prospecto = @idProspecto) AND
+                                    (@idEstatusCotizacion = 0 OR c.id_estatus_cotizacion = @idEstatusCotizacion) AND
+                                    (@idServicio = 0 OR c.id_servicio = @idServicio) AND
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6) AND
+                                    p.id_grupo = @idGrupoActivo";
             var queryadmin = @"SELECT count(*) Rows
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 WHERE 
-                                    ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
-                                    ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
-                                    ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio
-                                    AND
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6) ";
+                                (@idProspecto = 0 OR c.id_prospecto = @idProspecto) AND
+                                (@idEstatusCotizacion = 0 OR c.id_estatus_cotizacion = @idEstatusCotizacion) AND
+                                (@idServicio = 0 OR c.id_servicio = @idServicio) AND
+                                c.id_estatus_cotizacion IN (1,2,3,4,5,6) AND
+                                p.id_grupo = @idGrupoActivo";
 
             var rows = 0;
 
@@ -164,11 +164,11 @@ namespace SistemaVentasBatia.Repositories
                 {
                     if (autorizacion == 0)
                     {
-                        rows = await connection.QuerySingleAsync<int>(queryuser, new { idProspecto, idEstatusCotizacion, idServicio, idPersonal });
+                        rows = await connection.QuerySingleAsync<int>(queryuser, new { idProspecto, idEstatusCotizacion, idServicio, idPersonal, idGrupoActivo });
                     }
                     else
                     {
-                        rows = await connection.QuerySingleAsync<int>(queryadmin, new { idProspecto, idEstatusCotizacion, idServicio });
+                        rows = await connection.QuerySingleAsync<int>(queryadmin, new { idProspecto, idEstatusCotizacion, idServicio, idGrupoActivo });
                     }
 
                 }
@@ -189,13 +189,13 @@ namespace SistemaVentasBatia.Repositories
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
-                                JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
+                                --JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
                                 WHERE 
-                                    ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
-                                    ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
-                                    ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio AND
-                                    
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6)    
+                                    (@idProspecto = 0 OR c.id_prospecto = @idProspecto) AND
+                                    (@idEstatusCotizacion = 0 OR c.id_estatus_cotizacion = @idEstatusCotizacion) AND
+                                    (@idServicio = 0 OR c.id_servicio = @idServicio) AND
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6) AND
+                                    p.id_grupo = @idGrupoActivo
                                ) AS Cotizaciones
                           WHERE   RowNum >= ((@pagina - 1) * 50) + 1
                               AND RowNum <= (@pagina * 50)
@@ -206,14 +206,14 @@ namespace SistemaVentasBatia.Repositories
                                 FROM tb_cotizacion c
                                 JOIN tb_prospecto p on c.id_prospecto = p.id_prospecto
                                 INNER JOIN dbo.Personal per ON c.id_personal = per.IdPersonal 
-                                JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
+                                --JOIN (SELECT * FROM fn_resumencotizacion(null)) r on c.id_Cotizacion = r.IdCotizacion
                                 WHERE 
-                                    ISNULL(NULLIF(@idProspecto,0), c.id_prospecto) = c.id_prospecto AND
-                                    ISNULL(NULLIF(@idEstatusCotizacion,0), c.id_estatus_cotizacion) = c.id_estatus_cotizacion AND
-                                    ISNULL(NULLIF(@idServicio,0), c.id_servicio) = c.id_servicio AND
                                     c.id_personal = @idPersonal AND
-                                    
-                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6)
+                                    (@idProspecto = 0 OR c.id_prospecto = @idProspecto) AND
+                                    (@idEstatusCotizacion = 0 OR c.id_estatus_cotizacion = @idEstatusCotizacion) AND
+                                    (@idServicio = 0 OR c.id_servicio = @idServicio) AND
+                                    c.id_estatus_cotizacion IN (1,2,3,4,5,6) AND
+                                    p.id_grupo = @idGrupoActivo
 
                                ) AS Cotizaciones
                           WHERE   RowNum >= ((@pagina - 1) * 50) + 1
@@ -229,11 +229,11 @@ namespace SistemaVentasBatia.Repositories
                 {
                     if (admin == 1)
                     {
-                        cotizaciones = (await connection.QueryAsync<Cotizacion>(queryadmin, new { pagina, idProspecto, idEstatusCotizacion, idServicio })).ToList();
+                        cotizaciones = (await connection.QueryAsync<Cotizacion>(queryadmin, new { pagina, idProspecto, idEstatusCotizacion, idServicio, idGrupoActivo })).ToList();
                     }
                     else if (admin == 0)
                     {
-                        cotizaciones = (await connection.QueryAsync<Cotizacion>(queryuser, new { pagina, idProspecto, idEstatusCotizacion, idServicio, idPersonal })).ToList();
+                        cotizaciones = (await connection.QueryAsync<Cotizacion>(queryuser, new { pagina, idProspecto, idEstatusCotizacion, idServicio, idPersonal, idGrupoActivo })).ToList();
                     }
                 }
             }

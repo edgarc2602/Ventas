@@ -46,31 +46,31 @@
                     <td class="col-10 col-xl-10">
                         <div class="row mb-2">
                             <div class="col-xl-4 col-sm-6 col-6">
-                                <span class="badge">Nombre Comercial:</span>
-                                <div class="ms-2">{{ prospecto.nombreComercial }}</div>
+                                <span class="badge  text-bg-info">Nombre Comercial</span>
+                                <div class="ms-2 fw-bold ">{{ prospecto.nombreComercial }}</div>
                             </div>
                             <div class="col-xl-2 col-sm-3 col-6">
-                                <span class="badge">RFC:</span>
+                                <span class="badge text-bg-light">RFC</span>
                                 <div class="ms-2">{{ prospecto.rfc }}</div>
                             </div>
                             <div class="col-xl-2 col-sm-3 col-6">
-                                <span class="badge">Teléfono:</span>
+                                <span class="badge text-bg-light">Teléfono</span>
                                 <div class="ms-2">{{ prospecto.numeroContacto }}</div>
                             </div>
                             <div class="col-xl-4 col-sm-3 col-6">
-                                <span class="badge">Razón Social:</span>
+                                <span class="badge  text-bg-light">Razón Social</span>
                                 <div class="ms-2">{{ prospecto.razonSocial }}</div>
                             </div>
                             <div [ngClass]="user.idAutoriza ? 'col-xl-6 col-sm-9 col-12' : 'col-xl-8 col-sm-9 col-12'">
-                                <span class="badge">Domicilio Fiscal:</span>
-                                <div class="ms-2">{{ prospecto.domicilioFiscal }}</div>
+                                <span class="badge text-bg-light">Domicilio Fiscal</span>
+                                <div class="ms-2 small">{{ prospecto.domicilioFiscal }}</div>
                             </div>
                             <div class="col-xl-2 col-sm-3 col-6">
-                                <span class="badge">Fecha Alta:</span>
+                                <span class="badge text-bg-light">Fecha Alta</span>
                                 <div class="ms-2">{{ prospecto.fechaAlta | date: 'dd-MM-yyyy' }}</div>
                             </div>
                             <div *ngIf="user.idAutoriza === 1" class="col-xl-4 col-sm-9 col-6 ">
-                                <span class="badge">Usuario Alta:</span>
+                                <span class="badge text-bg-light">Usuario Alta</span>
                                 <div class="ms-2">{{ prospecto.representanteLegal }}</div>
                             </div>
                         </div>

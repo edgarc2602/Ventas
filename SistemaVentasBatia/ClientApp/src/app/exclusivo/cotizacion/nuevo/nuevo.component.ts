@@ -47,7 +47,7 @@ export class CotizaComponent {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         this.nuevo();
-        http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo`, this.user.idPersonal, { headers }).subscribe(response => {
+        http.post<Prospecto[]>(`${url}api/prospecto/getcatalogo/${this.user.idGrupoActivo}`, this.user.idPersonal, { headers }).subscribe(response => {
             this.lpros = response;
         }, err => {
             this.validaError(err);

@@ -44,6 +44,7 @@ import { AgregarIndustriaWidget } from './widgets/agregarindustria/agregarindust
 import { ProductoGeneralWidget } from './widgets/productogeneral/productogeneral.widget';
 import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
 import { ProspectoSeguimientoComponent } from './exclusivo/prospectoseguimiento/prospectoseguimiento.component';
+import { ProspectoSeguimientoReportesComponent } from './exclusivo/prospectoseguimientoreportes/prospectoseguimientoreportes.component';
 import {  MatOptionModule } from '@angular/material';
 import { RegisterMaterialSumcoWidget } from './widgets/registermaterialsumco/registermaterialsumco.widget';
 import { AddMaterialSumcoWidget } from './widgets/addmaterialsumco/addmaterialsumco.widget';
@@ -54,6 +55,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
+import { AlertasWidget } from './widgets/alertas/alertas.widget'; 
 
 @NgModule({
     declarations: [
@@ -96,7 +98,9 @@ import { MatDialogModule } from '@angular/material/dialog';
         ProspectoSeguimientoComponent,
         RegisterMaterialSumcoWidget,
         AddMaterialSumcoWidget,
-        MaterialAddSumcoWidget
+        MaterialAddSumcoWidget,
+        ProspectoSeguimientoReportesComponent,
+        AlertasWidget
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -122,7 +126,8 @@ import { MatDialogModule } from '@angular/material/dialog';
                     { path: 'nuevocot', component: CotizaComponent },
                     { path: 'resumen/:id', component: ResumenComponent },
                     { path: 'catalogo', component: CatalogoComponent },
-                    { path: 'prospectoseguimiento', component: ProspectoSeguimientoComponent }
+                    { path: 'prospectoseguimiento', component: ProspectoSeguimientoComponent },
+                    { path: 'prospectoseguimientoreportes', component: ProspectoSeguimientoReportesComponent }
                 ]
             }
         ]),

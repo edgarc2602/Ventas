@@ -582,7 +582,7 @@ FROM tb_clase";
             var query = @"SELECT id_empresa Id,
                         nombre Descripcion
                         FROM tb_empresa
-                        WHERE id_estatus = 1 and tipo = 1
+                        WHERE id_estatus = 1
                         ORDER BY nombre";
 
             var empresas = new List<Catalogo>();

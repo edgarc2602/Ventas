@@ -20,7 +20,7 @@ namespace SistemaVentasBatia.Services
         Task EditarProspecto(ProspectoDTO prospectoVM);
         Task ObtenerListaDirecciones(ListaDireccionDTO listaDireccionesVM);
         Task CrearDireccion(DireccionDTO direccionVM);
-        Task<List<ProspectoDTO>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal);
+        Task<List<ProspectoDTO>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal, int idGrupoActivo);
         Task<int> ObtenerIdProspectoPorCotizacion(int idCotizacion);
         Task<ProspectoDTO> ObtenerProspectoPorCotizacion(int idCotizacion);
         Task EliminarProspecto(int registroAEliminar);
@@ -171,9 +171,9 @@ namespace SistemaVentasBatia.Services
 
         }
 
-        public async Task<List<ProspectoDTO>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal)
+        public async Task<List<ProspectoDTO>> ObtenerCatalogoProspectos(int autorizacion, int idPersonal, int idGrupoActivo)
         {
-            var prospectos = mapper.Map<List<ProspectoDTO>>(await prospectosRepo.ObtenerCatalogoProspectos(autorizacion, idPersonal));
+            var prospectos = mapper.Map<List<ProspectoDTO>>(await prospectosRepo.ObtenerCatalogoProspectos(autorizacion, idPersonal, idGrupoActivo));
 
             return prospectos;
         }

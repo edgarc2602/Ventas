@@ -83,28 +83,28 @@
                     <td class="col-10 col-xl-9 col-sm-9">
                         <div class="row d-flex align-items-center">
                             <div class="col-xl-1 col-sm-2 col-12">
-                                <span class="badge d-xl-none">Id:</span>
-                                <div class="ms-2">{{ cot.idCotizacion }}</div>
+                                <span class="badge d-xl-none text-bg-light">Id:</span>
+                                <div class="ms-2  fw-bold">{{ cot.idCotizacion }}</div>
                             </div>
                             <div [ngClass]="user.idAutoriza ? 'col-xl-3 col-sm-7 col-12' : 'col-xl-5 col-sm-4 col-12'">
-                                <span class="badge d-xl-none">Prospecto:</span>
+                                <span class="badge d-xl-none text-bg-light">Prospecto:</span>
                                 <div class="ms-2">{{ cot.nombreComercial }} <small *ngIf="lcots.idServicio == 0" class="ms-2 text-muted">({{ cot.servicio }})</small></div>
 
                             </div>
                             <div class="col-xl-2 col-sm-3 col-6 ">
-                                <span class="badge d-xl-none">Total:</span>
+                                <span class="badge d-xl-none text-bg-light">Total:</span>
                                 <div class="ms-2">${{cot.total | number: '1.2'}}</div>
                             </div>
                             <div class="col-xl-2 col-sm-2 col-6">
-                                <span class="badge d-xl-none">Vigencia:</span>
+                                <span class="badge d-xl-none text-bg-light">Vigencia:</span>
                                 <div class="ms-2 ">{{ cot.diasVigencia }} Dias</div>
                             </div>
                             <div class="col-xl-2 col-sm-3 col-6 ">
-                                <span class="badge d-xl-none">Fecha Alta:</span>
+                                <span class="badge d-xl-none text-bg-light">Fecha Alta:</span>
                                 <div class="ms-2">{{ cot.fechaAlta | date: 'dd-MM-yyyy' }}</div>
                             </div>
                             <div *ngIf="user.idAutoriza === 1" class="col-xl-2 col-sm-6 col-6">
-                                <span class="badge d-xl-none">Usuario Alta:</span>
+                                <span class="badge d-xl-none text-bg-light">Usuario Alta:</span>
                                 <div class="ms-2 small"> {{  cot.idAlta }}  </div>
                             </div>
                         </div>

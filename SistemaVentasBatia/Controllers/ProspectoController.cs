@@ -60,14 +60,14 @@ namespace SistemaVentasBatia.Controllers
             return await prospectosSvc.ObtenerProspecto(id);
         }
 
-        [HttpPost("[action]")]
-        public async Task<IEnumerable<ProspectoDTO>> GetCatalogo([FromBody] int idPersonal = 0)
+        [HttpPost("[action]/{idGrupoActivo}")]
+        public async Task<IEnumerable<ProspectoDTO>> GetCatalogo(int idGrupoActivo, [FromBody] int idPersonal = 0)
         {
             var token = _logic.GenerarToken();
             Response.Headers.Add("Authorization", $"Bearer {token}");
 
             int autorizacion = await cotizacionesSvc.ObtenerAutorizacion(idPersonal);
-            return await prospectosSvc.ObtenerCatalogoProspectos(autorizacion, idPersonal);
+            return await prospectosSvc.ObtenerCatalogoProspectos(autorizacion, idPersonal, idGrupoActivo);
         }
 
         [HttpPut]

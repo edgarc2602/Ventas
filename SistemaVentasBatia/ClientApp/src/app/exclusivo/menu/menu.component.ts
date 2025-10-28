@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { StoreUser } from 'src/app/stores/StoreUser';
 import { GrupoService } from '../../grupo.service';
-
+import { AlertasWidget } from 'src/app/widgets/alertas/alertas.widget'; 
 @Component({
     selector: 'ex-menu',
     templateUrl: './menu.component.html'
 })
 export class ExMenuComponent {
     @Output('cambiagrupo') sendEvent = new EventEmitter<boolean>();
-
+    @ViewChild(AlertasWidget, { static: false }) alertasWidget: AlertasWidget;
     isExpanded = false;
     visibilidadLatMenu
 
@@ -49,5 +49,9 @@ export class ExMenuComponent {
         elementos.forEach((elemento: HTMLElement) => {
             elemento.blur();
         });
+    }
+
+    verAlertas() {
+        this.alertasWidget.open();
     }
 }
