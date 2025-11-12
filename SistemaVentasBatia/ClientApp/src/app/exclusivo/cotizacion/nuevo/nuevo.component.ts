@@ -11,6 +11,8 @@ import { DatePipe } from '@angular/common';
 import { fadeInOut } from 'src/app/fade-in-out';
 import { Catalogo } from '../../../models/catalogo';
 declare var bootstrap: any;
+import { ProspectoExistente } from '../../../models/ProspectoExistente';
+import { ProspectoExistenteWidget } from '../../../widgets/prospectoexistente/prospectoexistente.widget';
 
 
 @Component({
@@ -21,6 +23,8 @@ declare var bootstrap: any;
 })
 export class CotizaComponent {
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
+    @ViewChild(ProspectoExistenteWidget, { static: false }) prospectoExstWidget: ProspectoExistenteWidget;
+
     model: Cotizacion = {} as Cotizacion;
     modelp: Prospecto = {} as Prospecto;
     lerr: any = {};
@@ -42,7 +46,9 @@ export class CotizaComponent {
     isEvento: boolean = false;
     isInsumo: boolean = false;
     indust: Catalogo[] = [];
-
+    proExs: ProspectoExistente[] = [];
+    validacion: boolean = false;
+    esProspectoUnico: boolean = false;
     constructor(@Inject('BASE_URL') private url: string, private http: HttpClient, private dtpipe: DatePipe, private rtr: Router, public user: StoreUser) {
         const token = localStorage.getItem('token');
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -169,7 +175,20 @@ export class CotizaComponent {
         }
     }
 
-    guardaP() {
+    async guardaP() {
+
+        const esUnico = await this.validaProspectosExistentes();
+
+        if (!esUnico) {
+            return;
+        }
+
+        // 🔹 Si llega aquí, es prospecto único, continúa con el guardado
+        this.proseguirConGuardado();
+    }
+
+    proseguirConGuardado() {
+        //return; //comentar para prod
         this.quitarFocoDeElementos();
         this.modelp.listaDocumentos = this.docs;
         this.modelp.idPersonal = this.idVendedor;
@@ -192,6 +211,42 @@ export class CotizaComponent {
                     }
                 }
             });
+        }
+    }
+    async validaProspectosExistentes(): Promise<boolean> {
+        const params = {
+            nombreComercial: this.modelp.nombreComercial,
+            razonSocial: this.modelp.razonSocial || '',
+            rfc: this.modelp.rfc
+        };
+
+        try {
+            const response = await this.http
+                .get<ProspectoExistente[]>(`${this.url}api/prospecto/ValidarProspectoExistente`, {
+                    headers: this.getHeaders(),
+                    params
+                })
+                .toPromise();
+
+            this.proExs = response;
+
+            if (this.proExs.length > 0) {
+                this.esProspectoUnico = false;
+                this.errorToast("Se encontraron prospectos similares, verifique");
+                this.prospectoExstWidget.open(
+                    this.proExs,
+                    "",
+                    "Se encontraron los siguientes prospectos",
+                    this.modelp.nombreComercial
+                );
+                return false; // ❌ No es prospecto único
+            } else {
+                this.esProspectoUnico = true;
+                return true; // ✅ Es prospecto único
+            }
+        } catch (err) {
+            this.validaError(err);
+            return false;
         }
     }
 

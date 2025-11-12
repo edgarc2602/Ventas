@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using iTextSharp.text.pdf.parser;
 using SistemaVentasBatia.Context;
 using SistemaVentasBatia.Enums;
 using SistemaVentasBatia.Models;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace SistemaVentasBatia.Repositories
 {
@@ -37,6 +39,7 @@ namespace SistemaVentasBatia.Repositories
         Task<bool> GetFronteraPorIdMunicipio(int idMunicipio);
         Task<List<Direccion>> ObtenerDireccionesPorProspecto(int idProspecto, int pagina);
         Task<Prospecto> ObtenerDatosProspecto(int idProspecto);
+        Task <List<Prospecto>> ValidarProspectoExistente(string nombreComercial, int idPersonal, string razonSocial, string rfc);
     }
 
     public class ProspectosRepository : IProspectosRepository
@@ -596,6 +599,56 @@ UPDATE tb_cotizacion SET total_poliza = 0 WHERE id_prospecto = @idProspecto";
                 throw ex;
             }
             return prospecto;
+        }
+
+        public async Task<List<Prospecto>> ValidarProspectoExistente(string nombreComercial, int idPersonal, string razonSocial, string rfc) {
+            var query = @"
+                            SELECT 
+                            a.id_prospecto AS IdProspecto, 
+                            a.nombre_comercial AS NombreComercial , 
+                            a.razon_social AS RazonSocial, 
+                            a.rfc AS Rfc, 
+                            a.domicilio_fiscal AS DomicilioFiscal, 
+                            a.telefono AS Telefono, 
+                            a.representante_legal AS RepresentanteLegal , 
+                            a.documentacion AS Documentacion, 
+                            a.id_estatus_prospecto AS IdEstatusProspecto, 
+                            a.fecha_alta AS FechaAlta, 
+                            a.id_personal AS IdPersonal, 
+                            b.Per_Nombre + ' ' + b.Per_Paterno AS UsuarioAlta,
+                            a.nombre_contacto AS NombreContacto, 
+                            a.numero_contacto AS NumeroContacto, 
+                            a.ext_contacto AS ExtContacto, 
+                            a.email_contacto AS EmailContacto, 
+                            a.id_tipoindustria AS IdTipoIndustria
+                            FROM tb_prospecto a 
+                            INNER JOIN Personal b ON a.id_personal = b.IdPersonal
+                            WHERE 
+                            (
+                                (@nombreComercial IS NOT NULL AND LTRIM(RTRIM(@nombreComercial)) <> '' 
+                                    AND REPLACE(a.nombre_comercial, ' ', '') LIKE '%' + REPLACE(@nombreComercial, ' ', '') + '%')
+                                OR
+                                (@razonSocial IS NOT NULL AND LTRIM(RTRIM(@razonSocial)) <> '' 
+                                    AND REPLACE(a.razon_social, ' ', '') LIKE '%' + REPLACE(@razonSocial, ' ', '') + '%')
+                                OR
+                                (@rfc IS NOT NULL AND LTRIM(RTRIM(@rfc)) <> '' 
+                                    AND REPLACE(a.rfc, ' ', '') LIKE '%' + REPLACE(@rfc, ' ', '') + '%')
+                            );
+                         ";
+
+            var prospectos = new List<Prospecto>();
+
+            try {
+                using(var connection = ctx.CreateConnection()) {
+
+                        prospectos = (await connection.QueryAsync<Prospecto>(query, new { nombreComercial, idPersonal, razonSocial, rfc })).ToList();
+                    
+                }
+            } catch(Exception ex) {
+                throw ex;
+            }
+
+            return prospectos;
         }
     }
 }

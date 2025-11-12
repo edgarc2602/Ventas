@@ -17,6 +17,7 @@ namespace SistemaVentasBatia.Models
         public EstatusProspecto IdEstatusProspecto { get; set; }
         public DateTime FechaAlta { get; set; }
         public int IdPersonal { get; set; }
+        public string UsuarioAlta { get; set; }
         public string NombreContacto { get; set; }
         public string EmailContacto { get; set; }
         public string NumeroContacto { get; set; }

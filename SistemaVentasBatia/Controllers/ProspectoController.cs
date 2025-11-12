@@ -248,6 +248,17 @@ namespace SistemaVentasBatia.Controllers
             return await prospectosSvc.ObtenerDatosProspecto(idProspecto);
         }
 
+        [HttpGet("[action]")]
+        public async Task<List<ProspectoDTO>> ValidarProspectoExistente(
+            [FromQuery] string nombreComercial,
+            [FromQuery] string? razonSocial = null,
+            [FromQuery] string rfc = null) {
+            var token = _logic.GenerarToken();
+            Response.Headers.Add("Authorization", $"Bearer {token}");
+
+            return await prospectosSvc.ValidarProspectoExistente(nombreComercial, 0, razonSocial, rfc);
+        }
+
 
 
     }

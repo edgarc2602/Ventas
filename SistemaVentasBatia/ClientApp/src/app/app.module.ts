@@ -56,6 +56,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AlertasWidget } from './widgets/alertas/alertas.widget'; 
+import { ProspectoExistenteWidget } from './widgets/prospectoexistente/prospectoexistente.widget'
 
 @NgModule({
     declarations: [
@@ -100,7 +101,8 @@ import { AlertasWidget } from './widgets/alertas/alertas.widget';
         AddMaterialSumcoWidget,
         MaterialAddSumcoWidget,
         ProspectoSeguimientoReportesComponent,
-        AlertasWidget
+        AlertasWidget,
+        ProspectoExistenteWidget
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

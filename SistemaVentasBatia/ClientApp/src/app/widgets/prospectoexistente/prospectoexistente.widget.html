@@ -1,0 +1,112 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="modal modal-xl fade" id="prospectoexistentewidget" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header justify-content-center">
+                    <h4 *ngIf="esProspectoUnico == true " class="modal-title">Se encontró {{ cantidadProspectos }} prospecto similar</h4>
+                    <h4 *ngIf="esProspectoUnico == false" class="modal-title">Se encontrarón {{ cantidadProspectos }} prospectos similares</h4>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body justify-content-center text-center">
+                    <div *ngIf="prospectos && prospectos.length > 0" class="table-container box-shadow fade-in-container" #tbprospectos>
+                        <table class="table table-striped table-responsive">
+                            <thead class="sticky-top">
+                                <tr class="d-xl-none">
+                                    <th class="ps-2 text-start">Lista de prospectos existentes</th>
+                                    <th></th>
+                                </tr>
+                                <tr class="d-none d-xl-table-row">
+                                    <th>
+                                        <div class="row d-flex align-items-center">
+                                            <!--<div class="col-xl-1 col-sm-6 col-1">
+                                                <span class="ms-2">Id</span>
+                                            </div>-->
+                                            <div [ngClass]="user.idAutoriza ? 'col-xl-3 col-sm-6 col-5' : 'col-xl-5 col-sm-12 col-10'">
+                                                <span class="ms-2 text-start">Prospecto</span>
+                                            </div>
+
+                                            <div class="col-xl-2 col-sm-6 col-2">
+                                                <span class="ms-2">Razón Social</span>
+                                            </div>
+                                            <div class="col-xl-2 col-sm-6 col-6">
+                                                <span class="ms-2">RFC</span>
+                                            </div>
+                                            <div class="col-xl-2 col-sm-6 col-3">
+                                                <span class="ms-2">Fecha Alta</span>
+                                            </div>
+                                            <div *ngIf="user.idAutoriza === 1" class="col-xl-2 col-sm-6 col-6">
+                                                <span class="ms-2">Usuario Alta</span>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="col-xl-1 col-sm-1 col-1">
+                                            <span class="ms-2">Cotizaciones</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let pro of prospectos">
+                                    <td class="col-10 col-xl-9 col-sm-9">
+                                        <div class="row d-flex align-items-center">
+                                            <!--<div class="col-xl-1 col-sm-2 col-12">
+                                                <span class="badge d-xl-none text-bg-light">Id:</span>
+                                                <div class="ms-2  fw-bold">{{ pro.idProspecto }}</div>
+                                            </div>-->
+                                            <div [ngClass]="user.idAutoriza ? 'col-xl-3 col-sm-7 col-12' : 'col-xl-5 col-sm-4 col-12'">
+                                                <span class="badge d-xl-none text-bg-light">Prospecto:</span>
+                                                <div class="ms-2 text-start">{{ pro.nombreComercial }}</div>
+
+                                            </div>
+                                            <div class="col-xl-2 col-sm-3 col-6 ">
+                                                <span class="badge d-xl-none text-bg-light">Razón Social:</span>
+                                                <div class="ms-2">{{ pro.razonSocial}}</div>
+                                            </div>
+                                            <div class="col-xl-2 col-sm-2 col-6">
+                                                <span class="badge d-xl-none text-bg-light">RFC:</span>
+                                                <div class="ms-2 ">{{ pro.rfc }}</div>
+                                            </div>
+                                            <div class="col-xl-2 col-sm-3 col-6 ">
+                                                <span class="badge d-xl-none text-bg-light">Fecha Alta:</span>
+                                                <div class="ms-2">{{ pro.fechaAlta | date: 'dd-MM-yyyy' }}</div>
+                                            </div>
+                                            <div class="col-xl-2 col-sm-6 col-6">
+                                                <span class="badge d-xl-none text-bg-light">Usuario Alta:</span>
+                                                <div class="ms-2 small"> {{  pro.usuarioAlta }}  </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center col-1 col-xl-1 col-sm-1">
+                                        <button *ngIf="esAdmin == 1" type="submit" class="btn btn-sm btn-outline-primary mb-1" (click)="verProspecto(pro.idProspecto)" data-bs-toggle="tooltip" title="Cotizaciones">
+                                            <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
+                                        </button>
+                                        <button *ngIf="esAdmin == 0 && user.idPersonal == pro.idPersonal" type="submit" class="btn btn-sm btn-outline-primary mb-1" (click)="verProspecto(pro.idProspecto)" data-bs-toggle="tooltip" title="Cotizaciones">
+                                            <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
+                                        </button>
+                                        <!--<button type="button" class="btn btn-sm btn-outline-primary" [routerLink]="['/exclusivo/resumen/' + cot.idCotizacion]" data-bs-toggle="tooltip" title="Detalle"><i class="fa-solid fa-search-dollar fa-2x"></i></button>
+    <button *ngIf="user.idPersonal == pro.idPersonal" type="button" class="btn btn-sm btn-outline-success" (click)="editar(cot.idCotizacion,cot.idServicio, cot.polizaCumplimiento, cot.diasEvento)" data-bs-toggle="tooltip" title="Editar tipo de servicio"><i class="fa-solid fa-pencil fa-2x"></i></button>
+    <button *ngIf="user.idPersonal == pro.idPersonal" id="statusButton" (click)="openCerrarCotizacion(cot.idCotizacion)" class="toggle-btn {{ cot.idEstatusCotizacion === 1 ? 'active' : '' }}" data-bs-toggle="tooltip" title="Desactivar cotización">{{ cot.idEstatusCotizacion === 1 ? 'Cerrar' : 'Activar' }}</button>-->
+                                        <!--<button id="statusButton" (click)="openValida('cambiarEstatusCotizacion','¿Est\u00E1 seguro que desea cambiar el estatus de la cotizaci\u00F3n con ID: ' + cot.idCotizacion + '?',cot.idCotizacion, cot.idEstatusCotizacion)" class="toggle-btn {{ cot.idEstatusCotizacion === 1 ? 'active' : '' }}" data-bs-toggle="tooltip" title="Cambiar estatus">{{ cot.idEstatusCotizacion === 1 ? 'Activa' : 'Inactiva' }}</button>-->
+                                        <!--<button *ngIf="cot.idEstatusCotizacion == 3" type="button" (click)="openValida('eliminarCotizacion','¿Est\u00E1 seguro que desea eliminar la cotizaci\u00F3n con ID: ' + cot.idCotizacion + '?', cot.idCotizacion, cot.idEstatusCotizacion)" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Eliminar"><i class="fa-solid fa-times fa-2x"></i></button>-->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer justify-content-center text-end">
+                    <!--<button type="button" class="btn btn-outline-primary" (click)="acepta()" id="btnEliminarSbmt">Aceptar</button>-->
+                    <button type="button" class="btn btn-outline-secondary" (click)="cancela()" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>

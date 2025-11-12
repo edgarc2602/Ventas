@@ -47,6 +47,7 @@ namespace SistemaVentasBatia.DTOs
         public string ExtContacto { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "Usuario es requerido")]
         public int IdPersonal { get; set; }
+        public string UsuarioAlta { get; set; }
 
         public ICollection<Item<int>> ListaDocumentos { get; set; }
 

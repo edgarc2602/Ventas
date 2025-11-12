@@ -33,6 +33,7 @@ namespace SistemaVentasBatia.Services
         Task<bool> DesactivarProspecto(int idProspecto);
         Task<DireccionResponseAPIDTO> GetDireccionAPI(string cp);
         Task<ProspectoDTO> ObtenerDatosProspecto(int idProspecto);
+        Task<List<ProspectoDTO>> ValidarProspectoExistente(string nombreComercial, int idPersonal, string razonSocial, string rfc);
     }
 
     public class ProspectosService : IProspectosService
@@ -285,6 +286,11 @@ namespace SistemaVentasBatia.Services
         {
             var prospecto = mapper.Map<ProspectoDTO>(await prospectosRepo.ObtenerDatosProspecto(idProspecto));
             return prospecto;
+        }
+
+        public async Task<List<ProspectoDTO>> ValidarProspectoExistente(string nombreComercial, int idPersonal, string razonSocial, string rfc) {
+            var prospectos = mapper.Map<List<ProspectoDTO>>(await prospectosRepo.ValidarProspectoExistente(nombreComercial, idPersonal, razonSocial, rfc));
+            return prospectos;
         }
     }
 }

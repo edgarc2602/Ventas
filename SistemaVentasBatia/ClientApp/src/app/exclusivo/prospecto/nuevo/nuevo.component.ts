@@ -11,6 +11,8 @@ import { fadeInOut } from 'src/app/fade-in-out';
 import { ToastWidget } from 'src/app/widgets/toast/toast.widget';
 import { CargaWidget } from 'src/app/widgets/carga/carga.widget';
 import { Catalogo } from '../../../models/catalogo';
+import { ProspectoExistente } from '../../../models/ProspectoExistente';
+import { ProspectoExistenteWidget } from '../../../widgets/prospectoexistente/prospectoexistente.widget';
 
 @Component({
     selector: 'pros-nuevo',
@@ -22,6 +24,7 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     @ViewChild(DireccionWidget, { static: false }) dirAdd: DireccionWidget;
     @ViewChild(ToastWidget, { static: false }) toastWidget: ToastWidget;
     @ViewChild(CargaWidget, { static: false }) cargaWidget: CargaWidget;
+    @ViewChild(ProspectoExistenteWidget, { static: false }) prospectoExstWidget: ProspectoExistenteWidget;
     direcs: ListaDireccion = {
         idProspecto: 0, idCotizacion: 0, idDireccion: 0, pagina: 0, direcciones: [], rows: 0, numPaginas: 0
     };
@@ -29,10 +32,12 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
     idDirecc: number = 0;
     isLoading: boolean = false;
     docs: ItemN[] = [];
+    proExs: ProspectoExistente[] = [];
     lerr: any = {};
     sub: any;
     indust: Catalogo[] = [];
     validacion: boolean = false;
+    esProspectoUnico: boolean = false;
 
 
     constructor(
@@ -71,6 +76,45 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         });
     }
 
+    async validaProspectosExistentes(): Promise<boolean> {
+        const params = {
+            nombreComercial: this.pro.nombreComercial,
+            razonSocial: this.pro.razonSocial || '',
+            rfc: this.pro.rfc
+        };
+
+        try {
+            const response = await this.http
+                .get<ProspectoExistente[]>(`${this.url}api/prospecto/ValidarProspectoExistente`, {
+                    headers: this.getHeaders(),
+                    params
+                })
+                .toPromise();
+
+            this.proExs = response;
+
+            if (this.proExs.length > 0) {
+                this.esProspectoUnico = false;
+                this.errorToast("Se encontraron prospectos similares, verifique");
+                this.prospectoExstWidget.open(
+                    this.proExs,
+                    "",
+                    "Se encontraron los siguientes prospectos",
+                    this.pro.nombreComercial
+                );
+                return false; // ❌ No es prospecto único
+            } else {
+                this.esProspectoUnico = true;
+                return true; // ✅ Es prospecto único
+            }
+        } catch (err) {
+            this.validaError(err);
+            return false;
+        }
+    }
+
+    
+
     validaError(err: any) {
         if (err.status === 401) {
             this.errorToast('⚠️ No autorizado. Inicia sesión nuevamente.');
@@ -97,8 +141,22 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         this.idDirecc = idD;
         this.dirAdd.open(this.pro.idProspecto, idD);
     }
+    async guarda() {
+        this.iniciarCarga();
 
-    guarda() {
+        const esUnico = await this.validaProspectosExistentes();
+
+        if (!esUnico) {
+            this.detenerCarga();
+            return;
+        }
+
+        // 🔹 Si llega aquí, es prospecto único, continúa con el guardado
+        this.proseguirConGuardado();
+    }
+
+
+    proseguirConGuardado() {
         this.quitarFocoDeElementos();
         this.pro.listaDocumentos = this.docs;
         this.lerr = {};
@@ -106,6 +164,13 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
             this.iniciarCarga();
             setTimeout(() => {
                 if (this.pro.idProspecto == 0) {
+                    this.validaProspectosExistentes();
+                    if (this.esProspectoUnico == false) {
+                        this.detenerCarga();
+                        return;
+                    }
+                    //return; //comentar para prod
+
                     this.http.post<Prospecto>(`${this.url}api/prospecto`, this.pro, { headers: this.getHeaders() }).subscribe(response => {
                         this.detenerCarga();
                         setTimeout(() => {
@@ -203,6 +268,9 @@ export class ProsNuevoComponent implements OnInit, OnDestroy {
         if (this.pro.idTipoIndustria == 0) {
             this.lerr['IdTipoIndustria'] = ['Tipo de industria es obligatorio.'];
             this.validacion = false;
+        }
+        if (this.validacion == false){
+            this.detenerCarga();
         }
 
         return this.validacion;
